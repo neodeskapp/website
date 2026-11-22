@@ -55,7 +55,7 @@ Hebrew (`he`) is in the table but has no file yet.
 
 For developers. A text the web app shows comes from a key: `t('devices.title')`, or `tf('devices.title', 'Devices')` with an English fallback. The fallback shows only when the loaded language files lack the key, so keep it the same as the text in `en.json`. Lint rejects text written directly into the markup.
 
-A new key goes into every language file, not only `en.json`: the check fails when any file misses a baseline key. Give each language a real translation. [web-ui/README.md](https://github.com/trybetterdesk/betterdesk/blob/main/web-ui/README.md) has the web app's text rules.
+A new key goes into every language file, not only `en.json`: the check fails when any file misses a baseline key. Give each language a real translation. [web-ui/README.md](https://github.com/neodeskapp/betterdesk/blob/main/web-ui/README.md) has the web app's text rules.
 
 ## Check your work
 

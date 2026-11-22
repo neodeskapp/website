@@ -83,7 +83,7 @@ The server has settings for development that read files from disk instead of the
 | `CONSOLE_STATIC_DIR` | Reads the console's own files (`lang`, `public`, `protos`, `themes`, `config`) from a folder shaped like `betterdesk-server/console/static/files`. |
 | `CONSOLE_LANG_DIR` | Reads only the language files from this folder. |
 
-[web-ui/README.md](https://github.com/trybetterdesk/betterdesk/blob/main/web-ui/README.md) has the web app's scripts, its layout and its rules, and how to run them with the packages in a Docker volume instead of on the host.
+[web-ui/README.md](https://github.com/neodeskapp/betterdesk/blob/main/web-ui/README.md) has the web app's scripts, its layout and its rules, and how to run them with the packages in a Docker volume instead of on the host.
 
 `betterdesk-server/cmd/devseed` fills a test console with fake devices, users, tickets and more, so the pages have something to show. It writes only into a database that holds its test marker, the row `('devseed_test_stack', '1')` in the `server_config` table, so it never touches a real install. Its commands are described at the top of `cmd/devseed/main.go`.
 

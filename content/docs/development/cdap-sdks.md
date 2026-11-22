@@ -17,7 +17,7 @@ Both SDKs have the same example, a simulated greenhouse with a temperature, a hu
 
 ## Python SDK
 
-The package `betterdesk_cdap` is in [`sdks/python`](https://github.com/trybetterdesk/betterdesk/tree/main/sdks/python). It needs Python 3.9 or newer and `websockets` 12 or newer. Install it from a checkout of the repository and start the example:
+The package `betterdesk_cdap` is in [`sdks/python`](https://github.com/neodeskapp/betterdesk/tree/main/sdks/python). It needs Python 3.9 or newer and `websockets` 12 or newer. Install it from a checkout of the repository and start the example:
 
 ```bash
 pip install ./sdks/python
@@ -74,11 +74,11 @@ What the SDK does:
 - **Logs**: `send_log(level, message, context)` sends a `log` message, with `level` `debug`, `info`, `warning`, `error` or `critical`.
 - **Widgets**: `gauge`, `toggle`, `button`, `text_widget`, `led`, `slider`, `select`, `chart` and `table` build the widget types of the same names, each with a default `permissions` entry. `Widget(...)` takes every field of [Widgets](/docs/development/cdap-protocol#widgets).
 
-The [package README](https://github.com/trybetterdesk/betterdesk/blob/main/sdks/python/README.md) lists the methods.
+The [package README](https://github.com/neodeskapp/betterdesk/blob/main/sdks/python/README.md) lists the methods.
 
 ## Node.js SDK
 
-The package `betterdesk-cdap` in [`sdks/nodejs`](https://github.com/trybetterdesk/betterdesk/tree/main/sdks/nodejs) is written in TypeScript and needs Node.js 22 or newer (22.18 or newer for the example, which Node runs as TypeScript). Build it and start the example:
+The package `betterdesk-cdap` in [`sdks/nodejs`](https://github.com/neodeskapp/betterdesk/tree/main/sdks/nodejs) is written in TypeScript and needs Node.js 22 or newer (22.18 or newer for the example, which Node runs as TypeScript). Build it and start the example:
 
 ```bash
 cd sdks/nodejs
@@ -122,11 +122,11 @@ It works like the Python SDK, with these differences:
 - **Commands**: the handler gets the command (`command_id`, `widget_id`, `action`, `value`, `operator`, `reason`) and may return a value or a promise. What it returns goes back as the result and becomes the widget's value at once.
 - **Events**: `connected`, `registered`, `command`, `disconnected`, `error`, `message`, and the type of any other message the server sends. Listen for `error`: as with any Node.js event emitter, an `error` event without a listener throws.
 
-The [package README](https://github.com/trybetterdesk/betterdesk/blob/main/sdks/nodejs/README.md) has the details.
+The [package README](https://github.com/neodeskapp/betterdesk/blob/main/sdks/nodejs/README.md) has the details.
 
 ## Reference bridges
 
-The bridges in [`bridges`](https://github.com/trybetterdesk/betterdesk/tree/main/bridges) are Python scripts on the Python SDK. Each reads a JSON config file: a `cdap` block for the connection (`server`, `api_key`, `device_id`, `device_name`, `device_type`, `bridge_name`, `heartbeat_sec`) and a block for the other side. `device_id` is required, and two bridges on one server need different ones. Without a `device_type` the Modbus bridge registers as `scada`, the SNMP bridge as `network` and the REST bridge as `iot`.
+The bridges in [`bridges`](https://github.com/neodeskapp/betterdesk/tree/main/bridges) are Python scripts on the Python SDK. Each reads a JSON config file: a `cdap` block for the connection (`server`, `api_key`, `device_id`, `device_name`, `device_type`, `bridge_name`, `heartbeat_sec`) and a block for the other side. `device_id` is required, and two bridges on one server need different ones. Without a `device_type` the Modbus bridge registers as `scada`, the SNMP bridge as `network` and the REST bridge as `iot`.
 
 | Bridge | Script | Talks to | What it does |
 |---|---|---|---|
@@ -148,7 +148,7 @@ cp config.example.json config.json
 python bridge_modbus.py --config config.json --log-level INFO
 ```
 
-The [bridges README](https://github.com/trybetterdesk/betterdesk/blob/main/bridges/README.md) describes the config pattern.
+The [bridges README](https://github.com/neodeskapp/betterdesk/blob/main/bridges/README.md) describes the config pattern.
 
 ## The flow builder
 

@@ -4,7 +4,7 @@ description: How to support BetterDesk, the sponsor tiers and their terms, the o
 order: 3
 ---
 
-BetterDesk was created by UNITRONIX (Krzysztof Nienartowicz), and most of the server is that project's work. This site documents [trybetterdesk/betterdesk](https://github.com/trybetterdesk/betterdesk), a fork of [UNITRONIX/BetterDesk](https://github.com/UNITRONIX/BetterDesk) maintained by Linus Rath. Sponsorship and donations go to UNITRONIX, upstream. The console's **Help & Supporters** panel links to the same places.
+BetterDesk was created by UNITRONIX (Krzysztof Nienartowicz), and most of the server is that project's work. This site documents [neodeskapp/betterdesk](https://github.com/neodeskapp/betterdesk), a fork of [UNITRONIX/BetterDesk](https://github.com/UNITRONIX/BetterDesk) maintained by Linus Rath. Sponsorship and donations go to UNITRONIX, upstream. The console's **Help & Supporters** panel links to the same places.
 
 ## Sponsor the project
 

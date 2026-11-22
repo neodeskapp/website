@@ -69,14 +69,14 @@ While there is no stable release, the stable channel installs the newest pre-rel
 
 ### Client releases
 
-The desktop client is released from its own repository, [trybetterdesk/betterdesk-client](https://github.com/trybetterdesk/betterdesk-client), with tags `desktop-v<version>`. Its `SHA256SUMS.sig` is signed with the same key, and the console checks it before **Add a computer** and **Quick support** hand out a package.
+The desktop client is released from its own repository, [neodeskapp/betterdesk-client](https://github.com/neodeskapp/betterdesk-client), with tags `desktop-v<version>`. Its `SHA256SUMS.sig` is signed with the same key, and the console checks it before **Add a computer** and **Quick support** hand out a package.
 
 ### Docker images
 
 **Build & Publish Docker Images** builds two images for amd64 and arm64:
 
-- `ghcr.io/trybetterdesk/betterdesk`: the server with its web console, the image the Docker install runs;
-- `ghcr.io/trybetterdesk/betterdesk-server`: the server with the console turned off.
+- `ghcr.io/neodeskapp/betterdesk`: the server with its web console, the image the Docker install runs;
+- `ghcr.io/neodeskapp/betterdesk-server`: the server with the console turned off.
 
 For `main` it builds only for the bump commits, so an image always carries the version of `main`. A build of `main` gets the tags `dev` and `sha-<commit>`. A `v*` tag gets the version (`3.6.0-rc.1`) and the tag (`v3.6.0-rc.1`), and a stable release also `X.Y`.
 

@@ -69,7 +69,7 @@ The BetterDesk client needs none of them typed in. **Add a computer** on the
 Devices page makes an invite link that installs it and joins the computer to
 your server, see [Add a computer](/docs/console/add-a-computer).
 
-The code is at [github.com/trybetterdesk/betterdesk](https://github.com/trybetterdesk/betterdesk).
+The code is at [github.com/neodeskapp/betterdesk](https://github.com/neodeskapp/betterdesk).
 It is a fork of [UNITRONIX/BetterDesk](https://github.com/UNITRONIX/BetterDesk)
 and is licensed under the [AGPL-3.0](/docs/project/license).
 

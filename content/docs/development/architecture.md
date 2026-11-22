@@ -25,7 +25,7 @@ This page is for people who change BetterDesk's code. It explains where things a
 | `install.sh`, `betterdesk.sh`, `betterdesk.ps1`, `betterdesk-docker.sh` | The installers. |
 | `VERSION`, `CHANGELOG.md` | The product version and the change log. |
 
-Some folders have a short README of their own, which stays next to the code: [web-ui](https://github.com/trybetterdesk/betterdesk/blob/main/web-ui/README.md), [sdks](https://github.com/trybetterdesk/betterdesk/blob/main/sdks/README.md), [bridges](https://github.com/trybetterdesk/betterdesk/blob/main/bridges/README.md), [remote-gateway](https://github.com/trybetterdesk/betterdesk/blob/main/remote-gateway/README.md) and the [console's contract suite](https://github.com/trybetterdesk/betterdesk/blob/main/betterdesk-server/console/contract/README.md).
+Some folders have a short README of their own, which stays next to the code: [web-ui](https://github.com/neodeskapp/betterdesk/blob/main/web-ui/README.md), [sdks](https://github.com/neodeskapp/betterdesk/blob/main/sdks/README.md), [bridges](https://github.com/neodeskapp/betterdesk/blob/main/bridges/README.md), [remote-gateway](https://github.com/neodeskapp/betterdesk/blob/main/remote-gateway/README.md) and the [console's contract suite](https://github.com/neodeskapp/betterdesk/blob/main/betterdesk-server/console/contract/README.md).
 
 ## One binary
 
@@ -128,7 +128,7 @@ The server works on one database. `DATABASE_URL` names it: an address that start
 Two stores share that database:
 
 - **The server's store**, package `db`. One interface (`db/database.go`) with a SQLite and a PostgreSQL implementation. It holds devices, accounts, API keys, device tokens, the server events, device groups and folders, organizations, billing, telemetry, and `server_config`, a table of keys and values for settings, secrets the server makes, the hashes of join, support and pairing codes, and queue entries such as `pending_device_<id>`.
-- **The console's store**, package `console/store`. Its queries are written once, with `?` placeholders, and run on both databases. It creates 55 tables (tickets, activity, alerts, reports, agent bundles and more), and the session package adds `panel_sessions`. [schema.md](https://github.com/trybetterdesk/betterdesk/blob/main/betterdesk-server/console/store/schema.md) lists every step of its migration.
+- **The console's store**, package `console/store`. Its queries are written once, with `?` placeholders, and run on both databases. It creates 55 tables (tickets, activity, alerts, reports, agent bundles and more), and the session package adds `panel_sessions`. [schema.md](https://github.com/neodeskapp/betterdesk/blob/main/betterdesk-server/console/store/schema.md) lists every step of its migration.
 
 On PostgreSQL the console uses the server's connection pool. On SQLite it opens the same file itself, with one connection for writes and four read-only ones, in WAL mode, and waits up to five seconds when the file is locked.
 

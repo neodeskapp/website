@@ -299,7 +299,7 @@ footer {
     </a>
     <nav aria-label="Main">
       <a href="/docs/">Docs</a>
-      <a href="https://github.com/trybetterdesk/betterdesk">GitHub</a>
+      <a href="https://github.com/neodeskapp/betterdesk">GitHub</a>
     </nav>
   </header>
 
@@ -345,7 +345,7 @@ footer {
         </svg>
         <div class="term" role="tabpanel" id="install-panel" aria-labelledby="tab-docker">
           <div class="term-bar"><button type="button" id="copy-install" aria-label="Copy install commands">Copy</button></div>
-          <div class="term-lines" id="install-lines" tabindex="0" aria-label="Install commands"><code>git clone https://github.com/trybetterdesk/betterdesk.git</code><code>cd betterdesk</code><code>docker compose -f docker-compose.single.yml up -d --build</code><code>docker compose -f docker-compose.single.yml exec betterdesk betterdesk-show-admin-credentials</code></div>
+          <div class="term-lines" id="install-lines" tabindex="0" aria-label="Install commands"><code>git clone https://github.com/neodeskapp/betterdesk.git</code><code>cd betterdesk</code><code>docker compose -f docker-compose.single.yml up -d --build</code><code>docker compose -f docker-compose.single.yml exec betterdesk betterdesk-show-admin-credentials</code></div>
         </div>
       </div>
     </section>
@@ -429,9 +429,9 @@ footer {
       <p>Open source under AGPL-3.0.</p>
       <nav aria-label="More">
         <a href="/docs/">Docs</a>
-        <a href="https://github.com/trybetterdesk/betterdesk/blob/main/CHANGELOG.md">Changelog</a>
-        <a href="https://github.com/trybetterdesk/betterdesk/blob/main/SECURITY.md">Security</a>
-        <a href="https://github.com/trybetterdesk/betterdesk">GitHub</a>
+        <a href="https://github.com/neodeskapp/betterdesk/blob/main/CHANGELOG.md">Changelog</a>
+        <a href="https://github.com/neodeskapp/betterdesk/blob/main/SECURITY.md">Security</a>
+        <a href="https://github.com/neodeskapp/betterdesk">GitHub</a>
       </nav>
     </div>
     <img class="wordmark only-dark" src="img/logo-on-dark.svg" alt="" width="667" height="133">
@@ -473,7 +473,7 @@ footer {
     docker: {
       note: 'One container runs the server and the web console, built from the repository. The last command prints the admin username and password. Sign in with them at http://your-server:5000, which is plain HTTP, not HTTPS.',
       lines: [
-        'git clone https://github.com/trybetterdesk/betterdesk.git',
+        'git clone https://github.com/neodeskapp/betterdesk.git',
         'cd betterdesk',
         'docker compose -f docker-compose.single.yml up -d --build',
         'docker compose -f docker-compose.single.yml exec betterdesk betterdesk-show-admin-credentials'
@@ -482,7 +482,7 @@ footer {
     linux: {
       note: 'The script builds the server from the repository and installs it as a service. Choose 1 in the menu for a new install, or add --auto to skip the menu. The installer shows the admin username and password.',
       lines: [
-        'git clone https://github.com/trybetterdesk/betterdesk.git',
+        'git clone https://github.com/neodeskapp/betterdesk.git',
         'cd betterdesk',
         'sudo bash betterdesk.sh --from-source'
       ]
@@ -490,7 +490,7 @@ footer {
     windows: {
       note: 'Run it in PowerShell as Administrator. The script builds the server from the repository. Add -Auto to install with the default settings.',
       lines: [
-        'git clone https://github.com/trybetterdesk/betterdesk.git',
+        'git clone https://github.com/neodeskapp/betterdesk.git',
         'cd betterdesk',
         '.\\betterdesk.ps1 -FromSource'
       ]

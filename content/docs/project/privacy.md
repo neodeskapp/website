@@ -4,7 +4,7 @@ description: What BetterDesk keeps on your server, and every host the server, th
 order: 2
 ---
 
-BetterDesk runs on a machine you control. The project runs no service that receives your devices, accounts or sessions, and the code sends no analytics, crash reports or usage data to anyone. This page lists what the server keeps and every host it contacts. It describes the code of BetterDesk {{VERSION}} from [trybetterdesk/betterdesk](https://github.com/trybetterdesk/betterdesk); other builds may differ.
+BetterDesk runs on a machine you control. The project runs no service that receives your devices, accounts or sessions, and the code sends no analytics, crash reports or usage data to anyone. This page lists what the server keeps and every host it contacts. It describes the code of BetterDesk {{VERSION}} from [neodeskapp/betterdesk](https://github.com/neodeskapp/betterdesk); other builds may differ.
 
 ## What stays on your server
 
@@ -44,17 +44,17 @@ With `PANEL_MDNS` set to on, the console also announces itself over mDNS (UDP po
 
 ### Updates
 
-When someone opens **Settings**, **Updates**, and when they click **Check for updates**, the console asks GitHub's API (api.github.com) for the releases of trybetterdesk/betterdesk, or of the repository that `UPDATE_GITHUB_OWNER` and `UPDATE_GITHUB_REPO` name. It keeps the answers for two minutes. **Install** downloads the release from github.com and GitHub's file hosts.
+When someone opens **Settings**, **Updates**, and when they click **Check for updates**, the console asks GitHub's API (api.github.com) for the releases of neodeskapp/betterdesk, or of the repository that `UPDATE_GITHUB_OWNER` and `UPDATE_GITHUB_REPO` name. It keeps the answers for two minutes. **Install** downloads the release from github.com and GitHub's file hosts.
 
 The requests carry the user agent `BetterDesk-Console/<version>` and no ID of your install. GitHub sees the server's IP address, as with any download. A token in `UPDATE_GITHUB_TOKEN` or `GITHUB_TOKEN` goes to api.github.com only. See [Updating](/docs/operations/updating#the-updates-page-in-the-console).
 
 ### Client downloads for invites
 
-An invite link from **Add a computer** or **Quick support** opens a page with the client to download. To fill it, the server looks up the newest release of trybetterdesk/betterdesk-client on GitHub, or the newest pre-release while there is no stable one, at most every six hours. It downloads a package the first time someone asks for it, checks it against the release's signed checksums and keeps it in its data folder. `BETTERDESK_CLIENT_REPO` names another repository. With `BETTERDESK_CLIENT_RELEASE_DIR` the server takes the packages from that folder and doesn't ask GitHub.
+An invite link from **Add a computer** or **Quick support** opens a page with the client to download. To fill it, the server looks up the newest release of neodeskapp/betterdesk-client on GitHub, or the newest pre-release while there is no stable one, at most every six hours. It downloads a package the first time someone asks for it, checks it against the release's signed checksums and keeps it in its data folder. `BETTERDESK_CLIENT_REPO` names another repository. With `BETTERDESK_CLIENT_RELEASE_DIR` the server takes the packages from that folder and doesn't ask GitHub.
 
 ### Support agents
 
-**Import latest release** on the **Support agents** page downloads the newest signed release of the support agent from trybetterdesk/betterdesk-client on GitHub, or from the repository `BETTERDESK_SUPPORT_RELEASE_REPO` names. Nothing is fetched until someone clicks it.
+**Import latest release** on the **Support agents** page downloads the newest signed release of the support agent from neodeskapp/betterdesk-client on GitHub, or from the repository `BETTERDESK_SUPPORT_RELEASE_REPO` names. Nothing is fetched until someone clicks it.
 
 ### Mail
 
@@ -85,7 +85,7 @@ The console's pages carry a Content-Security-Policy that lets the browser load s
 
 ## Installers and Docker
 
-The install scripts download BetterDesk from GitHub, and the Docker compose files pull the image `ghcr.io/trybetterdesk/betterdesk`. When Docker is missing, `betterdesk-docker.sh` downloads Docker's install script from get.docker.com. A build from source downloads Go from go.dev, Go modules from proxy.golang.org and the web app's npm packages.
+The install scripts download BetterDesk from GitHub, and the Docker compose files pull the image `ghcr.io/neodeskapp/betterdesk`. When Docker is missing, `betterdesk-docker.sh` downloads Docker's install script from get.docker.com. A build from source downloads Go from go.dev, Go modules from proxy.golang.org and the web app's npm packages.
 
 The installers look up the server's public IP address too:
 
@@ -97,4 +97,4 @@ The installers look up the server's public IP address too:
 
 ## Report a connection this page misses
 
-If you find BetterDesk contacting a host that this page doesn't list, report it the way [SECURITY.md](https://github.com/trybetterdesk/betterdesk/blob/main/SECURITY.md) describes, not in a public issue.
+If you find BetterDesk contacting a host that this page doesn't list, report it the way [SECURITY.md](https://github.com/neodeskapp/betterdesk/blob/main/SECURITY.md) describes, not in a public issue.

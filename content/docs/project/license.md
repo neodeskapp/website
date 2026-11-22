@@ -4,9 +4,9 @@ description: BetterDesk's license, the AGPL-3.0, the Commercial Grant for sponso
 order: 1
 ---
 
-BetterDesk is free software under the GNU Affero General Public License, version 3 (AGPL-3.0). The [LICENSE file](https://github.com/trybetterdesk/betterdesk/blob/main/LICENSE) in the repository holds the full text and the notes this page sums up; where the two differ, the file counts. Neither is legal advice.
+BetterDesk is free software under the GNU Affero General Public License, version 3 (AGPL-3.0). The [LICENSE file](https://github.com/neodeskapp/betterdesk/blob/main/LICENSE) in the repository holds the full text and the notes this page sums up; where the two differ, the file counts. Neither is legal advice.
 
-BetterDesk was created by UNITRONIX (Krzysztof Nienartowicz), who holds the copyright the LICENSE file names and maintains [UNITRONIX/BetterDesk](https://github.com/UNITRONIX/BetterDesk). This site documents [trybetterdesk/betterdesk](https://github.com/trybetterdesk/betterdesk), a fork of it maintained by Linus Rath.
+BetterDesk was created by UNITRONIX (Krzysztof Nienartowicz), who holds the copyright the LICENSE file names and maintains [UNITRONIX/BetterDesk](https://github.com/UNITRONIX/BetterDesk). This site documents [neodeskapp/betterdesk](https://github.com/neodeskapp/betterdesk), a fork of it maintained by Linus Rath.
 
 ## AGPL-3.0
 
@@ -61,4 +61,4 @@ The LICENSE file states that the BetterDesk server (`betterdesk-server`) is an i
 
 ## Third-party notices
 
-[THIRD_PARTY_NOTICES.md](https://github.com/trybetterdesk/betterdesk/blob/main/THIRD_PARTY_NOTICES.md) in the repository lists the third-party material that ships with BetterDesk. A running console also serves the licenses of the code in its web app at `/licenses.txt`, for example `https://desk.example.com/licenses.txt`.
+[THIRD_PARTY_NOTICES.md](https://github.com/neodeskapp/betterdesk/blob/main/THIRD_PARTY_NOTICES.md) in the repository lists the third-party material that ships with BetterDesk. A running console also serves the licenses of the code in its web app at `/licenses.txt`, for example `https://desk.example.com/licenses.txt`.

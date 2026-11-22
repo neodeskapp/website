@@ -23,7 +23,7 @@ names the files and settings BetterDesk needs, not every click. Read
 1. Create a folder for BetterDesk on the NAS, for example
    `/volume1/docker/betterdesk`.
 2. Put the compose file in it as `docker-compose.yml`:
-   [docker-compose.quick.single.yml](https://raw.githubusercontent.com/trybetterdesk/betterdesk/main/docker-compose.quick.single.yml).
+   [docker-compose.quick.single.yml](https://raw.githubusercontent.com/neodeskapp/betterdesk/main/docker-compose.quick.single.yml).
 3. Put a file called `.env` next to it:
 
    ```ini

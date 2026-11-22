@@ -81,7 +81,7 @@ cd betterdesk-server/console/contract
 BD_URL=http://localhost:5000 go test -tags contract -count=1 -run '^TestCases$/^devices$'
 ```
 
-The suite signs in as `e2e_<role>` accounts, with the password in the file `BD_PASSWORD_FILE` names. The matrix writes to every route it reaches, so use a fresh, throwaway console. Writing cases, recording goldens and the other variables are in [the suite's README](https://github.com/trybetterdesk/betterdesk/blob/main/betterdesk-server/console/contract/README.md).
+The suite signs in as `e2e_<role>` accounts, with the password in the file `BD_PASSWORD_FILE` names. The matrix writes to every route it reaches, so use a fresh, throwaway console. Writing cases, recording goldens and the other variables are in [the suite's README](https://github.com/neodeskapp/betterdesk/blob/main/betterdesk-server/console/contract/README.md).
 
 ## The local gate
 

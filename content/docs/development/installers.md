@@ -13,7 +13,7 @@ The repository has four install scripts. This page is for changing them. How to 
 | `install.sh` | Linux | The one-line installer. By default it fetches `betterdesk-docker.sh` and installs with Docker; `--native` clones the repository and runs `betterdesk.sh --auto`. |
 | `betterdesk.sh` | Linux | Installs `betterdesk-server` as the systemd service `betterdesk-server`, and updates, repairs, backs up, diagnoses and removes it. |
 | `betterdesk.ps1` | Windows | The same on Windows, with the service `BetterDeskServer`, or a scheduled task of that name. |
-| `betterdesk-docker.sh` | Linux with Docker | Runs the published image `ghcr.io/trybetterdesk/betterdesk` in one container, with `docker-compose.yml` and `.env` in `/opt/betterdesk/docker`. |
+| `betterdesk-docker.sh` | Linux with Docker | Runs the published image `ghcr.io/neodeskapp/betterdesk` in one container, with `docker-compose.yml` and `.env` in `/opt/betterdesk/docker`. |
 
 `install.sh` fetches the other scripts from the `main` branch unless `--branch` or `BETTERDESK_BRANCH` names another. `--channel stable|dev` picks the release channel of a native install.
 

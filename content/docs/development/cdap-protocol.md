@@ -6,7 +6,7 @@ order: 13
 
 CDAP is the server's protocol for devices that are not RustDesk clients: sensors, controllers, bridges to other systems and agents. A device opens a WebSocket to the gateway, signs in, sends a manifest with its values and controls, and then keeps the server up to date and answers commands. This page is for people who write such a device or bridge. Running the gateway and using the devices in the console is on [CDAP devices](/docs/console/cdap), and ready-made clients are on [CDAP SDKs and bridges](/docs/development/cdap-sdks).
 
-The reference is the Go code in [`betterdesk-server/cdap`](https://github.com/trybetterdesk/betterdesk/tree/main/betterdesk-server/cdap); its types name every field.
+The reference is the Go code in [`betterdesk-server/cdap`](https://github.com/neodeskapp/betterdesk/tree/main/betterdesk-server/cdap); its types name every field.
 
 ## Connecting
 

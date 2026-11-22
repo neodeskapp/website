@@ -28,7 +28,7 @@ back up and uninstall. This page covers the first install.
 ## Install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/trybetterdesk/betterdesk/main/betterdesk.sh | sudo bash
+curl -fsSL https://raw.githubusercontent.com/neodeskapp/betterdesk/main/betterdesk.sh | sudo bash
 ```
 
 Piped into `bash` like this, the script has no terminal to ask questions on, so
@@ -38,7 +38,7 @@ address for the relay and P2P first.
 To answer the questions, download the script and run it:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/trybetterdesk/betterdesk/main/betterdesk.sh -o betterdesk.sh
+curl -fsSL https://raw.githubusercontent.com/neodeskapp/betterdesk/main/betterdesk.sh -o betterdesk.sh
 sudo bash betterdesk.sh
 ```
 
@@ -48,7 +48,7 @@ The script opens its menu. Move with the arrow keys and choose
 ### Where the server comes from
 
 By default the script installs the newest stable release of
-trybetterdesk/betterdesk for this processor. While there is no stable release, it
+neodeskapp/betterdesk for this processor. While there is no stable release, it
 takes the newest pre-release, such as a release candidate. When there is none
 either and you gave no channel, it installs the development build, and later
 updates follow the development channel until you switch with
@@ -129,7 +129,7 @@ what it does:
 The flags also work with the one-line install, after `bash -s --`:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/trybetterdesk/betterdesk/main/betterdesk.sh | sudo bash -s -- --relay-mode local
+curl -fsSL https://raw.githubusercontent.com/neodeskapp/betterdesk/main/betterdesk.sh | sudo bash -s -- --relay-mode local
 ```
 
 The script also reads environment variables, such as `ADMIN_PASSWORD` for your
@@ -225,7 +225,7 @@ lists what is left on the machine. `--uninstall --purge` also deletes
 To run your own changes, build the server from a checkout:
 
 ```bash
-git clone https://github.com/trybetterdesk/betterdesk.git
+git clone https://github.com/neodeskapp/betterdesk.git
 cd betterdesk
 sudo ./betterdesk.sh --from-source
 ```

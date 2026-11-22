@@ -28,7 +28,7 @@ This page covers the first install.
 Open PowerShell as Administrator, download the script and run it:
 
 ```powershell
-Invoke-WebRequest https://raw.githubusercontent.com/trybetterdesk/betterdesk/main/betterdesk.ps1 -OutFile betterdesk.ps1 -UseBasicParsing
+Invoke-WebRequest https://raw.githubusercontent.com/neodeskapp/betterdesk/main/betterdesk.ps1 -OutFile betterdesk.ps1 -UseBasicParsing
 .\betterdesk.ps1
 ```
 
@@ -45,7 +45,7 @@ The script opens its menu. Move with the arrow keys and choose
 ### Where the server comes from
 
 By default the script installs the newest stable release of
-trybetterdesk/betterdesk. While there is no stable release, it takes the newest
+neodeskapp/betterdesk. While there is no stable release, it takes the newest
 pre-release, such as a release candidate. When there is none either and you gave
 no channel, it installs the development build, and later updates follow the
 development channel until you switch with `-Update -Channel stable`.
@@ -210,7 +210,7 @@ folders; with `-Purge` added it deletes them. Updates are covered in
 To run your own changes, build the server from a checkout:
 
 ```powershell
-git clone https://github.com/trybetterdesk/betterdesk.git
+git clone https://github.com/neodeskapp/betterdesk.git
 cd betterdesk
 .\betterdesk.ps1 -FromSource
 ```

@@ -4,7 +4,7 @@ description: Update a Docker, Linux or Windows install, choose the release chann
 order: 5
 ---
 
-How you update depends on how you installed. A Docker install pulls a newer image. The Linux and Windows installers replace the server binary and keep your data and settings, and the console's **Updates** page can replace the binary too. All of them take their releases from trybetterdesk/betterdesk on GitHub.
+How you update depends on how you installed. A Docker install pulls a newer image. The Linux and Windows installers replace the server binary and keep your data and settings, and the console's **Updates** page can replace the binary too. All of them take their releases from neodeskapp/betterdesk on GitHub.
 
 ## Before you update
 
@@ -97,7 +97,7 @@ It works like the Linux update: a backup to `C:\BetterDesk-Backups`, the new bin
 
 What it does:
 
-- **Check for updates** looks up the newest release of the update channel in trybetterdesk/betterdesk, or in the repository that `UPDATE_GITHUB_OWNER` and `UPDATE_GITHUB_REPO` name. While there is no stable release, Stable takes the newest pre-release, as the installers do. The side column shows the channel and the repository it asks.
+- **Check for updates** looks up the newest release of the update channel in neodeskapp/betterdesk, or in the repository that `UPDATE_GITHUB_OWNER` and `UPDATE_GITHUB_REPO` name. While there is no stable release, Stable takes the newest pre-release, as the installers do. The side column shows the channel and the repository it asks.
 - **Install**, on a Linux or Windows install, downloads that release's binary for this machine into the data folder and checks its size, its SHA-256 and the release signature. It runs the binary to compare its version and commit with the release. With **Create backup before updating** ticked, it saves the running binary and a full backup of the data. Then it puts the new binary in place, keeps the old one as `betterdesk-server.prev`, and the service starts the new one. If the new binary does not get ready within three starts, the fourth start puts the old one back and the page shows the failed update.
 - **Update channel** picks **Stable** or **Development**. The choice is saved as `UPDATE_GITHUB_BRANCH` in the env file.
 - **Backups made before updates** lists the backups each install made, with **Restore these files** to put that binary back.
@@ -106,7 +106,7 @@ Release signatures: the release key is built into the server. A release without 
 
 What it cannot do:
 
-- Update a Docker install. In Docker it turns **Install** off and shows `docker compose pull` and `docker compose up -d` with the image name, for example `ghcr.io/trybetterdesk/betterdesk:latest`; run them on the host as shown above. An image built from the repository shows the same commands, but they don't update it: build again instead.
+- Update a Docker install. In Docker it turns **Install** off and shows `docker compose pull` and `docker compose up -d` with the image name, for example `ghcr.io/neodeskapp/betterdesk:latest`; run them on the host as shown above. An image built from the repository shows the same commands, but they don't update it: build again instead.
 - Offer an update for a binary built without its commit. The check then says that the commit is unknown.
 - Install a release older than the running version.
 - Rewrite the service or the installer scripts. Only the binary is replaced. At its first start the new binary adds the settings that are new in this release to the env file, as the installer's update does. When a release's notes say that the service changed, run the installer's update as well.

@@ -6,7 +6,7 @@ order: 2
 
 The Docker setup runs `betterdesk-server` in one container: the ID server, the
 relay, the API for RustDesk clients and the web console. The image is published
-as `ghcr.io/trybetterdesk/betterdesk`, so nothing is built on your machine. You
+as `ghcr.io/neodeskapp/betterdesk`, so nothing is built on your machine. You
 can install it with the script `betterdesk-docker.sh` or with the compose file by
 hand. Building the image from the repository is covered at the end.
 
@@ -25,7 +25,7 @@ get.docker.com when it is missing. It stops when Compose is older than 2.24.
 ## Install with the script
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/trybetterdesk/betterdesk/main/install.sh | sudo bash
+curl -fsSL https://raw.githubusercontent.com/neodeskapp/betterdesk/main/install.sh | sudo bash
 ```
 
 This saves `betterdesk-docker.sh` in `/opt/betterdesk/docker` and runs it there.
@@ -34,7 +34,7 @@ and 21122 over TCP and 21116 over UDP. To read the script before it runs, downlo
 and start it yourself:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/trybetterdesk/betterdesk/main/betterdesk-docker.sh -o betterdesk-docker.sh
+curl -fsSL https://raw.githubusercontent.com/neodeskapp/betterdesk/main/betterdesk-docker.sh -o betterdesk-docker.sh
 sudo bash betterdesk-docker.sh
 ```
 
@@ -76,7 +76,7 @@ sudo ADMIN_PASSWORD='choose-a-long-password' bash betterdesk-docker.sh
 ```
 
 With `install.sh`, options go after `bash -s --`, for example
-`curl -fsSL https://raw.githubusercontent.com/trybetterdesk/betterdesk/main/install.sh | sudo bash -s -- --relay-mode local`.
+`curl -fsSL https://raw.githubusercontent.com/neodeskapp/betterdesk/main/install.sh | sudo bash -s -- --relay-mode local`.
 There they are called `--relay-servers`, `--relay-mode`, `--version` and
 `--admin-password`.
 
@@ -111,7 +111,7 @@ Create a folder for BetterDesk and put the compose file in it:
 
 ```bash
 mkdir betterdesk && cd betterdesk
-curl -fsSL https://raw.githubusercontent.com/trybetterdesk/betterdesk/main/docker-compose.quick.single.yml -o docker-compose.yml
+curl -fsSL https://raw.githubusercontent.com/neodeskapp/betterdesk/main/docker-compose.quick.single.yml -o docker-compose.yml
 docker compose up -d
 ```
 
@@ -294,7 +294,7 @@ To run your own changes, build the image from a checkout instead. The repository
 has a second compose file for that, `docker-compose.single.yml`:
 
 ```bash
-git clone https://github.com/trybetterdesk/betterdesk.git
+git clone https://github.com/neodeskapp/betterdesk.git
 cd betterdesk
 docker compose -f docker-compose.single.yml up -d --build
 ```
@@ -321,5 +321,5 @@ This file works like the published one, with these differences:
   ```
 
 `sudo bash betterdesk-docker.sh --build`, run from the checkout, builds the same
-image as `ghcr.io/trybetterdesk/betterdesk:local` and installs it like the
+image as `ghcr.io/neodeskapp/betterdesk:local` and installs it like the
 published one.
