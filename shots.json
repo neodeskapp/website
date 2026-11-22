@@ -1,0 +1,254 @@
+{
+	"about": "The console screenshots of the docs. node shots.mjs takes each one in light and dark and writes content/screenshots/<name>-<theme>.png. A step is one of: click, fill [target, value], select [target, option label], press [target, key], scroll (into view), hover, waitFor, wait (ms). Targets are Playwright selectors. An annotation is a box or an arrow on a target with a short label placed above, below or to the left of it (side).",
+	"base": "http://127.0.0.1:25080",
+	"viewport": {
+		"width": 1280,
+		"height": 800
+	},
+	"scale": 1.25,
+	"shots": [
+		{
+			"name": "login",
+			"path": "/login",
+			"signedIn": false,
+			"steps": [
+				{
+					"waitFor": "input[type=password]"
+				}
+			]
+		},
+		{
+			"name": "overview",
+			"path": "/",
+			"steps": [
+				{
+					"waitFor": "h2:text-is(\"Client setup\")"
+				},
+				{
+					"wait": 800
+				}
+			]
+		},
+		{
+			"name": "client-setup",
+			"path": "/",
+			"steps": [
+				{
+					"waitFor": "h2:text-is(\"Client setup\")"
+				},
+				{
+					"wait": 800
+				}
+			],
+			"annotations": [
+				{
+					"type": "box",
+					"target": "section.client-setup",
+					"label": "Client setup",
+					"side": "left"
+				}
+			]
+		},
+		{
+			"name": "devices",
+			"path": "/devices",
+			"steps": [
+				{
+					"waitFor": "tbody tr"
+				}
+			]
+		},
+		{
+			"name": "device",
+			"path": "/devices",
+			"steps": [
+				{
+					"waitFor": "tbody tr"
+				},
+				{
+					"click": "tbody tr >> nth=0"
+				},
+				{
+					"wait": 1500
+				}
+			]
+		},
+		{
+			"name": "add-computer-start",
+			"path": "/devices",
+			"steps": [
+				{
+					"waitFor": "tbody tr"
+				}
+			],
+			"annotations": [
+				{
+					"type": "box",
+					"target": "role=button[name=\"Add a computer\"]",
+					"label": "Add a computer",
+					"side": "left"
+				}
+			]
+		},
+		{
+			"name": "add-computer",
+			"path": "/devices",
+			"steps": [
+				{
+					"waitFor": "tbody tr"
+				},
+				{
+					"click": "role=button[name=\"Add a computer\"]"
+				},
+				{
+					"fill": [
+						"role=dialog >> role=textbox[name=\"Name\"]",
+						"Reception desk"
+					]
+				},
+				{
+					"select": [
+						"role=dialog >> role=combobox[name=\"Folder\"]",
+						"Office"
+					]
+				},
+				{
+					"click": "role=button[name=\"Create invite\"]"
+				},
+				{
+					"waitFor": "text=Invite for Reception desk"
+				},
+				{
+					"wait": 800
+				}
+			],
+			"annotations": [
+				{
+					"type": "box",
+					"target": "role=dialog >> text=Invite link >> xpath=..",
+					"label": "Send this link",
+					"side": "left"
+				}
+			]
+		},
+		{
+			"name": "quick-support-start",
+			"path": "/devices",
+			"steps": [
+				{
+					"waitFor": "tbody tr"
+				}
+			],
+			"annotations": [
+				{
+					"type": "box",
+					"target": "role=button[name=\"Quick support\"]",
+					"label": "Quick support",
+					"side": "left"
+				}
+			]
+		},
+		{
+			"name": "quick-support",
+			"path": "/devices",
+			"steps": [
+				{
+					"waitFor": "tbody tr"
+				},
+				{
+					"click": "role=button[name=\"Quick support\"]"
+				},
+				{
+					"waitFor": "text=Waiting for the person to open the link"
+				},
+				{
+					"wait": 800
+				}
+			]
+		},
+		{
+			"name": "registrations",
+			"path": "/registrations",
+			"steps": [
+				{
+					"wait": 1500
+				}
+			]
+		},
+		{
+			"name": "security-audit",
+			"path": "/security-audit",
+			"steps": [
+				{
+					"wait": 2000
+				}
+			]
+		},
+		{
+			"name": "activity",
+			"path": "/activity",
+			"steps": [
+				{
+					"wait": 2000
+				}
+			]
+		},
+		{
+			"name": "settings",
+			"path": "/settings",
+			"steps": [
+				{
+					"waitFor": "text=Public client endpoints"
+				},
+				{
+					"scroll": "text=Public client endpoints"
+				},
+				{
+					"wait": 500
+				}
+			]
+		},
+		{
+			"name": "settings-auth",
+			"path": "/settings?tab=auth",
+			"steps": [
+				{
+					"wait": 1500
+				}
+			]
+		},
+		{
+			"name": "users",
+			"path": "/users",
+			"steps": [
+				{
+					"waitFor": "tbody tr"
+				}
+			]
+		},
+		{
+			"name": "organizations",
+			"path": "/organizations",
+			"steps": [
+				{
+					"wait": 1500
+				}
+			]
+		},
+		{
+			"name": "permissions",
+			"path": "/permissions",
+			"steps": [
+				{
+					"select": [
+						"role=combobox[name=\"Role\"]",
+						"Server admin"
+					]
+				},
+				{
+					"wait": 800
+				}
+			]
+		}
+	]
+}

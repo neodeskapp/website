@@ -1,0 +1,112 @@
+---
+title: Introduction
+description: What BetterDesk is, what it is made of, and what you need to run it.
+order: 1
+---
+
+BetterDesk is a self-hosted server for the RustDesk remote desktop client, with a
+web console for your devices and the people who use them. This page explains
+what it is made of and what you need before you install it. It describes
+BetterDesk {{VERSION}}.
+
+## What it does
+
+A RustDesk client needs a server to register with, to find other clients, and to
+relay a session when two computers can't connect directly. RustDesk's
+open-source server does this with two programs, hbbs and hbbr. BetterDesk does
+the same work and adds:
+
+- the API that the RustDesk client uses to sign in and to sync its address book
+- a web console with the device list, enrollment requests, users and roles, an
+  activity log and remote desktop in the browser
+- sign-in to the console with two-factor codes, LDAP or Active Directory, or OIDC
+
+Your devices can keep using the standard RustDesk client, on computers and on
+phones: you point it at your server and nothing else changes on the client side.
+BetterDesk also has its own client for Windows, macOS and Linux, which joins
+your server from an invite link.
+
+## What it is made of
+
+One program, `betterdesk-server`, does all of it. All three install methods start
+it in the same mode, where one process runs:
+
+- the ID server, which does hbbs's job: clients register here and find each other
+- the relay server, which does hbbr's job: it carries a session when the two
+  computers can't reach each other directly
+- the API for RustDesk clients
+- the web console
+
+Each part listens on its own port. The console uses 5000, the ID and relay
+servers use 21115 to 21119, and the API for clients uses 21121.
+[Ports](/docs/operations/ports) lists them all and says which ones clients need.
+
+The web console is a Svelte app. It is built into the binary when the binary is
+built, so the running server needs no Node.js. Only a build from source needs
+Node.js, and the Docker build brings its own.
+
+The server keeps most of its data in two places:
+
+- **A database.** By default it is a SQLite file, `db_v2.sqlite3`. PostgreSQL works
+  too, see [PostgreSQL](/docs/operations/postgresql). Devices, accounts and the
+  console's settings all live in it.
+- **A key pair.** At its first start the server creates `id_ed25519` and
+  `id_ed25519.pub`. Clients get the public key and use it to check that they talk
+  to your server. If you lose the private key, the server makes a new pair and
+  every client needs the new key.
+
+The console also keeps files in its data folder, such as uploaded pictures and
+fonts, chat files and its own backups. Nothing of it leaves the server on its
+own; [Privacy](/docs/project/privacy) lists every host BetterDesk contacts.
+
+## BetterDesk and RustDesk
+
+BetterDesk works with the stock RustDesk client from RustDesk's own release
+page. You don't build a custom client. The console's Overview page shows the
+four values a client needs: ID server, relay server, API server and key.
+
+The BetterDesk client needs none of them typed in. **Add a computer** on the
+Devices page makes an invite link that installs it and joins the computer to
+your server, see [Add a computer](/docs/console/add-a-computer).
+
+The code is at [github.com/trybetterdesk/betterdesk](https://github.com/trybetterdesk/betterdesk).
+It is a fork of [UNITRONIX/BetterDesk](https://github.com/UNITRONIX/BetterDesk)
+and is licensed under the [AGPL-3.0](/docs/project/license).
+
+## What you need
+
+There are three ways to install it. Each installs the same server.
+
+| Method | What the machine needs |
+|--------|------------------------|
+| [Docker](/docs/getting-started/docker) | Docker with Compose 2.24 or newer, and access to `ghcr.io`, where the image is published. The install script installs Docker when it is missing. |
+| [Linux](/docs/getting-started/linux) | Root access, systemd, and apt-get, dnf, yum or pacman. A 64-bit x86, arm64 or armv7 processor, and access to github.com, where the releases are. |
+| [Windows](/docs/getting-started/windows) | 64-bit Windows, PowerShell run as Administrator, and access to github.com. NSSM is optional and turns the server into a Windows service; without it the server runs as a scheduled task. |
+
+None of them needs Go or Node.js on the machine: Docker runs the published
+image, and the Linux and Windows scripts download a release. Only a build from
+the repository with the Linux or Windows script needs them; the install pages
+say how.
+
+Docker is the shortest path: one command installs it, see
+[Install with the script](/docs/getting-started/docker#install-with-the-script).
+
+Whichever method you pick, the clients must reach the server: at least 21116 over
+TCP and UDP, and 21117 and 21121 over TCP. If your devices
+connect over the internet, the server needs an address they can reach from
+there, such as a public IP address or a domain name.
+
+## Where to go next
+
+1. Install BetterDesk with [Docker](/docs/getting-started/docker), on
+   [Linux](/docs/getting-started/linux) or on [Windows](/docs/getting-started/windows).
+2. [Sign in for the first time](/docs/getting-started/first-sign-in), change the
+   admin password and set the address clients use.
+3. Add your computers: with the BetterDesk client through
+   [Add a computer](/docs/console/add-a-computer), or
+   [connect a RustDesk client](/docs/getting-started/connect-a-client).
+4. Learn the console, starting with the [Overview page](/docs/console/overview)
+   and the [device list](/docs/console/devices).
+
+Before you open the console to the internet, put it behind a reverse proxy with
+TLS: see [Reverse proxy and TLS](/docs/operations/reverse-proxy-tls).

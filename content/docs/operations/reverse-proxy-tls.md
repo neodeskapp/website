@@ -1,0 +1,184 @@
+---
+title: Reverse proxy and TLS
+description: Put the web console behind nginx or Caddy with HTTPS, set TRUST_PROXY, and check the addresses clients get afterwards.
+order: 3
+---
+
+The web console listens on plain HTTP on port 5000. Before people use it over the internet, put a reverse proxy with a TLS certificate in front of it. This page has complete examples for nginx and Caddy, the settings BetterDesk needs behind a proxy, and what a proxy cannot carry.
+
+## What goes through the proxy
+
+- The console on port 5000: its pages, its API under `/api/`, and its WebSockets under `/ws/`, which carry remote desktop in the browser and live updates. The proxy has to pass WebSocket upgrades.
+- If you want clients to get an HTTPS API address, the API port as well, on a host name of its own. See [HTTPS for the client API](#https-for-the-client-api).
+
+The ID server (21116, TCP and UDP), the relay (21117) and the NAT test (21115) speak the RustDesk protocol, not HTTP. An HTTP proxy cannot carry them, so clients connect to those ports directly. See [Ports and firewall](/docs/operations/ports).
+
+Send every path on the console's host name to the console. It uses `/ws/rendezvous` and `/ws/relay` itself for remote desktop in the browser, so don't route those paths to another port.
+
+## Keep the console local
+
+With the proxy on the same machine, let only the proxy reach port 5000:
+
+- Docker: set `BETTERDESK_CONSOLE_BIND=127.0.0.1` in the `.env` file next to the compose file, then run `docker compose up -d` in that folder. The console's ports are then published on the loopback address only.
+- Linux and Windows: set `HOST=127.0.0.1` in the env file. The installers also turn on HTTPS with a self-signed certificate, and port 5000 then only redirects to 5443, so set `HTTPS_ENABLED=false` as well. Restart the service.
+
+With the proxy on another machine, keep `HOST=0.0.0.0` and allow port 5000 only from the proxy's address in the firewall.
+
+On Linux, the installer can make these settings: run `sudo ./betterdesk.sh`, choose **Configure SSL certificates**, then **External reverse proxy**. A new install offers the same at its end. It asks for the console's public host name, turns off the console's own HTTPS, and sets `HOST`, `TRUST_PROXY=Y`, `PANEL_PUBLIC_HOST`, `PANEL_PUBLIC_URL`, `PUBLIC_SERVER_ID`, `WS_ALLOWED_ORIGINS` and, for a proxy on the same machine, `TRUSTED_PROXIES`. It also takes TLS off the ID server and relay, and writes example configurations for Caddy or nginx to `/opt/betterdesk/reverse-proxy/`.
+
+## nginx
+
+Get a certificate for desk.example.com first, for example with certbot; the paths below are where certbot keeps it. Then save this as a site, for example `/etc/nginx/conf.d/betterdesk.conf`:
+
+```nginx
+map $http_upgrade $connection_upgrade {
+    default upgrade;
+    ''      close;
+}
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name desk.example.com;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name desk.example.com;
+
+    ssl_certificate     /etc/letsencrypt/live/desk.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/desk.example.com/privkey.pem;
+
+    # The console takes backups of up to 200 MB for a restore
+    client_max_body_size 200m;
+
+    location / {
+        proxy_pass http://127.0.0.1:5000;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_read_timeout 1h;
+        proxy_send_timeout 1h;
+    }
+}
+```
+
+The long timeouts keep remote sessions in the browser open. `$proxy_add_x_forwarded_for` works as well as `$remote_addr`: the console and the server's API walk `X-Forwarded-For` from the right and take the first address that is not a trusted proxy, so entries a client wrote itself don't count.
+
+Check and load the configuration:
+
+```bash
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+## Caddy
+
+Caddy gets and renews the certificate itself, passes WebSocket upgrades and sets the forwarded headers. Add this to `/etc/caddy/Caddyfile`:
+
+```text
+desk.example.com {
+	reverse_proxy 127.0.0.1:5000
+}
+```
+
+Then reload it:
+
+```bash
+sudo systemctl reload caddy
+```
+
+## Trusting the proxy
+
+Behind a proxy, every request reaches BetterDesk from the proxy's address. `TRUST_PROXY` tells BetterDesk to take the client's address, the scheme and the host from the proxy's headers instead. Without it, the sign-in limits and lockouts count every person as the proxy, and the activity log shows the proxy's address.
+
+Two parts of the server read it:
+
+- The console reads `TRUST_PROXY` alone. An on value such as `Y`, `true` or `1` trusts one proxy in front of it; a larger number trusts that many; a comma-separated list of addresses or ranges (or `loopback`, `linklocal`, `uniquelocal`) trusts proxies with those addresses.
+- The server's API and WebSocket ports read forwarded headers only with `TRUST_PROXY` on and only from the addresses in `TRUSTED_PROXIES`. Without `TRUSTED_PROXIES` the server logs a warning and ignores the headers. This matters for requests the proxy sends to the server's own ports, such as the API host below.
+
+`Y` works for both parts. For a proxy on the same machine as a Linux or Windows install, put this in the env file:
+
+```ini
+TRUST_PROXY=Y
+TRUSTED_PROXIES=127.0.0.1/32,::1/128
+```
+
+In Docker, put both lines in the `.env` file next to the compose file. Requests from a proxy on the host reach the container from the Docker network, so use that network's range for `TRUSTED_PROXIES`; `docker network inspect betterdesk-net` shows it.
+
+::: warning
+`TRUST_PROXY=Y` trusts whoever connects to the console. Make sure only the proxy can reach port 5000, or anyone can claim any address.
+:::
+
+## Secure cookies
+
+The console marks its session and form cookies Secure when the request came over HTTPS: on its own HTTPS port, or through a trusted proxy that sends `X-Forwarded-Proto: https`. Behind a proxy that ends TLS, set `TRUST_PROXY` and leave `HTTPS_ENABLED` off; nginx with the configuration above and Caddy both send that header.
+
+`HTTPS_ENABLED=true` belongs to a console that serves HTTPS itself. With a certificate in `SSL_CERT_PATH` and `SSL_KEY_PATH`, port 5000 then only redirects to its own HTTPS port, and a proxy that sends requests to port 5000 gets no console. The Linux and Windows installers turn it on, so set `HTTPS_ENABLED=false` there when a proxy sits in front, as in [Keep the console local](#keep-the-console-local).
+
+## HTTPS for the client API
+
+To give clients an HTTPS API address, route a second host name through the proxy to the client API port, 21121 on every install type. The API needs its own host name because the console has its own `/api/` paths. For nginx, add this server block next to the one above:
+
+```nginx
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name api.desk.example.com;
+
+    ssl_certificate     /etc/letsencrypt/live/api.desk.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/api.desk.example.com/privkey.pem;
+
+    location / {
+        proxy_pass http://127.0.0.1:21121;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+    }
+}
+```
+
+For Caddy:
+
+```text
+api.desk.example.com {
+	reverse_proxy 127.0.0.1:21121
+}
+```
+
+Then enter `https://api.desk.example.com` as **Public API URL** under **Settings**, **General**, and set `TRUSTED_PROXIES` as described above.
+
+The server can also serve TLS on its API port itself, with `TLS_API=Y`, `TLS_CERT` and `TLS_KEY`. The port then takes HTTPS only, and clients set up with an `http://` address fail. `TLS_SIGNAL=Y` and `TLS_RELAY=Y` are different: they add TLS to the ID server and relay ports and still take plain connections there.
+
+## Mesh agents behind a proxy
+
+Mesh agents that reach the server through the proxy see the proxy's certificate. When `TLS_CERT` is set, as on a Linux or Windows install where the installer made certificates, the server checks that a mesh agent saw that certificate, and refuses an agent that saw another one. Point `MESH_WEB_CERT_FILE` at a copy of the proxy's certificate that the service can read. The server reads it at start, so restart it after the proxy renews the certificate.
+
+## HTTPS without a proxy
+
+The console can serve HTTPS itself: set `HTTPS_ENABLED=true`, `SSL_CERT_PATH` and `SSL_KEY_PATH` (and `SSL_CA_PATH` for a chain in a separate file). It then listens with TLS on `HTTPS_PORT`, 5443 by default, and port 5000 redirects every request there, to the host `PANEL_PUBLIC_HOST` names or to the one address the console listens on. When the console listens on every address and `PANEL_PUBLIC_HOST` is unset, port 5000 shows a page that asks for it instead of redirecting. `HTTP_REDIRECT_HTTPS=false` turns the redirect off.
+
+The Linux and Windows installers set this up on a new install with a self-signed certificate, valid for ten years, and set `PANEL_PUBLIC_HOST` to the address clients use unless the env file has one. On Linux, the installer's **Configure SSL certificates** menu replaces the certificate with one from Let's Encrypt, your own, or a new self-signed one. A Let's Encrypt certificate is copied to `/opt/betterdesk/ssl/`, where the service account can read it, and a certbot deploy hook copies it again and restarts the server after each renewal. The menu also offers port 443, with port 80 for the redirect, and gives the service the right to use ports below 1024. Without that right the console falls back to 5443 and 5000.
+
+## Check the addresses clients get
+
+Open **Settings**, **General**. Under **Public client endpoints**, enter the host name clients use for the ID server as **Public ID server**, and your API address as **Public API URL** if you proxied the API. **What clients get now** on the right shows the values the client setup, the QR codes and the install commands use.
+
+![The General settings with the public client endpoints and what clients get now](shot:settings)
+
+Then check the rest:
+
+- Set `PANEL_PUBLIC_URL=https://desk.example.com`, so links in mails point at the proxy. In Docker this goes into the `.env` file.
+- `curl https://desk.example.com/health` answers `{"status":"ok",...}` through the proxy.
+- Sign in through the proxy. The browser's developer tools show the session cookie, `bd.sid` (or `betterdesk.sid` with `HTTPS_ENABLED=true`), as Secure.
+- Clients still need the ID server and relay ports open. See [Connect a client](/docs/getting-started/connect-a-client).
