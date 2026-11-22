@@ -50,7 +50,7 @@ For OpenLDAP and similar servers, set **User filter** to something like `(uid={{
 The first time someone signs in with directory credentials, the server makes an account with the **LDAP/AD** tag, named after the **User name attribute** in lower case. While **Auto-create users** is on, anyone the **User filter** finds and the directory accepts gets an account. To let in only one group, put it in the filter:
 
 ```text
-(&(sAMAccountName={{username}})(memberOf=CN=BetterDesk Users,OU=Groups,DC=example,DC=com))
+(&(sAMAccountName={{username}})(memberOf=CN=NeoDesk Users,OU=Groups,DC=example,DC=com))
 ```
 
 Things to know about directory accounts:
@@ -74,13 +74,13 @@ A group written as a full DN must match the group's DN, ignoring letter case. A 
 
 ## Example for Active Directory
 
-A domain `example.com` with a read-only service account and two groups for BetterDesk:
+A domain `example.com` with a read-only service account and two groups for NeoDesk:
 
 | Setting | Value |
 | --- | --- |
 | **Host** | `dc01.example.com` |
 | **Port** and **LDAPS (TLS)** | `636`, ticked |
-| **Bind DN (service account)** | `CN=svc-betterdesk,OU=Service Accounts,DC=example,DC=com` |
+| **Bind DN (service account)** | `CN=svc-neodesk,OU=Service Accounts,DC=example,DC=com` |
 | **Base DN** | `DC=example,DC=com` |
 | **User filter** | `(sAMAccountName={{username}})` |
 | **Default role** | **Viewer** |
@@ -88,11 +88,11 @@ A domain `example.com` with a read-only service account and two groups for Bette
 **Group to role map**:
 
 ```text
-CN=BetterDesk Admins,OU=Groups,DC=example,DC=com=global_admin
-CN=BetterDesk Operators,OU=Groups,DC=example,DC=com=operator
+CN=NeoDesk Admins,OU=Groups,DC=example,DC=com=global_admin
+CN=NeoDesk Operators,OU=Groups,DC=example,DC=com=operator
 ```
 
-People then sign in with their `sAMAccountName` in lower case, such as `jdoe`, and their domain password. Members of BetterDesk Admins become Global admin, members of BetterDesk Operators become Remote operator, and everyone else the filter finds becomes Viewer.
+People then sign in with their `sAMAccountName` in lower case, such as `jdoe`, and their domain password. Members of NeoDesk Admins become Global admin, members of NeoDesk Operators become Remote operator, and everyone else the filter finds becomes Viewer.
 
 ## Test it
 

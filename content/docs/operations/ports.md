@@ -1,6 +1,6 @@
 ---
 title: Ports and firewall
-description: Which ports BetterDesk listens on, who connects to each, which to open to the internet, and firewall commands for Linux and Windows.
+description: Which ports NeoDesk listens on, who connects to each, which to open to the internet, and firewall commands for Linux and Windows.
 order: 2
 ---
 
@@ -72,7 +72,7 @@ sudo firewall-cmd --reload
 The Linux installer opens the ports itself when ufw or firewalld is active, and adds iptables rules when neither is: 21115 to 21117 over TCP, 21116 over UDP, the client API port 21121, 21122 while CDAP is on, and the console's port 5000 and, with HTTPS on, 5443. With `TRUST_PROXY` on it leaves the console's ports closed. It takes the ID server and relay ports from the env file, and at the end it prints the list for a firewall outside the machine, such as your cloud provider's.
 
 ::: note
-Docker publishes container ports through its own firewall rules, and ufw does not filter them. To keep the console off the network, publish it on the loopback address only: set `BETTERDESK_CONSOLE_BIND=127.0.0.1` in the `.env` file next to the compose file and run `docker compose up -d` in that folder.
+Docker publishes container ports through its own firewall rules, and ufw does not filter them. To keep the console off the network, publish it on the loopback address only: set `NEODESK_CONSOLE_BIND=127.0.0.1` in the `.env` file next to the compose file and run `docker compose up -d` in that folder.
 :::
 
 ## Firewall on Windows
@@ -80,11 +80,11 @@ Docker publishes container ports through its own firewall rules, and ufw does no
 In PowerShell as Administrator:
 
 ```powershell
-New-NetFirewallRule -DisplayName "BetterDesk TCP" -Direction Inbound -Protocol TCP -LocalPort 21115,21116,21117,21121 -Action Allow
-New-NetFirewallRule -DisplayName "BetterDesk UDP" -Direction Inbound -Protocol UDP -LocalPort 21116 -Action Allow
+New-NetFirewallRule -DisplayName "NeoDesk TCP" -Direction Inbound -Protocol TCP -LocalPort 21115,21116,21117,21121 -Action Allow
+New-NetFirewallRule -DisplayName "NeoDesk UDP" -Direction Inbound -Protocol UDP -LocalPort 21116 -Action Allow
 ```
 
-The Windows installer creates inbound rules for the same ports as the Linux installer, each named "BetterDesk - " and what the port is for.
+The Windows installer creates inbound rules for the same ports as the Linux installer, each named "NeoDesk - " and what the port is for.
 
 ## Check the ports from outside
 
@@ -103,7 +103,7 @@ The API answers `{"status":"ok","version":"..."}`. UDP has no handshake, so `nc`
 
 The console's port:
 
-- Docker: set `BETTERDESK_CONSOLE_PORT=8080` in the `.env` file next to the compose file, and `BETTERDESK_CONSOLE_HTTPS_PORT` for 5443, then run `docker compose up -d` in that folder. Inside the container the console stays on 5000 and 5443.
+- Docker: set `NEODESK_CONSOLE_PORT=8080` in the `.env` file next to the compose file, and `NEODESK_CONSOLE_HTTPS_PORT` for 5443, then run `docker compose up -d` in that folder. Inside the container the console stays on 5000 and 5443.
 - Linux and Windows: set `CONSOLE_PORT` (and `HTTPS_PORT`) in the env file and restart the service.
 
 The RustDesk ports can move too, but then every client needs the port in its server addresses, so keep the defaults unless something else holds them.

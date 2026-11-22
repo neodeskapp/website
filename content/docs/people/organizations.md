@@ -51,7 +51,7 @@ You can also add a console account from the **Users** page: choose **Organizatio
 
 ## Client sign-ins
 
-An account made in the organization, with **New account** or by an [invitation](#invitations), has the tag **Client sign-in** in the member list. It is a sign-in for the BetterDesk client: the person signs in there to the organization, by its slug, with that username and password, and the client shows the organization's shared address book. It cannot sign in to the console or to the standard RustDesk client, and it is not on the Users page.
+An account made in the organization, with **New account** or by an [invitation](#invitations), has the tag **Client sign-in** in the member list. It is a sign-in for the NeoDesk client: the person signs in there to the organization, by its slug, with that username and password, and the client shows the organization's shared address book. It cannot sign in to the console or to the standard RustDesk client, and it is not on the Users page.
 
 Besides the shared address book, a client sign-in can read only the organization's name, slug and logo. It cannot read the members, invitations, assigned devices, settings or policies.
 
@@ -62,9 +62,9 @@ With an invitation, the person chooses the username and password themselves:
 1. On the **Users** tab, under **Invitations**, click **Create invitation**.
 2. Optionally enter the person's **Email**, and set **Valid for (hours)**: 1 to 720, 72 by default.
 3. Click **Create invitation** and copy the **Invitation link**. It is shown only now and works once.
-4. Send the link to the person. BetterDesk sends no email itself.
+4. Send the link to the person. NeoDesk sends no email itself.
 
-The link opens a page of the console where the person enters a **Username** of 3 to 64 letters, digits and `.`, `_`, `@` or `-`, a **Password** of at least 8 characters and **Password again**, and clicks **Create sign-in**. The page then tells them to sign in to the organization in the BetterDesk client. A username the organization already has is refused with "This organization already has that username. Choose another one."
+The link opens a page of the console where the person enters a **Username** of 3 to 64 letters, digits and `.`, `_`, `@` or `-`, a **Password** of at least 8 characters and **Password again**, and clicks **Create sign-in**. The page then tells them to sign in to the organization in the NeoDesk client. A username the organization already has is refused with "This organization already has that username. Choose another one."
 
 The list under **Invitations** shows each invitation's email, when it expires and when it was used. **Revoke** cancels an invitation that was not used.
 

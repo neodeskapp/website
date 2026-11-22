@@ -103,7 +103,7 @@ Below the reports are the same **Trends** charts as on [the overview page](/docs
 
 ## App usage
 
-**App usage** shows which apps people use on each device and for how long. The data comes from devices that run the BetterDesk agent with activity tracking turned on; each one reports once a day.
+**App usage** shows which apps people use on each device and for how long. The data comes from devices that run the NeoDesk agent with activity tracking turned on; each one reports once a day.
 
 ![App usage with daily reports per device and the most used apps](shot:activity)
 

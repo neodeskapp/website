@@ -10,11 +10,11 @@ Start with the log and the health checks below. The sections after them go by sy
 
 The server and the console write one log.
 
-- Docker: `docker compose logs -f betterdesk` in the folder with the compose file, `/opt/betterdesk/docker` after an install with the script.
-- Linux: `journalctl -u betterdesk-server -f`. The installer's **Diagnostics** menu item collects more.
-- Windows: `C:\BetterDesk\logs\server.log`.
+- Docker: `docker compose logs -f neodesk` in the folder with the compose file, `/opt/neodesk/docker` after an install with the script.
+- Linux: `journalctl -u neodesk-server -f`. The installer's **Diagnostics** menu item collects more.
+- Windows: `C:\NeoDesk\logs\server.log`.
 
-`LOG_LEVEL` in the env file decides how much the log holds; a new install sets `info`. With `warn` or `error`, the lines at info level don't show, such as the start summary, `[console] listening on ...` and most lines quoted on this page. Set `LOG_LEVEL=info` in `/opt/BetterDeskConsole/.env` or `C:\BetterDeskConsole\.env` and restart the service to see them.
+`LOG_LEVEL` in the env file decides how much the log holds; a new install sets `info`. With `warn` or `error`, the lines at info level don't show, such as the start summary, `[console] listening on ...` and most lines quoted on this page. Set `LOG_LEVEL=info` in `/opt/NeoDeskConsole/.env` or `C:\NeoDeskConsole\.env` and restart the service to see them.
 
 ## Health checks
 
@@ -35,10 +35,10 @@ Port 21121 answers on every install type; on Linux and Windows the console passe
 The binary can check the health addresses and ports in one go and prints a PASS or FAIL line for each:
 
 ```bash
-docker compose exec betterdesk betterdesk-server check --port 21116 --port 21117
+docker compose exec neodesk neodesk-server check --port 21116 --port 21117
 ```
 
-On a Linux install, name the API's port: `sudo /opt/betterdesk/betterdesk-server check --api http://127.0.0.1:21114/api/health --port 21116 --port 21117`.
+On a Linux install, name the API's port: `sudo /opt/neodesk/neodesk-server check --api http://127.0.0.1:21114/api/health --port 21116 --port 21117`.
 
 `/api/health/detail` and `/metrics` give more, but only to the addresses in `METRICS_IP_ALLOWLIST` or with an API key.
 
@@ -53,21 +53,21 @@ On a Linux install, name the API's port: `sudo /opt/betterdesk/betterdesk-server
 
 ## Forgot the admin password
 
-In Docker, `betterdesk-show-admin-credentials` prints the first password only until someone changes it; see [Get the admin password](/docs/getting-started/docker#get-the-admin-password). `sudo bash betterdesk-docker.sh reset-password`, run in `/opt/betterdesk/docker`, gives `admin` a new random password and prints it once. To choose the password yourself, type it after the first command (it does not show), then run the second in the folder with the compose file:
+In Docker, `neodesk-show-admin-credentials` prints the first password only until someone changes it; see [Get the admin password](/docs/getting-started/docker#get-the-admin-password). `sudo bash neodesk-docker.sh reset-password`, run in `/opt/neodesk/docker`, gives `admin` a new random password and prints it once. To choose the password yourself, type it after the first command (it does not show), then run the second in the folder with the compose file:
 
 ```bash
 read -rs NEWPASS
-printf '%s\n' "$NEWPASS" | docker compose exec -T -u betterdesk betterdesk betterdesk-server reset-password admin
+printf '%s\n' "$NEWPASS" | docker compose exec -T -u neodesk neodesk neodesk-server reset-password admin
 ```
 
-On Linux, `sudo betterdesk --reset-password` sets the password from `ADMIN_PASSWORD`, or a random one, and shows it once. In the menu of `sudo betterdesk`, **Reset admin password** also lets you type one. The server's own command works too, run as the service account:
+On Linux, `sudo neodesk --reset-password` sets the password from `ADMIN_PASSWORD`, or a random one, and shows it once. In the menu of `sudo neodesk`, **Reset admin password** also lets you type one. The server's own command works too, run as the service account:
 
 ```bash
 read -rs NEWPASS
-printf '%s\n' "$NEWPASS" | sudo -u betterdesk env BETTERDESK_ENV_FILE=/opt/BetterDeskConsole/.env /opt/betterdesk/betterdesk-server reset-password admin
+printf '%s\n' "$NEWPASS" | sudo -u neodesk env NEODESK_ENV_FILE=/opt/NeoDeskConsole/.env /opt/neodesk/neodesk-server reset-password admin
 ```
 
-On Windows, run `C:\BetterDesk\betterdesk.ps1` as Administrator and choose **Reset admin password**.
+On Windows, run `C:\NeoDesk\neodesk.ps1` as Administrator and choose **Reset admin password**.
 
 `reset-password` works on SQLite and PostgreSQL and takes effect at once. It reads the password from standard input and refuses to read it from a terminal, so that it never shows. The password needs at least 8 characters, the same rule as everywhere else. Without an account of that name, it creates one with the admin role. It does not turn off two-factor sign-in; for that, see [Two-factor sign-in](/docs/people/two-factor). A lock from failed attempts ends by itself, 15 minutes after the last one.
 
@@ -98,7 +98,7 @@ Behind a reverse proxy without `TRUST_PROXY`, all people share the proxy's addre
 At every start the server logs its public key as `Server public key: <key>`. The **Key** in every client must be the same.
 
 - `Failed to initialize keypair: keys: public key file does not match private key`, and the server does not start: `id_ed25519.pub` does not belong to `id_ed25519`, for example because only one of the two was replaced. Put back the pair that belongs together.
-- `Failed to initialize keypair: keys: failed to read private key ...`: the account the server runs as cannot read `id_ed25519`. On Linux, run `sudo betterdesk` and choose **Repair installation**, then **Repair permissions**.
+- `Failed to initialize keypair: keys: failed to read private key ...`: the account the server runs as cannot read `id_ed25519`. On Linux, run `sudo neodesk` and choose **Repair installation**, then **Repair permissions**.
 - `Failed to initialize keypair: keys: invalid base64` or `invalid private key size`: `id_ed25519` is not a key file the server can read. Key files from `ssh-keygen` are of this kind. The server reads the files it makes itself and those of a RustDesk server.
 
 To make a new pair, stop the server, move both files away and start it again: with no `id_ed25519` it makes a new pair. Every client then needs the new key.
@@ -125,11 +125,11 @@ Signed out right after signing in:
 
 - One account may have one session at a time (`SESSION_MAX_PER_USER=1`). Signing in with the same account in another browser ends the earlier session.
 - With `HTTPS_ENABLED=true` and a certificate, port 5000 only redirects to the console's own HTTPS port, and a proxy that sends requests to port 5000 gets no console. Behind a proxy, see [Secure cookies](/docs/operations/reverse-proxy-tls#secure-cookies).
-- A new session secret signs everyone out. Without `SESSION_SECRET` the console keeps it in its data folder, so a lost `betterdesk-console-data` volume makes a new one.
+- A new session secret signs everyone out. Without `SESSION_SECRET` the console keeps it in its data folder, so a lost `neodesk-console-data` volume makes a new one.
 
 Client setup, QR codes or install commands show the wrong address: without settings of its own, the console takes the host from `PANEL_PUBLIC_HOST`, from its API address, or from the address the browser used. Enter the addresses under **Public client endpoints** in **Settings**, **General**; see [Check the addresses clients get](/docs/operations/reverse-proxy-tls#check-the-addresses-clients-get).
 
 ## Docker: the container does not stay up
 
-- `ERROR: /opt/rustdesk is NOT writable by the betterdesk user` appears with a bind mount whose folder belongs to another user. Set `PUID` and `PGID` in `.env` to the folder's owner, change the owner to 10001, or use the named volumes of the compose file.
+- `ERROR: /opt/rustdesk is NOT writable by the neodesk user` appears with a bind mount whose folder belongs to another user. Set `PUID` and `PGID` in `.env` to the folder's owner, change the owner to 10001, or use the named volumes of the compose file.
 - `Failed to open database` with PostgreSQL: check `DATABASE_URL` and that the `postgres` container runs. Without `COMPOSE_PROFILES=postgres` in `.env`, start it with `--profile postgres`. See [PostgreSQL](/docs/operations/postgresql).

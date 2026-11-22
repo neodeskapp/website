@@ -1,18 +1,18 @@
 ---
 title: License
-description: BetterDesk's license, the AGPL-3.0, the Commercial Grant for sponsors of upstream BetterDesk, the trademark note and where the third-party notices are.
+description: NeoDesk's license, the AGPL-3.0, the Commercial Grant for sponsors of upstream BetterDesk, the trademark note and where the third-party notices are.
 order: 1
 ---
 
-BetterDesk is free software under the GNU Affero General Public License, version 3 (AGPL-3.0). The [LICENSE file](https://github.com/neodeskapp/betterdesk/blob/main/LICENSE) in the repository holds the full text and the notes this page sums up; where the two differ, the file counts. Neither is legal advice.
+NeoDesk is free software under the GNU Affero General Public License, version 3 (AGPL-3.0). The [LICENSE file](https://github.com/neodeskapp/neodesk/blob/main/LICENSE) in the repository holds the full text and the notes this page sums up; where the two differ, the file counts. Neither is legal advice.
 
-BetterDesk was created by UNITRONIX (Krzysztof Nienartowicz), who holds the copyright the LICENSE file names and maintains [UNITRONIX/BetterDesk](https://github.com/UNITRONIX/BetterDesk). This site documents [neodeskapp/betterdesk](https://github.com/neodeskapp/betterdesk), a fork of it maintained by Linus Rath.
+NeoDesk started as a fork of BetterDesk, which UNITRONIX (Krzysztof Nienartowicz) created and maintains at [UNITRONIX/BetterDesk](https://github.com/UNITRONIX/BetterDesk). UNITRONIX holds the copyright the LICENSE file names. NeoDesk is maintained by Linus Rath at [neodeskapp/neodesk](https://github.com/neodeskapp/neodesk).
 
 ## AGPL-3.0
 
-- You may use, change and run BetterDesk, for personal or commercial purposes.
-- If you change BetterDesk and run it as a network service, the AGPL requires you to make your changes available to the people who use that service.
-- The AGPL-3.0 covers the whole project in the repository: the server and its console (`betterdesk-server` and `web-ui`), the CDAP SDKs (`sdks`), the CDAP bridges (`bridges`) and the tooling.
+- You may use, change and run NeoDesk, for personal or commercial purposes.
+- If you change NeoDesk and run it as a network service, the AGPL requires you to make your changes available to the people who use that service.
+- The AGPL-3.0 covers the whole project in the repository: the server and its console (`neodesk-server` and `web-ui`), the CDAP SDKs (`sdks`), the CDAP bridges (`bridges`) and the tooling.
 
 ### Which versions
 
@@ -31,14 +31,14 @@ The $5 and $15 tiers and [Buy Me a Coffee](https://buymeacoffee.com/unitronix) d
 
 ### What the grant allows
 
-While the eligible sponsorship is active, the organization may run modified BetterDesk (private patches, branding) for internal or client use, without publishing those private modifications under the AGPL, provided it:
+While the eligible sponsorship is active, the organization may run modified NeoDesk (private patches, branding) for internal or client use, without publishing those private modifications under the AGPL, provided it:
 
-- does not resell BetterDesk as a standalone product (OEM)
+- does not resell NeoDesk as a standalone product (OEM)
 - keeps the features merged into the public repository open for everyone
 
 | Where | What applies |
 |---|---|
-| The public BetterDesk repository | Always AGPL-3.0, always open |
+| The public NeoDesk repository | Always AGPL-3.0, always open |
 | Your private deployment | With the grant, private patches are fine while you are eligible |
 
 ### Start and end
@@ -51,14 +51,14 @@ A paid commercial license for OEM and special cases without sponsorship may be o
 
 ## Trademark
 
-"RustDesk" is a trademark of the RustDesk Team. BetterDesk is an independent project that implements the RustDesk protocol for client compatibility. Its use of the name "RustDesk" is purely descriptive and does not imply affiliation with or endorsement by the RustDesk Team.
+"RustDesk" is a trademark of the RustDesk Team. NeoDesk is an independent project that implements the RustDesk protocol for client compatibility. Its use of the name "RustDesk" is purely descriptive and does not imply affiliation with or endorsement by the RustDesk Team.
 
 The RustDesk client is separate software under its own license.
 
 ## Clean-room notice
 
-The LICENSE file states that the BetterDesk server (`betterdesk-server`) is an independent, clean-room implementation of the RustDesk rendezvous and relay protocol, and contains no code derived from the RustDesk project. It also states that the protocol definitions (the `.proto` files) describe message formats for interoperability and are not derived from any copyrighted source code.
+The LICENSE file states that the NeoDesk server (`neodesk-server`) is an independent, clean-room implementation of the RustDesk rendezvous and relay protocol, and contains no code derived from the RustDesk project. It also states that the protocol definitions (the `.proto` files) describe message formats for interoperability and are not derived from any copyrighted source code.
 
 ## Third-party notices
 
-[THIRD_PARTY_NOTICES.md](https://github.com/neodeskapp/betterdesk/blob/main/THIRD_PARTY_NOTICES.md) in the repository lists the third-party material that ships with BetterDesk. A running console also serves the licenses of the code in its web app at `/licenses.txt`, for example `https://desk.example.com/licenses.txt`.
+[THIRD_PARTY_NOTICES.md](https://github.com/neodeskapp/neodesk/blob/main/THIRD_PARTY_NOTICES.md) in the repository lists the third-party material that ships with NeoDesk. A running console also serves the licenses of the code in its web app at `/licenses.txt`, for example `https://desk.example.com/licenses.txt`.

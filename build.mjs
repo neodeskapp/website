@@ -69,7 +69,7 @@ function slugger() {
 }
 
 async function currentVersion() {
-	if (process.env.BD_VERSION) return process.env.BD_VERSION.trim();
+	if (process.env.ND_VERSION) return process.env.ND_VERSION.trim();
 	try {
 		const res = await fetch(config.versionUrl, { signal: AbortSignal.timeout(5000) });
 		const text = (await res.text()).trim();
@@ -485,7 +485,7 @@ async function build() {
 		console.error(`\n${problems.length} problem${problems.length === 1 ? '' : 's'}:\n` + problems.map((p) => `  ${p}`).join('\n'));
 		return false;
 	}
-	console.log(`Built ${reading.length} pages in ${sections.length} sections for ${SITE_URL} (BetterDesk ${version}) in ${Date.now() - started} ms`);
+	console.log(`Built ${reading.length} pages in ${sections.length} sections for ${SITE_URL} (NeoDesk ${version}) in ${Date.now() - started} ms`);
 	return true;
 }
 

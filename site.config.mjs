@@ -1,25 +1,25 @@
 // What the build needs to know about the site. Content is in content/docs.
 export default {
-	name: 'BetterDesk',
+	name: 'NeoDesk',
 	// Where the site is served. SITE_URL overrides it for another host, such as the beta.
-	url: 'https://betterde.sk',
-	repo: 'https://github.com/neodeskapp/betterdesk',
-	// The current BetterDesk version comes from the repository's VERSION file at build
-	// time (BD_VERSION overrides it). This one is used when it cannot be fetched.
-	versionUrl: 'https://raw.githubusercontent.com/neodeskapp/betterdesk/main/VERSION',
+	url: 'https://neode.sk',
+	repo: 'https://github.com/neodeskapp/neodesk',
+	// The current NeoDesk version comes from the repository's VERSION file at build
+	// time (ND_VERSION overrides it). This one is used when it cannot be fetched.
+	versionUrl: 'https://raw.githubusercontent.com/neodeskapp/neodesk/main/VERSION',
 	version: '3.5.270',
 	// "Edit on GitHub" appears on docs pages once this points at the folder that holds
 	// content/docs in a repository, for example
 	// https://github.com/neodeskapp/website/edit/main/content/docs
 	editBase: '',
 	summary:
-		'BetterDesk is a remote desktop server you run yourself. It speaks the RustDesk protocol, so the normal RustDesk client connects to it, and one Go binary serves the ID server, the relay, the client API and a web console for the devices you look after. It is open source under AGPL-3.0.',
+		'NeoDesk is a remote desktop server you run yourself. It speaks the RustDesk protocol, so the normal RustDesk client connects to it, and one Go binary serves the ID server, the relay, the client API and a web console for the devices you look after. It is open source under AGPL-3.0.',
 	// The docs sections in sidebar order. `intro` is the paragraph on the section's own page.
 	sections: [
 		{
 			slug: 'getting-started',
 			label: 'Getting started',
-			intro: 'Start here. What BetterDesk is, installing it with Docker, on Linux or on Windows, signing in for the first time and connecting the first RustDesk client.'
+			intro: 'Start here. What NeoDesk is, installing it with Docker, on Linux or on Windows, signing in for the first time and connecting the first RustDesk client.'
 		},
 		{
 			slug: 'console',
@@ -39,7 +39,7 @@ export default {
 		{
 			slug: 'development',
 			label: 'Development',
-			intro: 'For people who work on BetterDesk or build on it: contributing, building from source, the tests and checks, how the code fits together, releases, and the APIs and protocols.'
+			intro: 'For people who work on NeoDesk or build on it: contributing, building from source, the tests and checks, how the code fits together, releases, and the APIs and protocols.'
 		},
 		{
 			slug: 'project',

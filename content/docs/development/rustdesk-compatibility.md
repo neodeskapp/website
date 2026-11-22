@@ -4,9 +4,9 @@ description: How the server stays compatible with the stock RustDesk client, the
 order: 9
 ---
 
-BetterDesk works with the stock RustDesk client from RustDesk's own releases. Nothing in the client is changed: the server speaks the client's protocol and HTTP API. This page says what the server speaks, which choices in the code keep stock clients working, and how to check a new RustDesk release.
+NeoDesk works with the stock RustDesk client from RustDesk's own releases. Nothing in the client is changed: the server speaks the client's protocol and HTTP API. This page says what the server speaks, which choices in the code keep stock clients working, and how to check a new RustDesk release.
 
-BetterDesk's server is a separate program written in Go, not RustDesk's server. Track RustDesk's server releases only to keep the wire and the API in step, and copy nothing from RustDesk's sources into the repository; see [Clean-room provenance](/docs/development/provenance).
+NeoDesk's server is a separate program written in Go, not RustDesk's server. Track RustDesk's server releases only to keep the wire and the API in step, and copy nothing from RustDesk's sources into the repository; see [Clean-room provenance](/docs/development/provenance).
 
 ## What the server speaks
 
@@ -22,7 +22,7 @@ On TCP the ID server first offers newer clients a key exchange and then encrypts
 
 ### The messages
 
-The messages are protobuf, defined in `betterdesk-server/protos/rendezvous.proto` (the ID server's messages) and `message.proto` (what two clients send each other), in the package `hbb`. The Go code generated from them is committed in `betterdesk-server/proto/`. The browser viewer generates its own from the same files at every build. The relay reads only the first message of each connection, to pair the two ends by their UUID, and copies everything after it without reading it.
+The messages are protobuf, defined in `neodesk-server/protos/rendezvous.proto` (the ID server's messages) and `message.proto` (what two clients send each other), in the package `hbb`. The Go code generated from them is committed in `neodesk-server/proto/`. The browser viewer generates its own from the same files at every build. The relay reads only the first message of each connection, to pair the two ends by their UUID, and copies everything after it without reading it.
 
 ### The client API
 
@@ -42,7 +42,7 @@ The RustDesk client signs in, syncs its address book and reports itself over HTT
 
 A client needs four values: ID server, relay server, API server and key. It gets them from its own settings, from the config string or from the QR code (`rustdesk://config/...` with the same string); see [Connect a RustDesk client](/docs/getting-started/connect-a-client). The relay address the console gives always carries a port, because RustDesk 1.4.8 and 1.4.9 clients that get a bare relay host ask the API port for the relay, and the session ends with "Pair timeout".
 
-**API server** can stay empty or be `http://<server>:21121`, the client API port on every install type, or the HTTPS address of a reverse proxy in front of it; both work. A stock client that leaves it empty tries the ID server's port minus 2 (21114), which no install opens, and then sends its API calls through the ID server as `HttpProxyRequest`. The signal server answers them itself, so heartbeat, system information, sign-in and the address book still arrive. A BetterDesk client set up by hand needs the field filled in: its enrollment calls go only over HTTP.
+**API server** can stay empty or be `http://<server>:21121`, the client API port on every install type, or the HTTPS address of a reverse proxy in front of it; both work. A stock client that leaves it empty tries the ID server's port minus 2 (21114), which no install opens, and then sends its API calls through the ID server as `HttpProxyRequest`. The signal server answers them itself, so heartbeat, system information, sign-in and the address book still arrive. A NeoDesk client set up by hand needs the field filled in: its enrollment calls go only over HTTP.
 
 The server can also send ID servers in `ConfigUpdate`, in its answer to the NAT test, but only when `RENDEZVOUS_SERVERS` is set, and never relay addresses. Don't use it to move clients to another server: set the servers in the client.
 
@@ -56,9 +56,9 @@ The heartbeat answer can carry `config_options` for the client. The server sends
 
 RustDesk 1.5.3 and later ignore heartbeat changes to `api-server`, `custom-rendezvous-server`, `relay-server`, `key`, `2fa`, `bot`, `enable-trusted-devices`, `trusted-device-expiration-days` and `websocket-port`. None of them is on the list, and a test keeps it that way.
 
-Branding adds one option, `display-name`, when the company name is set and is not "BetterDesk". A branding value always wins over a strategy's value for the same key.
+Branding adds one option, `display-name`, when the company name is set and is not "NeoDesk". A branding value always wins over a strategy's value for the same key.
 
-A stock client applies these options from the plain heartbeat answer. BetterDesk's own clients take them only from inside a sealed answer; see [The envelope](/docs/development/architecture#the-envelope).
+A stock client applies these options from the plain heartbeat answer. NeoDesk's own clients take them only from inside a sealed answer; see [The envelope](/docs/development/architecture#the-envelope).
 
 ### Messages the server doesn't serve
 
@@ -73,7 +73,7 @@ A stock client applies these options from the plain heartbeat answer. BetterDesk
 The ID server decides for each `PunchHoleRequest` and `RequestRelay` which device asks. The first of these that fits wins:
 
 1. The same TCP connection already registered a device with `RegisterPk`.
-2. The message carries the token of a client signed in to BetterDesk.
+2. The message carries the token of a client signed in to NeoDesk.
 3. The connection is the console's bridge for remote desktop in the browser.
 4. A registered device has exactly this address and port.
 5. The `udp_port` in the request matches exactly one live device at this public address.
@@ -84,25 +84,25 @@ Several live devices at one public address and no better match refuse the sessio
 
 A refused `PunchHoleRequest` gets a `PunchHoleResponse` with the failure `ID_NOT_EXIST`, so the stock client says the ID does not exist. That often means the computer that asked isn't allowed, not that the remote ID is missing. The server's log names the reason. [Hardening](/docs/operations/security#limit-who-can-start-sessions) explains the switches for operators.
 
-## What needs BetterDesk's client
+## What needs NeoDesk's client
 
-A stock client registers, connects in both directions, runs the remote session itself (screen, input, file transfer, clipboard, chat in the session, audio, terminal, TCP tunnels), signs in with a console account and gets the address book. These need BetterDesk's own client, because a stock client doesn't send what they are built on:
+A stock client registers, connects in both directions, runs the remote session itself (screen, input, file transfer, clipboard, chat in the session, audio, terminal, TCP tunnels), signs in with a console account and gets the address book. These need NeoDesk's own client, because a stock client doesn't send what they are built on:
 
-- **Telemetry and hardware inventory**: BetterDesk's client seals them into its heartbeat; the server ignores them in a plain one.
-- **Logo and colours** from **Client app branding**: only BetterDesk's client fetches them. A stock client gets only the `display-name` option.
-- **Add a computer, Quick support and Pair with code**: they install or configure BetterDesk's client. A stock client is set up by hand; see [Add a computer](/docs/console/add-a-computer) and [Quick support](/docs/console/quick-support).
+- **Telemetry and hardware inventory**: NeoDesk's client seals them into its heartbeat; the server ignores them in a plain one.
+- **Logo and colours** from **Client app branding**: only NeoDesk's client fetches them. A stock client gets only the `display-name` option.
+- **Add a computer, Quick support and Pair with code**: they install or configure NeoDesk's client. A stock client is set up by hand; see [Add a computer](/docs/console/add-a-computer) and [Quick support](/docs/console/quick-support).
 - **Connection mode**: switching a device to incoming-only.
-- **A device token**: the server issues one only when a device joins through one of BetterDesk's own steps, and an account's sign-in proves no device. Without it the device routes stay closed: help requests from the device, chat with an operator outside a session, remote commands, files sent from the console and data loss prevention policies.
+- **A device token**: the server issues one only when a device joins through one of NeoDesk's own steps, and an account's sign-in proves no device. Without it the device routes stay closed: help requests from the device, chat with an operator outside a session, remote commands, files sent from the console and data loss prevention policies.
 
 ## The browser viewer
 
 Remote desktop in the browser speaks the same protocol from `web-ui/src/lib/remote/client`:
 
-- Its message classes are generated from `betterdesk-server/protos` by `web-ui/vite-plugins/protos.ts` at every build, dev server start and test run, into `src/lib/remote/client/generated`, which git ignores.
+- Its message classes are generated from `neodesk-server/protos` by `web-ui/vite-plugins/protos.ts` at every build, dev server start and test run, into `src/lib/remote/client/generated`, which git ignores.
 - It encodes a message with `fromObject()`, not `create()`. `create()` keeps an enum name such as `Backspace` as a string, which goes on the wire as 0, and the device drops the key. `fromObject()` turns names into numbers and keeps byte fields as they are. `web-ui/tests/unit/remote/wire-bytes.test.ts` pins the bytes of every message the viewer sends.
 - A mouse event's mask is the event type in the low three bits and the button shifted left by three.
 - Over HTTPS it decodes with WebCodecs. A WebCodecs decoder must start from a keyframe, so after it is set up or after an error the viewer drops frames until a keyframe arrives, and asks the device for one with `refresh_video`; it does the same when no frames arrive for 3 seconds, or frames arrive and none decodes for 2. Where the browser has no WebCodecs, as on a console opened over plain HTTP from another computer, it falls back to JMuxer, which decodes H.264 only.
-- It introduces itself to the device as `BetterDesk-Web/1.4.9`.
+- It introduces itself to the device as `NeoDesk-Web/1.4.9`.
 
 ## The checklist for a new RustDesk release
 
@@ -112,7 +112,7 @@ Run this when the upstream watch opens an issue, or when you notice a new releas
 
 - Note the tags under review: the client (`rustdesk/rustdesk`), RustDesk's server (`rustdesk/rustdesk-server`), or both.
 - Read the release notes, and the pull requests they link that touch security, policy, configuration, the relay, the API or the handshake.
-- Compare `rendezvous.proto` and `message.proto` of the release with `betterdesk-server/protos`, for reference only. Take nothing over except through the [clean-room workflow](/docs/development/provenance#clean-room-workflow).
+- Compare `rendezvous.proto` and `message.proto` of the release with `neodesk-server/protos`, for reference only. Take nothing over except through the [clean-room workflow](/docs/development/provenance#clean-room-workflow).
 
 ### 1. Client settings
 
@@ -130,7 +130,7 @@ Run this when the upstream watch opens an issue, or when you notice a new releas
 
 ### 3. ID server and relay
 
-- Two stock clients connect through BetterDesk, directly and through the relay.
+- Two stock clients connect through NeoDesk, directly and through the relay.
 - The same with **Relay only**, and with an organization that has **Always connect through a relay server** on.
 - A client whose relay setting has no port still pairs.
 - A relay request with a UUID the ID server didn't hand out is still refused.
@@ -142,7 +142,7 @@ Run this when the upstream watch opens an issue, or when you notice a new releas
 - Address book, groups and the device list sync.
 - Heartbeat and sysinfo; the client's version is stored.
 - Strategy options: list which ones the new client applies, and which it ignores or locks.
-- BetterDesk sets up no client through a key the client locks against heartbeat changes.
+- NeoDesk sets up no client through a key the client locks against heartbeat changes.
 - Connection reports (`POST /api/audit/conn`) still arrive.
 
 ### 5. Sessions
@@ -157,8 +157,8 @@ Run this when the upstream watch opens an issue, or when you notice a new releas
 ### 6. A release of RustDesk's server
 
 - Read its release notes for changes to the handshake, hole punching, the relay, or fixes against amplification.
-- Map each change of the wire or of behaviour to BetterDesk's ID server, relay and API.
-- BetterDesk never needs RustDesk's server binaries in production.
+- Map each change of the wire or of behaviour to NeoDesk's ID server, relay and API.
+- NeoDesk never needs RustDesk's server binaries in production.
 
 ### 7. Close out
 
@@ -174,7 +174,7 @@ Run this when the upstream watch opens an issue, or when you notice a new releas
 1. reads `config/rustdesk-upstream-watch.json`;
 2. asks the GitHub API for the newest 30 releases of `rustdesk/rustdesk` and `rustdesk/rustdesk-server`, and takes the highest stable version among them (no draft, no pre-release, a tag of the form `1.2.3` with an optional `v`);
 3. sets `last_seen_tag` and `last_seen_published_at` of a component when that version is newer;
-4. for each component whose `last_seen_tag` differs from its `last_reviewed_tag`, opens an issue titled `compat: review RustDesk client <tag> vs BetterDesk` (or `OSS server`) with the labels from `issue_labels`, unless an open issue already carries the marker `<!-- rustdesk-upstream-watch: client=<tag> -->` (`server_oss=` for the server). It creates the labels when they are missing. The issue links the checklist and lists its steps.
+4. for each component whose `last_seen_tag` differs from its `last_reviewed_tag`, opens an issue titled `compat: review RustDesk client <tag> vs NeoDesk` (or `OSS server`) with the labels from `issue_labels`, unless an open issue already carries the marker `<!-- rustdesk-upstream-watch: client=<tag> -->` (`server_oss=` for the server). It creates the labels when they are missing. The issue links the checklist and lists its steps.
 
 When the manifest changed, the workflow commits it to `main`. The watch never changes `last_reviewed_tag`: setting it by hand after a review is what stops new issues for that tag.
 

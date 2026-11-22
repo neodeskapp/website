@@ -4,10 +4,10 @@ description: Run the server and the web console in one container from the publis
 order: 2
 ---
 
-The Docker setup runs `betterdesk-server` in one container: the ID server, the
+The Docker setup runs `neodesk-server` in one container: the ID server, the
 relay, the API for RustDesk clients and the web console. The image is published
-as `ghcr.io/neodeskapp/betterdesk`, so nothing is built on your machine. You
-can install it with the script `betterdesk-docker.sh` or with the compose file by
+as `ghcr.io/neodeskapp/neodesk`, so nothing is built on your machine. You
+can install it with the script `neodesk-docker.sh` or with the compose file by
 hand. Building the image from the repository is covered at the end.
 
 ## Requirements
@@ -25,23 +25,23 @@ get.docker.com when it is missing. It stops when Compose is older than 2.24.
 ## Install with the script
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/neodeskapp/betterdesk/main/install.sh | sudo bash
+curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/install.sh | sudo bash
 ```
 
-This saves `betterdesk-docker.sh` in `/opt/betterdesk/docker` and runs it there.
+This saves `neodesk-docker.sh` in `/opt/neodesk/docker` and runs it there.
 When ufw or firewalld is active, it then opens 5000, 5443, 21115 to 21119, 21121
 and 21122 over TCP and 21116 over UDP. To read the script before it runs, download it
 and start it yourself:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/neodeskapp/betterdesk/main/betterdesk-docker.sh -o betterdesk-docker.sh
-sudo bash betterdesk-docker.sh
+curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/neodesk-docker.sh -o neodesk-docker.sh
+sudo bash neodesk-docker.sh
 ```
 
 What the script does:
 
 - It checks that the ports are free and that it can reach `ghcr.io`.
-- It writes `docker-compose.yml` and `.env` into `/opt/betterdesk/docker`.
+- It writes `docker-compose.yml` and `.env` into `/opt/neodesk/docker`.
 - It looks up the address clients reach this server at and saves it as
   `RELAY_SERVERS` in `.env`. It asks checkip.amazonaws.com, then api.ipify.org.
   When neither answers, it uses the LAN address and warns.
@@ -65,18 +65,18 @@ Run the script again later to update the install; see
 | `--tag TAG` | Runs this image tag instead of `latest`, for example a version number. |
 | `--console-port PORT` | Publishes the console on this host port instead of 5000. |
 | `--postgres` | Installs on PostgreSQL instead of SQLite, in a second container. |
-| `--dir PATH` | Installs into this folder instead of `/opt/betterdesk/docker`. |
+| `--dir PATH` | Installs into this folder instead of `/opt/neodesk/docker`. |
 | `--no-install-docker` | Stops with an error when Docker is missing instead of installing it. |
 
 To choose the admin password yourself, put it after `sudo`, because `sudo` drops
 variables you set in front of it:
 
 ```bash
-sudo ADMIN_PASSWORD='choose-a-long-password' bash betterdesk-docker.sh
+sudo ADMIN_PASSWORD='choose-a-long-password' bash neodesk-docker.sh
 ```
 
 With `install.sh`, options go after `bash -s --`, for example
-`curl -fsSL https://raw.githubusercontent.com/neodeskapp/betterdesk/main/install.sh | sudo bash -s -- --relay-mode local`.
+`curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/install.sh | sudo bash -s -- --relay-mode local`.
 There they are called `--relay-servers`, `--relay-mode`, `--version` and
 `--admin-password`.
 
@@ -93,13 +93,13 @@ There they are called `--relay-servers`, `--relay-mode`, `--version` and
 | `uninstall` | Removes the containers. The volumes, the image and the folder stay; `--purge` also deletes the volumes, after a backup. |
 | `menu` | The same commands as a menu. |
 
-For example `sudo bash betterdesk-docker.sh status`; after the one-line install
-the script is in `/opt/betterdesk/docker`. `--help` lists every command and
+For example `sudo bash neodesk-docker.sh status`; after the one-line install
+the script is in `/opt/neodesk/docker`. `--help` lists every command and
 option.
 
-### An older BetterDesk container
+### An older NeoDesk container
 
-When the script finds a BetterDesk container from another install, such as one
+When the script finds a NeoDesk container from another install, such as one
 made by an older script, a two-container install or an install in another folder,
 it stops and changes nothing. `--adopt` takes it over: the script copies the old container's
 data into this install's volumes, and keeps the old container, stopped and
@@ -107,11 +107,11 @@ renamed. An install that runs on PostgreSQL can't be taken over this way.
 
 ## Install with the compose file
 
-Create a folder for BetterDesk and put the compose file in it:
+Create a folder for NeoDesk and put the compose file in it:
 
 ```bash
-mkdir betterdesk && cd betterdesk
-curl -fsSL https://raw.githubusercontent.com/neodeskapp/betterdesk/main/docker-compose.quick.single.yml -o docker-compose.yml
+mkdir neodesk && cd neodesk
+curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/docker-compose.quick.single.yml -o docker-compose.yml
 docker compose up -d
 ```
 
@@ -135,10 +135,10 @@ run `docker compose up -d` to recreate the container with it.
 | Setting | What it does |
 |---------|--------------|
 | `RELAY_SERVERS` | The address clients reach this server at. Empty, the container looks it up at every start; see [The relay address](#the-relay-address). |
-| `BETTERDESK_IMAGE_TAG` | The image tag. `latest`, the default, is the newest release, or the newest pre-release while there is no stable release; a version number pins one. |
-| `BETTERDESK_CONSOLE_PORT` | The host port of the console, 5000 by default. |
-| `BETTERDESK_CONSOLE_HTTPS_PORT` | The host port of the console's HTTPS, 5443 by default. The install checks that it is free, also while HTTPS is off. |
-| `BETTERDESK_CONSOLE_BIND` | The host address the console is published on, for example `127.0.0.1` behind a reverse proxy on the same machine. |
+| `NEODESK_IMAGE_TAG` | The image tag. `latest`, the default, is the newest release, or the newest pre-release while there is no stable release; a version number pins one. |
+| `NEODESK_CONSOLE_PORT` | The host port of the console, 5000 by default. |
+| `NEODESK_CONSOLE_HTTPS_PORT` | The host port of the console's HTTPS, 5443 by default. The install checks that it is free, also while HTTPS is off. |
+| `NEODESK_CONSOLE_BIND` | The host address the console is published on, for example `127.0.0.1` behind a reverse proxy on the same machine. |
 | `ADMIN_PASSWORD` | The admin's password at the first start. |
 | `TRUST_PROXY` | `1` when the console is behind one reverse proxy. |
 
@@ -150,26 +150,26 @@ The container creates the account `admin` with a random password at its first
 start. The script prints it at the end of the install. Print it again with:
 
 ```bash
-docker compose exec betterdesk betterdesk-show-admin-credentials
+docker compose exec neodesk neodesk-show-admin-credentials
 ```
 
 ```text
 Admin Username: admin
 Admin Password: <32 random characters>
-Generated by: BetterDesk Docker bootstrap
+Generated by: NeoDesk Docker bootstrap
 Timestamp: <time of the first start>
 ```
 
-For an install made with the script, run it in `/opt/betterdesk/docker`.
+For an install made with the script, run it in `/opt/neodesk/docker`.
 
 The command reads `/opt/rustdesk/.admin_credentials` in the data volume. Once you
 change the admin password in the console, the server deletes that file, and the
 command says so and how to set a new password:
-`sudo bash betterdesk-docker.sh reset-password` prints a new random one.
+`sudo bash neodesk-docker.sh reset-password` prints a new random one.
 
 If it answers "No readable admin credentials file found", the first start has not
 finished yet. Wait a moment and run it again, or follow the start with
-`docker compose logs -f betterdesk`.
+`docker compose logs -f neodesk`.
 
 ### Choose the password yourself
 
@@ -228,15 +228,15 @@ put its LAN address there.
 
 | Volume | Mounted at | What it holds |
 |--------|------------|---------------|
-| `betterdesk-data` | `/opt/rustdesk` | The database `db_v2.sqlite3`, the key pair `id_ed25519` and `id_ed25519.pub`, the API key `.api_key`, `.admin_credentials` and the key for stored remote target passwords, `.remote_target_vault_key` |
-| `betterdesk-console-data` | `/app/data` | The console's own files, such as uploaded pictures, fonts, support agent builds and the public client endpoints saved in the console |
-| `betterdesk-postgres-data` | `/var/lib/postgresql/data` | Only with PostgreSQL |
+| `neodesk-data` | `/opt/rustdesk` | The database `db_v2.sqlite3`, the key pair `id_ed25519` and `id_ed25519.pub`, the API key `.api_key`, `.admin_credentials` and the key for stored remote target passwords, `.remote_target_vault_key` |
+| `neodesk-console-data` | `/app/data` | The console's own files, such as uploaded pictures, fonts, support agent builds and the public client endpoints saved in the console |
+| `neodesk-postgres-data` | `/var/lib/postgresql/data` | Only with PostgreSQL |
 
 The compose file names the volumes itself, so the names are the same whatever the
 folder is called. `docker volume ls` lists them.
 
 ::: warning
-Clients trust the server's key pair in `betterdesk-data`. If you delete that
+Clients trust the server's key pair in `neodesk-data`. If you delete that
 volume, the server creates a new key at its next start and every client needs
 the new key. `docker compose down -v` deletes the volumes.
 :::
@@ -248,7 +248,7 @@ For backups, see [Backup](/docs/operations/backup).
 ```bash
 docker compose stop
 docker compose start
-docker compose logs -f betterdesk
+docker compose logs -f neodesk
 ```
 
 `docker compose down` removes the container and its network and keeps the volumes.
@@ -294,32 +294,32 @@ To run your own changes, build the image from a checkout instead. The repository
 has a second compose file for that, `docker-compose.single.yml`:
 
 ```bash
-git clone https://github.com/neodeskapp/betterdesk.git
-cd betterdesk
+git clone https://github.com/neodeskapp/neodesk.git
+cd neodesk
 docker compose -f docker-compose.single.yml up -d --build
 ```
 
 The build runs in containers: it builds the web app with Node.js, builds the
 server with the web app inside it, and copies the one binary into a small Alpine
-image called `betterdesk:local`. The host needs no Node.js or Go, but the build
+image called `neodesk:local`. The host needs no Node.js or Go, but the build
 downloads npm packages, Go modules and Alpine packages, and the first one takes a
 few minutes.
 
 This file works like the published one, with these differences:
 
 - Every command needs `-f docker-compose.single.yml`, for example
-  `docker compose -f docker-compose.single.yml exec betterdesk betterdesk-show-admin-credentials`.
+  `docker compose -f docker-compose.single.yml exec neodesk neodesk-show-admin-credentials`.
 - Compose puts the folder name in front of each volume name, so after the clone
-  above the data volume is `betterdesk_betterdesk-data`.
+  above the data volume is `neodesk_neodesk-data`.
 - Its PostgreSQL password is `PG_PASSWORD`, not `POSTGRES_PASSWORD`.
 - `docker compose pull` does not update it. Pull the repository and build again;
-  `BETTERDESK_COMMIT_SHA` tells the binary its commit:
+  `NEODESK_COMMIT_SHA` tells the binary its commit:
 
   ```bash
   git pull
-  BETTERDESK_COMMIT_SHA=$(git rev-parse HEAD) docker compose -f docker-compose.single.yml up -d --build
+  NEODESK_COMMIT_SHA=$(git rev-parse HEAD) docker compose -f docker-compose.single.yml up -d --build
   ```
 
-`sudo bash betterdesk-docker.sh --build`, run from the checkout, builds the same
-image as `ghcr.io/neodeskapp/betterdesk:local` and installs it like the
+`sudo bash neodesk-docker.sh --build`, run from the checkout, builds the same
+image as `ghcr.io/neodeskapp/neodesk:local` and installs it like the
 published one.

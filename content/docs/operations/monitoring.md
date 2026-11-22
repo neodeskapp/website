@@ -15,7 +15,7 @@ This page lists what an outside monitor can ask the server, who may read it, and
 | `/api/health/detail` | The server's API: 21121 in Docker, 21114 on Linux and Windows | As for the metrics below | Devices registered and online, relay sessions, uptime, whether the clock is synced, and the connection strategy |
 | `/api/server/stats` | The server's API | As for the metrics below | Version, memory, uptime and device counts |
 
-A check of `/health` through your reverse proxy tests the proxy and the console together. The ID server and the relay speak no HTTP; check that their TCP ports accept connections, or run `betterdesk-server check` as shown in [Troubleshooting](/docs/operations/troubleshooting#health-checks).
+A check of `/health` through your reverse proxy tests the proxy and the console together. The ID server and the relay speak no HTTP; check that their TCP ports accept connections, or run `neodesk-server check` as shown in [Troubleshooting](/docs/operations/troubleshooting#health-checks).
 
 In Docker the container's own health check asks the console and the API, over HTTPS first when `HTTPS_ENABLED` or `TLS_API` is on, and `docker compose ps` shows the result.
 
@@ -37,37 +37,37 @@ Then add the target to Prometheus:
 
 ```yaml
 scrape_configs:
-  - job_name: betterdesk
+  - job_name: neodesk
     static_configs:
       - targets: ["desk.example.com:21114"]
 ```
 
 In Docker the port is 21121. On Linux and Windows the installers don't open 21114 in the firewall, so allow it from the Prometheus server only.
 
-For a look by hand from the server itself, send the server API key, which **Settings**, **Client setup** shows under **For scripts** after **Show whole key**. With the key in `BETTERDESK_API_KEY`:
+For a look by hand from the server itself, send the server API key, which **Settings**, **Client setup** shows under **For scripts** after **Show whole key**. With the key in `NEODESK_API_KEY`:
 
 ```bash
-curl -H "X-API-Key: $BETTERDESK_API_KEY" http://127.0.0.1:21114/metrics
+curl -H "X-API-Key: $NEODESK_API_KEY" http://127.0.0.1:21114/metrics
 ```
 
 That key can manage the whole server, so give a scraper the allowlist rather than the key.
 
 | Metric | What it shows |
 |---|---|
-| `betterdesk_peers_total` | Devices the ID server holds right now |
-| `betterdesk_peers_online`, `betterdesk_peers_degraded`, `betterdesk_peers_critical`, `betterdesk_peers_offline` | Those devices by state: degraded after 2 missed heartbeats, critical after 4 |
-| `betterdesk_peers_udp`, `betterdesk_peers_tcp`, `betterdesk_peers_ws` | Devices connected over UDP, TCP and WebSocket |
-| `betterdesk_peers_banned` | Banned devices |
-| `betterdesk_registrations_total` | Devices that registered with the ID server since it started |
-| `betterdesk_expired_total` | Devices the ID server dropped since it started because their heartbeats stopped |
-| `betterdesk_relay_active_sessions` | Sessions going through the relay now |
-| `betterdesk_relay_sessions_total` | Relay sessions since the server started |
-| `betterdesk_bandwidth_throttle_hits_total` | How often the relay's overall bandwidth limit held data back since the server started |
-| `betterdesk_blocklist_entries` | Entries in the blocklist |
-| `betterdesk_event_subscribers` | Open event streams of the API |
-| `betterdesk_audit_events_total` | Server events logged since the server started |
-| `betterdesk_uptime_seconds` | Time since the server started |
-| `betterdesk_goroutines`, `betterdesk_memory_alloc_bytes`, `betterdesk_memory_sys_bytes` | The server process |
+| `neodesk_peers_total` | Devices the ID server holds right now |
+| `neodesk_peers_online`, `neodesk_peers_degraded`, `neodesk_peers_critical`, `neodesk_peers_offline` | Those devices by state: degraded after 2 missed heartbeats, critical after 4 |
+| `neodesk_peers_udp`, `neodesk_peers_tcp`, `neodesk_peers_ws` | Devices connected over UDP, TCP and WebSocket |
+| `neodesk_peers_banned` | Banned devices |
+| `neodesk_registrations_total` | Devices that registered with the ID server since it started |
+| `neodesk_expired_total` | Devices the ID server dropped since it started because their heartbeats stopped |
+| `neodesk_relay_active_sessions` | Sessions going through the relay now |
+| `neodesk_relay_sessions_total` | Relay sessions since the server started |
+| `neodesk_bandwidth_throttle_hits_total` | How often the relay's overall bandwidth limit held data back since the server started |
+| `neodesk_blocklist_entries` | Entries in the blocklist |
+| `neodesk_event_subscribers` | Open event streams of the API |
+| `neodesk_audit_events_total` | Server events logged since the server started |
+| `neodesk_uptime_seconds` | Time since the server started |
+| `neodesk_goroutines`, `neodesk_memory_alloc_bytes`, `neodesk_memory_sys_bytes` | The server process |
 
 ## Log format
 

@@ -1,10 +1,10 @@
 ---
 title: Add a computer
-description: Make an invite link that installs BetterDesk on a computer and joins it to your server, approved and in its folder.
+description: Make an invite link that installs NeoDesk on a computer and joins it to your server, approved and in its folder.
 order: 3
 ---
 
-An invite link sets up the BetterDesk client on a computer and joins it to your
+An invite link sets up the NeoDesk client on a computer and joins it to your
 server. The person at the computer opens the link, installs the client, and the
 computer shows up under **Devices**, already approved, with the name and folder
 you picked. Nobody types a server address or a key.
@@ -39,7 +39,7 @@ Click **Create invite**.
 The invite shows:
 
 - **Invite link**, with **Copy**. Send it to the person at the computer.
-- **Code**, such as `BWC8-AY6F`, for a computer that has BetterDesk already:
+- **Code**, such as `BWC8-AY6F`, for a computer that has NeoDesk already:
   in the client, **Settings**, **Server**, **Join a server**.
 - A QR code of the link, to open it on a phone and send it on from there.
 - **Send by email**, when email is set up.
@@ -60,12 +60,12 @@ person's system: an installer for Windows, a disk image for Mac, and a command
 to paste on Linux. The page lists the steps for that system and shows the code
 as well. On a phone it asks them to open the link on the computer instead.
 
-The downloads are the official BetterDesk client releases. Your server fetches
+The downloads are the official NeoDesk client releases. Your server fetches
 them from GitHub, checks their signature, and serves them itself. When it has
 no release yet, the page says there is no download right now.
 
 If the computer has not shown up after the install, have the person open
-**Settings**, **Server**, **Join a server** in BetterDesk and type the code.
+**Settings**, **Server**, **Join a server** in NeoDesk and type the code.
 
 ## Open invites
 

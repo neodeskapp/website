@@ -34,7 +34,7 @@ The dialog shows where things stand:
 - The app is open on their computer and waits for them to click **Allow**.
 - The computer allowed access. **Connect** opens the session in
   [the browser](/docs/console/remote-in-browser); **Open in the desktop app**
-  opens it in the BetterDesk client. You don't need a password: the app hands
+  opens it in the NeoDesk client. You don't need a password: the app hands
   it to the server for you.
 - They declined, the session ended, or the link expired. **Make a new link**
   starts again.
@@ -47,7 +47,7 @@ You can close the dialog at any time: the session stays open, and
 ## What the person sees
 
 The link opens a page that says who wants to help and offers
-**Download BetterDesk Quick Support** for their system, with the steps: open
+**Download NeoDesk Quick Support** for their system, with the steps: open
 the file, check that it names you, and click **Allow**. When they are done,
 they click **Stop** at the top of their screen or close the app. The app
 comes from the same signed client releases as

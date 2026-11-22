@@ -9,13 +9,13 @@ server, the relay server, the API server and the server's key. The console shows
 all four on the Overview page. This page explains where they go in the client
 and what happens after the client connects.
 
-The BetterDesk client needs none of this typed in: an invite link from
+The NeoDesk client needs none of this typed in: an invite link from
 **Add a computer** installs it and joins the computer, see
 [Add a computer](/docs/console/add-a-computer).
 
 ## Install the RustDesk client
 
-BetterDesk works with the standard RustDesk client. Get it from RustDesk's
+NeoDesk works with the standard RustDesk client. Get it from RustDesk's
 release page on GitHub; **Overview** links to it under **Download RustDesk**.
 There are versions for computers and for phones.
 
@@ -55,7 +55,7 @@ the same name: ID server, relay server, API server and key.
 
 In a stock RustDesk client, **API server** can stay empty or be
 `http://desk.example.com:21121`; both work. Left empty, the client sends its
-API calls through the ID server, which answers them. A BetterDesk client set up
+API calls through the ID server, which answers them. A NeoDesk client set up
 by hand needs **API server** filled in.
 
 **Copy all** copies the four values at once, one per line, to send to someone
@@ -89,7 +89,7 @@ explains these.
 
 ## Pair with code
 
-**Pair with code** is for BetterDesk's own client apps. The stock RustDesk client
+**Pair with code** is for NeoDesk's own client apps. The stock RustDesk client
 has no field for a code, so use the four values above for it.
 
 1. Choose **Pair with code**. **Server address** is filled in with the client

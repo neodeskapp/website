@@ -4,7 +4,7 @@ description: What to back up for each install type, what the console's Backup pa
 order: 6
 ---
 
-A BetterDesk install keeps its state in a database and in a few files next to it. This page lists them for each install type, explains what the console's **Backup** page saves, and shows how to make and restore a full copy.
+A NeoDesk install keeps its state in a database and in a few files next to it. This page lists them for each install type, explains what the console's **Backup** page saves, and shows how to make and restore a full copy.
 
 ## Why the key file matters
 
@@ -20,21 +20,21 @@ Docker keeps everything in named volumes:
 
 | Volume | Path in the container | What is in it |
 |---|---|---|
-| `betterdesk-data` | `/opt/rustdesk` | The SQLite database `db_v2.sqlite3`, the key pair, the API key `.api_key`, `mesh_agent_server.pem`, the key of the stored RDP and VNC passwords `.remote_target_vault_key`, and the first admin password `.admin_credentials` until the admin changes it |
-| `betterdesk-console-data` | `/app/data` | The session secret, uploaded pictures and fonts, the public client endpoints, chat files and ticket attachments, the console's own backups |
-| `betterdesk-postgres-data` | `/var/lib/postgresql/data` | The database, when you run PostgreSQL |
+| `neodesk-data` | `/opt/rustdesk` | The SQLite database `db_v2.sqlite3`, the key pair, the API key `.api_key`, `mesh_agent_server.pem`, the key of the stored RDP and VNC passwords `.remote_target_vault_key`, and the first admin password `.admin_credentials` until the admin changes it |
+| `neodesk-console-data` | `/app/data` | The session secret, uploaded pictures and fonts, the public client endpoints, chat files and ticket attachments, the console's own backups |
+| `neodesk-postgres-data` | `/var/lib/postgresql/data` | The database, when you run PostgreSQL |
 
-Also keep the `.env` file next to the compose file, and `docker-compose.override.yml` if you made one. The compose file names the volumes itself, so the names don't depend on the folder; `docker volume ls` lists them. Only `docker-compose.single.yml`, which builds the image from the repository, puts the folder name in front, for example `betterdesk_betterdesk-data`; see [Install with Docker](/docs/getting-started/docker#build-the-image-from-the-repository).
+Also keep the `.env` file next to the compose file, and `docker-compose.override.yml` if you made one. The compose file names the volumes itself, so the names don't depend on the folder; `docker volume ls` lists them. Only `docker-compose.single.yml`, which builds the image from the repository, puts the folder name in front, for example `neodesk_neodesk-data`; see [Install with Docker](/docs/getting-started/docker#build-the-image-from-the-repository).
 
 A Linux install, with the installer's default folders:
 
 | Path | What is in it |
 |---|---|
-| `/opt/betterdesk` | The binary, the SQLite database, the key pair, the API key, `ssl/` with the certificates, `mesh_agent_server.pem` |
-| `/opt/BetterDeskConsole` | The env file `.env` and the console's `data/` folder |
-| `/etc/systemd/system/betterdesk-server.service` | The service with its arguments |
+| `/opt/neodesk` | The binary, the SQLite database, the key pair, the API key, `ssl/` with the certificates, `mesh_agent_server.pem` |
+| `/opt/NeoDeskConsole` | The env file `.env` and the console's `data/` folder |
+| `/etc/systemd/system/neodesk-server.service` | The service with its arguments |
 
-A Windows install uses `C:\BetterDesk` and `C:\BetterDeskConsole` the same way. On Linux and Windows the env file holds the key of the stored RDP and VNC passwords, `REMOTE_TARGET_VAULT_KEY`. With PostgreSQL, back up the database as described in [PostgreSQL](/docs/operations/postgresql#back-up-the-database), and the folders as well.
+A Windows install uses `C:\NeoDesk` and `C:\NeoDeskConsole` the same way. On Linux and Windows the env file holds the key of the stored RDP and VNC passwords, `REMOTE_TARGET_VAULT_KEY`. With PostgreSQL, back up the database as described in [PostgreSQL](/docs/operations/postgresql#back-up-the-database), and the folders as well.
 
 ## The Backup page in the console
 
@@ -53,7 +53,7 @@ A Windows install uses `C:\BetterDesk` and `C:\BetterDeskConsole` the same way. 
 
 It does not hold the compose files or the systemd unit, and in Docker not `.remote_target_vault_key`: keep a copy of that file, or the stored RDP and VNC passwords can't be read after a restore onto a new volume. The archive contains secrets: the keys, password hashes and two-factor secrets. Store it like a password.
 
-**Scheduled full backup** makes the same archive on a schedule: every hour, 6 hours, 12 hours, 24 hours or week. Each archive is checked after it is written and gets its SHA-256 in a file next to it, and **Archives to keep** (7 unless you change it) removes the oldest. The default destination is the console's data folder, `scheduled-backups` in it. In Docker that is inside the `betterdesk-console-data` volume, so it does not protect you against losing the volume. Choose **Custom local or mounted network path** and enter a **Destination path** on another disk or on a network share, then click **Test destination**. The path has to be absolute, and it can't be the root of a disk or the console's own folder.
+**Scheduled full backup** makes the same archive on a schedule: every hour, 6 hours, 12 hours, 24 hours or week. Each archive is checked after it is written and gets its SHA-256 in a file next to it, and **Archives to keep** (7 unless you change it) removes the oldest. The default destination is the console's data folder, `scheduled-backups` in it. In Docker that is inside the `neodesk-console-data` volume, so it does not protect you against losing the volume. Choose **Custom local or mounted network path** and enter a **Destination path** on another disk or on a network share, then click **Test destination**. The path has to be absolute, and it can't be the root of a disk or the console's own folder.
 
 ### Back up to a network share
 
@@ -61,26 +61,26 @@ The console writes to a folder, so mount the share on the machine first. On Linu
 
 ```bash
 sudo apt install cifs-utils
-sudo mkdir -p /mnt/betterdesk-backups
-sudo install -m 600 /dev/null /root/.betterdesk-smb
-sudoedit /root/.betterdesk-smb
+sudo mkdir -p /mnt/neodesk-backups
+sudo install -m 600 /dev/null /root/.neodesk-smb
+sudoedit /root/.neodesk-smb
 ```
 
-The file holds two lines, `username=...` and `password=...`. Then add this line to `/etc/fstab`, so the share is mounted at every boot and the service account `betterdesk` may write to it:
+The file holds two lines, `username=...` and `password=...`. Then add this line to `/etc/fstab`, so the share is mounted at every boot and the service account `neodesk` may write to it:
 
 ```text
-//nas.example.com/backups /mnt/betterdesk-backups cifs credentials=/root/.betterdesk-smb,uid=betterdesk,gid=betterdesk,file_mode=0600,dir_mode=0700,_netdev 0 0
+//nas.example.com/backups /mnt/neodesk-backups cifs credentials=/root/.neodesk-smb,uid=neodesk,gid=neodesk,file_mode=0600,dir_mode=0700,_netdev 0 0
 ```
 
-Mount it with `sudo mount /mnt/betterdesk-backups`, choose **Custom local or mounted network path**, and enter `/mnt/betterdesk-backups` as the **Destination path**.
+Mount it with `sudo mount /mnt/neodesk-backups`, choose **Custom local or mounted network path**, and enter `/mnt/neodesk-backups` as the **Destination path**.
 
-In Docker the path is inside the container. Mount the share on the host the same way, with `uid=10001,gid=10001` (or your `PUID` and `PGID`) in place of `betterdesk`, and give the container the folder in `docker-compose.override.yml` next to `docker-compose.yml`. Docker Compose reads that file together with the compose file, and the install script leaves it alone when it updates `docker-compose.yml`:
+In Docker the path is inside the container. Mount the share on the host the same way, with `uid=10001,gid=10001` (or your `PUID` and `PGID`) in place of `neodesk`, and give the container the folder in `docker-compose.override.yml` next to `docker-compose.yml`. Docker Compose reads that file together with the compose file, and the install script leaves it alone when it updates `docker-compose.yml`:
 
 ```yaml
 services:
-  betterdesk:
+  neodesk:
     volumes:
-      - /mnt/betterdesk-backups:/backups
+      - /mnt/neodesk-backups:/backups
 ```
 
 Run `docker compose up -d` in that folder, and enter `/backups` as the **Destination path**.
@@ -89,29 +89,29 @@ On Windows, a UNC path such as `\\nas.example.com\backups` works as well, when t
 
 ## Cold backup of a Docker install
 
-Stopping the container first gives a consistent copy of everything. For an install made with the script, `sudo bash betterdesk-docker.sh backup` does that: it stops the container, saves both volumes as one `.tar.gz` with a copy of `docker-compose.yml` and `.env` in `backups` in the install folder, and starts the container again. With PostgreSQL it adds a dump of the database. It keeps the last five backups. See [Install with Docker](/docs/getting-started/docker#other-commands-of-the-script).
+Stopping the container first gives a consistent copy of everything. For an install made with the script, `sudo bash neodesk-docker.sh backup` does that: it stops the container, saves both volumes as one `.tar.gz` with a copy of `docker-compose.yml` and `.env` in `backups` in the install folder, and starts the container again. With PostgreSQL it adds a dump of the database. It keeps the last five backups. See [Install with Docker](/docs/getting-started/docker#other-commands-of-the-script).
 
 By hand, run this in the folder with the compose file:
 
 ```bash
 docker compose stop
 mkdir -p backup
-docker run --rm -v betterdesk-data:/data:ro -v "$PWD/backup":/backup alpine:3.22 tar czf /backup/betterdesk-data.tar.gz -C /data .
-docker run --rm -v betterdesk-console-data:/data:ro -v "$PWD/backup":/backup alpine:3.22 tar czf /backup/console-data.tar.gz -C /data .
+docker run --rm -v neodesk-data:/data:ro -v "$PWD/backup":/backup alpine:3.22 tar czf /backup/neodesk-data.tar.gz -C /data .
+docker run --rm -v neodesk-console-data:/data:ro -v "$PWD/backup":/backup alpine:3.22 tar czf /backup/console-data.tar.gz -C /data .
 docker compose start
 ```
 
-With PostgreSQL, add the `betterdesk-postgres-data` volume the same way while it is stopped, or use `pg_dump`; see [PostgreSQL](/docs/operations/postgresql#back-up-the-database).
+With PostgreSQL, add the `neodesk-postgres-data` volume the same way while it is stopped, or use `pg_dump`; see [PostgreSQL](/docs/operations/postgresql#back-up-the-database).
 
 ## Cold backup of a Linux install
 
 ```bash
-sudo systemctl stop betterdesk-server
-sudo tar czf /root/betterdesk-backup.tar.gz /opt/betterdesk /opt/BetterDeskConsole /etc/systemd/system/betterdesk-server.service
-sudo systemctl start betterdesk-server
+sudo systemctl stop neodesk-server
+sudo tar czf /root/neodesk-backup.tar.gz /opt/neodesk /opt/NeoDeskConsole /etc/systemd/system/neodesk-server.service
+sudo systemctl start neodesk-server
 ```
 
-The installer's **Backup** menu item, which every update runs first, works while the server runs. It writes `/opt/rustdesk-backups/betterdesk_backup_<time>.tar.gz` with the same archive as **Download backup** on the console's Backup page (on SQLite and on PostgreSQL), and a copy of the key pair, the API key and `.admin_credentials`. It leaves out the systemd unit. On Windows the same item writes a zip file to `C:\BetterDesk-Backups`.
+The installer's **Backup** menu item, which every update runs first, works while the server runs. It writes `/opt/rustdesk-backups/neodesk_backup_<time>.tar.gz` with the same archive as **Download backup** on the console's Backup page (on SQLite and on PostgreSQL), and a copy of the key pair, the API key and `.admin_credentials`. It leaves out the systemd unit. On Windows the same item writes a zip file to `C:\NeoDesk-Backups`.
 
 ## Restore
 
@@ -133,16 +133,16 @@ For the two files made by hand above, in the folder with the compose file:
 
 ```bash
 docker compose stop
-docker run --rm -v betterdesk-data:/data -v "$PWD/backup":/backup alpine:3.22 sh -c 'find /data -mindepth 1 -delete && tar xzf /backup/betterdesk-data.tar.gz -C /data'
-docker run --rm -v betterdesk-console-data:/data -v "$PWD/backup":/backup alpine:3.22 sh -c 'find /data -mindepth 1 -delete && tar xzf /backup/console-data.tar.gz -C /data'
+docker run --rm -v neodesk-data:/data -v "$PWD/backup":/backup alpine:3.22 sh -c 'find /data -mindepth 1 -delete && tar xzf /backup/neodesk-data.tar.gz -C /data'
+docker run --rm -v neodesk-console-data:/data -v "$PWD/backup":/backup alpine:3.22 sh -c 'find /data -mindepth 1 -delete && tar xzf /backup/console-data.tar.gz -C /data'
 docker compose start
 ```
 
-A backup made with `betterdesk-docker.sh backup` holds both volumes in one file, in the folders `rustdesk` and `console`. In `/opt/betterdesk/docker`, with the file's name in place of `betterdesk-<time>.tar.gz`:
+A backup made with `neodesk-docker.sh backup` holds both volumes in one file, in the folders `rustdesk` and `console`. In `/opt/neodesk/docker`, with the file's name in place of `neodesk-<time>.tar.gz`:
 
 ```bash
 docker compose stop
-docker run --rm -v betterdesk-data:/restore/rustdesk -v betterdesk-console-data:/restore/console -v "$PWD/backups":/in:ro alpine:3.22 sh -c 'find /restore/rustdesk /restore/console -mindepth 1 -delete && tar xzf /in/betterdesk-<time>.tar.gz -C /restore'
+docker run --rm -v neodesk-data:/restore/rustdesk -v neodesk-console-data:/restore/console -v "$PWD/backups":/in:ro alpine:3.22 sh -c 'find /restore/rustdesk /restore/console -mindepth 1 -delete && tar xzf /in/neodesk-<time>.tar.gz -C /restore'
 docker compose start
 ```
 
@@ -151,12 +151,12 @@ The container sets the owner of both folders again when it starts.
 ### A Linux cold backup
 
 ```bash
-sudo systemctl stop betterdesk-server
-sudo tar xzf /root/betterdesk-backup.tar.gz -C /
+sudo systemctl stop neodesk-server
+sudo tar xzf /root/neodesk-backup.tar.gz -C /
 sudo systemctl daemon-reload
-sudo systemctl start betterdesk-server
+sudo systemctl start neodesk-server
 ```
 
 ### On a new machine
 
-Install BetterDesk the same way as before ([Docker](/docs/getting-started/docker), [Linux](/docs/getting-started/linux) or [Windows](/docs/getting-started/windows)), stop it, restore the files or volumes as above, and start it. Point the server's public address at the new machine, or give clients the new address; with the old key file in place they need nothing else.
+Install NeoDesk the same way as before ([Docker](/docs/getting-started/docker), [Linux](/docs/getting-started/linux) or [Windows](/docs/getting-started/windows)), stop it, restore the files or volumes as above, and start it. Point the server's public address at the new machine, or give clients the new address; with the old key file in place they need nothing else.

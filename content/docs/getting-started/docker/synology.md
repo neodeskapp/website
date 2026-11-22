@@ -1,12 +1,12 @@
 ---
 title: Docker on a Synology NAS
-description: Run the published BetterDesk image in Synology's Container Manager, with the settings a NAS usually needs.
+description: Run the published NeoDesk image in Synology's Container Manager, with the settings a NAS usually needs.
 order: 1
 ---
 
-A Synology NAS runs BetterDesk with the same compose file as any other Docker
+A Synology NAS runs NeoDesk with the same compose file as any other Docker
 host. The screens of Container Manager change between DSM versions, so this page
-names the files and settings BetterDesk needs, not every click. Read
+names the files and settings NeoDesk needs, not every click. Read
 [Install with Docker](/docs/getting-started/docker) first.
 
 ## Before you start
@@ -15,19 +15,19 @@ names the files and settings BetterDesk needs, not every click. Read
   in a way older versions refuse. Check it over SSH with
   `sudo docker compose version`.
 - A free port for the console: DSM's own web interface listens on port 5000 by
-  default, the same port the BetterDesk console uses. Give the console another
-  host port with `BETTERDESK_CONSOLE_PORT` in `.env`.
+  default, the same port the NeoDesk console uses. Give the console another
+  host port with `NEODESK_CONSOLE_PORT` in `.env`.
 
 ## Set it up
 
-1. Create a folder for BetterDesk on the NAS, for example
-   `/volume1/docker/betterdesk`.
+1. Create a folder for NeoDesk on the NAS, for example
+   `/volume1/docker/neodesk`.
 2. Put the compose file in it as `docker-compose.yml`:
-   [docker-compose.quick.single.yml](https://raw.githubusercontent.com/neodeskapp/betterdesk/main/docker-compose.quick.single.yml).
+   [docker-compose.quick.single.yml](https://raw.githubusercontent.com/neodeskapp/neodesk/main/docker-compose.quick.single.yml).
 3. Put a file called `.env` next to it:
 
    ```ini
-   BETTERDESK_CONSOLE_PORT=5080
+   NEODESK_CONSOLE_PORT=5080
    RELAY_SERVERS=192.168.1.20
    ```
 
@@ -42,7 +42,7 @@ names the files and settings BetterDesk needs, not every click. Read
 The console is then at `http://<NAS>:5080`. Print the admin password over SSH:
 
 ```bash
-sudo docker exec betterdesk betterdesk-show-admin-credentials
+sudo docker exec neodesk neodesk-show-admin-credentials
 ```
 
 Continue with [First sign-in](/docs/getting-started/first-sign-in).
@@ -50,14 +50,14 @@ Continue with [First sign-in](/docs/getting-started/first-sign-in).
 ## Data in a shared folder
 
 By default the data lives in Docker volumes. To keep it in folders on the NAS
-instead, replace the two volume lines of the `betterdesk` service with folders and
+instead, replace the two volume lines of the `neodesk` service with folders and
 set `PUID` and `PGID` in `.env` to the numbers of the user and group that own
 them. `id <user>` over SSH prints them.
 
 ```yaml
     volumes:
-      - /volume1/docker/betterdesk/data:/opt/rustdesk
-      - /volume1/docker/betterdesk/console:/app/data
+      - /volume1/docker/neodesk/data:/opt/rustdesk
+      - /volume1/docker/neodesk/console:/app/data
 ```
 
 ```ini
@@ -65,11 +65,11 @@ PUID=<uid of the folders' owner>
 PGID=<gid of the folders' group>
 ```
 
-The container starts as root, gives its `betterdesk` user these numbers, and runs
+The container starts as root, gives its `neodesk` user these numbers, and runs
 the server as that user. Without `PUID` and `PGID` the user is 10001. Neither may
 be 0. Don't add `user:` to the compose file: the container has to start as root to
 do this. When the user can't write `/opt/rustdesk`, the log says
-`/opt/rustdesk is NOT writable by the betterdesk user`.
+`/opt/rustdesk is NOT writable by the neodesk user`.
 
 ## Firewall and router
 

@@ -103,7 +103,7 @@ Each row has a menu at its end (the three dots); a right-click on the row opens 
 - **Web remote**, **Guest access link**, **CDAP snapshot viewer** and **Connect via desktop client**. What each one does and needs is in [Device details and connecting](/docs/console/device-details#connecting).
 - **Details** opens the panel, **Edit** opens it ready to edit.
 - **Manage tags**, **Manage groups** and **Move to folder**.
-- **Change ID** gives the device a new ID of 6 to 16 letters, digits, dashes and underscores on the server. Neither the BetterDesk client nor the stock RustDesk client takes on an ID changed here: the client keeps its old ID, and a BetterDesk client can then be reached under neither ID. Where you can, change the ID in the client on the device instead. For a device that is online the console warns first.
+- **Change ID** gives the device a new ID of 6 to 16 letters, digits, dashes and underscores on the server. Neither the NeoDesk client nor the stock RustDesk client takes on an ID changed here: the client keeps its old ID, and a NeoDesk client can then be reached under neither ID. Where you can, change the ID in the client on the device instead. For a device that is online the console warns first.
 - **Issue a new token** ends the device's current device token. The device gets a new one the next time it checks in, by proving its key with a signature that carries the time. A device whose clock is more than 5 minutes off the server's gets no new token. Stock RustDesk clients don't use device tokens.
 - **Ban** or **Unban**, and **Delete**, described below.
 
@@ -124,7 +124,7 @@ Tick **Show deleted** to see hidden devices. They show greyed out with **Deleted
 
 ## Add RDP/VNC target
 
-**Add RDP/VNC target** adds a computer that has no RustDesk or BetterDesk client, such as a Windows PC with Remote Desktop turned on or a Linux machine with a VNC server. People then connect to it in the browser, through this server. The target shows in the list like any other device, and **Connect** opens it in the browser.
+**Add RDP/VNC target** adds a computer that has no RustDesk or NeoDesk client, such as a Windows PC with Remote Desktop turned on or a Linux machine with a VNC server. People then connect to it in the browser, through this server. The target shows in the list like any other device, and **Connect** opens it in the browser.
 
 The server reaches these computers through guacd, the Apache Guacamole daemon, which is not part of the server and has to be set up first. The form, the setup and what a session can do are described in [RDP and VNC targets](/docs/console/remote-targets).
 

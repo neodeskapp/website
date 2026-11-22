@@ -4,7 +4,7 @@ description: Where the web console's texts live, how to improve a translation or
 order: 7
 ---
 
-The web console's texts are JSON files, one per language, in `betterdesk-server/console/static/files/lang`. There are 26 of them, from `ar.json` to `zh-TW.json`. They are built into the server binary, so a changed text reaches users with the next release.
+The web console's texts are JSON files, one per language, in `neodesk-server/console/static/files/lang`. There are 26 of them, from `ar.json` to `zh-TW.json`. They are built into the server binary, so a changed text reaches users with the next release.
 
 ## How the files work
 
@@ -33,7 +33,7 @@ Right to left: Arabic and Hebrew are marked as right-to-left languages in the se
 
 ## Improve a translation
 
-1. Edit `betterdesk-server/console/static/files/lang/<code>.json`.
+1. Edit `neodesk-server/console/static/files/lang/<code>.json`.
 2. Change only the values, never the keys.
 3. Keep the placeholders, and use HTML only where the English text has it.
 4. Translate a text or leave it out. Don't copy the English text into another language to fill a gap: the check counts such values as untranslated, and the gap stays hidden.
@@ -43,7 +43,7 @@ Right to left: Arabic and Hebrew are marked as right-to-left languages in the se
 
 ## Add a language
 
-The server loads only the languages in its table, `knownLanguages` in `betterdesk-server/console/i18n/bundle.go`. A file whose code is not in the table is never loaded. So a new language takes a small code change:
+The server loads only the languages in its table, `knownLanguages` in `neodesk-server/console/i18n/bundle.go`. A file whose code is not in the table is never loaded. So a new language takes a small code change:
 
 1. Add a row to the table: the code, the English name, the native name, the flag and whether it is written right to left. The code is two to eight lower-case letters, with an optional region such as `-TW`.
 2. Copy `en.json` to `<code>.json`, set its `meta` section, and translate every value.
@@ -55,11 +55,11 @@ Hebrew (`he`) is in the table but has no file yet.
 
 For developers. A text the web app shows comes from a key: `t('devices.title')`, or `tf('devices.title', 'Devices')` with an English fallback. The fallback shows only when the loaded language files lack the key, so keep it the same as the text in `en.json`. Lint rejects text written directly into the markup.
 
-A new key goes into every language file, not only `en.json`: the check fails when any file misses a baseline key. Give each language a real translation. [web-ui/README.md](https://github.com/neodeskapp/betterdesk/blob/main/web-ui/README.md) has the web app's text rules.
+A new key goes into every language file, not only `en.json`: the check fails when any file misses a baseline key. Give each language a real translation. [web-ui/README.md](https://github.com/neodeskapp/neodesk/blob/main/web-ui/README.md) has the web app's text rules.
 
 ## Check your work
 
-In `betterdesk-server`:
+In `neodesk-server`:
 
 ```bash
 go run ./cmd/repotool i18n-check --system console

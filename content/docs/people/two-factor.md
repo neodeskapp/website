@@ -19,7 +19,7 @@ With two-factor sign-in, a password alone no longer opens your account: after th
 
 The section now says **Two-factor sign-in is on**, and **Current state** on the right shows **Your two-factor sign-in** as **On**. Administrators see the same in the **Two-factor sign-in** column on the **Users** page.
 
-In the app, the new entry is called BetterDesk followed by your username. Any app for time-based codes works: the codes have six digits and change every 30 seconds.
+In the app, the new entry is called NeoDesk followed by your username. Any app for time-based codes works: the codes have six digits and change every 30 seconds.
 
 If you leave the page before step 5, two-factor sign-in stays off. The next **Set up two-factor sign-in** makes a new key, so remove the unused entry from the app.
 

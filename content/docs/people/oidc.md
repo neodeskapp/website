@@ -12,7 +12,7 @@ Open **Settings**, **Sign-in** and go to **OIDC / OAuth2 (SSO)** under **For eve
 
 The settings are saved in the server's database and apply to the next sign-in without a restart. People who are already signed in stay signed in.
 
-## Register BetterDesk at the provider
+## Register NeoDesk at the provider
 
 1. At your provider, create an OpenID Connect application that signs in with the authorization code flow.
 2. Enter this redirect address, with the address people use to open the console:
@@ -21,7 +21,7 @@ The settings are saved in the server's database and apply to the next sign-in wi
    https://desk.example.com/api/auth/oidc/callback
    ```
 
-   It must be exactly the same as **Redirect URL** in BetterDesk. The path `/api/oidc/callback` works too.
+   It must be exactly the same as **Redirect URL** in NeoDesk. The path `/api/oidc/callback` works too.
 3. Copy the client ID and the client secret.
 4. If you want roles from groups, have the provider put the person's groups into a claim, by default `groups`.
 
@@ -99,7 +99,7 @@ A refused sign-in shows "Sign-in failed" in the browser with the reason, such as
 | --- | --- |
 | **Button text** | `Example ID` |
 | **Issuer URL** | `https://sso.example.com` |
-| **Client ID** | `betterdesk` |
+| **Client ID** | `neodesk` |
 | **Redirect URL (callback)** | `https://desk.example.com/api/auth/oidc/callback` |
 | **Panel URL** | `https://desk.example.com` |
 | **Use PKCE (recommended)** | Ticked |
@@ -108,8 +108,8 @@ A refused sign-in shows "Sign-in failed" in the browser with the reason, such as
 **Group → Role Mapping**, for a provider that sends these names in `groups`:
 
 ```text
-betterdesk-admins=global_admin
-betterdesk-operators=operator
+neodesk-admins=global_admin
+neodesk-operators=operator
 ```
 
 ## Test it

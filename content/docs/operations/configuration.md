@@ -9,15 +9,15 @@ The server and the web console run in one process, and both read their settings 
 ## How the server reads its settings
 
 - Environment variables: every setting on this page is one. On/off settings take `1` or `0`, `true` or `false`, `yes` or `no`, `y` or `n`, and `on` or `off`, in any letter case.
-- Command-line flags: some settings also have a flag, listed in the tables below, and `betterdesk-server -h` prints them all. When a setting is given both ways, the environment variable wins.
-- An env file: when `BETTERDESK_ENV_FILE` names a file, the server reads it once at start. Each line is `KEY=value`, and lines starting with `#` are comments. Values may be quoted, and ` #` after a value starts a comment, as in other `.env` files. The file only fills variables the environment leaves empty, and the first line with a value for a key counts. At each start the server also adds the settings of its release that the file lacks, with their defaults.
+- Command-line flags: some settings also have a flag, listed in the tables below, and `neodesk-server -h` prints them all. When a setting is given both ways, the environment variable wins.
+- An env file: when `NEODESK_ENV_FILE` names a file, the server reads it once at start. Each line is `KEY=value`, and lines starting with `#` are comments. Values may be quoted, and ` #` after a value starts a comment, as in other `.env` files. The file only fills variables the environment leaves empty, and the first line with a value for a key counts. At each start the server also adds the settings of its release that the file lacks, with their defaults.
 - Settings saved in the console: once you save them, some settings live in the database and win over the environment, which then only gives the first default. These are the connection strategy, the time sync settings, the RustDesk client session lengths and the enrollment mode. **Public client endpoints** are kept in `public-endpoints.env` in the data folder and win over `PUBLIC_SERVER_ID`, `PUBLIC_RELAY_SERVER` and `PUBLIC_API_URL`; an address saved empty lets its variable count again. Two switches make the environment win instead: `ENROLLMENT_MODE_ENV_OVERRIDE` for the enrollment mode and `PUBLIC_ENDPOINTS_ENV_OVERRIDE` for the public client endpoints.
 
 Restart the server after changing a variable. It reads its environment and the env file only at start.
 
 ## Docker
 
-The compose file passes every line of the `.env` file next to it to the container (Docker Compose 2.24 or newer), so put your settings there. After an install with the script, that is `/opt/betterdesk/docker/.env`:
+The compose file passes every line of the `.env` file next to it to the container (Docker Compose 2.24 or newer), so put your settings there. After an install with the script, that is `/opt/neodesk/docker/.env`:
 
 ```ini
 RELAY_SERVERS=desk.example.com
@@ -33,38 +33,38 @@ docker compose up -d
 
 [Settings in .env](/docs/getting-started/docker#settings-in-env) lists the settings of the compose file itself, such as the image tag.
 
-The `environment:` list in the compose file wins over `.env`. Most of its entries have the form `NAME=${NAME:-default}` and take their value from `.env` anyway, but some are fixed, among them `HOST=0.0.0.0`, `CONSOLE_PORT=5000`, `API_ENABLED=false`, `DATA_DIR=/app/data` and the paths inside the volumes. To publish the console on another host port, or on one address of the host only, set `BETTERDESK_CONSOLE_PORT`, `BETTERDESK_CONSOLE_HTTPS_PORT` and `BETTERDESK_CONSOLE_BIND` in `.env`; see [Changing a port](/docs/operations/ports#changing-a-port).
+The `environment:` list in the compose file wins over `.env`. Most of its entries have the form `NAME=${NAME:-default}` and take their value from `.env` anyway, but some are fixed, among them `HOST=0.0.0.0`, `CONSOLE_PORT=5000`, `API_ENABLED=false`, `DATA_DIR=/app/data` and the paths inside the volumes. To publish the console on another host port, or on one address of the host only, set `NEODESK_CONSOLE_PORT`, `NEODESK_CONSOLE_HTTPS_PORT` and `NEODESK_CONSOLE_BIND` in `.env`; see [Changing a port](/docs/operations/ports#changing-a-port).
 
 `ADMIN_USERNAME` and `ADMIN_PASSWORD` only count before the first start; the compose file passes them on as the first admin account.
 
 ## Linux
 
-The installer runs the server as the systemd service `betterdesk-server`, defined in `/etc/systemd/system/betterdesk-server.service`. The unit sets `BETTERDESK_ENV_FILE` to the console's env file, by default `/opt/BetterDeskConsole/.env`, and that file holds most settings.
+The installer runs the server as the systemd service `neodesk-server`, defined in `/etc/systemd/system/neodesk-server.service`. The unit sets `NEODESK_ENV_FILE` to the console's env file, by default `/opt/NeoDeskConsole/.env`, and that file holds most settings.
 
 The unit also sets a few variables itself, and those win over the env file: `GO_API_PORT=21114`, `MESH_ENABLED=Y`, and the connection strategy chosen at install (`P2P_FIRST`, `ALWAYS_USE_RELAY`, `P2P_FALLBACK_MS` and `SAME_NAT_RELAY`). Its command line passes the relay address, the key file, the API port, the registration rate limit and, when the installer made certificates, the TLS flags. A variable in the env file overrides the matching flag, for example `RELAY_SERVERS` overrides `-relay-servers`. The installer writes the unit again on every update and repair, with the arguments and extra settings the unit had.
 
 Edit the env file, then restart:
 
 ```bash
-sudoedit /opt/BetterDeskConsole/.env
-sudo systemctl restart betterdesk-server
+sudoedit /opt/NeoDeskConsole/.env
+sudo systemctl restart neodesk-server
 ```
 
 The installer can also change settings that its built-in template knows, and restarts the service afterwards:
 
 ```bash
-sudo betterdesk --set-config TRUST_PROXY=Y --set-config LOG_LEVEL=info
+sudo neodesk --set-config TRUST_PROXY=Y --set-config LOG_LEVEL=info
 ```
 
 ## Windows
 
-The installer registers the service `BetterDeskServer`. Its env file is `C:\BetterDeskConsole\.env`, and the service sets `BETTERDESK_ENV_FILE`, `GO_API_PORT=21114` and `MESH_ENABLED=Y` itself. Edit the file, then restart the service:
+The installer registers the service `NeoDeskServer`. Its env file is `C:\NeoDeskConsole\.env`, and the service sets `NEODESK_ENV_FILE`, `GO_API_PORT=21114` and `MESH_ENABLED=Y` itself. Edit the file, then restart the service:
 
 ```powershell
-Restart-Service BetterDeskServer
+Restart-Service NeoDeskServer
 ```
 
-`& 'C:\BetterDesk\betterdesk.ps1' -SetConfig KEY=VALUE`, in PowerShell as Administrator, changes template settings, like `--set-config` on Linux.
+`& 'C:\NeoDesk\neodesk.ps1' -SetConfig KEY=VALUE`, in PowerShell as Administrator, changes template settings, like `--set-config` on Linux.
 
 ## Addresses and ports
 
@@ -177,7 +177,7 @@ The console uses these only while no mail server is saved under **Settings**, **
 | `SMTP_PORT` | `587` | Port of the mail server. |
 | `SMTP_SECURE` | `false` | `true` for TLS from the first byte, usually port 465. |
 | `SMTP_USER`, `SMTP_PASS` | | Login. |
-| `SMTP_FROM` | `betterdesk@localhost` | Sender address. |
+| `SMTP_FROM` | `neodesk@localhost` | Sender address. |
 | `SMTP_ALERT_EMAIL` | | Where alerts go. |
 | `SMTP_TLS_VERIFY` | `true` | `false` skips the check of the mail server's certificate. |
 | `SMTP_REQUIRE_TLS` | `true` | `false` allows the login without TLS, for a mail server on a trusted network. |

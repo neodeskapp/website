@@ -55,8 +55,8 @@ ${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd).replace(
 <header class="top">
   <button type="button" class="menu-button" aria-controls="sidebar" aria-expanded="false">Menu</button>
   <a class="logo" href="/" aria-label="${esc(config.name)} home">
-    <img class="only-dark" src="/img/logo-on-dark.svg" alt="${esc(config.name)}" width="141" height="28">
-    <img class="only-light" src="/img/logo-on-light.svg" alt="${esc(config.name)}" width="141" height="28">
+    <img class="only-dark" src="/img/logo-on-dark.svg" alt="${esc(config.name)}" width="118" height="28">
+    <img class="only-light" src="/img/logo-on-light.svg" alt="${esc(config.name)}" width="118" height="28">
   </a>
   <a class="top-docs" href="/docs/">Docs</a>
   <button type="button" class="search-button" aria-haspopup="dialog">${SEARCH_ICON}<span>Search the docs</span><kbd>Ctrl K</kbd></button>
@@ -76,7 +76,7 @@ ${main}
 </div>
 
 <footer class="foot">
-  <p>Open source under AGPL-3.0.</p>
+  <p>NeoDesk started as a fork of <a href="https://github.com/UNITRONIX/BetterDesk" rel="noopener">BetterDesk</a> by UNITRONIX and works with RustDesk clients. Open source under AGPL-3.0.</p>
   <nav aria-label="More">
     <a href="/docs/">Docs</a>
     <a href="/llms.txt">llms.txt</a>
@@ -120,7 +120,7 @@ export function docsIndexPage(shared) {
 	const { sections, version } = shared;
 	const main = `    <div class="docs-home">
       <h1 class="display">Documentation</h1>
-      <p class="lead">How to install BetterDesk, connect RustDesk clients to it and run it. Written for version ${esc(version)}.</p>
+      <p class="lead">How to install NeoDesk, connect RustDesk clients to it and run it. Written for version ${esc(version)}.</p>
       <p><button type="button" class="search-button search-button-wide" aria-haspopup="dialog">${SEARCH_ICON}<span>Search the docs</span><kbd>Ctrl K</kbd></button></p>
     </div>
 ${sections
@@ -135,7 +135,7 @@ ${sections
 	return frame({
 		...shared,
 		title: 'Documentation',
-		description: 'How to install BetterDesk, connect RustDesk clients to it and run it.',
+		description: 'How to install NeoDesk, connect RustDesk clients to it and run it.',
 		path: '/docs/',
 		current: '',
 		main
@@ -228,7 +228,7 @@ export function notFoundPage(shared) {
     <p><button type="button" class="search-button search-button-wide" aria-haspopup="dialog">${SEARCH_ICON}<span>Search the docs</span><kbd>Ctrl K</kbd></button></p>
     <ul class="rows">
       <li><a href="/docs/">Documentation</a><p>Every section and page.</p></li>
-      <li><a href="/">Home</a><p>What BetterDesk is.</p></li>
+      <li><a href="/">Home</a><p>What NeoDesk is.</p></li>
     </ul>`;
 	return frame({ ...shared, title: 'Page not found', description: 'There is no page at this address.', path: '/404.html', current: '', main, noindex: true });
 }

@@ -18,7 +18,7 @@ The enrollment mode decides whether a new device can join the server by itself o
 
 The side column of **Enrollment requests** shows which mode is on. A mode saved in the console stays across restarts. While none is saved, the server takes the `ENROLLMENT_MODE` environment variable at its start and saves it as the mode, or uses **Open** when the variable isn't set. The installers and the Docker container set `managed` for a new install.
 
-The mode only decides about new devices. A device the server already knows can always register again, in every mode. Tokens are created under **Settings**, **Device tokens**. A device that sends a valid token when it registers joins in **Managed** and **Locked** mode without waiting. Tokens are for BetterDesk clients: the stock RustDesk client has no way to send one.
+The mode only decides about new devices. A device the server already knows can always register again, in every mode. Tokens are created under **Settings**, **Device tokens**. A device that sends a valid token when it registers joins in **Managed** and **Locked** mode without waiting. Tokens are for NeoDesk clients: the stock RustDesk client has no way to send one.
 
 The mode applies to RustDesk clients. New mesh agents wait for approval in the same list, whatever the mode; see [MeshAgent devices](/docs/console/meshagent#install-the-agent-on-a-device).
 

@@ -1,11 +1,11 @@
 // Retakes the console screenshots of the docs from shots.json, in light and dark.
 //
-//   BD_ADMIN_PASSWORD_FILE=<file> node shots.mjs            every shot
-//   BD_ADMIN_PASSWORD_FILE=<file> node shots.mjs devices    only the named ones
+//   ND_ADMIN_PASSWORD_FILE=<file> node shots.mjs            every shot
+//   ND_ADMIN_PASSWORD_FILE=<file> node shots.mjs devices    only the named ones
 //
-// It signs in to a running console (BD_URL, default the "base" in shots.json)
-// as BD_ADMIN_USER (default admin) with the password from BD_ADMIN_PASSWORD_FILE
-// or BD_ADMIN_PASSWORD, and writes content/screenshots/<name>-<theme>.png.
+// It signs in to a running console (ND_URL, default the "base" in shots.json)
+// as ND_ADMIN_USER (default admin) with the password from ND_ADMIN_PASSWORD_FILE
+// or ND_ADMIN_PASSWORD, and writes content/screenshots/<name>-<theme>.png.
 // A run of every shot also deletes the screenshots shots.json no longer names.
 // Playwright comes from PLAYWRIGHT_MODULE, or the playwright package installed next to this file.
 import fs from 'node:fs';
@@ -19,13 +19,13 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 
 const config = JSON.parse(fs.readFileSync(path.join(root, 'shots.json'), 'utf8'));
 const OUT = path.join(root, 'content/screenshots');
-const BASE = (process.env.BD_URL || config.base).replace(/\/$/, '');
-const USER = process.env.BD_ADMIN_USER || 'admin';
-const PASSWORD = process.env.BD_ADMIN_PASSWORD_FILE
-	? fs.readFileSync(process.env.BD_ADMIN_PASSWORD_FILE, 'utf8').trim()
-	: process.env.BD_ADMIN_PASSWORD || '';
+const BASE = (process.env.ND_URL || config.base).replace(/\/$/, '');
+const USER = process.env.ND_ADMIN_USER || 'admin';
+const PASSWORD = process.env.ND_ADMIN_PASSWORD_FILE
+	? fs.readFileSync(process.env.ND_ADMIN_PASSWORD_FILE, 'utf8').trim()
+	: process.env.ND_ADMIN_PASSWORD || '';
 if (!PASSWORD) {
-	console.error('Set BD_ADMIN_PASSWORD_FILE (or BD_ADMIN_PASSWORD) to the console password of ' + USER);
+	console.error('Set ND_ADMIN_PASSWORD_FILE (or ND_ADMIN_PASSWORD) to the console password of ' + USER);
 	process.exit(2);
 }
 

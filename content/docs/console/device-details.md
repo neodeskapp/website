@@ -37,7 +37,7 @@ When the device is banned, a notice at the top says when and by whom, and the re
 
 ### Hardware
 
-What the client reported about the machine: system, processor, memory, displays and encoding capabilities. For a device with the BetterDesk agent, its inventory report follows, with disks, network adapters and the installed programs, which you can search. **Read again** asks the device to send its hardware details again; it needs permission to edit devices.
+What the client reported about the machine: system, processor, memory, displays and encoding capabilities. For a device with the NeoDesk agent, its inventory report follows, with disks, network adapters and the installed programs, which you can search. **Read again** asks the device to send its hardware details again; it needs permission to edit devices.
 
 If the device never reported anything, the tab says "No hardware information available".
 

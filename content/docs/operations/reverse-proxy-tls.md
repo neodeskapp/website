@@ -4,7 +4,7 @@ description: Put the web console behind nginx or Caddy with HTTPS, set TRUST_PRO
 order: 3
 ---
 
-The web console listens on plain HTTP on port 5000. Before people use it over the internet, put a reverse proxy with a TLS certificate in front of it. This page has complete examples for nginx and Caddy, the settings BetterDesk needs behind a proxy, and what a proxy cannot carry.
+The web console listens on plain HTTP on port 5000. Before people use it over the internet, put a reverse proxy with a TLS certificate in front of it. This page has complete examples for nginx and Caddy, the settings NeoDesk needs behind a proxy, and what a proxy cannot carry.
 
 ## What goes through the proxy
 
@@ -19,16 +19,16 @@ Send every path on the console's host name to the console. It uses `/ws/rendezvo
 
 With the proxy on the same machine, let only the proxy reach port 5000:
 
-- Docker: set `BETTERDESK_CONSOLE_BIND=127.0.0.1` in the `.env` file next to the compose file, then run `docker compose up -d` in that folder. The console's ports are then published on the loopback address only.
+- Docker: set `NEODESK_CONSOLE_BIND=127.0.0.1` in the `.env` file next to the compose file, then run `docker compose up -d` in that folder. The console's ports are then published on the loopback address only.
 - Linux and Windows: set `HOST=127.0.0.1` in the env file. The installers also turn on HTTPS with a self-signed certificate, and port 5000 then only redirects to 5443, so set `HTTPS_ENABLED=false` as well. Restart the service.
 
 With the proxy on another machine, keep `HOST=0.0.0.0` and allow port 5000 only from the proxy's address in the firewall.
 
-On Linux, the installer can make these settings: run `sudo ./betterdesk.sh`, choose **Configure SSL certificates**, then **External reverse proxy**. A new install offers the same at its end. It asks for the console's public host name, turns off the console's own HTTPS, and sets `HOST`, `TRUST_PROXY=Y`, `PANEL_PUBLIC_HOST`, `PANEL_PUBLIC_URL`, `PUBLIC_SERVER_ID`, `WS_ALLOWED_ORIGINS` and, for a proxy on the same machine, `TRUSTED_PROXIES`. It also takes TLS off the ID server and relay, and writes example configurations for Caddy or nginx to `/opt/betterdesk/reverse-proxy/`.
+On Linux, the installer can make these settings: run `sudo ./neodesk.sh`, choose **Configure SSL certificates**, then **External reverse proxy**. A new install offers the same at its end. It asks for the console's public host name, turns off the console's own HTTPS, and sets `HOST`, `TRUST_PROXY=Y`, `PANEL_PUBLIC_HOST`, `PANEL_PUBLIC_URL`, `PUBLIC_SERVER_ID`, `WS_ALLOWED_ORIGINS` and, for a proxy on the same machine, `TRUSTED_PROXIES`. It also takes TLS off the ID server and relay, and writes example configurations for Caddy or nginx to `/opt/neodesk/reverse-proxy/`.
 
 ## nginx
 
-Get a certificate for desk.example.com first, for example with certbot; the paths below are where certbot keeps it. Then save this as a site, for example `/etc/nginx/conf.d/betterdesk.conf`:
+Get a certificate for desk.example.com first, for example with certbot; the paths below are where certbot keeps it. Then save this as a site, for example `/etc/nginx/conf.d/neodesk.conf`:
 
 ```nginx
 map $http_upgrade $connection_upgrade {
@@ -96,7 +96,7 @@ sudo systemctl reload caddy
 
 ## Trusting the proxy
 
-Behind a proxy, every request reaches BetterDesk from the proxy's address. `TRUST_PROXY` tells BetterDesk to take the client's address, the scheme and the host from the proxy's headers instead. Without it, the sign-in limits and lockouts count every person as the proxy, and the activity log shows the proxy's address.
+Behind a proxy, every request reaches NeoDesk from the proxy's address. `TRUST_PROXY` tells NeoDesk to take the client's address, the scheme and the host from the proxy's headers instead. Without it, the sign-in limits and lockouts count every person as the proxy, and the activity log shows the proxy's address.
 
 Two parts of the server read it:
 
@@ -110,7 +110,7 @@ TRUST_PROXY=Y
 TRUSTED_PROXIES=127.0.0.1/32,::1/128
 ```
 
-In Docker, put both lines in the `.env` file next to the compose file. Requests from a proxy on the host reach the container from the Docker network, so use that network's range for `TRUSTED_PROXIES`; `docker network inspect betterdesk-net` shows it.
+In Docker, put both lines in the `.env` file next to the compose file. Requests from a proxy on the host reach the container from the Docker network, so use that network's range for `TRUSTED_PROXIES`; `docker network inspect neodesk-net` shows it.
 
 ::: warning
 `TRUST_PROXY=Y` trusts whoever connects to the console. Make sure only the proxy can reach port 5000, or anyone can claim any address.
@@ -168,7 +168,7 @@ Mesh agents that reach the server through the proxy see the proxy's certificate.
 
 The console can serve HTTPS itself: set `HTTPS_ENABLED=true`, `SSL_CERT_PATH` and `SSL_KEY_PATH` (and `SSL_CA_PATH` for a chain in a separate file). It then listens with TLS on `HTTPS_PORT`, 5443 by default, and port 5000 redirects every request there, to the host `PANEL_PUBLIC_HOST` names or to the one address the console listens on. When the console listens on every address and `PANEL_PUBLIC_HOST` is unset, port 5000 shows a page that asks for it instead of redirecting. `HTTP_REDIRECT_HTTPS=false` turns the redirect off.
 
-The Linux and Windows installers set this up on a new install with a self-signed certificate, valid for ten years, and set `PANEL_PUBLIC_HOST` to the address clients use unless the env file has one. On Linux, the installer's **Configure SSL certificates** menu replaces the certificate with one from Let's Encrypt, your own, or a new self-signed one. A Let's Encrypt certificate is copied to `/opt/betterdesk/ssl/`, where the service account can read it, and a certbot deploy hook copies it again and restarts the server after each renewal. The menu also offers port 443, with port 80 for the redirect, and gives the service the right to use ports below 1024. Without that right the console falls back to 5443 and 5000.
+The Linux and Windows installers set this up on a new install with a self-signed certificate, valid for ten years, and set `PANEL_PUBLIC_HOST` to the address clients use unless the env file has one. On Linux, the installer's **Configure SSL certificates** menu replaces the certificate with one from Let's Encrypt, your own, or a new self-signed one. A Let's Encrypt certificate is copied to `/opt/neodesk/ssl/`, where the service account can read it, and a certbot deploy hook copies it again and restarts the server after each renewal. The menu also offers port 443, with port 80 for the redirect, and gives the service the right to use ports below 1024. Without that right the console falls back to 5443 and 5000.
 
 ## Check the addresses clients get
 
@@ -180,5 +180,5 @@ Then check the rest:
 
 - Set `PANEL_PUBLIC_URL=https://desk.example.com`, so links in mails point at the proxy. In Docker this goes into the `.env` file.
 - `curl https://desk.example.com/health` answers `{"status":"ok",...}` through the proxy.
-- Sign in through the proxy. The browser's developer tools show the session cookie, `bd.sid` (or `betterdesk.sid` with `HTTPS_ENABLED=true`), as Secure.
+- Sign in through the proxy. The browser's developer tools show the session cookie, `bd.sid` (or `neodesk.sid` with `HTTPS_ENABLED=true`), as Secure.
 - Clients still need the ID server and relay ports open. See [Connect a client](/docs/getting-started/connect-a-client).

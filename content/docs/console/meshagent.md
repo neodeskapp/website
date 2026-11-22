@@ -4,7 +4,7 @@ description: Let computers with MeshCentral's agent connect to the server, appro
 order: 11
 ---
 
-BetterDesk speaks the protocol of MeshAgent, the agent of MeshCentral. A computer with the unmodified MeshAgent connects to the server and shows in [the device list](/docs/console/devices) as a mesh agent, next to the RustDesk clients. You open its screen in the [web viewer](/docs/console/remote-in-browser) and get a terminal, a file browser, port relays and power commands. The **Mesh agents** filter in the device list shows only these devices.
+NeoDesk speaks the protocol of MeshAgent, the agent of MeshCentral. A computer with the unmodified MeshAgent connects to the server and shows in [the device list](/docs/console/devices) as a mesh agent, next to the RustDesk clients. You open its screen in the [web viewer](/docs/console/remote-in-browser) and get a terminal, a file browser, port relays and power commands. The **Mesh agents** filter in the device list shows only these devices.
 
 ## The MeshCentral layer
 

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>BetterDesk, your own remote desktop server</title>
-<meta name="description" content="BetterDesk is a self-hosted, RustDesk-compatible server written in Go, with a web console for the devices you look after.">
+<title>NeoDesk, your own remote desktop server</title>
+<meta name="description" content="NeoDesk is a self-hosted, RustDesk-compatible server written in Go, with a web console for the devices you look after.">
 <meta name="color-scheme" content="dark light">
 <link rel="canonical" href="{{SITE_URL}}/">
 <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
@@ -293,13 +293,13 @@ footer {
 <div class="page" id="top">
 
   <header class="top">
-    <a class="logo" href="#top" aria-label="BetterDesk home">
-      <img class="only-dark" src="img/logo-on-dark.svg" alt="BetterDesk" width="141" height="28">
-      <img class="only-light" src="img/logo-on-light.svg" alt="BetterDesk" width="141" height="28">
+    <a class="logo" href="#top" aria-label="NeoDesk home">
+      <img class="only-dark" src="img/logo-on-dark.svg" alt="NeoDesk" width="118" height="28">
+      <img class="only-light" src="img/logo-on-light.svg" alt="NeoDesk" width="118" height="28">
     </a>
     <nav aria-label="Main">
       <a href="/docs/">Docs</a>
-      <a href="https://github.com/neodeskapp/betterdesk">GitHub</a>
+      <a href="https://github.com/neodeskapp/neodesk">GitHub</a>
     </nav>
   </header>
 
@@ -315,7 +315,7 @@ footer {
         </div>
       </div>
       <div class="fig fig-mark" data-key="hero">
-        <svg class="deco" viewBox="10 10 44 44" role="img" aria-label="The BetterDesk mark: a square for your server and a circle for the RustDesk client, overlapping where they share the console">
+        <svg class="deco" viewBox="10 10 44 44" role="img" aria-label="The NeoDesk mark: a square for your server and a circle for the RustDesk client, overlapping where they share the console">
           <defs><clipPath id="clip-hero"><circle cx="38" cy="26" r="16"></circle></clipPath></defs>
           <rect class="sq" x="10" y="22" width="32" height="32" rx="10"></rect>
           <circle class="ci" cx="38" cy="26" r="16"></circle>
@@ -327,7 +327,7 @@ footer {
     <section class="row" id="server" aria-labelledby="server-title">
       <div class="copy">
         <h2 class="display" id="server-title">One binary on <span class="blue">your server</span></h2>
-        <p class="lead">RustDesk's own server is two programs, hbbs and hbbr. BetterDesk does both jobs in one Go binary, and the same binary serves the web console.</p>
+        <p class="lead">RustDesk's own server is two programs, hbbs and hbbr. NeoDesk does both jobs in one Go binary, and the same binary serves the web console.</p>
         <div class="tabs" role="tablist" aria-label="Install on">
           <button type="button" role="tab" id="tab-docker" aria-controls="install-panel" aria-selected="true" data-os="docker">Docker</button>
           <button type="button" role="tab" id="tab-linux" aria-controls="install-panel" aria-selected="false" tabindex="-1" data-os="linux">Linux</button>
@@ -345,7 +345,7 @@ footer {
         </svg>
         <div class="term" role="tabpanel" id="install-panel" aria-labelledby="tab-docker">
           <div class="term-bar"><button type="button" id="copy-install" aria-label="Copy install commands">Copy</button></div>
-          <div class="term-lines" id="install-lines" tabindex="0" aria-label="Install commands"><code>git clone https://github.com/neodeskapp/betterdesk.git</code><code>cd betterdesk</code><code>docker compose -f docker-compose.single.yml up -d --build</code><code>docker compose -f docker-compose.single.yml exec betterdesk betterdesk-show-admin-credentials</code></div>
+          <div class="term-lines" id="install-lines" tabindex="0" aria-label="Install commands"><code>git clone https://github.com/neodeskapp/neodesk.git</code><code>cd neodesk</code><code>docker compose -f docker-compose.single.yml up -d --build</code><code>docker compose -f docker-compose.single.yml exec neodesk neodesk-show-admin-credentials</code></div>
         </div>
       </div>
     </section>
@@ -380,8 +380,8 @@ footer {
           <circle class="ci" cx="58" cy="44" r="44"></circle>
           <rect class="ov" x="6" y="0" width="94" height="94" rx="29.375" clip-path="url(#clip-list)"></rect>
         </svg>
-        <img class="shot only-dark" src="img/devices-dark.png" width="1200" height="680" alt="The device list in the BetterDesk web console: folders and groups on the left, and a table of devices with ID, hostname, platform, last seen, status and tags">
-        <img class="shot only-light" src="img/devices-light.png" width="1200" height="680" alt="The device list in the BetterDesk web console: folders and groups on the left, and a table of devices with ID, hostname, platform, last seen, status and tags">
+        <img class="shot only-dark" src="img/devices-dark.png" width="1200" height="680" alt="The device list in the NeoDesk web console: folders and groups on the left, and a table of devices with ID, hostname, platform, last seen, status and tags">
+        <img class="shot only-light" src="img/devices-light.png" width="1200" height="680" alt="The device list in the NeoDesk web console: folders and groups on the left, and a table of devices with ID, hostname, platform, last seen, status and tags">
       </figure>
     </section>
 
@@ -410,7 +410,7 @@ footer {
     <section class="row data" aria-labelledby="data-title">
       <div class="copy">
         <h2 class="display" id="data-title">Your data stays on <span class="blue">your server</span></h2>
-        <p class="lead" style="max-width: 46ch; color: var(--muted);">BetterDesk sends no analytics, crash reports or usage data to its developers. The code is licensed under AGPL-3.0, with an optional commercial grant for eligible sponsors. Read the <a class="teal" href="/docs/project/privacy">privacy notes</a> and the <a class="teal" href="/docs/project/license">license</a>.</p>
+        <p class="lead" style="max-width: 46ch; color: var(--muted);">NeoDesk sends no analytics, crash reports or usage data to its developers. The code is licensed under AGPL-3.0, with an optional commercial grant for eligible sponsors. Read the <a class="teal" href="/docs/project/privacy">privacy notes</a> and the <a class="teal" href="/docs/project/license">license</a>.</p>
       </div>
       <div class="fig fig-mark" data-key="data">
         <svg class="deco" viewBox="10 10 44 44" aria-hidden="true">
@@ -426,16 +426,16 @@ footer {
 
   <footer>
     <div class="fine">
-      <p>Open source under AGPL-3.0.</p>
+      <p>NeoDesk started as a fork of <a href="https://github.com/UNITRONIX/BetterDesk">BetterDesk</a> by UNITRONIX and works with RustDesk clients. Open source under AGPL-3.0.</p>
       <nav aria-label="More">
         <a href="/docs/">Docs</a>
-        <a href="https://github.com/neodeskapp/betterdesk/blob/main/CHANGELOG.md">Changelog</a>
-        <a href="https://github.com/neodeskapp/betterdesk/blob/main/SECURITY.md">Security</a>
-        <a href="https://github.com/neodeskapp/betterdesk">GitHub</a>
+        <a href="https://github.com/neodeskapp/neodesk/blob/main/CHANGELOG.md">Changelog</a>
+        <a href="https://github.com/neodeskapp/neodesk/blob/main/SECURITY.md">Security</a>
+        <a href="https://github.com/neodeskapp/neodesk">GitHub</a>
       </nav>
     </div>
-    <img class="wordmark only-dark" src="img/logo-on-dark.svg" alt="" width="667" height="133">
-    <img class="wordmark only-light" src="img/logo-on-light.svg" alt="" width="667" height="133">
+    <img class="wordmark only-dark" src="img/logo-on-dark.svg" alt="" width="562" height="133">
+    <img class="wordmark only-light" src="img/logo-on-light.svg" alt="" width="562" height="133">
   </footer>
 </div>
 
@@ -473,26 +473,26 @@ footer {
     docker: {
       note: 'One container runs the server and the web console, built from the repository. The last command prints the admin username and password. Sign in with them at http://your-server:5000, which is plain HTTP, not HTTPS.',
       lines: [
-        'git clone https://github.com/neodeskapp/betterdesk.git',
-        'cd betterdesk',
+        'git clone https://github.com/neodeskapp/neodesk.git',
+        'cd neodesk',
         'docker compose -f docker-compose.single.yml up -d --build',
-        'docker compose -f docker-compose.single.yml exec betterdesk betterdesk-show-admin-credentials'
+        'docker compose -f docker-compose.single.yml exec neodesk neodesk-show-admin-credentials'
       ]
     },
     linux: {
       note: 'The script builds the server from the repository and installs it as a service. Choose 1 in the menu for a new install, or add --auto to skip the menu. The installer shows the admin username and password.',
       lines: [
-        'git clone https://github.com/neodeskapp/betterdesk.git',
-        'cd betterdesk',
-        'sudo bash betterdesk.sh --from-source'
+        'git clone https://github.com/neodeskapp/neodesk.git',
+        'cd neodesk',
+        'sudo bash neodesk.sh --from-source'
       ]
     },
     windows: {
       note: 'Run it in PowerShell as Administrator. The script builds the server from the repository. Add -Auto to install with the default settings.',
       lines: [
-        'git clone https://github.com/neodeskapp/betterdesk.git',
-        'cd betterdesk',
-        '.\\betterdesk.ps1 -FromSource'
+        'git clone https://github.com/neodeskapp/neodesk.git',
+        'cd neodesk',
+        '.\\neodesk.ps1 -FromSource'
       ]
     }
   };

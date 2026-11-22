@@ -4,7 +4,7 @@ description: How a script or an integration signs in to the server's API, and th
 order: 12
 ---
 
-The BetterDesk server has one HTTP API. The web console, RustDesk clients and your own scripts all talk to it. This page is for scripts and integrations: where the API listens, how to sign in, and the routes worth building on. The console's own addresses under `/api/` on port 5000 serve the browser and are not covered here.
+The NeoDesk server has one HTTP API. The web console, RustDesk clients and your own scripts all talk to it. This page is for scripts and integrations: where the API listens, how to sign in, and the routes worth building on. The console's own addresses under `/api/` on port 5000 serve the browser and are not covered here.
 
 ## Where it listens
 
@@ -26,7 +26,7 @@ A few routes answer anyone, such as `/api/health`, `/api/server/pubkey` and the 
 Send the key in the `X-API-Key` header. The server does not read a key from the query string.
 
 ```bash
-curl -H "X-API-Key: $BETTERDESK_API_KEY" http://127.0.0.1:21114/api/peers
+curl -H "X-API-Key: $NEODESK_API_KEY" http://127.0.0.1:21114/api/peers
 ```
 
 A key acts with the role it was given. The server makes one key itself, the server API key, and gives it the admin role, so it can do everything. The server reads it from `API_KEY`, else from `.api_key` next to its key file, and writes a new one there when there is none. In the console, **Client setup** shows it under **For scripts**; **Show whole key** needs the **Manage API keys** permission.
@@ -35,7 +35,7 @@ For a script, make a key with a smaller role:
 
 ```bash
 curl -X POST http://127.0.0.1:21114/api/keys \
-  -H "X-API-Key: $BETTERDESK_API_KEY" \
+  -H "X-API-Key: $NEODESK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"name": "inventory-export", "role": "viewer", "expires_in_days": 90}'
 ```
@@ -109,7 +109,7 @@ The API answers in JSON. An error is `{"error": "..."}`: 401 for a missing or wr
 `GET /api/peers` answers a list. With `limit` (or `page_size`, at most 500) and `page` it answers `{"total": ..., "data": [...]}` instead. `include_deleted=true` adds deleted devices. Each device has, among others, `id`, `hostname`, `display_name`, `os`, `version`, `ip`, `tags`, `note`, `user`, `banned`, `soft_deleted`, `last_online`, `live_online` (connected now over any transport), `cdap_connected` and `mesh_connected`. Its `status` is 1 for an active and 0 for a disabled device; `status_text` holds `ONLINE`, `OFFLINE`, `DEGRADED` or `CRITICAL`.
 
 ```bash
-curl -H "X-API-Key: $BETTERDESK_API_KEY" "http://127.0.0.1:21114/api/peers?limit=100&page=2"
+curl -H "X-API-Key: $NEODESK_API_KEY" "http://127.0.0.1:21114/api/peers?limit=100&page=2"
 ```
 
 `DELETE /api/peers/{id}` marks the device as deleted. Add to the query:
@@ -149,7 +149,7 @@ A command names a widget of the device's manifest and an action:
 
 ```bash
 curl -X POST http://127.0.0.1:21114/api/cdap/devices/greenhouse-1/command \
-  -H "X-API-Key: $BETTERDESK_API_KEY" \
+  -H "X-API-Key: $NEODESK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"widget_id": "heater", "action": "set", "value": true, "reason": "frost warning"}'
 ```

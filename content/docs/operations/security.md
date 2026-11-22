@@ -1,6 +1,6 @@
 ---
 title: Hardening
-description: The settings and steps that make a BetterDesk server on the internet safer, from TLS for the console to who may start sessions, and what each one changes.
+description: The settings and steps that make a NeoDesk server on the internet safer, from TLS for the console to who may start sessions, and what each one changes.
 order: 8
 ---
 
@@ -32,7 +32,7 @@ Leave `ALLOW_LEGACY_OUTBOUND` off. In the `open` mode it lets a RustDesk app tha
 
 By default any registered device can start a session to another one; the remote device still asks for its password or approval. Two switches under **Settings**, **General**, **Connection strategy**, **Advanced options** narrow that down:
 
-- **Only signed-in RustDesk apps can start sessions**: the RustDesk app has to be signed in to a BetterDesk account. Without a valid sign-in the server refuses the session and logs `Rejected outbound from ...` with `reason=initiator_login_required`. Sessions from the browser are not affected.
+- **Only signed-in RustDesk apps can start sessions**: the RustDesk app has to be signed in to a NeoDesk account. Without a valid sign-in the server refuses the session and logs `Rejected outbound from ...` with `reason=initiator_login_required`. Sessions from the browser are not affected.
 - **Only accounts that may connect to devices can start sessions**: the account the app is signed in to also needs the permission to connect to devices. The server reads the account's role for every new session, so a changed role counts at once.
 
 Click **Save connection strategy** after changing them. They are also the variables `LOGGED_IN_ONLY_INITIATOR` and `OPERATOR_ONLY_OUTBOUND`; see [Connections](/docs/operations/configuration#connections).
@@ -72,7 +72,7 @@ id:123456789, stolen laptop
 The server reads the file at start. On Linux it reads it again when it gets `SIGHUP`:
 
 ```bash
-sudo systemctl kill -s HUP betterdesk-server
+sudo systemctl kill -s HUP neodesk-server
 ```
 
 ## Protect the secrets

@@ -1,6 +1,6 @@
-# BetterDesk website and docs
+# NeoDesk website and docs
 
-The website for betterde.sk: the landing page and the documentation under
+The website for neode.sk: the landing page and the documentation under
 `/docs`. `node build.mjs` turns this folder into static files in `dist/`, which
 any web server can host.
 
@@ -32,9 +32,9 @@ shots.json           the console screenshots: page, steps to reach the state, an
 shots.mjs            takes every screenshot in light and dark from a running console
 ```
 
-`SITE_URL=https://beta.betterde.sk node build.mjs` builds for another address.
+`SITE_URL=https://beta.neode.sk node build.mjs` builds for another address.
 `DIST_DIR=<folder>` writes the build there instead of `dist/`.
-`BD_VERSION=3.6.0` sets the version by hand; without it the build reads the
+`ND_VERSION=3.6.0` sets the version by hand; without it the build reads the
 repository's VERSION file. `DOCS_DIR=<folder>` builds another content folder.
 
 A new section needs a folder under `content/docs` and an entry in
@@ -110,7 +110,7 @@ Use them rarely: most pages need none.
 
 Screenshots are in `content/screenshots/` in a dark and a light version.
 `shots.mjs` retakes them from a running console, as `shots.json` describes
-each one; `BD_ADMIN_PASSWORD_FILE=<file> node shots.mjs [name ...]`. A run of
+each one; `ND_ADMIN_PASSWORD_FILE=<file> node shots.mjs [name ...]`. A run of
 every shot deletes the ones `shots.json` no longer names. It needs
 Playwright with Chromium (`npm install --no-save playwright` and
 `npx playwright install chromium`, or `PLAYWRIGHT_MODULE` pointing at an
@@ -131,7 +131,7 @@ Fence code with its language (`bash`, `powershell`, `yaml`, `nginx`, `ini`,
 reader should paste into it, without a `$` prompt. Put output in a separate
 `text` block.
 
-`{{VERSION}}` anywhere in a page becomes the current BetterDesk version.
+`{{VERSION}}` anywhere in a page becomes the current NeoDesk version.
 
 ### Tables
 

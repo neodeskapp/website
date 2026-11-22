@@ -1,19 +1,19 @@
 ---
 title: Introduction
-description: What BetterDesk is, what it is made of, and what you need to run it.
+description: What NeoDesk is, what it is made of, and what you need to run it.
 order: 1
 ---
 
-BetterDesk is a self-hosted server for the RustDesk remote desktop client, with a
+NeoDesk is a self-hosted server for the RustDesk remote desktop client, with a
 web console for your devices and the people who use them. This page explains
 what it is made of and what you need before you install it. It describes
-BetterDesk {{VERSION}}.
+NeoDesk {{VERSION}}.
 
 ## What it does
 
 A RustDesk client needs a server to register with, to find other clients, and to
 relay a session when two computers can't connect directly. RustDesk's
-open-source server does this with two programs, hbbs and hbbr. BetterDesk does
+open-source server does this with two programs, hbbs and hbbr. NeoDesk does
 the same work and adds:
 
 - the API that the RustDesk client uses to sign in and to sync its address book
@@ -23,12 +23,12 @@ the same work and adds:
 
 Your devices can keep using the standard RustDesk client, on computers and on
 phones: you point it at your server and nothing else changes on the client side.
-BetterDesk also has its own client for Windows, macOS and Linux, which joins
+NeoDesk also has its own client for Windows, macOS and Linux, which joins
 your server from an invite link.
 
 ## What it is made of
 
-One program, `betterdesk-server`, does all of it. All three install methods start
+One program, `neodesk-server`, does all of it. All three install methods start
 it in the same mode, where one process runs:
 
 - the ID server, which does hbbs's job: clients register here and find each other
@@ -57,21 +57,21 @@ The server keeps most of its data in two places:
 
 The console also keeps files in its data folder, such as uploaded pictures and
 fonts, chat files and its own backups. Nothing of it leaves the server on its
-own; [Privacy](/docs/project/privacy) lists every host BetterDesk contacts.
+own; [Privacy](/docs/project/privacy) lists every host NeoDesk contacts.
 
-## BetterDesk and RustDesk
+## NeoDesk and RustDesk
 
-BetterDesk works with the stock RustDesk client from RustDesk's own release
+NeoDesk works with the stock RustDesk client from RustDesk's own release
 page. You don't build a custom client. The console's Overview page shows the
 four values a client needs: ID server, relay server, API server and key.
 
-The BetterDesk client needs none of them typed in. **Add a computer** on the
+The NeoDesk client needs none of them typed in. **Add a computer** on the
 Devices page makes an invite link that installs it and joins the computer to
 your server, see [Add a computer](/docs/console/add-a-computer).
 
-The code is at [github.com/neodeskapp/betterdesk](https://github.com/neodeskapp/betterdesk).
-It is a fork of [UNITRONIX/BetterDesk](https://github.com/UNITRONIX/BetterDesk)
-and is licensed under the [AGPL-3.0](/docs/project/license).
+The code is at [github.com/neodeskapp/neodesk](https://github.com/neodeskapp/neodesk).
+It started as a fork of [BetterDesk](https://github.com/UNITRONIX/BetterDesk) by
+UNITRONIX and is licensed under the [AGPL-3.0](/docs/project/license).
 
 ## What you need
 
@@ -98,11 +98,11 @@ there, such as a public IP address or a domain name.
 
 ## Where to go next
 
-1. Install BetterDesk with [Docker](/docs/getting-started/docker), on
+1. Install NeoDesk with [Docker](/docs/getting-started/docker), on
    [Linux](/docs/getting-started/linux) or on [Windows](/docs/getting-started/windows).
 2. [Sign in for the first time](/docs/getting-started/first-sign-in), change the
    admin password and set the address clients use.
-3. Add your computers: with the BetterDesk client through
+3. Add your computers: with the NeoDesk client through
    [Add a computer](/docs/console/add-a-computer), or
    [connect a RustDesk client](/docs/getting-started/connect-a-client).
 4. Learn the console, starting with the [Overview page](/docs/console/overview)

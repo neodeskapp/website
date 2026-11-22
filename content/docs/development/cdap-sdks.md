@@ -17,7 +17,7 @@ Both SDKs have the same example, a simulated greenhouse with a temperature, a hu
 
 ## Python SDK
 
-The package `betterdesk_cdap` is in [`sdks/python`](https://github.com/neodeskapp/betterdesk/tree/main/sdks/python). It needs Python 3.9 or newer and `websockets` 12 or newer. Install it from a checkout of the repository and start the example:
+The package `neodesk_cdap` is in [`sdks/python`](https://github.com/neodeskapp/neodesk/tree/main/sdks/python). It needs Python 3.9 or newer and `websockets` 12 or newer. Install it from a checkout of the repository and start the example:
 
 ```bash
 pip install ./sdks/python
@@ -30,7 +30,7 @@ A small device with a temperature, a switch and an alert:
 import asyncio
 import os
 
-from betterdesk_cdap import CDAPBridge, gauge, toggle
+from neodesk_cdap import CDAPBridge, gauge, toggle
 
 bridge = CDAPBridge(
     server="ws://desk.example.com:21122/cdap",
@@ -67,18 +67,18 @@ asyncio.run(main())
 What the SDK does:
 
 - **Connecting**: it asks for the subprotocol `cdap-v1` and signs in with `auth_method` `api_key` (`api_key`), `device_token` (`device_token`) or `user_password` (`username`, `password`). It has no field for a two-factor code. Then it registers a manifest built from the constructor (`device_name`, `device_type`, `vendor`, `model`, `firmware`, `tags`, `capabilities`, `heartbeat_sec`, and a bridge block when `bridge_name` is set, with `bridge_version` and `bridge_protocol`), the widgets and the alerts, and waits for the gateway to confirm it. `capabilities` is `["telemetry", "commands"]` unless you pass others.
-- **Reconnecting**: after a lost or refused connection it waits `reconnect_sec` (5 by default), twice as long each time up to `max_reconnect` (300), plus up to a quarter more at random. It keeps trying after a refused sign-in or registration; the gateway's reason is in its log, the logger `betterdesk_cdap`.
+- **Reconnecting**: after a lost or refused connection it waits `reconnect_sec` (5 by default), twice as long each time up to `max_reconnect` (300), plus up to a quarter more at random. It keeps trying after a refused sign-in or registration; the gateway's reason is in its log, the logger `neodesk_cdap`.
 - **Values**: `update_state(id, value)` and `bulk_update({id: value, ...})` send values at once; both are coroutines to `await`. Values set before the device is registered are kept and go out with the first heartbeat. Every heartbeat, each `heartbeat_sec` seconds (15 by default, 5 to 300), sends again all values the SDK knows.
 - **Commands**: `on_command("widget id")` registers a handler for one widget, `on_command()` one for all others. A handler may be a coroutine function or a plain function, and gets `action`, `value`, `widget_id`, `operator` and `reason` as keyword arguments. What it returns goes back as the result with status `ok`; an exception goes back as `error` with its message, and so does a command for a widget without a handler. After a `set` the SDK sends the new value at once, so the console shows the control's new state.
 - **Alerts**: `add_alert(id, condition, label=, severity=, message=)` adds an alert to the manifest, as in [Alerts](/docs/development/cdap-protocol#alerts). The gateway shows it under **Active alerts** while the condition holds. A device can't raise an alert any other way.
 - **Logs**: `send_log(level, message, context)` sends a `log` message, with `level` `debug`, `info`, `warning`, `error` or `critical`.
 - **Widgets**: `gauge`, `toggle`, `button`, `text_widget`, `led`, `slider`, `select`, `chart` and `table` build the widget types of the same names, each with a default `permissions` entry. `Widget(...)` takes every field of [Widgets](/docs/development/cdap-protocol#widgets).
 
-The [package README](https://github.com/neodeskapp/betterdesk/blob/main/sdks/python/README.md) lists the methods.
+The [package README](https://github.com/neodeskapp/neodesk/blob/main/sdks/python/README.md) lists the methods.
 
 ## Node.js SDK
 
-The package `betterdesk-cdap` in [`sdks/nodejs`](https://github.com/neodeskapp/betterdesk/tree/main/sdks/nodejs) is written in TypeScript and needs Node.js 22 or newer (22.18 or newer for the example, which Node runs as TypeScript). Build it and start the example:
+The package `neodesk-cdap` in [`sdks/nodejs`](https://github.com/neodeskapp/neodesk/tree/main/sdks/nodejs) is written in TypeScript and needs Node.js 22 or newer (22.18 or newer for the example, which Node runs as TypeScript). Build it and start the example:
 
 ```bash
 cd sdks/nodejs
@@ -87,10 +87,10 @@ npm run build
 CDAP_SERVER=ws://desk.example.com:21122/cdap CDAP_API_KEY=... node examples/greenhouse.mts
 ```
 
-To use it in your project, run `npm install /path/to/betterdesk/sdks/nodejs` there after the build. A small device:
+To use it in your project, run `npm install /path/to/neodesk/sdks/nodejs` there after the build. A small device:
 
 ```js
-const { CDAPBridge, gauge, toggle } = require('betterdesk-cdap');
+const { CDAPBridge, gauge, toggle } = require('neodesk-cdap');
 
 const bridge = new CDAPBridge({
   server: 'ws://desk.example.com:21122/cdap',
@@ -122,11 +122,11 @@ It works like the Python SDK, with these differences:
 - **Commands**: the handler gets the command (`command_id`, `widget_id`, `action`, `value`, `operator`, `reason`) and may return a value or a promise. What it returns goes back as the result and becomes the widget's value at once.
 - **Events**: `connected`, `registered`, `command`, `disconnected`, `error`, `message`, and the type of any other message the server sends. Listen for `error`: as with any Node.js event emitter, an `error` event without a listener throws.
 
-The [package README](https://github.com/neodeskapp/betterdesk/blob/main/sdks/nodejs/README.md) has the details.
+The [package README](https://github.com/neodeskapp/neodesk/blob/main/sdks/nodejs/README.md) has the details.
 
 ## Reference bridges
 
-The bridges in [`bridges`](https://github.com/neodeskapp/betterdesk/tree/main/bridges) are Python scripts on the Python SDK. Each reads a JSON config file: a `cdap` block for the connection (`server`, `api_key`, `device_id`, `device_name`, `device_type`, `bridge_name`, `heartbeat_sec`) and a block for the other side. `device_id` is required, and two bridges on one server need different ones. Without a `device_type` the Modbus bridge registers as `scada`, the SNMP bridge as `network` and the REST bridge as `iot`.
+The bridges in [`bridges`](https://github.com/neodeskapp/neodesk/tree/main/bridges) are Python scripts on the Python SDK. Each reads a JSON config file: a `cdap` block for the connection (`server`, `api_key`, `device_id`, `device_name`, `device_type`, `bridge_name`, `heartbeat_sec`) and a block for the other side. `device_id` is required, and two bridges on one server need different ones. Without a `device_type` the Modbus bridge registers as `scada`, the SNMP bridge as `network` and the REST bridge as `iot`.
 
 | Bridge | Script | Talks to | What it does |
 |---|---|---|---|
@@ -148,7 +148,7 @@ cp config.example.json config.json
 python bridge_modbus.py --config config.json --log-level INFO
 ```
 
-The [bridges README](https://github.com/neodeskapp/betterdesk/blob/main/bridges/README.md) describes the config pattern.
+The [bridges README](https://github.com/neodeskapp/neodesk/blob/main/bridges/README.md) describes the config pattern.
 
 ## The flow builder
 

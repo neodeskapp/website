@@ -4,7 +4,7 @@ description: What the server trusts and how the code protects each boundary, fro
 order: 11
 ---
 
-This page describes the security design as the code implements it, for people who review or change it. The settings an operator turns on are on [Hardening](/docs/operations/security), and the place to report a vulnerability is the repository's [security policy](https://github.com/neodeskapp/betterdesk/blob/main/SECURITY.md).
+This page describes the security design as the code implements it, for people who review or change it. The settings an operator turns on are on [Hardening](/docs/operations/security), and the place to report a vulnerability is the repository's [security policy](https://github.com/neodeskapp/neodesk/blob/main/SECURITY.md).
 
 ## Trust boundaries
 
@@ -13,7 +13,7 @@ This page describes the security design as the code implements it, for people wh
 | Internet to the ID server and relay (21115 to 21119) | RustDesk clients | Device identity, the key exchange on TCP, optional TLS, enrollment, the check of who may start a session, rate limits |
 | Internet to the client API (21121), and scripts to the API (21114 on Linux and Windows) | RustDesk clients, scripts | Sign-in tokens, API keys in a header, device tokens, rate limits |
 | Browser to the console (5000 or 5443) | People | The session cookie, the CSRF token, roles and permissions, TLS from the console or a reverse proxy |
-| Invite and quick support links on the console | Anyone with a link, BetterDesk's client | A code that works for a limited time and number of uses, a rate limit per address, see [Join and support codes](#join-and-support-codes) |
+| Invite and quick support links on the console | Anyone with a link, NeoDesk's client | A code that works for a limited time and number of uses, a rate limit per address, see [Join and support codes](#join-and-support-codes) |
 | Console to the API server | The console | Nothing crosses a network: the console calls the API server's handler in the same process, as the console's API key |
 | Console to the ID server and relay | The browser's remote desktop | A proof only this process can make, see [The browser's bridge](#the-browsers-bridge) |
 | Client to client | The remote session | Encrypted end to end by the two clients; the relay only copies bytes |
@@ -82,7 +82,7 @@ Rate limits, lockouts and the logs use the client's address. The API and the con
 
 ### The console session
 
-The cookie is `bd.sid`, or `betterdesk.sid` when the console is set up for HTTPS. Its value is a random 24-byte ID with an HMAC-SHA256 over it, keyed with the session secret. The session itself is a row in `panel_sessions`; the cookie holds nothing else. The cookie is `HttpOnly` and `SameSite=Lax`. It is `Secure` when the console serves HTTPS, and also when a request came over HTTPS through a reverse proxy the console trusts (`TRUST_PROXY`), which reports it in `X-Forwarded-Proto`. A session ends when it was idle too long or when its absolute lifetime is over; the defaults are on [Hardening](/docs/operations/security#sign-in).
+The cookie is `bd.sid`, or `neodesk.sid` when the console is set up for HTTPS. Its value is a random 24-byte ID with an HMAC-SHA256 over it, keyed with the session secret. The session itself is a row in `panel_sessions`; the cookie holds nothing else. The cookie is `HttpOnly` and `SameSite=Lax`. It is `Secure` when the console serves HTTPS, and also when a request came over HTTPS through a reverse proxy the console trusts (`TRUST_PROXY`), which reports it in `X-Forwarded-Proto`. A session ends when it was idle too long or when its absolute lifetime is over; the defaults are on [Hardening](/docs/operations/security#sign-in).
 
 Writes to the console's API, apart from the client and device API, need a CSRF token: 64 random bytes, sent back in the `X-CSRF-Token` header and checked against a cookie that holds the token and the SHA-256 of the token followed by the session secret.
 
@@ -124,7 +124,7 @@ The server's events (sign-ins, refused registrations, sessions allowed and denie
 
 ## Releases
 
-Each release has a manifest of its binaries and their SHA-256 sums, signed with an Ed25519 key whose public half is compiled into the server. The updater and the installers refuse a release without a valid signature and check each binary's SHA-256 (the installers skip both only with `--skip-verify` or `-SkipVerify`), and `betterdesk-server verify-release` checks a downloaded binary by hand. The same key signs the client's releases: the release cache uses one only when its `SHA256SUMS` carries a valid signature, and checks each package against it. See [What a release holds](/docs/development/releasing#what-a-release-holds).
+Each release has a manifest of its binaries and their SHA-256 sums, signed with an Ed25519 key whose public half is compiled into the server. The updater and the installers refuse a release without a valid signature and check each binary's SHA-256 (the installers skip both only with `--skip-verify` or `-SkipVerify`), and `neodesk-server verify-release` checks a downloaded binary by hand. The same key signs the client's releases: the release cache uses one only when its `SHA256SUMS` carries a valid signature, and checks each package against it. See [What a release holds](/docs/development/releasing#what-a-release-holds).
 
 ## Gaps that remain
 

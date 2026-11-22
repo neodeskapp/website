@@ -52,7 +52,7 @@ If the values point at this computer only (localhost), a warning says that other
 
 The buttons under the values:
 
-- **Pair with code** creates a one-time code for a BetterDesk agent. The code works for 10 minutes. Only accounts that may approve devices see this button.
+- **Pair with code** creates a one-time code for a NeoDesk agent. The code works for 10 minutes. Only accounts that may approve devices see this button.
 - **Copy all** copies the four values, one per line, each with its name.
 - **Show QR** shows a QR code that the RustDesk app on a phone can scan to fill in the server settings.
 - **More** has **Copy deploy string** and **Windows install script (Intune)**.

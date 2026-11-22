@@ -12,16 +12,16 @@ These run on pushes to `main` and on pull requests, most of them only when their
 
 | Workflow | Runs when these change | What it does |
 |----------|------------------------|--------------|
-| Go Server CI | `betterdesk-server/`, `web-ui/` | `go vet` and `govulncheck`; the Go tests with the race detector, dealt out to six runners with 30 minutes per package; the mesh interop tests; and the release build: the web app built, the language files checked with `i18n-check`, the web app embedded and the server built and asked for `-version`. |
-| Web UI CI | `web-ui/`, `betterdesk-server/protos/` | Installs the web app's packages with npm 11, fails on a high or critical `npm audit` finding, then runs `lint`, `check`, `test` and `build`. |
-| Installer CI | the installers, their test scripts, `betterdesk-server/cli`, the updater, Docker and compose files | Checks that the top-level scripts are executable in git, parses every Bash installer and runs ShellCheck on it, runs the installer test scripts, parses `betterdesk.ps1` on Windows, runs the Go tests of the commands and packages the installers use, runs the `--help` path of each Bash installer, and validates the three compose files. It also tests `scripts/docker-latest.sh`, which decides when the Docker images take `latest`. See [the installers' tests](/docs/development/installers#tests). |
-| CDAP SDK CI | `sdks/`, `bridges/`, `betterdesk-server/cdap/` | Builds the Node.js SDK, then runs each SDK's example and each bridge with its example config against the gateway (`go test ./cdap/`). |
-| Version Verify | any file that carries the version, `CHANGELOG.md`, `betterdesk-server/cmd/repotool/` | `bump-version --verify`. |
+| Go Server CI | `neodesk-server/`, `web-ui/` | `go vet` and `govulncheck`; the Go tests with the race detector, dealt out to six runners with 30 minutes per package; the mesh interop tests; and the release build: the web app built, the language files checked with `i18n-check`, the web app embedded and the server built and asked for `-version`. |
+| Web UI CI | `web-ui/`, `neodesk-server/protos/` | Installs the web app's packages with npm 11, fails on a high or critical `npm audit` finding, then runs `lint`, `check`, `test` and `build`. |
+| Installer CI | the installers, their test scripts, `neodesk-server/cli`, the updater, Docker and compose files | Checks that the top-level scripts are executable in git, parses every Bash installer and runs ShellCheck on it, runs the installer test scripts, parses `neodesk.ps1` on Windows, runs the Go tests of the commands and packages the installers use, runs the `--help` path of each Bash installer, and validates the three compose files. It also tests `scripts/docker-latest.sh`, which decides when the Docker images take `latest`. See [the installers' tests](/docs/development/installers#tests). |
+| CDAP SDK CI | `sdks/`, `bridges/`, `neodesk-server/cdap/` | Builds the Node.js SDK, then runs each SDK's example and each bridge with its example config against the gateway (`go test ./cdap/`). |
+| Version Verify | any file that carries the version, `CHANGELOG.md`, `neodesk-server/cmd/repotool/` | `bump-version --verify`. |
 | Secret Scan | every push and pull request | gitleaks over the files, the sensitive path check, the repotool checks that no script or Go file presents port 21120 as live, of the pairing texts and of JavaScript files, and the security regression check (`scripts/check-security-regressions.sh`, with its own test). |
 
 All of them except Web UI CI cancel a run when a newer push to the same branch or pull request starts one, so a cancelled run is not a failure.
 
-Installer CI has two more jobs that run only when you start it by hand, with an image tag (`latest` by default): the hardened bind mount test, and a runtime smoke test that starts the published image with `docker-compose.quick.single.yml`, checks `/api/health` on 21121 and `/health` on 5000, and runs `betterdesk-server check` inside the container.
+Installer CI has two more jobs that run only when you start it by hand, with an image tag (`latest` by default): the hardened bind mount test, and a runtime smoke test that starts the published image with `docker-compose.quick.single.yml`, checks `/api/health` on 21121 and `/health` on 5000, and runs `neodesk-server check` inside the container.
 
 ## Release workflows
 
@@ -51,7 +51,7 @@ So one push can show several runs, and when several of them fail, the causes are
 
 ## Common failures
 
-**Version Verify: `betterdesk.sh: expected X, got Y`.** A file names another version than `VERSION`. In `betterdesk-server`:
+**Version Verify: `neodesk.sh: expected X, got Y`.** A file names another version than `VERSION`. In `neodesk-server`:
 
 ```bash
 go run ./cmd/repotool bump-version --sync
@@ -79,8 +79,8 @@ go run ./cmd/repotool bump-version --verify
 The commands behind the required checks, from the root of the checkout:
 
 ```bash
-(cd betterdesk-server && go run ./cmd/repotool bump-version --verify)
-(cd betterdesk-server && go vet ./... && go test -race -count=1 -timeout 30m ./...)
+(cd neodesk-server && go run ./cmd/repotool bump-version --verify)
+(cd neodesk-server && go vet ./... && go test -race -count=1 -timeout 30m ./...)
 (cd web-ui && npx -y npm@11.6.2 ci && npm run lint && npm run check && npm test && npm run build)
 gitleaks detect --source . --config .gitleaks.toml
 bash scripts/check-no-sensitive-paths.sh

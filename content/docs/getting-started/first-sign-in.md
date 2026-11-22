@@ -10,7 +10,7 @@ check the address that RustDesk clients get.
 
 ## Open the console
 
-The address depends on how you installed BetterDesk:
+The address depends on how you installed NeoDesk:
 
 | Install | Console address |
 |---------|-----------------|
@@ -118,7 +118,7 @@ see [Quick support](/docs/console/quick-support).
 
 ## Next steps
 
-- [Add a computer](/docs/console/add-a-computer) with the BetterDesk client, or
+- [Add a computer](/docs/console/add-a-computer) with the NeoDesk client, or
   [connect a RustDesk client](/docs/getting-started/connect-a-client)
 - [The Overview page](/docs/console/overview) and [the device list](/docs/console/devices)
 - [Enrollment](/docs/console/enrollment), if new devices should wait for approval

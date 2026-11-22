@@ -1,16 +1,16 @@
 ---
 title: Architecture
-description: How the repository is laid out, what runs inside the one betterdesk-server process, how the console carries its web app, where the data lives, and the telemetry contract for BetterDesk's own clients.
+description: How the repository is laid out, what runs inside the one neodesk-server process, how the console carries its web app, where the data lives, and the telemetry contract for NeoDesk's own clients.
 order: 4
 ---
 
-This page is for people who change BetterDesk's code. It explains where things are in the repository, what the server binary starts, how the web console and its web app fit into it, how the data is stored, and the contract between the server and BetterDesk's own desktop clients.
+This page is for people who change NeoDesk's code. It explains where things are in the repository, what the server binary starts, how the web console and its web app fit into it, how the data is stored, and the contract between the server and NeoDesk's own desktop clients.
 
 ## The repository
 
 | Path | What it holds |
 |---|---|
-| `betterdesk-server/` | The Go server: ID server, relay, API, web console and the gateways for CDAP and MeshAgent. One Go module, built without cgo. |
+| `neodesk-server/` | The Go server: ID server, relay, API, web console and the gateways for CDAP and MeshAgent. One Go module, built without cgo. |
 | `web-ui/` | The console's pages: Svelte 5 and SvelteKit as a single-page app, built with Vite. The server binary carries the build. |
 | `sdks/` | CDAP client libraries for Python and Node.js. |
 | `bridges/` | Example CDAP bridges for Modbus, SNMP and REST webhooks, built on the Python SDK. |
@@ -20,22 +20,22 @@ This page is for people who change BetterDesk's code. It explains where things a
 | `scripts/` | Installer tests, the security suite, the local gate, the build toolchain installer, the upstream watch. |
 | `contrib/` | Additions from the community, such as an rc.d script for FreeBSD. |
 | `.github/` | CI workflows, Dependabot, CodeQL and the pull request template. |
-| `Dockerfile`, `Dockerfile.server` | The `betterdesk` and `betterdesk-server` images. Both build the web app with Node.js, the server with Go, and run on Alpine. |
+| `Dockerfile`, `Dockerfile.server` | The `neodesk` and `neodesk-server` images. Both build the web app with Node.js, the server with Go, and run on Alpine. |
 | `docker-compose.single.yml`, `docker-compose.quick.single*.yml` | The compose files. |
-| `install.sh`, `betterdesk.sh`, `betterdesk.ps1`, `betterdesk-docker.sh` | The installers. |
+| `install.sh`, `neodesk.sh`, `neodesk.ps1`, `neodesk-docker.sh` | The installers. |
 | `VERSION`, `CHANGELOG.md` | The product version and the change log. |
 
-Some folders have a short README of their own, which stays next to the code: [web-ui](https://github.com/neodeskapp/betterdesk/blob/main/web-ui/README.md), [sdks](https://github.com/neodeskapp/betterdesk/blob/main/sdks/README.md), [bridges](https://github.com/neodeskapp/betterdesk/blob/main/bridges/README.md), [remote-gateway](https://github.com/neodeskapp/betterdesk/blob/main/remote-gateway/README.md) and the [console's contract suite](https://github.com/neodeskapp/betterdesk/blob/main/betterdesk-server/console/contract/README.md).
+Some folders have a short README of their own, which stays next to the code: [web-ui](https://github.com/neodeskapp/neodesk/blob/main/web-ui/README.md), [sdks](https://github.com/neodeskapp/neodesk/blob/main/sdks/README.md), [bridges](https://github.com/neodeskapp/neodesk/blob/main/bridges/README.md), [remote-gateway](https://github.com/neodeskapp/neodesk/blob/main/remote-gateway/README.md) and the [console's contract suite](https://github.com/neodeskapp/neodesk/blob/main/neodesk-server/console/contract/README.md).
 
 ## One binary
 
-`betterdesk-server` is the whole server. It replaces RustDesk's hbbs and hbbr and runs one mode, `all`. `MODE=signal` and `MODE=relay` are refused at start: the relay pairs only connections that the ID server of the same process authorized, and that authorization lives in memory, so the two can't run apart.
+`neodesk-server` is the whole server. It replaces RustDesk's hbbs and hbbr and runs one mode, `all`. `MODE=signal` and `MODE=relay` are refused at start: the relay pairs only connections that the ID server of the same process authorized, and that authorization lives in memory, so the two can't run apart.
 
 ### What the process starts
 
 In this order:
 
-1. It reads the env file that `BETTERDESK_ENV_FILE` names, adds the settings a new release brought to it, and checks whether a freshly installed binary has to be rolled back.
+1. It reads the env file that `NEODESK_ENV_FILE` names, adds the settings a new release brought to it, and checks whether a freshly installed binary has to be rolled back.
 2. It stops before anything listens when two listeners would take the same port.
 3. It loads the key pair (`id_ed25519` and `id_ed25519.pub`) or makes one.
 4. It opens the database and creates what is missing in it.
@@ -100,7 +100,7 @@ The console is the package `console`. It listens on its own port, `CONSOLE_PORT`
 - The client API port, `API_PORT` (21121), faces the internet for RustDesk clients. With `RUSTDESK_API_PROXY` on, which is the default, it passes the client API to the API server in the same process. See [Ports](/docs/operations/ports#the-api-port-on-linux-and-windows) for which port clients use on which install.
 - Remote desktop in the browser opens `/ws/rendezvous` and `/ws/relay` on the console. `console/wsrelay` bridges them to the ID server and the relay in the same process. The bridge's first frame on the ID server connection is a proof that only this process can make, see [Security model](/docs/development/security-model#the-browsers-bridge).
 - `console/onboard` and `console/routes/onboard` are [Add a computer](/docs/console/add-a-computer) and [Quick support](/docs/console/quick-support): invites (join codes), quick support sessions (support codes), the data behind the pages `/join/<code>` and `/s/<code>`, and the client package served under the code's file name. The API server keeps the codes and answers their routes only to the console in the same process.
-- `console/clientrelease` is the client release cache. It takes the official client packages from the releases of the client fork (`BETTERDESK_CLIENT_REPO`; the newest pre-release while the fork has no stable release, or the release in `BETTERDESK_CLIENT_RELEASE_TAG`), uses a release only when its `SHA256SUMS` carries a valid release signature, and downloads each package once, checks it against the sums and keeps it in `client-releases` in the data folder.
+- `console/clientrelease` is the client release cache. It takes the official client packages from the releases of the client fork (`NEODESK_CLIENT_REPO`; the newest pre-release while the fork has no stable release, or the release in `NEODESK_CLIENT_RELEASE_TAG`), uses a release only when its `SHA256SUMS` carries a valid release signature, and downloads each package once, checks it against the sums and keeps it in `client-releases` in the data folder.
 - `console/meshproxy` passes the MeshCentral sockets to the MeshCentral gateway in the same process. `console/cdapproxy` passes the browser's sockets for a CDAP device's terminal, desktop, video, files and audio to the API server, after the console's own checks.
 - The console's texts are in `console/static/files/lang`, one file per language, 26 in all, with English in `en.json`. `go run ./cmd/repotool i18n-check --system console` checks that the files agree; see [Translations](/docs/development/translations).
 - `console/contract` is a black-box suite with recorded answers for every console route and every role; it checks that the console still gives them. See [The contract suite](/docs/development/tests-and-checks#the-contract-suite).
@@ -108,7 +108,7 @@ The console is the package `console`. It listens on its own port, `CONSOLE_PORT`
 ### How the web app gets into the binary
 
 1. `npm run build` in `web-ui` writes the app to `web-ui/build`. Building it needs Node.js 22.17 or newer; the running server needs no Node.js.
-2. `go run ./cmd/embed-webui` in `betterdesk-server` copies the build into `console/webui/dist` and records each file's modification time.
+2. `go run ./cmd/embed-webui` in `neodesk-server` copies the build into `console/webui/dist` and records each file's modification time.
 3. `go build` embeds that folder. A binary built without step 2 has no web app; `WEB_UI_DIR` then names a build on disk, which is also how development works.
 
 [Building from source](/docs/development/building) has the commands.
@@ -128,7 +128,7 @@ The server works on one database. `DATABASE_URL` names it: an address that start
 Two stores share that database:
 
 - **The server's store**, package `db`. One interface (`db/database.go`) with a SQLite and a PostgreSQL implementation. It holds devices, accounts, API keys, device tokens, the server events, device groups and folders, organizations, billing, telemetry, and `server_config`, a table of keys and values for settings, secrets the server makes, the hashes of join, support and pairing codes, and queue entries such as `pending_device_<id>`.
-- **The console's store**, package `console/store`. Its queries are written once, with `?` placeholders, and run on both databases. It creates 55 tables (tickets, activity, alerts, reports, agent bundles and more), and the session package adds `panel_sessions`. [schema.md](https://github.com/neodeskapp/betterdesk/blob/main/betterdesk-server/console/store/schema.md) lists every step of its migration.
+- **The console's store**, package `console/store`. Its queries are written once, with `?` placeholders, and run on both databases. It creates 55 tables (tickets, activity, alerts, reports, agent bundles and more), and the session package adds `panel_sessions`. [schema.md](https://github.com/neodeskapp/neodesk/blob/main/neodesk-server/console/store/schema.md) lists every step of its migration.
 
 On PostgreSQL the console uses the server's connection pool. On SQLite it opens the same file itself, with one connection for writes and four read-only ones, in WAL mode, and waits up to five seconds when the file is locked.
 
@@ -148,10 +148,10 @@ The import:
 `auth.db` is only read, never changed or deleted. To run the import by hand without starting the server, stop the server first and use the flags below. `-migrate-sqlite-auth-dry-run` imports into a copy in a temporary folder; both print a JSON report of what they did.
 
 ```bash
-AUTH_DB_PATH=/path/to/auth.db betterdesk-server -db /path/to/db_v2.sqlite3 \
+AUTH_DB_PATH=/path/to/auth.db neodesk-server -db /path/to/db_v2.sqlite3 \
   -migrate-sqlite-auth -migrate-sqlite-auth-dry-run
 
-AUTH_DB_PATH=/path/to/auth.db betterdesk-server -db /path/to/db_v2.sqlite3 \
+AUTH_DB_PATH=/path/to/auth.db neodesk-server -db /path/to/db_v2.sqlite3 \
   -migrate-sqlite-auth -migrate-sqlite-auth-backup-dir /path/to/backups
 ```
 
@@ -159,7 +159,7 @@ AUTH_DB_PATH=/path/to/auth.db betterdesk-server -db /path/to/db_v2.sqlite3 \
 
 ## The device telemetry contract
 
-BetterDesk's own desktop clients report more than the stock RustDesk client: their kind, their capabilities, inventory, and the results of commands. They do it through the same `POST /api/heartbeat` the RustDesk client uses, with extra fields. A heartbeat without them is an ordinary RustDesk heartbeat and is answered as before.
+NeoDesk's own desktop clients report more than the stock RustDesk client: their kind, their capabilities, inventory, and the results of commands. They do it through the same `POST /api/heartbeat` the RustDesk client uses, with extra fields. A heartbeat without them is an ordinary RustDesk heartbeat and is answered as before.
 
 ### Heartbeat fields
 
@@ -168,18 +168,18 @@ BetterDesk's own desktop clients report more than the stock RustDesk client: the
 | `id`, `uuid` | The device ID and the UUID it registered with. A plain heartbeat with another UUID is answered as for an unknown device. |
 | `cpu`, `memory`, `disk` | Usage in percent, stored when above 0, also from a plain heartbeat. |
 | `telemetry_schema` | The contract's version, `1`. |
-| `product_sku` | `betterdesk-desktop` for the managed desktop client, `betterdesk-support` for the support client. |
+| `product_sku` | `neodesk-desktop` for the managed desktop client, `neodesk-support` for the support client. |
 | `conn_mode` | `normal` or `incoming-only`. |
 | `capabilities` | What the client can do, such as `connection-mode.remote-control`. |
 | `telemetry` | Metrics, snapshots and command results, see below. |
-| `betterdesk_envelope`, `telemetry_envelope` | The signed and encrypted forms, see below. |
+| `neodesk_envelope`, `telemetry_envelope` | The signed and encrypted forms, see below. |
 | `effective_conn_mode`, `policy_revision`, `policy_status`, `last_command_id`, `policy_error` | The client's report on the last connection mode command. |
 
-The server classifies a device from `product_sku`: `betterdesk-support` is a support client, `betterdesk-desktop` is a desktop client, also while it runs incoming-only. A device without a SKU that reports `incoming-only` counts as a support client. What a client reports about itself never authorizes anything by itself: the server also checks the operator's permission.
+The server classifies a device from `product_sku`: `neodesk-support` is a support client, `neodesk-desktop` is a desktop client, also while it runs incoming-only. A device without a SKU that reports `incoming-only` counts as a support client. What a client reports about itself never authorizes anything by itself: the server also checks the operator's permission.
 
 ### Telemetry, snapshots and commands
 
-The `telemetry` object holds `telemetry_schema`, `sample_id`, `collected_at`, `metrics`, a `status` map, `snapshots` and `results`. The server stores it only when the device signed it: inside `betterdesk_envelope`, or in its own `telemetry_envelope`. A plain heartbeat's `telemetry` is ignored.
+The `telemetry` object holds `telemetry_schema`, `sample_id`, `collected_at`, `metrics`, a `status` map, `snapshots` and `results`. The server stores it only when the device signed it: inside `neodesk_envelope`, or in its own `telemetry_envelope`. A plain heartbeat's `telemetry` is ignored.
 
 - A snapshot has `kind`, `sample_id`, `status`, `collected_at` and `data`. `GET /api/peers/{id}/telemetry` returns the latest of each kind: `identity`, `metrics`, `hardware`, `services`, `processes`, `events`, `activity` and `files`.
 - A status is `ok`, `unsupported`, `permission_denied`, `unavailable` or `error`; anything else is stored as `error`.
@@ -196,15 +196,15 @@ The envelope protects telemetry and commands also where the API runs on plain HT
 3. The signature is Ed25519 with the device's own key, the one it registered with the ID server, over `version|device_id|sequence|server_key_id|ephemeral_public_key|nonce|ciphertext`, with `|response_public_key` at the end when present.
 4. The server refuses a wrong signature, another device ID, another server key and a `sequence` that is not higher than the last one. It keeps the last sequence per device in `server_config` (`telemetry_seq_<id>`), so a restart doesn't reset it; a permanent delete of the device removes it.
 
-The answer to a heartbeat in `betterdesk_envelope` is sealed the same way to the client's response key and signed with the server's Ed25519 key. BetterDesk's clients take strategy options and connection mode commands only from inside such a sealed answer.
+The answer to a heartbeat in `neodesk_envelope` is sealed the same way to the client's response key and signed with the server's Ed25519 key. NeoDesk's clients take strategy options and connection mode commands only from inside such a sealed answer.
 
-After that first signed heartbeat, any other API request can go sealed too: the client sends `X-BetterDesk-Envelope: 1` and `X-BetterDesk-Device: <id>`, with the envelope as the body. The server opens it, runs the normal handler, and seals the answer.
+After that first signed heartbeat, any other API request can go sealed too: the client sends `X-NeoDesk-Envelope: 1` and `X-NeoDesk-Device: <id>`, with the envelope as the body. The server opens it, runs the normal handler, and seals the answer.
 
 ### Connection mode
 
 An operator with the permission `device.connection_mode` can switch a desktop client between `normal` and `incoming-only`: `POST /api/peers/{id}/connection-mode` on the API, `POST /api/devices/{id}/connection-mode` in the console, both with `mode` and a required `reason` of up to 500 characters.
 
-- Only a device whose signed identity is `betterdesk-desktop` with the capability `connection-mode.remote-control` can be switched. A support client stays incoming-only.
+- Only a device whose signed identity is `neodesk-desktop` with the capability `connection-mode.remote-control` can be switched. A support client stays incoming-only.
 - The server stores the requested mode and sends the command, as `connection_mode_command` with `command_id`, `revision`, `target_id`, `target_uuid`, `mode`, `issued_at`, `expires_at` and `reason`, only inside the sealed answer to a signed heartbeat. Never in a plain answer and never in `strategy` or `config_options`. The command lives 10 minutes.
 - The client's next signed heartbeat reports the outcome in `effective_conn_mode`, `policy_revision`, `policy_status`, `last_command_id` and `policy_error`.
 - The server sends no RustDesk strategy options to a support client or to a device set to incoming-only.

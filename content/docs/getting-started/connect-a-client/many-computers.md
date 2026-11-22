@@ -5,7 +5,7 @@ order: 1
 ---
 
 There are two ways to set up many computers. An invite from **Add a computer**
-that works several times installs the BetterDesk client and joins each computer
+that works several times installs the NeoDesk client and joins each computer
 approved. For the stock RustDesk client, the console gives you the four values
 as one config string, and a PowerShell script that applies it on Windows. This
 page covers both, and what happens when many new devices join at once.
@@ -20,7 +20,7 @@ page covers both, and what happens when many new devices join at once.
    1, 7 or 30 days.
 4. Choose **Create invite** and send the link to the people at the computers.
 
-Each computer that opens the link gets the BetterDesk client: a download on
+Each computer that opens the link gets the NeoDesk client: a download on
 Windows and macOS, one command to paste on Linux. It joins approved, in the
 folder you chose, without a stop under **Enrollment requests**. **Open invites**
 in the same dialog shows how many uses are left, and **Revoke** ends an invite

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Build the site for one host and upload it to the web VM.
-#   bash deploy.sh beta        -> https://beta.betterde.sk   (/var/www/beta.betterde.sk)
-#   bash deploy.sh production  -> https://betterde.sk        (/var/www/betterde.sk)
+#   bash deploy.sh beta        -> https://beta.neode.sk   (/var/www/beta.neode.sk)
+#   bash deploy.sh production  -> https://neode.sk        (/var/www/neode.sk)
 # The upload goes to a new folder next to the live one and is swapped in, so a
 # visitor never sees half a site. The previous version stays as <folder>.old.
 # The web server to upload to (ssh host) comes from DEPLOY_SSH_HOST or the
@@ -11,8 +11,8 @@ cd "$(dirname "$0")"
 ssh_host="${DEPLOY_SSH_HOST:-$(cat .deploy-host 2>/dev/null || true)}"
 [ -n "$ssh_host" ] || { echo 'Set DEPLOY_SSH_HOST or write the ssh host into .deploy-host' >&2; exit 2; }
 case "${1:-}" in
-    beta) host=beta.betterde.sk ;;
-    production) host=betterde.sk ;;
+    beta) host=beta.neode.sk ;;
+    production) host=neode.sk ;;
     *) sed -n '2,6p' "$0"; exit 2 ;;
 esac
 SITE_URL="https://$host" node build.mjs

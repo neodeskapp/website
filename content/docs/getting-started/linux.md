@@ -1,13 +1,13 @@
 ---
 title: Install on Linux
-description: Install the server and the web console as one systemd service with the betterdesk.sh script.
+description: Install the server and the web console as one systemd service with the neodesk.sh script.
 order: 3
 ---
 
-The `betterdesk.sh` script installs BetterDesk on a Linux server as one systemd
-service, `betterdesk-server`. It downloads the newest release of
-`betterdesk-server` from GitHub and checks it before it installs it. It also stays
-on the machine as the command `betterdesk`, which you use later to update, repair,
+The `neodesk.sh` script installs NeoDesk on a Linux server as one systemd
+service, `neodesk-server`. It downloads the newest release of
+`neodesk-server` from GitHub and checks it before it installs it. It also stays
+on the machine as the command `neodesk`, which you use later to update, repair,
 back up and uninstall. This page covers the first install.
 
 ## Requirements
@@ -28,7 +28,7 @@ back up and uninstall. This page covers the first install.
 ## Install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/neodeskapp/betterdesk/main/betterdesk.sh | sudo bash
+curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/neodesk.sh | sudo bash
 ```
 
 Piped into `bash` like this, the script has no terminal to ask questions on, so
@@ -38,8 +38,8 @@ address for the relay and P2P first.
 To answer the questions, download the script and run it:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/neodeskapp/betterdesk/main/betterdesk.sh -o betterdesk.sh
-sudo bash betterdesk.sh
+curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/neodesk.sh -o neodesk.sh
+sudo bash neodesk.sh
 ```
 
 The script opens its menu. Move with the arrow keys and choose
@@ -48,11 +48,11 @@ The script opens its menu. Move with the arrow keys and choose
 ### Where the server comes from
 
 By default the script installs the newest stable release of
-neodeskapp/betterdesk for this processor. While there is no stable release, it
+neodeskapp/neodesk for this processor. While there is no stable release, it
 takes the newest pre-release, such as a release candidate. When there is none
 either and you gave no channel, it installs the development build, and later
 updates follow the development channel until you switch with
-`sudo betterdesk --update --channel stable`.
+`sudo neodesk --update --channel stable`.
 
 Before it installs a download, the script checks its SHA-256 against the
 release's `SHA256SUMS` and the release's signed manifest against the release key.
@@ -65,7 +65,7 @@ signature itself.
 |--------|-----------------------------|
 | `--channel dev` | The development build. The install keeps this channel for later updates. |
 | `--from-source` | A build of the checkout the script runs in, see [Build from the repository](#build-from-the-repository). |
-| `--binary FILE` | A `betterdesk-server` binary you have. |
+| `--binary FILE` | A `neodesk-server` binary you have. |
 
 ### What the script asks
 
@@ -85,17 +85,17 @@ signature itself.
 
 ### What the script does
 
-- Installs the packages above and creates the system user `betterdesk`.
-- Downloads or builds `betterdesk-server` and installs it in `/opt/betterdesk`.
-- Writes the settings to `/opt/BetterDeskConsole/.env`, with a random admin
+- Installs the packages above and creates the system user `neodesk`.
+- Downloads or builds `neodesk-server` and installs it in `/opt/neodesk`.
+- Writes the settings to `/opt/NeoDeskConsole/.env`, with a random admin
   password and session secret. It also sets the address the console's HTTP port
   sends browsers to (`PANEL_PUBLIC_HOST`): the relay address you chose.
-- Creates a self-signed certificate in `/opt/betterdesk/ssl`, valid for ten years.
+- Creates a self-signed certificate in `/opt/neodesk/ssl`, valid for ten years.
   It turns on HTTPS for the console with it, and TLS for the ID and relay
   servers. The client API on 21121 stays on plain HTTP, because RustDesk clients
   refuse a self-signed certificate. RustDesk clients without TLS can still
   connect.
-- Writes `betterdesk-server.service`, starts it, and waits until the API, the
+- Writes `neodesk-server.service`, starts it, and waits until the API, the
   console and the ports 21116 and 21117 answer.
 - Opens these ports in ufw or firewalld when one of them is active, or adds
   iptables rules when neither is: 21115, 21116 for TCP and UDP, 21117, 21121,
@@ -104,17 +104,17 @@ signature itself.
   A proxy on another machine needs them: limit their rules to the proxy's
   address yourself. Firewalls outside the server, such as a cloud provider's,
   are up to you; the script prints the list.
-- Saves itself as `/usr/local/sbin/betterdesk`.
+- Saves itself as `/usr/local/sbin/neodesk`.
 
 ## Install without questions
 
 ```bash
-sudo bash betterdesk.sh --auto
+sudo bash neodesk.sh --auto
 ```
 
 `--auto` skips the menu and every question. It picks SQLite, the public IP
 address for the relay and P2P first, and asks nothing about TLS. Run again on a
-machine where BetterDesk is installed, it updates the install. These flags change
+machine where NeoDesk is installed, it updates the install. These flags change
 what it does:
 
 | Flag | What it does |
@@ -129,7 +129,7 @@ what it does:
 The flags also work with the one-line install, after `bash -s --`:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/neodeskapp/betterdesk/main/betterdesk.sh | sudo bash -s -- --relay-mode local
+curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/neodesk.sh | sudo bash -s -- --relay-mode local
 ```
 
 The script also reads environment variables, such as `ADMIN_PASSWORD` for your
@@ -137,10 +137,10 @@ own admin password. `sudo` drops variables you set in front of it, so put them
 after `sudo`:
 
 ```bash
-sudo ADMIN_PASSWORD='choose-a-long-password' bash betterdesk.sh --auto
+sudo ADMIN_PASSWORD='choose-a-long-password' bash neodesk.sh --auto
 ```
 
-`sudo bash betterdesk.sh --help` lists every flag and variable.
+`sudo bash neodesk.sh --help` lists every flag and variable.
 
 ## Admin credentials
 
@@ -153,7 +153,7 @@ Password: <32 random characters>
 ```
 
 Copy the password now. The script shows it once and removes it from the env file
-when the server has started. If you lose it, run `sudo betterdesk --reset-password`:
+when the server has started. If you lose it, run `sudo neodesk --reset-password`:
 it sets the password from `ADMIN_PASSWORD`, or a random one, and shows it once.
 In the menu, **Reset admin password** also lets you type one, with at least 8
 characters.
@@ -163,7 +163,7 @@ characters.
 At the end the script prints what you need next:
 
 ```text
-BetterDesk is installed
+NeoDesk is installed
 
   Web console:   https://203.0.113.10:5443  (http://203.0.113.10:5000 leads there)
                  The certificate is self-signed, so the browser warns once.
@@ -173,10 +173,10 @@ BetterDesk is installed
     Relay server:  203.0.113.10
     API server:    http://203.0.113.10:21121
     Key:           <the server's public key>
-  Log:           sudo journalctl -u betterdesk-server -f
-  Settings:      /opt/BetterDeskConsole/.env (then: sudo systemctl restart betterdesk-server)
-  Update:        sudo betterdesk --update
-  Uninstall:     sudo betterdesk --uninstall
+  Log:           sudo journalctl -u neodesk-server -f
+  Settings:      /opt/NeoDeskConsole/.env (then: sudo systemctl restart neodesk-server)
+  Update:        sudo neodesk --update
+  Uninstall:     sudo neodesk --uninstall
 ```
 
 The **Web console** line is the console's address. Your browser warns about the
@@ -189,16 +189,16 @@ Continue with [First sign-in](/docs/getting-started/first-sign-in).
 
 | Path | What it holds |
 |------|---------------|
-| `/opt/betterdesk` | The binary `betterdesk-server`, the database `db_v2.sqlite3`, the key pair `id_ed25519` and `id_ed25519.pub`, the API key `.api_key`, and `ssl/` |
-| `/opt/BetterDeskConsole` | The settings file `.env` and the console's `data/` folder |
-| `/etc/systemd/system/betterdesk-server.service` | The service. It runs as the user `betterdesk` and reads `/opt/BetterDeskConsole/.env`. |
+| `/opt/neodesk` | The binary `neodesk-server`, the database `db_v2.sqlite3`, the key pair `id_ed25519` and `id_ed25519.pub`, the API key `.api_key`, and `ssl/` |
+| `/opt/NeoDeskConsole` | The settings file `.env` and the console's `data/` folder |
+| `/etc/systemd/system/neodesk-server.service` | The service. It runs as the user `neodesk` and reads `/opt/NeoDeskConsole/.env`. |
 | `/opt/rustdesk-backups` | Backups the script makes, for example before an update |
-| `/usr/local/sbin/betterdesk` | The script, as the command for later |
+| `/usr/local/sbin/neodesk` | The script, as the command for later |
 
 ```bash
-sudo systemctl status betterdesk-server
-sudo journalctl -u betterdesk-server -f
-sudo systemctl restart betterdesk-server
+sudo systemctl status neodesk-server
+sudo journalctl -u neodesk-server -f
+sudo systemctl restart neodesk-server
 ```
 
 A new install starts in the **Managed** enrollment mode: a new RustDesk client
@@ -206,28 +206,28 @@ waits under **Enrollment requests** until someone approves it. The env file sets
 this only as the first mode; a mode you pick in the console stays. See
 [Enrollment](/docs/console/enrollment).
 
-## Later: the betterdesk command
+## Later: the neodesk command
 
-`sudo betterdesk` opens the same menu as the script. Without the menu:
+`sudo neodesk` opens the same menu as the script. Without the menu:
 
 ```bash
-sudo betterdesk --update
-sudo betterdesk --reset-password
-sudo betterdesk --uninstall
+sudo neodesk --update
+sudo neodesk --reset-password
+sudo neodesk --uninstall
 ```
 
 `--uninstall` makes a backup, then removes the service and keeps the data. It
 lists what is left on the machine. `--uninstall --purge` also deletes
-`/opt/betterdesk`, `/opt/BetterDeskConsole` and the command.
+`/opt/neodesk`, `/opt/NeoDeskConsole` and the command.
 
 ## Build from the repository
 
 To run your own changes, build the server from a checkout:
 
 ```bash
-git clone https://github.com/neodeskapp/betterdesk.git
-cd betterdesk
-sudo ./betterdesk.sh --from-source
+git clone https://github.com/neodeskapp/neodesk.git
+cd neodesk
+sudo ./neodesk.sh --from-source
 ```
 
 Choose **Fresh installation** in the menu, or add `--auto`. `--from-source` builds

@@ -141,7 +141,7 @@ If nobody can sign in as an administrator any more, run the server's reset comma
 
 ```bash
 read -rs NEW_PASSWORD
-printf '%s\n' "$NEW_PASSWORD" | betterdesk-server reset-password admin
+printf '%s\n' "$NEW_PASSWORD" | neodesk-server reset-password admin
 ```
 
 The commands for Docker, and the **Reset admin password** entry of the installers' menus, are in [Troubleshooting](/docs/operations/troubleshooting#forgot-the-admin-password). The reset leaves two-factor sign-in as it is; to turn it off for someone, see [Two-factor sign-in](/docs/people/two-factor#when-someone-has-lost-the-phone).
