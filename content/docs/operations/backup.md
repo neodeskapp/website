@@ -40,6 +40,8 @@ A Windows install uses `C:\NeoDesk` and `C:\NeoDeskConsole` the same way. On Lin
 
 **Settings**, **Backup** makes backups while the server runs.
 
+A full backup holds every secret of the server, so only Super admin and Administrator accounts may download, restore or schedule one, or test its destination. Other accounts with **Server configuration**, such as Server admin, see the statistics and the schedule; the server refuses the rest with "Only a super admin can download, restore or send a full backup: it holds every secret of the server".
+
 **Download backup** saves one `.tar.gz` file with:
 
 - a dump of every table of the database, on SQLite and on PostgreSQL,

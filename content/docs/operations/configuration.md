@@ -147,7 +147,7 @@ The first six are the first defaults of **Connection strategy** under **Settings
 | `REMOTE_TARGET_VAULT_KEY` | | | Encrypts stored RDP and VNC credentials. Without it, that store is off. The installers write one into the env file; Docker makes one at the first start and keeps it in the data volume as `.remote_target_vault_key`. |
 | `WS_ALLOWED_ORIGINS`, `API_WS_ALLOWED_ORIGINS` | | | Comma-separated origins of browser pages allowed to open WebSockets on the server's ports: `WS_ALLOWED_ORIGINS` for the ID server and the relay, `API_WS_ALLOWED_ORIGINS` for the API's event stream. Empty lets the ID server and relay take pages from localhost only, and the event stream pages from its own host only. RustDesk clients send no origin and are not affected. |
 | `METRICS_IP_ALLOWLIST`, `METRICS_PUBLIC` | | | Who may read `/metrics` and `/api/health/detail` on the API port without an API key. See [Monitoring](/docs/operations/monitoring#prometheus-metrics). |
-| `BLOCKLIST_FILE` | | `-blocklist` | File of IP addresses, ranges and device IDs to refuse. See [Hardening](/docs/operations/security#block-addresses-and-devices). |
+| `BLOCKLIST_FILE` | `blocklist.txt` next to the key file | `-blocklist` | File of IP addresses, ranges and device IDs to refuse. See [Hardening](/docs/operations/security#block-addresses-and-devices). |
 | `AUDIT_LOG_FILE` | | `-audit-log` | Write the server's audit events to this file, as JSON lines. See [Monitoring](/docs/operations/monitoring#audit-entries). |
 
 ## Sign-in and rate limits

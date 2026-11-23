@@ -50,9 +50,9 @@ Wähle **Löschen…** im Menü der Zeile und bestätige. Das Löschen lässt si
 | --- | --- | --- |
 | Super-Admin | `super_admin` | Alles, auch Benutzer hinzufügen und Servereinstellungen ändern. |
 | Administrator | `admin` | Der ältere Name für Super-Admin, mit denselben Berechtigungen. |
-| Serveradministrator | `server_admin` | Servereinstellungen, die Sperrliste und Registrierungstokens; listet und löscht API-Schlüssel. Sieht Benutzer und Geräte, kann sich nicht mit Geräten verbinden und keine Benutzer ändern. |
-| Globaler Administrator | `global_admin` | Benutzer, Organisationen und Geräte, auch Sperren und Abrechnung. Keine Servereinstellungen. |
-| Remote-Operator | `operator` | Mit Geräten verbinden, Gerätedetails bearbeiten, Gastlinks erstellen, Chat und Arbeitsberichte. Sieht Benutzer und Abrechnung, kann aber keine Benutzer ändern. |
+| Serveradministrator | `server_admin` | Servereinstellungen, die Sperrliste und Registrierungstokens; listet und löscht API-Schlüssel. Sieht Benutzer und Geräte, kann sich nicht mit Geräten verbinden und keine Benutzer ändern. Sieht den API-Schlüssel des Servers nicht ganz und kann keine vollständigen Sicherungen herunterladen, wiederherstellen oder planen. |
+| Globaler Administrator | `global_admin` | Benutzer, Organisationen und Geräte, auch Sperren, Abrechnung sowie Terminal und Dateien der NeoDesk-Agenten. Keine Servereinstellungen. |
+| Remote-Operator | `operator` | Mit Geräten verbinden, Gerätedetails bearbeiten, Gastlinks erstellen, Chat und Arbeitsberichte. Sieht Benutzer und Abrechnung, kann aber keine Benutzer ändern. Kein Terminal und keine Dateien auf NeoDesk-Agenten. |
 | Betrachter | `viewer` | Geräte, Aktivitätsprotokolle und Metriken sehen, Chat. Kann sich nicht verbinden und nichts ändern. |
 | Gastlink-Aussteller | `guest_issuer` | Geräte sehen und Gastlinks zu ihnen erstellen. Kann sich nicht mit Geräten verbinden und nichts ändern. |
 | Pro-Lizenz (nur Client-API) | `pro` | RustDesk-Pro-Funktionen im Desktop-Client freischalten. Kann sich nicht an der Konsole anmelden. |
@@ -99,15 +99,28 @@ Das sind die Standardberechtigungen. Super-Admin und Administrator haben alle. D
 | CDAP-Terminal verwenden, CDAP-Dateien verwalten | Nein | Ja | Nein | Nein |
 | Ein-/Ausschalten von MeshCentral-Agenten | Nein | Ja | Ja | Nein |
 | Terminal auf MeshCentral-Agenten, Dateien auf MeshCentral-Agenten | Nein | Ja | Nein | Nein |
+| Terminal auf NeoDesk-Agenten, Dateien auf NeoDesk-Agenten | Nein | Ja | Nein | Nein |
 
 Mit **Arbeitsberichte schreiben** kann ein Konto den Arbeitsbericht einer Sitzung abgeben, die es selbst geöffnet hat. Für die Sitzung eines anderen Kontos braucht es zusätzlich **Benutzer bearbeiten**.
+
+Auf einem Gerät mit dem NeoDesk-Agenten brauchen die Werkzeuge im Seitenbereich des Geräts diese Berechtigungen:
+
+- Das Terminal: **Terminal auf NeoDesk-Agenten**.
+- Die Dateien: **Dateien auf NeoDesk-Agenten**.
+- Bildschirm, Tastatur, Maus und Zwischenablage, Dienste starten und beenden und Prozesse beenden: **Mit Geräten verbinden**.
+- Die Listen der Dienste, Prozesse, Ereignisse und Aktivität: **Geräte anzeigen**.
+- Den Agenten um frische Daten bitten: **Geräte bearbeiten**, das keines der anderen Werkzeuge öffnet.
+
+Die [Client-Funktionen](/docs/people/permissions#client-features) der Person gelten auch für diese Werkzeuge.
 
 ### Wer welche Rolle vergeben darf {#who-can-give-which-role}
 
 - Super-Admin und Administrator dürfen jede Rolle vergeben und jedes Konto ändern.
 - Die Rolle Globaler Administrator darf Betrachter, Gastlink-Aussteller, Remote-Operator und Pro-Lizenz vergeben und Konten mit einer dieser Rollen ändern.
 - Alle anderen Rollen vergeben keine Rollen. Daran ändert sich nichts, wenn du die Berechtigungen einer Rolle änderst.
+- Niemand vergibt mehr, als er selbst hat. Eine Rolle lässt sich nur vergeben, wenn jede ihrer Berechtigungen, mit den Änderungen auf der Seite [Berechtigungen](/docs/people/permissions), auch die Rolle dessen hat, der sie vergibt. Gibt ein Super-Admin der Rolle Remote-Operator eine Berechtigung, die der Globale Administrator nicht hat, kann ein Globaler Administrator Remote-Operator nicht mehr vergeben und Remote-Operator-Konten nicht mehr ändern. Die Regel gilt in der Konsole, am API-Port und für die Rolle eines neuen API-Schlüssels.
 - Jede Person mit einem Passwortkonto darf ihr eigenes Passwort unter **Einstellungen**, **Anmeldung** ändern. Ein Super-Admin kann seinem eigenen Konto die Rolle Super-Admin nicht wegnehmen.
+- Ein Konto mit **Benutzer bearbeiten** darf auf der Seite Benutzer sein eigenes Passwort und seine E-Mail-Adresse ändern. Seine eigenen **Einzelne Geräte**, seinen **Ordnerzugriff** und seine **Benutzergruppen** kann nur ein Konto ändern, das seine eigene Rolle vergeben darf, also in der Praxis Super-Admin und Administrator. Alle anderen bekommen „You cannot change your own device access“.
 
 ## Welche Geräte ein Benutzer sieht {#which-devices-a-user-sees}
 
@@ -119,7 +132,7 @@ Super-Admin, Administrator, Serveradministrator und Globaler Administrator sehen
 
 Die **Standard-Sichtbarkeit von Geräten** unter **Einstellungen**, **Allgemein** legt fest, was darüber hinaus gilt. Mit **Offen** sehen Personen jedes Gerät außer denen in einem Ordner oder einer Gerätegruppe, deren Zugriffsliste sie nicht enthält. Mit **Eingeschränkt** sehen sie nur die Geräte, die ihnen zugewiesen sind, und wer nichts zugewiesen bekommen hat, sieht eine leere Geräteliste. Unter Offen verbirgt ein zugewiesener Ordner diesen Ordner zwar vor anderen, schränkt aber die Sicht der Person selbst nicht ein. Willst du Personen auf bestimmte Geräte beschränken, nimm deshalb Eingeschränkt. Die Spalte **Geräte** auf der Seite Benutzer zeigt das Ergebnis für jedes Konto.
 
-Für eine Benutzergruppe klickst du im Bereich **Benutzergruppen** der Seite Benutzer auf **Gruppe erstellen**. Personen nimmst du in die Gruppe auf, wenn du sie bearbeitest. Löschst du eine Gruppe, verlieren ihre Mitglieder den Gerätezugriff, den sie über die Gruppe hatten.
+Für eine Benutzergruppe klickst du im Bereich **Benutzergruppen** der Seite Benutzer auf **Gruppe erstellen**. Personen nimmst du in die Gruppe auf, wenn du sie bearbeitest. Löschst du eine Gruppe, verlieren ihre Mitglieder den Gerätezugriff, den sie über die Gruppe hatten. Dafür brauchst du eine Rolle, die jedes Mitglied der Gruppe ändern darf, und die Grenzen beim [Konsolenzugriff](/docs/people/permissions#panel-access), die die Gruppe ihren Mitgliedern gesetzt hat, bleiben bei ihnen als eigene Einstellungen.
 
 ## Beispiel: ein Operator für einige Geräte {#example-an-operator-for-some-devices}
 

@@ -52,7 +52,7 @@ If the device never reported anything, the tab says "No hardware information ava
 
 Views read from the agent on the device when you open them: **Services**, **Processes**, **Events**, **Activity** and **Files**. If the device is offline and sent the view before, it shows at once, under "The device is offline. This is what it sent last:" and the time. Otherwise the request waits until the device checks in again: the view says "Requested from the device" and shows the answer by itself once it arrives.
 
-Starting and stopping services, ending processes and the **Files** view need permission to edit devices.
+Starting and stopping services and ending processes need permission to connect to devices, and the **Files** view needs **Files on NeoDesk agents**. A person's client features **Remote control** and **File transfer** turn them off as well. See [Users and roles](/docs/people/users-and-roles#what-each-role-can-do).
 
 ### Tags & notes
 

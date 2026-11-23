@@ -44,7 +44,7 @@ scrape_configs:
 
 Unter Docker ist der Port 21121. Unter Linux und Windows öffnen die Installer 21114 nicht in der Firewall, gib den Port also nur für den Prometheus-Server frei.
 
-Für einen Blick von Hand auf dem Server selbst schickst du den API-Schlüssel des Servers mit. Du findest ihn unter **Einstellungen**, **Client-Einrichtung** bei **Für Skripte**, nachdem du auf **Ganzen Schlüssel zeigen** geklickt hast. Mit dem Schlüssel in `NEODESK_API_KEY`:
+Für einen Blick von Hand auf dem Server selbst schickst du den API-Schlüssel des Servers mit. Du findest ihn unter **Einstellungen**, **Client-Einrichtung** bei **Für Skripte**, nachdem du auf **Ganzen Schlüssel zeigen** geklickt hast; das können Konten mit der Rolle Super-Admin oder Administrator. Mit dem Schlüssel in `NEODESK_API_KEY`:
 
 ```bash
 curl -H "X-API-Key: $NEODESK_API_KEY" http://127.0.0.1:21114/metrics

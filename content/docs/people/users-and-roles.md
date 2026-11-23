@@ -50,9 +50,9 @@ Choose **Delete…** in the row menu and confirm. The deletion cannot be undone.
 | --- | --- | --- |
 | Super admin | `super_admin` | Everything, including adding users and changing server settings. |
 | Administrator | `admin` | The older name of Super admin, with the same permissions. |
-| Server admin | `server_admin` | Server settings, the blocklist and enrollment tokens; lists and deletes API keys. Sees users and devices, cannot connect to devices or change users. |
-| Global admin | `global_admin` | Users, organizations and devices, including bans and billing. No server settings. |
-| Remote operator | `operator` | Connecting to devices, editing device details, creating guest links, chat and work reports. Sees users and billing but cannot change users. |
+| Server admin | `server_admin` | Server settings, the blocklist and enrollment tokens; lists and deletes API keys. Sees users and devices, cannot connect to devices or change users. Cannot see the whole server API key or download, restore or schedule full backups. |
+| Global admin | `global_admin` | Users, organizations and devices, including bans, billing and the terminal and files of NeoDesk agents. No server settings. |
+| Remote operator | `operator` | Connecting to devices, editing device details, creating guest links, chat and work reports. Sees users and billing but cannot change users. No terminal or files on NeoDesk agents. |
 | Viewer | `viewer` | Seeing devices, activity logs and metrics, and chat. Cannot connect or change anything. |
 | Guest link issuer | `guest_issuer` | Seeing devices and creating guest links to them. Cannot connect to devices or change anything. |
 | Pro license (client API only) | `pro` | Activating RustDesk Pro features in the desktop client. Cannot sign in to the console. |
@@ -99,15 +99,28 @@ These are the default permissions. Super admin and Administrator have all of the
 | CDAP terminal access, CDAP file access | No | Yes | No | No |
 | Power actions on MeshCentral agents | No | Yes | Yes | No |
 | Terminal on MeshCentral agents, Files on MeshCentral agents | No | Yes | No | No |
+| Terminal on NeoDesk agents, Files on NeoDesk agents | No | Yes | No | No |
 
 **Write work reports** lets an account file the work report of a session it opened itself. Filing one for another account's session also needs **Edit users**.
+
+On a device with the NeoDesk agent, the tools in the device panel need these permissions:
+
+- The terminal: **Terminal on NeoDesk agents**.
+- The files: **Files on NeoDesk agents**.
+- The screen, keyboard, mouse and clipboard, starting and stopping services, and ending processes: **Connect to devices**.
+- The lists of services, processes, events and activity: **View devices**.
+- Asking the agent for fresh data: **Edit devices**, which opens none of the other tools.
+
+The person's [client features](/docs/people/permissions#client-features) apply to these tools as well.
 
 ### Who can give which role
 
 - Super admin and Administrator may give every role and change every account.
 - Global admin may give Viewer, Guest link issuer, Remote operator and Pro license, and change accounts that have one of those roles.
 - Every other role gives no roles. Changing a role's permissions does not change this.
+- Nobody gives more than they have. A role can be given only when every permission it has, with the changes on the [Permissions](/docs/people/permissions) page, is one the giver's role has too. When a super admin gives Remote operator a permission that Global admin lacks, a Global admin can no longer give Remote operator or change Remote operator accounts. The rule holds in the console, on the API port and for the role of a new API key.
 - Everyone with a password account may change their own password under **Settings**, **Sign-in**. A super admin cannot take the super admin role away from their own account.
+- An account with **Edit users** may change its own password and email on the Users page. Only an account that may give its own role, in practice Super admin and Administrator, can change its own **Direct devices**, **Folder access** and **User groups**. Anyone else gets "You cannot change your own device access".
 
 ## Which devices a user sees
 
@@ -119,7 +132,7 @@ Super admin, Administrator, Server admin and Global admin always see every devic
 
 The **Device visibility default** under **Settings**, **General** sets what happens around that. With **Open**, people see every device except those in a folder or device group whose access list leaves them out. With **Restricted**, they see only the devices they were given, and someone given nothing sees an empty device list. Under Open, giving a person a folder hides that folder from others but does not narrow the person's own view, so use Restricted to limit people to certain devices. The **Devices** column on the Users page shows the result for each account.
 
-To make a user group, click **Create group** in the **User groups** section of the Users page, then add people to it when you edit them. Deleting a group takes away the device access its members had through it.
+To make a user group, click **Create group** in the **User groups** section of the Users page, then add people to it when you edit them. Deleting a group takes away the device access its members had through it. It needs a role that may change every member of the group, and the [panel access](/docs/people/permissions#panel-access) limits the group put on its members stay with them as their own settings.
 
 ## Example: an operator for some devices
 

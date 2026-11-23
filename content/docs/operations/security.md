@@ -60,7 +60,7 @@ For CDAP device agents, `CDAP_TLS_REQUIRED=Y` with `TLS_CERT` and `TLS_KEY` turn
 
 ## Block addresses and devices
 
-Bans and blocks you make in the console are kept in the database. For a list you keep yourself, point `BLOCKLIST_FILE` at a file with one entry per line: an IP address, a range, or `id:` and a device ID, each with an optional reason after a comma.
+Bans and blocks you make in the console are kept in the database. For a list you keep yourself, the server reads a file with one entry per line: an IP address, a range, or `id:` and a device ID, each with an optional reason after a comma. It is `blocklist.txt` next to the server's key file (`/opt/rustdesk/blocklist.txt` in Docker), or the file `BLOCKLIST_FILE` names. **Settings**, **Advanced** edits that same file as **Server blocklist (blocklist.txt)**.
 
 ```text
 # Lines starting with # are comments
@@ -78,5 +78,7 @@ sudo systemctl kill -s HUP neodesk-server
 ## Protect the secrets
 
 - The key pair, `.api_key`, `mesh_agent_server.pem` and the env file, with `SESSION_SECRET`, `REMOTE_TARGET_VAULT_KEY` and the database password, are secrets, and so are the console's backups, which hold them. Store them like passwords; see [Backup and restore](/docs/operations/backup).
-- The server API key under **Settings**, **Client setup**, **For scripts** can manage the whole server. Give it only to scripts that need it.
+- The server API key under **Settings**, **Client setup**, **For scripts** can do nearly everything on the server. It can't change accounts, role permissions, API keys or second factors, and only Super admin and Administrator accounts see it whole. Give it only to scripts that need it; see [API keys](/docs/development/api#api-keys).
+- A full backup holds every secret, so only Super admin and Administrator accounts download, restore or schedule one. See [The Backup page in the console](/docs/operations/backup#the-backup-page-in-the-console).
+- Some settings are set on the server's host only: the release keys and signing switches (`UPDATE_MANIFEST_PUBLIC_KEY`, `UPDATE_REQUIRE_SIGNED_MANIFEST`, `NEODESK_SUPPORT_RELEASE_PUBLIC_KEY`), the signing seed and build command of custom clients (`NEODESK_CUSTOM_CLIENT_SIGNING_SEED`, `NEODESK_CLIENT_BUILD_COMMAND`), and the secrets `SESSION_SECRET`, `PANEL_TRUST_SECRET`, `ORG_PEER_VAULT_KEY`, `REMOTE_TARGET_VAULT_KEY`, `UPDATE_GITHUB_TOKEN` and `NEODESK_GITHUB_TOKEN`. The console doesn't write them: **Settings**, **Advanced** refuses to save an env file that adds, changes or removes one, and so does the settings API. A stolen admin session can't make the updater trust its own release key that way. Change them in the env file on the server and restart it.
 - Keep `SMTP_TLS_VERIFY` on, so the console checks the mail server's certificate.

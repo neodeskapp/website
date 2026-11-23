@@ -147,7 +147,7 @@ Die ersten sechs liefern die Anfangswerte für **Verbindungsstrategie** unter **
 | `REMOTE_TARGET_VAULT_KEY` | | | Verschlüsselt gespeicherte RDP- und VNC-Zugangsdaten. Ohne diese Variable ist dieser Speicher aus. Die Installer schreiben einen Schlüssel in die env-Datei; Docker erzeugt beim ersten Start einen und legt ihn im Datenvolume als `.remote_target_vault_key` ab. |
 | `WS_ALLOWED_ORIGINS`, `API_WS_ALLOWED_ORIGINS` | | | Kommagetrennte Origins von Browserseiten, die WebSockets auf den Ports des Servers öffnen dürfen: `WS_ALLOWED_ORIGINS` für ID-Server und Relay, `API_WS_ALLOWED_ORIGINS` für den Event-Stream der API. Ist die Variable leer, nehmen ID-Server und Relay nur Seiten von localhost an und der Event-Stream nur Seiten von seinem eigenen Host. RustDesk-Clients senden keinen Origin und sind nicht betroffen. |
 | `METRICS_IP_ALLOWLIST`, `METRICS_PUBLIC` | | | Wer `/metrics` und `/api/health/detail` auf dem API-Port ohne API-Schlüssel lesen darf. Siehe [Monitoring](/docs/operations/monitoring#prometheus-metrics). |
-| `BLOCKLIST_FILE` | | `-blocklist` | Datei mit IP-Adressen, Adressbereichen und Geräte-IDs, die abgewiesen werden. Siehe [Härtung](/docs/operations/security#block-addresses-and-devices). |
+| `BLOCKLIST_FILE` | `blocklist.txt` neben der Schlüsseldatei | `-blocklist` | Datei mit IP-Adressen, Adressbereichen und Geräte-IDs, die abgewiesen werden. Siehe [Härtung](/docs/operations/security#block-addresses-and-devices). |
 | `AUDIT_LOG_FILE` | | `-audit-log` | Schreibt die Audit-Ereignisse des Servers als JSON-Zeilen in diese Datei. Siehe [Monitoring](/docs/operations/monitoring#audit-entries). |
 
 ## Anmeldung und Ratenlimits {#sign-in-and-rate-limits}

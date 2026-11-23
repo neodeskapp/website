@@ -91,7 +91,7 @@ sudo bash neodesk-docker.sh --repair-permissions
 sudo bash neodesk-docker.sh --set-config LOG_LEVEL=info
 ```
 
-The console has the same report at `GET /api/settings/management/capabilities` and the allowlisted settings at `GET` and `PUT /api/settings/management/config`.
+The console has the same report at `GET /api/settings/management/capabilities` and the allowlisted settings at `GET` and `PUT /api/settings/management/config`. `PUT` refuses the keys that are set on the host only; see [Protect the secrets](/docs/operations/security#protect-the-secrets).
 
 ### Health checks
 

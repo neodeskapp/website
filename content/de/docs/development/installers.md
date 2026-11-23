@@ -91,7 +91,7 @@ sudo bash neodesk-docker.sh --repair-permissions
 sudo bash neodesk-docker.sh --set-config LOG_LEVEL=info
 ```
 
-Die Konsole hat denselben Bericht unter `GET /api/settings/management/capabilities` und die Einstellungen der Allowlist unter `GET` und `PUT /api/settings/management/config`.
+Die Konsole hat denselben Bericht unter `GET /api/settings/management/capabilities` und die Einstellungen der Allowlist unter `GET` und `PUT /api/settings/management/config`. `PUT` lehnt die Schlüssel ab, die nur auf dem Host gesetzt werden; siehe [Die Geheimnisse schützen](/docs/operations/security#protect-the-secrets).
 
 ### Health-Checks {#health-checks}
 

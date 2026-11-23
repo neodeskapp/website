@@ -29,13 +29,15 @@ Schicke den Schlüssel im Header `X-API-Key`. Aus dem Query-String liest der Ser
 curl -H "X-API-Key: $NEODESK_API_KEY" http://127.0.0.1:21114/api/peers
 ```
 
-Ein Schlüssel handelt mit der Rolle, die er bekommen hat. Einen Schlüssel erzeugt der Server selbst, den Server-API-Schlüssel, und gibt ihm die Admin-Rolle. Dieser Schlüssel darf also alles. Der Server liest ihn aus `API_KEY`, sonst aus `.api_key` neben seiner Schlüsseldatei, und schreibt dort einen neuen, wenn es keinen gibt. In der Konsole zeigt ihn **Client-Einrichtung** unter **Für Skripte**; **Ganzen Schlüssel zeigen** braucht die Berechtigung **API-Schlüssel verwalten**.
+Ein Schlüssel handelt mit der Rolle, die er bekommen hat. Einen Schlüssel erzeugt der Server selbst, den Server-API-Schlüssel, und gibt ihm die Admin-Rolle. Der Server liest ihn aus `API_KEY`, sonst aus `.api_key` neben seiner Schlüsseldatei, und schreibt dort einen neuen, wenn es keinen gibt. In der Konsole zeigt ihn **Client-Einrichtung** unter **Für Skripte**; **Ganzen Schlüssel zeigen** können nur Konten mit der Rolle Super-Admin oder Administrator nutzen.
 
-Lege für ein Skript einen Schlüssel mit einer kleineren Rolle an:
+Kein API-Schlüssel, auch nicht der Server-API-Schlüssel, kann Konten, Rollenberechtigungen, API-Schlüssel oder zweite Faktoren ändern. Diese Routen beantworten jeden Schlüssel mit 403 und „An API key cannot change accounts, role permissions or API keys. Sign in as a person to do this.“ Sie brauchen einen [Anmelde-Token](#sign-in-tokens); siehe [Routen, die eine Person brauchen](#routes-that-need-a-person).
+
+Lege für ein Skript einen Schlüssel mit einer kleineren Rolle an. Dafür brauchst du den Anmelde-Token eines Kontos mit **API-Schlüssel verwalten**; setze ihn für `<token>` ein:
 
 ```bash
 curl -X POST http://127.0.0.1:21114/api/keys \
-  -H "X-API-Key: $NEODESK_API_KEY" \
+  -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -d '{"name": "inventory-export", "role": "viewer", "expires_in_days": 90}'
 ```
@@ -46,9 +48,9 @@ curl -X POST http://127.0.0.1:21114/api/keys \
 
 Nur in dieser Antwort steht der ganze Schlüssel, speichere ihn also sofort.
 
-- `role` ist `viewer`, wenn das Feld fehlt. Ein Schlüssel bekommt nur eine Rolle, die der Aufrufer auch einem Konto geben könnte: Super-Admins jede Rolle, globale Administratoren `operator`, `viewer`, `pro` oder `guest_issuer`. Globale Administratoren haben **API-Schlüssel verwalten** standardmäßig nicht. Sie legen deshalb erst Schlüssel an, wenn ein Super-Admin der Rolle diese Berechtigung auf der Seite [Berechtigungen](/docs/people/permissions) gibt. Serveradministratoren können Schlüssel auflisten und löschen, aber keine anlegen.
+- `role` ist `viewer`, wenn das Feld fehlt. Ein Schlüssel bekommt nur eine Rolle, die der Aufrufer auch einem Konto geben könnte: Super-Admins jede Rolle, globale Administratoren `operator`, `viewer`, `pro` oder `guest_issuer`, und nur, solange ihre eigene Rolle jede Berechtigung dieser Rolle hat (siehe [wer welche Rolle vergeben darf](/docs/people/users-and-roles#who-can-give-which-role)). Globale Administratoren haben **API-Schlüssel verwalten** standardmäßig nicht. Sie legen deshalb erst Schlüssel an, wenn ein Super-Admin der Rolle diese Berechtigung auf der Seite [Berechtigungen](/docs/people/permissions) gibt. Serveradministratoren können Schlüssel auflisten und löschen, aber keine anlegen.
 - `expires_in_days` ist optional. Nach diesem Tag lehnt der Server den Schlüssel ab wie einen falschen.
-- `GET /api/keys` listet die Schlüssel mit ihren ersten 8 Zeichen, Name, Rolle, Datumsangaben und letzter Nutzung auf, und `DELETE /api/keys/<id>` entfernt einen. Alle drei Routen brauchen **API-Schlüssel verwalten**.
+- `GET /api/keys` listet die Schlüssel mit ihren ersten 8 Zeichen, Name, Rolle, Datumsangaben und letzter Nutzung auf, und `DELETE /api/keys/<id>` entfernt einen. Alle drei Routen brauchen **API-Schlüssel verwalten**; Anlegen und Löschen brauchen außerdem einen Anmelde-Token.
 
 Die Konsole hat keine Seite, auf der du API-Schlüssel anlegst oder löschst; das geht nur über diese Routen.
 
@@ -85,6 +87,19 @@ Jede Route verlangt eine Berechtigung, und die wird wie in der Konsole entschied
 Routen für ein einzelnes Gerät prüfen außerdem, ob das Konto dieses Gerät sieht, nach seinen Ordnern und seiner Organisation; siehe [Welche Geräte ein Benutzer sieht](/docs/people/users-and-roles#which-devices-a-user-sees).
 
 Die API antwortet in JSON. Ein Fehler ist `{"error": "..."}`, mit 401 bei fehlenden oder falschen Zugangsdaten, 403 bei einer fehlenden Berechtigung und 404 für einen Pfad, den die API nicht hat. Der Body einer Anfrage darf bis zu 1 MB groß sein.
+
+### Routen, die eine Person brauchen {#routes-that-need-a-person}
+
+Diese Routen ändern, wer was darf. Sie nehmen nur einen Anmelde-Token an und beantworten einen API-Schlüssel mit 403:
+
+| Methode und Pfad | Berechtigung |
+|---|---|
+| `POST /api/users`, `PUT /api/users/<id>`, `DELETE /api/users/<id>` | Benutzer erstellen, Benutzer bearbeiten, Benutzer löschen |
+| `POST /api/role-permissions`, `DELETE /api/role-permissions/<role>/<permission>` | Server konfigurieren, und Super-Admin oder Administrator |
+| `POST /api/keys`, `DELETE /api/keys/<id>` | API-Schlüssel verwalten |
+| `POST /api/users/<id>/totp/setup`, `POST /api/users/<id>/totp/confirm`, `DELETE /api/users/<id>/totp` | Super-Admin oder Administrator |
+
+Zusätzlich zur Berechtigung legt kein Konto ein Konto an oder ändert es, und kein Konto legt einen Schlüssel an, mit einer Rolle, deren Berechtigungen über die eigenen hinausgehen, die Änderungen auf der Seite Berechtigungen eingeschlossen.
 
 ## Geräte {#devices}
 

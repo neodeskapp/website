@@ -29,13 +29,15 @@ Send the key in the `X-API-Key` header. The server does not read a key from the 
 curl -H "X-API-Key: $NEODESK_API_KEY" http://127.0.0.1:21114/api/peers
 ```
 
-A key acts with the role it was given. The server makes one key itself, the server API key, and gives it the admin role, so it can do everything. The server reads it from `API_KEY`, else from `.api_key` next to its key file, and writes a new one there when there is none. In the console, **Client setup** shows it under **For scripts**; **Show whole key** needs the **Manage API keys** permission.
+A key acts with the role it was given. The server makes one key itself, the server API key, and gives it the admin role. The server reads it from `API_KEY`, else from `.api_key` next to its key file, and writes a new one there when there is none. In the console, **Client setup** shows it under **For scripts**; only Super admin and Administrator accounts can use **Show whole key**.
 
-For a script, make a key with a smaller role:
+No API key, the server API key included, can change accounts, role permissions, API keys or second factors. Those routes answer every key with 403 and "An API key cannot change accounts, role permissions or API keys. Sign in as a person to do this." They need a [sign-in token](#sign-in-tokens); see [Routes that need a person](#routes-that-need-a-person).
+
+For a script, make a key with a smaller role. Creating a key needs a sign-in token of an account with **Manage API keys**; put it in place of `<token>`:
 
 ```bash
 curl -X POST http://127.0.0.1:21114/api/keys \
-  -H "X-API-Key: $NEODESK_API_KEY" \
+  -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -d '{"name": "inventory-export", "role": "viewer", "expires_in_days": 90}'
 ```
@@ -46,9 +48,9 @@ curl -X POST http://127.0.0.1:21114/api/keys \
 
 The answer is the only place the whole key appears, so store it right away.
 
-- `role` is `viewer` when left out. A key gets only a role the caller could give an account: super admins any role, global admins `operator`, `viewer`, `pro` or `guest_issuer`. Global admins don't have **Manage API keys** by default, so they create keys only after a super admin gives the role that permission on the [Permissions](/docs/people/permissions) page. Server admins can list and delete keys but create none.
+- `role` is `viewer` when left out. A key gets only a role the caller could give an account: super admins any role, global admins `operator`, `viewer`, `pro` or `guest_issuer`, and only while their own role has every permission of that role (see [who can give which role](/docs/people/users-and-roles#who-can-give-which-role)). Global admins don't have **Manage API keys** by default, so they create keys only after a super admin gives the role that permission on the [Permissions](/docs/people/permissions) page. Server admins can list and delete keys but create none.
 - `expires_in_days` is optional. After that day the server refuses the key like a wrong one.
-- `GET /api/keys` lists the keys with their first 8 characters, name, role, dates and last use, and `DELETE /api/keys/<id>` removes one. All three routes need **Manage API keys**.
+- `GET /api/keys` lists the keys with their first 8 characters, name, role, dates and last use, and `DELETE /api/keys/<id>` removes one. All three routes need **Manage API keys**; creating and deleting also need a sign-in token.
 
 The console has no page for creating or deleting API keys; these routes are the way.
 
@@ -85,6 +87,19 @@ Each route asks for a permission, decided as in the console: the role's defaults
 Routes for one device also check that the device is one the account sees, by its folders and organization; see [Which devices a user sees](/docs/people/users-and-roles#which-devices-a-user-sees).
 
 The API answers in JSON. An error is `{"error": "..."}`: 401 for a missing or wrong credential, 403 for a missing permission, and 404 for a path the API doesn't have. Request bodies may be up to 1 MB.
+
+### Routes that need a person
+
+These routes change who may do what. They take only a sign-in token and answer an API key with 403:
+
+| Method and path | Permission |
+|---|---|
+| `POST /api/users`, `PUT /api/users/<id>`, `DELETE /api/users/<id>` | Create users, Edit users, Delete users |
+| `POST /api/role-permissions`, `DELETE /api/role-permissions/<role>/<permission>` | Server configuration, and Super admin or Administrator |
+| `POST /api/keys`, `DELETE /api/keys/<id>` | Manage API keys |
+| `POST /api/users/<id>/totp/setup`, `POST /api/users/<id>/totp/confirm`, `DELETE /api/users/<id>/totp` | Super admin or Administrator |
+
+On top of the permission, no account creates or changes an account, or creates a key, with a role whose permissions go beyond its own, the changes on the Permissions page included.
 
 ## Devices
 

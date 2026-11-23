@@ -52,7 +52,7 @@ Hat das Gerät nie etwas gemeldet, steht im Tab „Keine Hardwareinformationen v
 
 Ansichten, die beim Öffnen vom Agenten auf dem Gerät gelesen werden: **Services**, **Processes**, **Events**, **Activity** und **Dateien**. Ist das Gerät offline und hat es die Ansicht schon einmal gesendet, erscheint sie sofort, unter „Das Gerät ist offline. Das hat es zuletzt gesendet:“ und der Uhrzeit. Sonst wartet die Anfrage, bis sich das Gerät wieder meldet: Die Ansicht sagt „Beim Gerät angefragt“ und zeigt die Antwort von selbst, sobald sie ankommt.
 
-Dienste starten und beenden, Prozesse beenden und die Ansicht **Dateien** brauchen die Berechtigung, Geräte zu bearbeiten.
+Dienste starten und beenden und Prozesse beenden brauchen die Berechtigung, sich mit Geräten zu verbinden, und die Ansicht **Dateien** braucht **Dateien auf NeoDesk-Agenten**. Die Client-Funktionen **Fernsteuerung** und **Dateiübertragung** einer Person schalten sie ebenfalls ab. Siehe [Benutzer und Rollen](/docs/people/users-and-roles#what-each-role-can-do).
 
 ### Tags und Notizen {#tags--notes}
 

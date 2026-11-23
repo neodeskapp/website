@@ -117,7 +117,8 @@
 		"cdap-devices",
 		"meshcentral-agents",
 		"device-tokens",
-		"the-client-api"
+		"the-client-api",
+		"routes-that-need-a-person"
 	],
 	"development/architecture": [
 		"the-repository",

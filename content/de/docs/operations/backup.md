@@ -40,6 +40,8 @@ Eine Windows-Installation nutzt `C:\NeoDesk` und `C:\NeoDeskConsole` auf dieselb
 
 **Einstellungen**, **Sicherung** erstellt Backups, während der Server läuft.
 
+Eine vollständige Sicherung enthält jedes Geheimnis des Servers. Deshalb dürfen nur Konten mit der Rolle Super-Admin oder Administrator eine herunterladen, wiederherstellen oder planen oder ihr Ziel testen. Andere Konten mit **Server konfigurieren**, etwa Serveradministratoren, sehen die Statistik und den Zeitplan; den Rest lehnt der Server mit „Only a super admin can download, restore or send a full backup: it holds every secret of the server“ ab.
+
 **Sicherung herunterladen** speichert eine `.tar.gz`-Datei mit:
 
 - einem Dump jeder Tabelle der Datenbank, unter SQLite wie unter PostgreSQL,
