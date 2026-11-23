@@ -1,0 +1,62 @@
+name: Deploy
+
+# Every push to main goes to https://beta.neode.sk. https://neode.sk is
+# deployed by hand: Actions, Deploy, Run workflow, target production.
+# Secrets: DEPLOY_SSH_KEY (the deploy user's private key), DEPLOY_SSH_HOST
+# and DEPLOY_KNOWN_HOSTS (the web server and its host key). The key can only
+# upload a site; the server refuses any other command.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Where to deploy
+        type: choice
+        options: [beta, production]
+        default: beta
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-${{ inputs.target || 'beta' }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TARGET: ${{ inputs.target || 'beta' }}
+    environment:
+      name: ${{ inputs.target || 'beta' }}
+      url: ${{ (inputs.target || 'beta') == 'production' && 'https://neode.sk' || 'https://beta.neode.sk' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The sitemap takes each page's date from git
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build
+        run: |
+          if [ "$TARGET" = production ]; then host=neode.sk; else host=beta.neode.sk; fi
+          SITE_URL="https://$host" npm run build
+      - name: Upload
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_SSH_HOST: ${{ secrets.DEPLOY_SSH_HOST }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy
+          chmod 600 ~/.ssh/deploy
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          tar -C dist -cf - . | ssh -i ~/.ssh/deploy -o BatchMode=yes -o IdentitiesOnly=yes \
+            "neodesk-deploy@$DEPLOY_SSH_HOST" "$TARGET"
+          rm -f ~/.ssh/deploy
