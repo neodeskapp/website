@@ -113,7 +113,7 @@ Before you push the tag:
   ```bash
   sudo ./neodesk.sh --auto
   ```
- The same on Windows with `-Auto`, `-Update` and `-Uninstall`, and with `neodesk-docker.sh` for Docker.
+  The same on Windows with `-Auto`, `-Update` and `-Uninstall`, and with `neodesk-docker.sh` for Docker.
 - On a disposable install that still runs the Node.js console: `--update` (`-Update`) upgrades it, and `--rollback-go` (`-RollbackGo`) puts it back.
 - `neodesk-server check` passes against each install, see [Health checks](/docs/development/installers#health-checks).
 - The diff has no secrets, debug output or private addresses.
