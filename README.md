@@ -165,6 +165,9 @@ The build checks the pages as it reads them and the files it wrote to
   block may be empty, docs pages need their sidebar, and every tab needs a
   panel of its own with content. Scripts may hide and show what is in the
   HTML, but must not add content.
+- Buttons: every button has an aria-label or text of its own. Text inside a
+  child element does not count, because the styles may hide it: the search
+  button shows only its icon on small screens.
 - Indexing: on neode.sk, `robots.txt` allows everything and names each AI
   crawler in `aiCrawlers` in `site.config.ts` as allowed, and only the 404 page
   says noindex. A build for any other address, such as beta.neode.sk, puts

@@ -7,7 +7,11 @@ export const esc = (s: unknown) => String(s).replace(/&/g, '&amp;').replace(/</g
 const SEARCH_ICON =
 	'<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M12.8 12.8 17 17"/></svg>';
 
-const formatDate = (iso: string, dateLocale: string) =>
+/** The button that opens search. Its words are hidden on small screens, so it carries an aria-label. */
+const searchButton = (t: Shared['t'], wide = false) =>
+	`<button type="button" class="search-button${wide ? ' search-button-wide' : ''}" aria-haspopup="dialog" aria-label="${esc(t.searchDocs)}">${SEARCH_ICON}<span>${esc(t.searchDocs)}</span><kbd>${esc(t.searchKey)}</kbd></button>`;
+
+const formatDate =(iso: string, dateLocale: string) =>
 	new Date(iso).toLocaleDateString(dateLocale, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 
 /** An address of the site in the page's language: /docs/ becomes /de/docs/ in German. */
@@ -134,7 +138,7 @@ ${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd).replace(
     <img class="only-light" src="/img/logo-on-light.svg" alt="${esc(config.name)}" width="118" height="28">
   </a>
   <a class="top-docs" href="${docsHome}">${esc(t.docs)}</a>
-  <button type="button" class="search-button" aria-haspopup="dialog">${SEARCH_ICON}<span>${esc(t.searchDocs)}</span><kbd>${esc(t.searchKey)}</kbd></button>
+  ${searchButton(t)}
 ${noindex || !languageSwitch(o, o.path) ? '' : `  ${languageSwitch(o, o.path)}\n`}  <nav class="top-links" aria-label="${esc(t.site)}">
     <a href="${esc(config.repo)}" rel="noopener">GitHub</a>
   </nav>
@@ -209,7 +213,7 @@ export function docsIndexPage(shared: Shared) {
 	const main = `    <div class="docs-home">
       <h1 class="display">${esc(t.documentation)}</h1>
       <p class="lead">${esc(t.docsLead)} ${esc(fill(t.writtenFor, { version }))}</p>
-      <p><button type="button" class="search-button search-button-wide" aria-haspopup="dialog">${SEARCH_ICON}<span>${esc(t.searchDocs)}</span><kbd>${esc(t.searchKey)}</kbd></button></p>
+      <p>${searchButton(t, true)}</p>
     </div>
 ${sections
 	.map(
@@ -345,7 +349,7 @@ export function notFoundPage(shared: Shared) {
 	const { t } = shared;
 	const main = `    <h1>${esc(t.notFound)}</h1>
     <p class="lead">${esc(t.notFoundLead)}</p>
-    <p><button type="button" class="search-button search-button-wide" aria-haspopup="dialog">${SEARCH_ICON}<span>${esc(t.searchDocs)}</span><kbd>${esc(t.searchKey)}</kbd></button></p>
+    <p>${searchButton(t, true)}</p>
     <ul class="rows">
       <li><a href="${inLocale(shared, '/docs/')}">${esc(t.documentation)}</a><p>${esc(t.everySection)}</p></li>
       <li><a href="${inLocale(shared, '/')}">${esc(t.home)}</a><p>${esc(t.whatItIs)}</p></li>

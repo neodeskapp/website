@@ -18,7 +18,7 @@ import type { OgData, OgTemplate } from './src/og.ts';
 import type { Page, Section, Shared, Pager } from './src/types.ts';
 import { LOCALES, DEFAULT_LOCALE, missingStrings, stringsOf, fill } from './src/i18n.ts';
 import type { Locale, Strings } from './src/i18n.ts';
-import { checkOldNames, checkConsolePort, checkVersion, checkWithoutScripts, checkIndexing, checkLocales, checkLlms, checkStructuredData, checkMarkdownLinks, checkSeo, checkPreviews } from './src/checks.ts';
+import { checkOldNames, checkConsolePort, checkVersion, checkWithoutScripts, checkButtonNames, checkIndexing, checkLocales, checkLlms, checkStructuredData, checkMarkdownLinks, checkSeo, checkPreviews } from './src/checks.ts';
 import { checkCommands } from './src/commands.ts';
 import { AGENT_TOOLS } from './src/agents.ts';
 import { INSTALLS, blocksOf, clientPorts, PORTS_PAGE } from './src/install.ts';
@@ -889,6 +889,7 @@ async function build() {
 		...checkConsolePort(checked),
 		...checkVersion(checked),
 		...checkWithoutScripts(checked),
+		...checkButtonNames(checked),
 		...checkIndexing(checked),
 		...checkLocales(checked),
 		...checkStructuredData(checked),

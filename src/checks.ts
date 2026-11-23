@@ -194,6 +194,25 @@ export function checkWithoutScripts({ dist }: CheckInput) {
 	return problems;
 }
 
+/* ---------- names of buttons ---------- */
+
+/**
+ * Every button has a name for screen readers: an aria-label, or text of its own. Text
+ * that sits only in child elements does not count, since the styles may hide it, as they
+ * hide the search button's words on small screens.
+ */
+export function checkButtonNames({ dist }: CheckInput) {
+	const problems: string[] = [];
+	for (const rel of listFiles(dist).filter((f) => f.endsWith('.html'))) {
+		for (const button of findAll(parse(fs.readFileSync(path.join(dist, rel), 'utf8')), byTag('button'))) {
+			if ((button.attrs['aria-label'] ?? '').trim() || button.attrs['aria-labelledby']) continue;
+			const own = button.children.filter((c): c is string => typeof c === 'string').join('');
+			if (!squash(own)) problems.push(`${rel}:${button.line}: a button with no aria-label and no text of its own: "${squash(textOf(button)).slice(0, 60)}"`);
+		}
+	}
+	return problems;
+}
+
 /* ---------- technical SEO ---------- */
 
 export const TITLE_MAX = 60;
