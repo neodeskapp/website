@@ -23,7 +23,7 @@ Tick **Turn on LDAP sign-in** to show the fields.
 | **LDAPS (TLS)** | Connect with TLS from the start. |
 | **StartTLS** | Connect on the plain port, then switch to TLS. Has no effect when LDAPS is ticked. |
 | **Skip TLS verify** | Do not check the server's certificate. Only for tests. |
-| **Connection timeout (s)** | Seconds to wait for the directory. Default 10. |
+| **Connection timeout (s)** | Seconds to wait for the connection to the directory, and for each of its answers. Default 10. A whole sign-in waits at most 30 seconds; see [How long a sign-in waits](#how-long-a-sign-in-waits). |
 | **Direct bind** | Sign in by building the user's DN from a template instead of searching for it with a service account. |
 | **Bind DN (service account)** | A read-only account the server signs in with to search for users. |
 | **Bind password** | Its password. A saved password shows as dots; leave them to keep it. |
@@ -94,6 +94,12 @@ CN=NeoDesk Operators,OU=Groups,DC=example,DC=com=operator
 
 People then sign in with their `sAMAccountName` in lower case, such as `jdoe`, and their domain password. Members of NeoDesk Admins become Global admin, members of NeoDesk Operators become Remote operator, and everyone else the filter finds becomes Viewer.
 
+## How long a sign-in waits
+
+A sign-in through the directory gets 30 seconds in all, in the console and in the RustDesk client, whatever **Connection timeout (s)** says. The server stops waiting for the directory 2 seconds before that, so that it can still answer.
+
+When the directory hasn't answered in that time, the console's sign-in page says "The directory server took too long to answer. Try again in a moment." The server then makes no account and notes no sign-in for the attempt. In the console the attempt doesn't count towards locking the account, because the password was not wrong. The audit log records it as a failed sign-in.
+
 ## Test it
 
 1. Fill in the settings and click **Test connection**. It checks that the server reaches the directory with the TLS settings you chose and that the **Bind DN** and **Bind password** work. It does not look up any user.
@@ -101,4 +107,4 @@ People then sign in with their `sAMAccountName` in lower case, such as `jdoe`, a
 3. Stay signed in, and sign in with a directory account in a private browser window.
 4. On the **Users** page the account appears with the **LDAP/AD** tag and its role.
 
-If the sign-in says "Invalid username or password." although the password is right, check the **Base DN** and **User filter**. If the role is wrong, check the map. When the map is filled in and the person is in any group, the server log has a line starting with `[LDAP] User` that lists the groups it found and the role it chose. [Troubleshooting](/docs/operations/troubleshooting) says where the log is.
+If the sign-in says "Invalid username or password." although the password is right, check the **Base DN** and **User filter**. If it says "The directory server took too long to answer. Try again in a moment.", the directory took more than 30 seconds; see [How long a sign-in waits](#how-long-a-sign-in-waits). If the role is wrong, check the map. When the map is filled in and the person is in any group, the server log has a line starting with `[LDAP] User` that lists the groups it found and the role it chose. [Troubleshooting](/docs/operations/troubleshooting) says where the log is.

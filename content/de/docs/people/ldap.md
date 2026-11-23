@@ -23,7 +23,7 @@ Setze den Haken bei **LDAP-Anmeldung einschalten**, damit die Felder erscheinen.
 | **LDAPS (TLS)** | Von Anfang an mit TLS verbinden. |
 | **StartTLS** | Über den unverschlüsselten Port verbinden und dann auf TLS umschalten. Ohne Wirkung, wenn LDAPS angehakt ist. |
 | **TLS-Prüfung überspringen** | Das Zertifikat des Servers nicht prüfen. Nur für Tests. |
-| **Verbindungs-Timeout (s)** | Wie viele Sekunden auf das Verzeichnis gewartet wird. Standard 10. |
+| **Verbindungs-Timeout (s)** | Wie viele Sekunden auf die Verbindung zum Verzeichnis und auf jede seiner Antworten gewartet wird. Standard 10. Eine ganze Anmeldung wartet höchstens 30 Sekunden; siehe [Wie lange eine Anmeldung wartet](#how-long-a-sign-in-waits). |
 | **Direkter Bind** | Bei der Anmeldung den DN des Benutzers aus einer Vorlage bilden, statt ihn mit einem Dienstkonto zu suchen. |
 | **Bind-DN (Dienstkonto)** | Ein Konto mit Lesezugriff, mit dem sich der Server anmeldet, um Benutzer zu suchen. |
 | **Bind-Passwort** | Sein Passwort. Ein gespeichertes Passwort erscheint als Punkte; lass sie stehen, um es zu behalten. |
@@ -94,6 +94,12 @@ CN=NeoDesk Operators,OU=Groups,DC=example,DC=com=operator
 
 Personen melden sich dann mit ihrem `sAMAccountName` in Kleinbuchstaben an, etwa `jdoe`, und mit ihrem Domänenpasswort. Mitglieder von NeoDesk Admins werden Globaler Administrator, Mitglieder von NeoDesk Operators werden Remote-Operator, und alle anderen, die der Filter findet, werden Betrachter.
 
+## Wie lange eine Anmeldung wartet {#how-long-a-sign-in-waits}
+
+Eine Anmeldung über das Verzeichnis hat insgesamt 30 Sekunden, in der Konsole und im RustDesk-Client, egal was unter **Verbindungs-Timeout (s)** steht. Der Server hört 2 Sekunden vorher auf, auf das Verzeichnis zu warten, damit er noch antworten kann.
+
+Hat das Verzeichnis in dieser Zeit nicht geantwortet, zeigt die Anmeldeseite der Konsole „Der Verzeichnisserver hat zu lange für die Antwort gebraucht. Versuchen Sie es gleich noch einmal.“ Der Server legt dann kein Konto an und vermerkt keine Anmeldung. In der Konsole zählt der Versuch nicht für die Sperre des Kontos, weil das Passwort nicht falsch war. Das Audit-Log führt ihn als fehlgeschlagene Anmeldung.
+
 ## Testen {#test-it}
 
 1. Fülle die Einstellungen aus und klicke auf **Verbindung testen**. Der Test prüft, ob der Server das Verzeichnis mit den gewählten TLS-Einstellungen erreicht und ob **Bind-DN** und **Bind-Passwort** funktionieren. Er sucht keinen Benutzer.
@@ -101,4 +107,4 @@ Personen melden sich dann mit ihrem `sAMAccountName` in Kleinbuchstaben an, etwa
 3. Bleib angemeldet und melde dich in einem privaten Browserfenster mit einem Verzeichniskonto an.
 4. Auf der Seite **Benutzer** erscheint das Konto mit dem Tag **LDAP/AD** und seiner Rolle.
 
-Zeigt die Anmeldung „Ungültiger Benutzername oder Passwort.“, obwohl das Passwort stimmt, prüfe **Basis-DN** und **Benutzerfilter**. Ist die Rolle falsch, prüfe die Zuordnung. Ist die Zuordnung ausgefüllt und die Person in irgendeiner Gruppe, steht im Log des Servers eine Zeile, die mit `[LDAP] User` beginnt und die gefundenen Gruppen und die gewählte Rolle nennt. Wo das Log liegt, steht unter [Fehlersuche](/docs/operations/troubleshooting).
+Zeigt die Anmeldung „Ungültiger Benutzername oder Passwort.“, obwohl das Passwort stimmt, prüfe **Basis-DN** und **Benutzerfilter**. Zeigt sie „Der Verzeichnisserver hat zu lange für die Antwort gebraucht. Versuchen Sie es gleich noch einmal.“, hat das Verzeichnis länger als 30 Sekunden gebraucht; siehe [Wie lange eine Anmeldung wartet](#how-long-a-sign-in-waits). Ist die Rolle falsch, prüfe die Zuordnung. Ist die Zuordnung ausgefüllt und die Person in irgendeiner Gruppe, steht im Log des Servers eine Zeile, die mit `[LDAP] User` beginnt und die gefundenen Gruppen und die gewählte Rolle nennt. Wo das Log liegt, steht unter [Fehlersuche](/docs/operations/troubleshooting).

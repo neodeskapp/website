@@ -122,8 +122,10 @@ neodesk-operators=operator
 | --- | --- |
 | Access was denied by the identity provider. | The provider refused, or the person cancelled. |
 | Your account was not found and auto-registration is disabled. | **Auto-create users** is off and there is no single sign-on account of that name. |
-| OIDC authentication failed. Please try again. | The server could not finish the sign-in with the provider, for example because of a wrong client secret. |
+| OIDC authentication failed. Please try again. | The server could not finish the sign-in with the provider, for example because of a wrong client secret, or because the provider took more than 15 seconds to answer the server's token request. |
 | Invalid OIDC callback. Please try again. | The callback does not belong to a sign-in this browser started, or the sign-in at the provider took more than 10 minutes. |
 | An error occurred during SSO login. | The server could not start or finish the sign-in, for example because it cannot reach the provider. |
 | This name belongs to an account that signs in with a password or through the directory, so single sign-on cannot sign you in. Ask an administrator. | A password or directory account with the same name already exists. Single sign-on never takes over such an account. |
 | This account is disabled. Ask an administrator. | The account is disabled on the Users page. |
+
+When the provider sends the browser back, the console waits up to 30 seconds for the server to finish the sign-in with the provider. With no answer in that time, the browser shows a page that says only "OIDC callback proxy failed". Try again; when it keeps happening, the provider answers too slowly.

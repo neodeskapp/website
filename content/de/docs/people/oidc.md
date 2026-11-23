@@ -122,8 +122,10 @@ neodesk-operators=operator
 | --- | --- |
 | Der Zugriff wurde vom Identitätsanbieter verweigert. | Der Anbieter hat abgelehnt, oder die Person hat abgebrochen. |
 | Ihr Konto wurde nicht gefunden und die automatische Registrierung ist deaktiviert. | **Benutzer automatisch erstellen** ist aus, und es gibt kein Single-Sign-on-Konto mit diesem Namen. |
-| OIDC-Authentifizierung fehlgeschlagen. Bitte versuchen Sie es erneut. | Der Server konnte die Anmeldung beim Anbieter nicht abschließen, zum Beispiel wegen eines falschen Client-Secrets. |
+| OIDC-Authentifizierung fehlgeschlagen. Bitte versuchen Sie es erneut. | Der Server konnte die Anmeldung beim Anbieter nicht abschließen, zum Beispiel wegen eines falschen Client-Secrets, oder weil der Anbieter länger als 15 Sekunden für die Antwort auf die Token-Anfrage des Servers gebraucht hat. |
 | Ungültiger OIDC-Rückruf. Bitte versuchen Sie es erneut. | Der Callback gehört nicht zu einer Anmeldung, die dieser Browser begonnen hat, oder die Anmeldung beim Anbieter hat länger als 10 Minuten gedauert. |
 | Beim SSO-Anmelden ist ein Fehler aufgetreten. | Der Server konnte die Anmeldung nicht beginnen oder nicht abschließen, zum Beispiel weil er den Anbieter nicht erreicht. |
 | Dieser Name gehört zu einem Konto, das sich mit einem Passwort oder über das Verzeichnis anmeldet, daher kann Single Sign-On Sie nicht anmelden. Wenden Sie sich an einen Administrator. | Es gibt schon ein Passwort- oder Verzeichniskonto mit demselben Namen. Single Sign-on übernimmt ein solches Konto nie. |
 | Dieses Konto ist deaktiviert. Wenden Sie sich an einen Administrator. | Das Konto ist auf der Seite Benutzer deaktiviert. |
+
+Schickt der Anbieter den Browser zurück, wartet die Konsole bis zu 30 Sekunden, bis der Server die Anmeldung beim Anbieter abgeschlossen hat. Kommt in dieser Zeit keine Antwort, zeigt der Browser eine Seite, auf der nur „OIDC callback proxy failed“ steht. Versuch es noch einmal; passiert das immer wieder, antwortet der Anbieter zu langsam.
