@@ -152,6 +152,18 @@ ${main}
 `;
 }
 
+/**
+ * The title, with "Copy as Markdown" next to it: a plain link to the page's .md copy.
+ * With scripts, docs.js copies the Markdown on a click instead of opening it.
+ */
+function pageHead(shared: Shared, title: string, markdownPath: string) {
+	const href = inLocale(shared, markdownPath);
+	return `<div class="page-head">
+      <h1>${esc(title)}</h1>
+      <a class="md-link" href="${href}" type="text/markdown" data-copied="${esc(shared.t.copied)}">${esc(shared.t.copyMarkdown)}</a>
+    </div>`;
+}
+
 function rows(shared: Shared, items: Page[]) {
 	return `<ul class="rows">
 ${items
@@ -198,8 +210,8 @@ ${sections
 
 export function sectionPage(shared: Shared & { section: Section }) {
 	const { section, t } = shared;
-	const main = `    <div class="crumb"><span><a href="${inLocale(shared, '/docs/')}">${esc(t.docs)}</a></span><span class="crumb-actions"><a href="${inLocale(shared, `/docs/${section.slug}.md`)}">Markdown</a></span></div>
-    <h1>${esc(section.label)}</h1>
+	const main = `    <div class="crumb"><span><a href="${inLocale(shared, '/docs/')}">${esc(t.docs)}</a></span></div>
+    ${pageHead(shared, section.label, `/docs/${section.slug}.md`)}
     <p class="lead">${esc(section.intro)}</p>
     ${rows(shared, section.items)}`;
 	return frame({
@@ -231,7 +243,6 @@ ${tocItems.map((h) => `      <li${h.level === 3 ? ' class="sub"' : ''}><a href="
 			: '';
 	const actions = [
 		`<span>${esc(t.updated)} <time datetime="${page.updated}">${formatDate(page.updated, locale.dateLocale)}</time></span>`,
-		`<a href="${inLocale(shared, `/docs/${page.slug}.md`)}">Markdown</a>`,
 		config.editBase ? `<a href="${esc(config.editBase)}/${page.slug}.md" rel="noopener">${esc(t.editOnGitHub)}</a>` : ''
 	]
 		.filter(Boolean)
@@ -243,7 +254,7 @@ ${tocItems.map((h) => `      <li${h.level === 3 ? ' class="sub"' : ''}><a href="
         ${actions}
       </span>
     </div>
-    <h1>${esc(page.title)}</h1>
+    ${pageHead(shared, page.title, `/docs/${page.slug}.md`)}
     <div class="prose">
 ${page.html}
     </div>

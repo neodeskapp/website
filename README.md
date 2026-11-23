@@ -132,6 +132,9 @@ The build checks the pages as it reads them and the files it wrote to
   page. The landing page's list of client ports comes from the table on the
   ports page: the rows RustDesk clients connect to that say Yes under "Open to
   the internet".
+- "Copy as Markdown": every docs page and section page has it next to the
+  h1, a plain link to the page's own `.md` copy, which must exist. With
+  scripts a click copies the Markdown; without them the link opens it.
 - Files for AI tools: llms.txt starts with "For AI agents", lists every
   `llms-*.txt` with its size in KB, every page is in exactly one section file,
   and no agent tool that is not available is named anywhere.

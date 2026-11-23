@@ -194,6 +194,31 @@ export function checkWithoutScripts({ dist }: CheckInput) {
 	return problems;
 }
 
+/* ---------- "Copy as Markdown" ---------- */
+
+/**
+ * Every docs page and section page has "Copy as Markdown" next to its h1: a plain link,
+ * without query string or inline script, to the page's own .md copy, which exists.
+ */
+export function checkMarkdownLinks({ dist }: CheckInput) {
+	const problems: string[] = [];
+	for (const rel of listFiles(dist).filter((f) => /(^|\/)docs\/.+\/index\.html$/.test(f))) {
+		const doc = parse(fs.readFileSync(path.join(dist, rel), 'utf8'));
+		const head = find(doc, (el) => el.attrs.class === 'page-head');
+		const h1 = head && find(head, byTag('h1'));
+		const link = head && find(head, (el) => el.tag === 'a' && (el.attrs.class ?? '').split(' ').includes('md-link'));
+		if (!h1 || !link) {
+			problems.push(`${rel}: no "Copy as Markdown" link next to the h1`);
+			continue;
+		}
+		const want = `${urlOfFile(rel).replace(/\/$/, '')}.md`;
+		if (link.attrs.href !== want) problems.push(`${rel}: "Copy as Markdown" leads to ${link.attrs.href}, not ${want}`);
+		else if (!fs.existsSync(path.join(dist, want.slice(1)))) problems.push(`${rel}: ${want} was not built`);
+		if (Object.keys(link.attrs).some((a) => a.startsWith('on'))) problems.push(`${rel}: "Copy as Markdown" has an inline script`);
+	}
+	return problems;
+}
+
 /* ---------- languages ---------- */
 
 /** The address a built HTML file is served at: docs/a/index.html is /docs/a/. */

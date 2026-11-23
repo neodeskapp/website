@@ -34,6 +34,25 @@
     });
   });
 
+  /* ---- "Copy as Markdown": a plain link to the page's .md; a click copies it instead ---- */
+  doc.addEventListener('click', function (e) {
+    var link = e.target.closest && e.target.closest('a.md-link');
+    if (!link || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || !window.fetch) return;
+    e.preventDefault();
+    var label = link.getAttribute('data-label') || link.textContent;
+    link.setAttribute('data-label', label);
+    fetch(link.href).then(function (r) {
+      if (!r.ok) throw new Error(r.status);
+      return r.text();
+    }).then(function (text) {
+      copyText(text, function () {
+        link.textContent = link.getAttribute('data-copied') || label;
+        clearTimeout(link._t);
+        link._t = setTimeout(function () { link.textContent = label; }, 1600);
+      });
+    }).catch(function () { location.href = link.href; });
+  });
+
   /* ---- A screenshot opens in the theme it is shown in ---- */
   var dark = window.matchMedia('(prefers-color-scheme: dark)');
   doc.addEventListener('click', function (e) {

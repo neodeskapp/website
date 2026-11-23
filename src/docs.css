@@ -157,6 +157,17 @@
   letter-spacing: -0.015em;
   text-wrap: balance;
 }
+.page-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 24px;
+  margin: 0 0 20px;
+}
+.page-head h1 { flex: 0 1 auto; margin: 0; }
+.md-link { font-size: 14px; color: var(--muted); white-space: nowrap; text-decoration: none; }
+.md-link:hover { color: var(--text); text-decoration: underline; }
 .article h1.display {
   font-family: var(--display);
   font-weight: 700;

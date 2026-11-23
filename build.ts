@@ -14,7 +14,7 @@ import { docsIndexPage, docPage, sectionPage, notFoundPage, hreflangLinks, langu
 import type { Page, Section, Shared, Pager } from './src/types.ts';
 import { LOCALES, DEFAULT_LOCALE, missingStrings, stringsOf, fill } from './src/i18n.ts';
 import type { Locale, Strings } from './src/i18n.ts';
-import { checkOldNames, checkConsolePort, checkVersion, checkWithoutScripts, checkIndexing, checkLocales, checkLlms, checkStructuredData } from './src/checks.ts';
+import { checkOldNames, checkConsolePort, checkVersion, checkWithoutScripts, checkIndexing, checkLocales, checkLlms, checkStructuredData, checkMarkdownLinks } from './src/checks.ts';
 import { checkCommands } from './src/commands.ts';
 import { AGENT_TOOLS } from './src/agents.ts';
 import { INSTALLS, blocksOf, clientPorts, PORTS_PAGE } from './src/install.ts';
@@ -779,6 +779,7 @@ async function build() {
 		...checkIndexing(checked),
 		...checkLocales(checked),
 		...checkStructuredData(checked),
+		...checkMarkdownLinks(checked),
 		...checkLlms(checked, AGENT_TOOLS.filter((t) => !t.available).map((t) => t.name.replace(/`/g, '')))
 	);
 

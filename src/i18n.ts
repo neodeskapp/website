@@ -45,6 +45,7 @@ export interface Strings {
 	onThisPage: string;
 	updated: string;
 	copyMarkdown: string;
+	copied: string;
 	editOnGitHub: string;
 	previous: string;
 	next: string;
@@ -91,6 +92,7 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		onThisPage: 'On this page',
 		updated: 'Updated',
 		copyMarkdown: 'Copy as Markdown',
+		copied: 'Copied',
 		editOnGitHub: 'Edit on GitHub',
 		previous: 'Previous',
 		next: 'Next',
