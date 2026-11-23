@@ -77,22 +77,30 @@ only new or changed images.
 Every page gets a 1200 by 630 PNG for link previews, at `/og/` plus the page's
 address: `/og/docs/getting-started/docker.png`, `/og/index.png` for the home
 page. `src/og.ts` draws them from SVG templates with resvg, with the fonts in
-`fonts/` and no system fonts, so every machine draws the same picture. The
-templates:
+`fonts/` and no system fonts, so every machine draws the same picture. An
+image shows the logo and the page's title in large type, and no other text.
+The templates:
 
-- `landing`: the home page, the docs index and the section pages.
-- `docs`: every docs page, with the section, the title and a line from the
-  description.
+- `landing`: the home page, the docs index and the section pages, next to
+  the large mark.
+- `docs`: every docs page, with the mark in the corner.
 - `comparison`: "NeoDesk vs" and the product, as text. A page asks for it with
   `og: comparison` and `product: <name>` in its front matter.
-- `use-case`: `og: use-case`.
+- `use-case`: `og: use-case`; it looks like `docs`.
 - `release`: the version large, then the title. `og: release`, and
   `release: <version>` for another version than the current one.
 
-A title wraps to at most three lines in balanced lines and shrinks to the
-template's smallest size before it is cut, after a whole word. An image is
-drawn again only when its text or the template (`src/og.ts`, the fonts, the
-logo) changed; the drawn images are kept in `.cache/og/`.
+A title takes at most three lines (two under the first line in `comparison`
+and `release`), as even as they go, at the largest size that fits. A second
+line counts as 15 % smaller, a third as 20 % smaller again, and a word broken
+after its hyphen as 20 % smaller, so a title stays on fewer lines, and a
+word whole, when that costs little size. A word breaks after a hyphen only
+when it is wider than the room on its own. When a title needs
+more lines, or runs into the logo, the mark or the margins, even at the
+template's smallest size, the build stops and names the page; shorten the
+title. An image is drawn again only when its title or the template
+(`src/og.ts`, the fonts, the logo) changed; the drawn images are kept in
+`.cache/og/`.
 
 `/og/` itself is a page that shows every image with its title, plus the
 templates no page uses yet with sample text. It is noindex, not in the
@@ -240,7 +248,8 @@ The build checks the pages as it reads them and the files it wrote to
   og:url (its canonical address), og:type, og:image with width, height and
   alt, og:site_name, og:locale and `twitter:card` summary_large_image. Its
   image exists, is a PNG of 1200 by 630 under 300 KB, and is its own; no two
-  pages share a title.
+  pages share a title. The title on the image fits in three lines and stays
+  inside its box, measured as resvg draws it.
 - "Copy as Markdown": every docs page and section page has it next to the
   h1, a plain link to the page's own `.md` copy, which must exist. With
   scripts a click copies the Markdown; without them the link opens it.

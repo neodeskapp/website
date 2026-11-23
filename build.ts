@@ -672,19 +672,17 @@ async function build() {
 	}
 
 	// Link preview images: one per page, named after the page's address, from the template
-	// its type asks for. They are drawn after the pages, from the same list.
-	const host = new URL(SITE_URL).host;
+	// its type asks for. They show the logo and the title. They are drawn after the pages,
+	// from the same list.
 	const previews: { path: string; title: string; data: OgData }[] = [];
 	const preview = (p: string, title: string, data: OgData) => previews.push({ path: p, title, data });
 	const TEMPLATES: OgTemplate[] = ['docs', 'comparison', 'use-case', 'release'];
 	for (const site of sites) {
 		const { locale, t } = site;
 		const h = homeStringsOf(locale.code);
-		preview(`${locale.prefix}/`, h.title, { template: 'landing', title: h.heroTitle.replace(/<[^>]+>/g, ''), description: h.description, host: `${host}${locale.prefix}` });
-		preview(`${locale.prefix}/docs/`, fill(t.docsTitle, { name: config.name }), { template: 'landing', title: t.documentation, description: t.docsDescription, host: `${host}${locale.prefix}/docs` });
-		for (const s of site.sections) {
-			preview(`${locale.prefix}/docs/${s.slug}/`, s.label, { template: 'landing', title: s.label, description: s.description ?? s.intro, host: `${host}${locale.prefix}/docs` });
-		}
+		preview(`${locale.prefix}/`, h.title, { template: 'landing', title: h.heroTitle.replace(/<[^>]+>/g, '') });
+		preview(`${locale.prefix}/docs/`, fill(t.docsTitle, { name: config.name }), { template: 'landing', title: t.documentation });
+		for (const s of site.sections) preview(`${locale.prefix}/docs/${s.slug}/`, s.label, { template: 'landing', title: s.label });
 		for (const page of site.pages) {
 			const template = (page.og ?? 'docs') as OgTemplate;
 			if (!TEMPLATES.includes(template)) problems.push(`${page.rel}: og: ${page.og} is not a template; use ${TEMPLATES.join(', ')}`);
@@ -692,10 +690,7 @@ async function build() {
 			preview(`${locale.prefix}/docs/${page.slug}/`, page.title, {
 				template,
 				title: template === 'comparison' ? (page.product ?? page.title) : page.title,
-				description: page.description,
-				kicker: site.sections.find((s) => s.slug === page.section)?.label,
-				version: template === 'release' ? (page.release ?? version) : undefined,
-				host: `${host}${locale.prefix}/docs`
+				version: template === 'release' ? (page.release ?? version) : undefined
 			});
 		}
 	}
@@ -745,22 +740,28 @@ async function build() {
 	// Draw the link preview images, or take them from the cache when nothing about them changed
 	const items: PreviewItem[] = [];
 	let drawn = 0;
+	// A title that does not fit its image even at the smallest size stops the build
+	const titleProblem = (where: string, title: string, problem: string | undefined) => {
+		if (problem) problems.push(`${where}: the link preview image of "${title}": ${problem}; shorten the title`);
+	};
 	for (const p of previews) {
 		const out = renderPreview(p.data, CACHE);
 		if (!out.cached) drawn++;
+		titleProblem(p.path, p.data.title, out.problem);
 		write(imageOf(p.path), out.png);
 		items.push({ page: p.path, title: p.title, image: `/${imageOf(p.path)}`, template: p.data.template, bytes: out.png.length });
 	}
 	// The templates no page uses yet, with sample text, for the contact sheet only
 	const samples: [OgTemplate, OgData][] = [
-		['comparison', { template: 'comparison', title: 'Example product', description: 'Sample text: the line under the title comes from the page description.', host }],
-		['use-case', { template: 'use-case', title: 'Sample title of a use case page, long enough to wrap onto a second line', description: 'Sample text: the line under the title comes from the page description.', host }],
-		['release', { template: 'release', title: 'Sample release title', version, description: 'Sample text: the line under the title comes from the page description.', host }]
+		['comparison', { template: 'comparison', title: 'Example product' }],
+		['use-case', { template: 'use-case', title: 'Sample title of a use case page, long enough to wrap' }],
+		['release', { template: 'release', title: 'Sample release title', version }]
 	];
 	const templates: PreviewItem[] = samples
 		.filter(([name]) => !previews.some((p) => p.data.template === name))
 		.map(([name, data]) => {
 			const out = renderPreview(data, CACHE);
+			titleProblem(`og/templates/${name}.png`, data.title, out.problem);
 			write(`og/templates/${name}.png`, out.png);
 			return { title: `Sample: ${data.title}`, image: `/og/templates/${name}.png`, template: name, bytes: out.png.length };
 		});
