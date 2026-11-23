@@ -47,7 +47,7 @@ Für CDAP-Geräte-Agents schaltet `CDAP_TLS_REQUIRED=Y` mit `TLS_CERT` und `TLS_
 
 ## Anmeldung {#sign-in}
 
-- **Einstellungen**, **Anmeldung**, **Zwei-Faktor-Anmeldung verlangen** sorgt dafür, dass ein lokales Konto ohne Zwei-Faktor-Anmeldung sie direkt nach seiner nächsten Anmeldung mit Passwort einrichtet. Konten aus einem Verzeichnisdienst oder aus Single Sign-on bleiben ihrem Anbieter überlassen, und Konten mit Pro-Lizenz sind davon ausgenommen. Siehe [Zwei-Faktor-Anmeldung](/docs/people/two-factor).
+- **Einstellungen**, **Anmeldung**, **Zwei-Faktor-Anmeldung verlangen** sorgt dafür, dass ein lokales Konto ohne Zwei-Faktor-Anmeldung sie direkt nach seiner nächsten Anmeldung mit Passwort einrichtet. Konten aus einem Verzeichnisdienst oder aus Single Sign-on bleiben ihrem Anbieter überlassen. Konten mit der [Rolle](/docs/people/users-and-roles#roles) Pro-Lizenz sind davon ausgenommen, weil sie sich nicht an der Konsole anmelden können, wo die Einrichtung stattfindet. Siehe [Zwei-Faktor-Anmeldung](/docs/people/two-factor).
 - Ein Konto darf eine Konsolensitzung zur selben Zeit haben. Sie endet nach 30 Minuten ohne Aktivität und 24 Stunden nach der Anmeldung. `SESSION_MAX_PER_USER`, `SESSION_IDLE_TIMEOUT` und `SESSION_MAX_AGE` ändern das; siehe [Konfiguration](/docs/operations/configuration#console-sessions-and-logs). Der Tab **Härtung** unter **Aktivität**, **Sicherheit und Protokoll** zeigt die Werte, mit denen der Server läuft.
 - Die Anmeldelimits und Sperren stehen unter [Anmeldung und Ratenlimits](/docs/operations/configuration#sign-in-and-rate-limits). Hinter einem Proxy brauchen sie `TRUST_PROXY`.
 

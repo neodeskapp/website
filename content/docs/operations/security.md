@@ -47,7 +47,7 @@ For CDAP device agents, `CDAP_TLS_REQUIRED=Y` with `TLS_CERT` and `TLS_KEY` turn
 
 ## Sign-in
 
-- **Settings**, **Sign-in**, **Require two-factor sign-in** makes a local account without two-factor sign-in set it up right after its next password sign-in. Directory and single sign-on accounts are left to their provider, and Pro license accounts are not held to it. See [Two-factor sign-in](/docs/people/two-factor).
+- **Settings**, **Sign-in**, **Require two-factor sign-in** makes a local account without two-factor sign-in set it up right after its next password sign-in. Directory and single sign-on accounts are left to their provider. Accounts with the [role](/docs/people/users-and-roles#roles) Pro license are not held to it, because they can't sign in to the console, where the set-up happens. See [Two-factor sign-in](/docs/people/two-factor).
 - One account may have one console session at a time, which ends after 30 minutes without activity and 24 hours after sign-in. `SESSION_MAX_PER_USER`, `SESSION_IDLE_TIMEOUT` and `SESSION_MAX_AGE` change that; see [Configuration](/docs/operations/configuration#console-sessions-and-logs). The **Hardening** tab under **Activity**, **Security and audit** shows the values the server runs with.
 - The sign-in limits and lockouts are in [Sign-in and rate limits](/docs/operations/configuration#sign-in-and-rate-limits). Behind a proxy they need `TRUST_PROXY`.
 
