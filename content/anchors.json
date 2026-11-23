@@ -15,7 +15,8 @@
 		"make-an-invite",
 		"send-the-link",
 		"what-the-person-sees",
-		"open-invites"
+		"open-invites",
+		"a-reinstalled-or-reset-computer"
 	],
 	"console/cdap": [
 		"the-gateway",

@@ -83,3 +83,34 @@ abgelaufen oder ihre letzte Nutzung verbraucht ist.
 Ein Computer, der über eine Einladung beitritt, ist in jedem
 [Registrierungsmodus](/docs/console/enrollment#enrollment-modes) genehmigt und
 bekommt seinen Gerätetoken sofort.
+
+## Ein neu installierter oder zurückgesetzter Computer {#a-reinstalled-or-reset-computer}
+
+Nach einer Neuinstallation von NeoDesk oder einem Zurücksetzen des Computers
+kann der Computer mit derselben ID und einem neuen Schlüssel zurückkommen. Der
+Server kennt das Gerät mit seinem alten Schlüssel und lehnt den Beitritt ab. Der
+Client zeigt die Antwort des Servers:
+
+```text
+This computer's ID is already enrolled with another key. Ask your administrator to approve the new key or to delete the device in the console.
+```
+
+Eine neue Einladung hilft nicht, und der abgelehnte Versuch verbraucht nichts
+von der Einladung. Der Seitenbereich des Geräts zeigt im Tab **Übersicht** einen
+Hinweis **Neuer Schlüssel** mit dem Namen des Computers, seiner Adresse, der
+Uhrzeit und dem Fingerabdruck des neuen Schlüssels. Dann hast du zwei
+Möglichkeiten:
+
+- Klicke auf **Neuen Schlüssel genehmigen** und bestätige. Der neue Schlüssel
+  wird zum Schlüssel des Geräts, seine alten Gerätetokens und Sitzungen enden,
+  und der Computer kann mit derselben Einladung wieder beitreten. Dafür
+  brauchst du die Berechtigung **Registrierungen genehmigen**.
+- Oder lösche das Gerät mit **Dauerhaft löschen (ID freigeben)** (siehe
+  [Gelöschte Geräte](/docs/console/devices#deleted-devices)). Der Computer tritt
+  dann als neues Gerät bei. Ein Löschen ohne diese Option hält die ID
+  reserviert, und der Server lehnt den Computer ab.
+
+Ein Computer mit neuem Schlüssel, der ohne Einladung zurückkommt, etwa weil er
+von Hand eingerichtet wurde, erscheint als offline, und sein Tab **Übersicht**
+sagt, dass der Server seinen neuen Schlüssel nicht annimmt. Schick ihm eine
+Einladung und genehmige den neuen Schlüssel, oder lösche das Gerät dauerhaft.

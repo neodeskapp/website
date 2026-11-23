@@ -26,7 +26,7 @@ Der Bereich zeigt nur die Tabs, die zum Gerät passen:
 
 ### Übersicht {#overview}
 
-Ist das Gerät gesperrt, steht oben ein Hinweis, wann und von wem, und der Grund, falls einer angegeben wurde. Danach folgen diese Abschnitte:
+Ist das Gerät gesperrt, steht oben ein Hinweis, wann und von wem, und der Grund, falls einer angegeben wurde. Ist der Computer mit einem neuen Schlüssel zurückgekommen, etwa nach einer Neuinstallation, folgt ein Hinweis **Neuer Schlüssel**. Nach einer abgelehnten Einladung nennt er den Computer, seine Adresse, die Uhrzeit und den Fingerabdruck des neuen Schlüssels und bietet Konten mit **Registrierungen genehmigen** die Schaltfläche **Neuen Schlüssel genehmigen** an; sonst sagt er, dass der Server den neuen Schlüssel nicht annimmt. Siehe [Ein neu installierter oder zurückgesetzter Computer](/docs/console/add-a-computer#a-reinstalled-or-reset-computer). Danach folgen diese Abschnitte:
 
 - **Aktuelle Auslastung**: CPU-, Arbeitsspeicher- und Festplattennutzung als Balken, wenn das Gerät sie meldet.
 - **Identität**: **ID**, **Anzeigename**, **Hostname**, **Benutzername**, **Plattform** und, wenn das Gerät sie gesendet hat, seine UUID, **Version** und **Funktionen**.

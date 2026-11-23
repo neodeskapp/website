@@ -76,3 +76,31 @@ An invite ends by itself when its time is up or its last use is taken.
 A computer that joins with an invite is approved in every
 [enrollment mode](/docs/console/enrollment#enrollment-modes) and gets its
 device token at once.
+
+## A reinstalled or reset computer
+
+After NeoDesk is installed again or the computer is reset, the computer can come
+back with the same ID and a new key. The server knows the device with its old
+key and refuses the join. The client shows the server's answer:
+
+```text
+This computer's ID is already enrolled with another key. Ask your administrator to approve the new key or to delete the device in the console.
+```
+
+A new invite doesn't help, and the refused attempt uses up nothing of the
+invite. The device's panel shows a **New key** notice on its **Overview** tab,
+with the computer's name, its address, the time and the fingerprint of the new
+key. Then either:
+
+- Click **Approve new key** and confirm. The new key becomes the device's key,
+  its old device tokens and sessions end, and the computer can join with the
+  same invite again. This needs the **Approve enrollment** permission.
+- Or delete the device with **Permanently delete (release ID)** (see
+  [Deleted devices](/docs/console/devices#deleted-devices)). The computer then
+  joins as a new device. A delete without that option keeps the ID reserved,
+  and the server refuses the computer.
+
+A computer with a new key that comes back without an invite, for example set
+up by hand, shows as offline, and its **Overview** tab says that the server
+doesn't accept its new key. Send it an invite and approve the new key, or
+delete the device for good.
