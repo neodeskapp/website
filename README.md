@@ -41,6 +41,8 @@ build.ts             the generator
 deploy.sh            builds for beta or production and uploads to the web server
 shots.json           the console screenshots: page, steps to reach the state, annotations
 shots.ts             takes every screenshot in light and dark from a running console
+release-card.ts      draws the card at the top of a release's notes, from git
+public/img/releases/ the images of the release notes, one folder per tag
 ```
 
 `SITE_URL=https://beta.neode.sk node build.ts` builds for another address.
@@ -105,6 +107,24 @@ python -c "from fontTools.ttLib import TTFont; t = TTFont('public/fonts/IBMPlexS
 python -m fontTools.varLib.instancer plex.ttf wght=400 --static --update-name-table -o fonts/IBMPlexSans-Regular.ttf
 python -m fontTools.varLib.instancer plex.ttf wght=600 --static --update-name-table -o fonts/IBMPlexSans-SemiBold.ttf
 ```
+
+## Release cards
+
+The first image in a release's notes is a card drawn by `drawReleaseCard` in
+`src/og.ts`: the version, a title, the date, and the release's commits, files
+changed, lines added and removed and fixes against the release before, counted
+from git. `release-card.ts` draws it into `public/img/releases/<tag>/card.png`,
+next to the release's screenshots:
+
+```sh
+node release-card.ts ../neodesk v3.6.0-rc.2 "The first release as NeoDesk" --note "The numbers include the rename of the project."
+node release-card.ts ../neodesk-client desktop-v1.5.0-rc.4 "The desktop client as NeoDesk" --previous desktop-v1.5.0-rc.2 --product "Desktop client" --accent lime
+```
+
+It compares with the tag before by default; name the release with
+`--previous` when the tag before it was never published. The notes link the
+images by commit, as
+`https://raw.githubusercontent.com/neodeskapp/website/<commit>/public/img/releases/<tag>/card.png`.
 
 ## Languages
 

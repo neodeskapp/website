@@ -276,6 +276,95 @@ export function draw(d: OgData): Drawn {
 	}
 }
 
+/* ---------- release cards ---------- */
+
+const GREEN = '#72c98c';
+const RED = '#ff8f80';
+
+/** One labelled number on a release card, such as 48 commits. */
+export interface CardFigure {
+	value: string;
+	label: string;
+	/** Lines added are green and lines removed red, as GitHub shows them */
+	tone?: 'add' | 'remove';
+}
+
+/** The picture at the top of a release's notes: the version, a title and the release's numbers. */
+export interface ReleaseCard {
+	/** v3.6.0-rc.2 */
+	version: string;
+	title: string;
+	/** "Pre-release", "Desktop client pre-release" */
+	kicker: string;
+	/** The kicker's colour: blue for the server, lime for the client */
+	accent: 'blue' | 'lime';
+	/** 23 November 2026 */
+	date: string;
+	figures: CardFigure[];
+	/** A short line under the numbers, such as what makes them large */
+	note?: string;
+}
+
+/**
+ * The SVG of a release card, on the canvas of the link previews: few elements and large
+ * type, so it reads at the width GitHub shows release notes and as a 400 px chat embed.
+ */
+export function drawReleaseCard(c: ReleaseCard): string {
+	const accent = c.accent === 'lime' ? LIME : BLUE;
+	const kickerY = 178;
+	const kickerWidth = measure(c.kicker, SANS_BOLD, 30);
+	const kicker =
+		`<text x="${LEFT}" y="${kickerY}" font-family="${SANS_BOLD.family}" font-weight="600" font-size="30" fill="${accent}">${xml(c.kicker)}</text>` +
+		`<text x="${(LEFT + kickerWidth).toFixed(1)}" y="${kickerY}" font-family="${SANS.family}" font-weight="400" font-size="30" fill="${MUTED}">${xml(`, ${c.date}`)}</text>`;
+	// The version is the largest thing on the card; it stays left of the mark
+	const vSize = fit(c.version, DISPLAY, [136, 124, 112, 100, 88], 820, 1).size;
+	const versionY = kickerY + 18 + vSize * 0.78;
+	const version = `<text x="${LEFT - 5}" y="${versionY.toFixed(1)}" font-family="${DISPLAY.family}" font-weight="700" font-size="${vSize}" letter-spacing="${(-0.03 * vSize).toFixed(2)}" fill="${TEXT}">${xml(c.version)}</text>`;
+	const title = fit(c.title, DISPLAY, [50, 46, 42], 1056, 1);
+	const titleY = versionY + 22 + title.size * 0.8;
+	// The numbers in one row: the value large, its label under it
+	// at the largest size that fits; below 52 px a 400 px embed can't be read, so the last
+	// figures (the optional ones) go first
+	const room = OG_WIDTH - 2 * LEFT;
+	const gap = 52;
+	const widthOf = (f: CardFigure, s: number) => Math.max(measure(f.value, DISPLAY, s), measure(f.label, SANS, 28));
+	const fits = (list: CardFigure[], s: number) => list.reduce((w, f) => w + widthOf(f, s), 0) + gap * (list.length - 1) <= room;
+	let shown = c.figures;
+	let size = 64;
+	while (!fits(shown, size)) {
+		if (size > 52) size -= 4;
+		else if (shown.length > 4) {
+			shown = shown.slice(0, -1);
+			size = 64;
+		} else break;
+	}
+	const valueY = 506;
+	let x = LEFT;
+	let figures = '';
+	for (const f of shown) {
+		const fill = f.tone === 'add' ? GREEN : f.tone === 'remove' ? RED : TEXT;
+		figures +=
+			`<text x="${x.toFixed(1)}" y="${valueY}" font-family="${DISPLAY.family}" font-weight="700" font-size="${size}" letter-spacing="${(-0.02 * size).toFixed(2)}" fill="${fill}">${xml(f.value)}</text>` +
+			`<text x="${x.toFixed(1)}" y="${valueY + 42}" font-family="${SANS.family}" font-weight="400" font-size="28" fill="${MUTED}">${xml(f.label)}</text>`;
+		x += widthOf(f, size) + gap;
+	}
+	const note = c.note ? `<text x="${LEFT}" y="598" font-family="${SANS.family}" font-weight="400" font-size="26" fill="${MUTED}">${xml(c.note)}</text>` : '';
+	return frame(
+		mark(930, -36, 340) +
+			logo(LEFT, 60, 40) +
+			kicker +
+			version +
+			textBlock(title.lines, DISPLAY, title.size, LEFT - 2, titleY, 1, TEXT) +
+			figures +
+			note
+	);
+}
+
+/** The PNG of a release card at a width; the card is drawn as vectors, so any width is sharp. */
+export function renderReleaseCard(c: ReleaseCard, width = 1600): Buffer {
+	return new Resvg(drawReleaseCard(c), { font, fitTo: { mode: 'width', value: width } }).render().asPng();
+}
+
 /**
  * The PNG of one image, from the cache when the same text was drawn with the same
  * template before. The cache key is the text and the template's own hash.
