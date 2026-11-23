@@ -42,7 +42,7 @@ Der RustDesk-Client meldet sich über HTTP an, gleicht sein Adressbuch ab und me
 
 Ein Client braucht vier Werte: ID-Server, Relay-Server, API-Server und Schlüssel. Er bekommt sie aus seinen eigenen Einstellungen, aus dem Konfigurations-String oder aus dem QR-Code (`rustdesk://config/...` mit demselben String); siehe [Einen RustDesk-Client verbinden](/docs/getting-started/connect-a-client). Die Relay-Adresse, die die Konsole angibt, enthält immer einen Port. RustDesk-Clients 1.4.8 und 1.4.9, die nur einen Relay-Host ohne Port bekommen, fragen nämlich den API-Port nach dem Relay, und die Sitzung endet mit „Pair timeout“.
 
-**API-Server** kann leer bleiben oder `http://<server-address>:21121` sein, der Client-API-Port bei jeder Installationsart, oder die HTTPS-Adresse eines Reverse Proxys davor; beides funktioniert. Ein normaler Client, bei dem das Feld leer ist, versucht den Port des ID-Servers minus 2 (21114), den keine Installation öffnet, und schickt seine API-Aufrufe dann als `HttpProxyRequest` über den ID-Server. Der Signal-Server beantwortet sie selbst, deshalb kommen Heartbeat, Systeminformationen, Anmeldung und Adressbuch trotzdem an. Bei einem NeoDesk-Client, der von Hand eingerichtet wird, muss das Feld ausgefüllt sein: Seine Aufrufe zur Registrierung laufen nur über HTTP.
+**API-Server** kann leer bleiben oder `http://<server-address>:21121` sein, der Client-API-Port bei jeder Installationsart, oder die HTTPS-Adresse eines Reverse Proxys davor; alle drei funktionieren. Ein normaler Client, bei dem das Feld leer ist, versucht den Port des ID-Servers minus 2 (21114), den keine Installation öffnet, und schickt seine API-Aufrufe dann als `HttpProxyRequest` über den ID-Server. Der ID-Server reicht sie an die eigene API des Servers weiter, deshalb kommen Heartbeat, Systeminformationen, Anmeldung und Adressbuch trotzdem an. Bei einem NeoDesk-Client, der von Hand eingerichtet wird, muss das Feld ausgefüllt sein: Seine Aufrufe zur Registrierung laufen nur über HTTP.
 
 Der Server kann in seiner Antwort auf den NAT-Test auch ID-Server in `ConfigUpdate` schicken, aber nur, wenn `RENDEZVOUS_SERVERS` gesetzt ist, und nie Relay-Adressen. Nutze das nicht, um Clients auf einen anderen Server umzuziehen: Trage die Server im Client ein.
 
@@ -62,7 +62,7 @@ Ein normaler Client übernimmt diese Optionen aus der einfachen Antwort auf den 
 
 ### Nachrichten, die der Server nicht bedient {#messages-the-server-doesnt-serve}
 
-- `HttpProxyRequest` bekommt eine `HttpProxyResponse` mit dem Fehler „not supported“: Der ID-Server ist kein Proxy.
+- `HttpProxyRequest` wird nur für einen Pfad unter `/api/` mit GET, POST, PUT, PATCH oder DELETE beantwortet, und nur von der eigenen API dieses Servers; der ID-Server schickt nichts an einen anderen Host weiter. Jede andere Anfrage bekommt eine `HttpProxyResponse` mit einem Fehler, ebenso eine Antwort, deren Inhalt größer als 60 KiB ist.
 - `IceCandidate` wird nur zwischen den beiden Enden eines Hole Punchings weitergereicht, das der Server gestartet hat.
 - Ein `FetchLocalAddr`, das von einem Client kommt, wird verworfen: Nur der Server schickt diese Nachricht.
 - Ein neues Gerät, das der Registrierungsmodus abweist, bekommt `RegisterPkResponse` mit `NOT_DEPLOYED`.

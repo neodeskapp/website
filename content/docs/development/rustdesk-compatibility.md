@@ -42,7 +42,7 @@ The RustDesk client signs in, syncs its address book and reports itself over HTT
 
 A client needs four values: ID server, relay server, API server and key. It gets them from its own settings, from the config string or from the QR code (`rustdesk://config/...` with the same string); see [Connect a RustDesk client](/docs/getting-started/connect-a-client). The relay address the console gives always carries a port, because RustDesk 1.4.8 and 1.4.9 clients that get a bare relay host ask the API port for the relay, and the session ends with "Pair timeout".
 
-**API server** can stay empty or be `http://<server-address>:21121`, the client API port on every install type, or the HTTPS address of a reverse proxy in front of it; both work. A stock client that leaves it empty tries the ID server's port minus 2 (21114), which no install opens, and then sends its API calls through the ID server as `HttpProxyRequest`. The signal server answers them itself, so heartbeat, system information, sign-in and the address book still arrive. A NeoDesk client set up by hand needs the field filled in: its enrollment calls go only over HTTP.
+**API server** can stay empty or be `http://<server-address>:21121`, the client API port on every install type, or the HTTPS address of a reverse proxy in front of it; all three work. A stock client that leaves it empty tries the ID server's port minus 2 (21114), which no install opens, and then sends its API calls through the ID server as `HttpProxyRequest`. The ID server passes them to the server's own API, so heartbeat, system information, sign-in and the address book still arrive. A NeoDesk client set up by hand needs the field filled in: its enrollment calls go only over HTTP.
 
 The server can also send ID servers in `ConfigUpdate`, in its answer to the NAT test, but only when `RENDEZVOUS_SERVERS` is set, and never relay addresses. Don't use it to move clients to another server: set the servers in the client.
 
@@ -62,7 +62,7 @@ A stock client applies these options from the plain heartbeat answer. NeoDesk's 
 
 ### Messages the server doesn't serve
 
-- `HttpProxyRequest` gets an `HttpProxyResponse` with the error "not supported": the ID server is no proxy.
+- `HttpProxyRequest` is answered only for a path under `/api/` with GET, POST, PUT, PATCH or DELETE, and only by this server's own API; the ID server sends nothing on to another host. Any other request gets an `HttpProxyResponse` with an error, and so does an answer whose body is larger than 60 KiB.
 - `IceCandidate` is passed on only between the two ends of a punch the server started.
 - A `FetchLocalAddr` that comes from a client is dropped: only the server sends it.
 - A new device that the enrollment mode turns away gets `RegisterPkResponse` with `NOT_DEPLOYED`.
