@@ -49,6 +49,23 @@ beendet eine laufende Sitzung. Du kannst den Dialog jederzeit schließen: Die
 Sitzung bleibt offen, und **Ihre Schnellhilfe-Sitzungen** auf der Seite
 **Hilfeanfragen** listet sie mit **Öffnen** auf, damit du zu ihr zurückkommst.
 
+## Was eine Sitzung dir gibt {#what-a-session-gives-you}
+
+Eine Schnellhilfe-Sitzung gibt dir den Bildschirm, die Maus und die Tastatur der
+Person. Genau darum bittet die App sie. Der Server schaltet jede andere
+Berechtigung der Sitzung aus, darunter die Zwischenablage, die Dateiübertragung
+und das Drucken, den Ton, die Kamera, das Terminal, Tunnel, den Neustart des
+Computers, die Aufzeichnung, das Sperren ihrer Eingabe und den
+Privatsphäre-Modus. Eine Sitzung für Dateiübertragung, Tunnel, RDP, Terminal
+oder Kamera zu ihrem Computer lehnt er mit „The person did not allow this in
+their quick support session“ ab.
+
+Text kopieren und Dateien kopieren sind eigene Berechtigungen. Die Person kann
+jede davon für sich erlauben, und der Server schaltet dann für diese Sitzung die
+Zwischenablage oder die Dateiübertragung samt Drucken ein. Die Hilfe-App des
+aktuellen Client-Releases fragt nur nach Bildschirm, Maus und Tastatur, beides
+bleibt also aus. Die Auswahl dafür kommt mit dem nächsten Client-Release.
+
 ## Was die Person sieht {#what-the-person-sees}
 
 Der Link öffnet eine Seite, die sagt, wer helfen will, und

@@ -44,6 +44,22 @@ You can close the dialog at any time: the session stays open, and
 **Your quick support sessions** on the **Help requests** page lists it with
 **Open** to come back to it.
 
+## What a session gives you
+
+A quick support session gives you the person's screen, mouse and keyboard.
+That is what the app asks them to allow. The server turns every other
+permission of the session off, among them the clipboard, file transfer and
+printing, sound, the camera, the terminal, tunnels, restarting the computer,
+recording, blocking their input and privacy mode. It refuses a file transfer,
+tunnel, RDP, terminal or camera session to their computer with "The person did
+not allow this in their quick support session".
+
+Copying text and copying files are separate permissions. The person can allow
+each of them on its own, and the server then turns the clipboard, or file
+transfer and printing, on for that session. The support app of the current
+client release asks only for the screen, mouse and keyboard, so both stay off.
+The choices for them come with the next client release.
+
 ## What the person sees
 
 The link opens a page that says who wants to help and offers

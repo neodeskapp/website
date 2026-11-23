@@ -78,7 +78,8 @@
 	"console/quick-support": [
 		"make-a-session-link",
 		"follow-the-session",
-		"what-the-person-sees"
+		"what-the-person-sees",
+		"what-a-session-gives-you"
 	],
 	"console/remote-in-browser": [
 		"opening-the-viewer",
