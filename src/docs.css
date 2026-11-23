@@ -157,6 +157,11 @@
   letter-spacing: -0.015em;
   text-wrap: balance;
 }
+.og-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 28px 24px; margin: 24px 0 48px; }
+.og-item { margin: 0; }
+.og-item img { display: block; width: 100%; height: auto; border: 1px solid var(--rule); border-radius: 4px; }
+.og-item figcaption { display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; font-size: 14px; }
+.og-item figcaption span { color: var(--muted); white-space: nowrap; }
 .page-head {
   display: flex;
   flex-wrap: wrap;

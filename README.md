@@ -27,6 +27,7 @@ content/docs/<section>/<page>/<child>.md   a page under another page
 content/screenshots/<name>-dark.png, <name>-light.png
 src/home.html        the landing page; its install tabs come from src/install.ts
 src/install.ts       the install commands of the landing page and llms.txt
+src/og.ts            the link preview images
 src/layout.ts        the frame around every docs page, and the docs index
 src/checks.ts        the checks on the built site
 src/types.ts         the shapes the build passes around
@@ -68,6 +69,42 @@ WebP (with sharp), the same pixels in about a third of the bytes, and the pages
 show it with the PNG as fallback. A lossless AVIF came out larger than the PNG,
 so there is none. Converted files are kept in `.cache/`, so a build converts
 only new or changed images.
+
+## Link previews
+
+Every page gets a 1200 by 630 PNG for link previews, at `/og/` plus the page's
+address: `/og/docs/getting-started/docker.png`, `/og/index.png` for the home
+page. `src/og.ts` draws them from SVG templates with resvg, with the fonts in
+`fonts/` and no system fonts, so every machine draws the same picture. The
+templates:
+
+- `landing`: the home page, the docs index and the section pages.
+- `docs`: every docs page, with the section, the title and a line from the
+  description.
+- `comparison`: "NeoDesk vs" and the product, as text. A page asks for it with
+  `og: comparison` and `product: <name>` in its front matter.
+- `use-case`: `og: use-case`.
+- `release`: the version large, then the title. `og: release`, and
+  `release: <version>` for another version than the current one.
+
+A title wraps to at most three lines in balanced lines and shrinks to the
+template's smallest size before it is cut, after a whole word. An image is
+drawn again only when its text or the template (`src/og.ts`, the fonts, the
+logo) changed; the drawn images are kept in `.cache/og/`.
+
+`/og/` itself is a page that shows every image with its title, plus the
+templates no page uses yet with sample text. It is noindex, not in the
+sitemap, and linked from nowhere.
+
+resvg ignores the weight axis of a variable font, so `fonts/` holds static
+instances, made from the variable fonts without other changes:
+
+```sh
+python -m fontTools.varLib.instancer fonts/FunnelDisplay.ttf wght=700 --static --update-name-table -o fonts/FunnelDisplay-Bold.ttf
+python -c "from fontTools.ttLib import TTFont; t = TTFont('public/fonts/IBMPlexSans-latin.woff2'); t.flavor = None; t.save('plex.ttf')"
+python -m fontTools.varLib.instancer plex.ttf wght=400 --static --update-name-table -o fonts/IBMPlexSans-Regular.ttf
+python -m fontTools.varLib.instancer plex.ttf wght=600 --static --update-name-table -o fonts/IBMPlexSans-SemiBold.ttf
+```
 
 ## Languages
 
@@ -158,6 +195,11 @@ The build checks the pages as it reads them and the files it wrote to
   site exists, and every page is linked from another one. A section whose
   intro is longer than 155 characters gets a `description` in
   `site.config.ts`.
+- Link previews: every page that may be indexed has og:title, og:description,
+  og:url (its canonical address), og:type, og:image with width, height and
+  alt, og:site_name, og:locale and `twitter:card` summary_large_image. Its
+  image exists, is a PNG of 1200 by 630 under 300 KB, and is its own; no two
+  pages share a title.
 - "Copy as Markdown": every docs page and section page has it next to the
   h1, a plain link to the page's own `.md` copy, which must exist. With
   scripts a click copies the Markdown; without them the link opens it.

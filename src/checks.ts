@@ -254,7 +254,7 @@ export function checkSeo({ dist, siteUrl }: CheckInput) {
 			if (!('alt' in img.attrs)) problems.push(`${rel}:${img.line}: the image ${name} has no alt`);
 			if (!img.attrs.width || !img.attrs.height) problems.push(`${rel}:${img.line}: the image ${name} has no width and height`);
 			const webp = img.parent?.tag === 'picture' && img.parent.children.some((c) => typeof c !== 'string' && c.tag === 'source' && c.attrs.type === 'image/webp');
-			if (/\.(png|jpe?g)$/i.test(name) && !webp) problems.push(`${rel}:${img.line}: the image ${name} has no WebP version`);
+			if (/\.(png|jpe?g)$/i.test(name) && !name.startsWith('/og/') && !webp) problems.push(`${rel}:${img.line}: the image ${name} has no WebP version`);
 		}
 		// Fonts: the page loads its text font early, as WOFF2, and every @font-face is WOFF2
 		const preloads = findAll(doc, (el) => el.tag === 'link' && el.attrs.rel === 'preload' && el.attrs.as === 'font');
@@ -300,6 +300,49 @@ export function checkSeo({ dist, siteUrl }: CheckInput) {
 
 /** The page that shows every link preview image; it is linked from nowhere on purpose. */
 export const CONTACT_SHEET = 'og/index.html';
+
+/* ---------- link previews ---------- */
+
+const OG_TAGS = ['og:title', 'og:description', 'og:url', 'og:type', 'og:image', 'og:image:width', 'og:image:height', 'og:image:alt', 'og:site_name', 'og:locale'];
+
+/**
+ * Every page that may be indexed has the Open Graph tags and twitter:card
+ * summary_large_image; og:url is the canonical address; its image exists, is a PNG of
+ * 1200 x 630 under 300 KB, and belongs to this page alone; no two pages share a title.
+ */
+export function checkPreviews({ dist, siteUrl }: CheckInput) {
+	const problems: string[] = [];
+	const titles = new Map<string, string>();
+	const images = new Map<string, string>();
+	for (const rel of listFiles(dist).filter((f) => f.endsWith('.html') && !NOINDEX_PAGES.has(f))) {
+		const head = fs.readFileSync(path.join(dist, rel), 'utf8').split('</head>')[0];
+		const meta = new Map<string, string>();
+		for (const m of head.matchAll(/<meta (?:property|name)="([^"]+)" content="([^"]*)">/g)) meta.set(m[1], decode(m[2]));
+		for (const tag of OG_TAGS) if (!meta.get(tag)) problems.push(`${rel}: no ${tag}`);
+		if (meta.get('twitter:card') !== 'summary_large_image') problems.push(`${rel}: twitter:card is not summary_large_image`);
+		if (meta.get('og:url') && meta.get('og:url') !== canonicalOf(head)) problems.push(`${rel}: og:url is not the canonical address`);
+		if (meta.get('og:image:width') !== '1200' || meta.get('og:image:height') !== '630') problems.push(`${rel}: og:image:width and height are not 1200 and 630`);
+		const title = meta.get('og:title');
+		if (title) {
+			if (titles.has(title)) problems.push(`${rel}: the same og:title as ${titles.get(title)}: "${title}"`);
+			titles.set(title, rel);
+		}
+		const image = meta.get('og:image');
+		if (!image) continue;
+		const file = fileOfUrl(image, siteUrl);
+		if (!file || !fs.existsSync(path.join(dist, file))) {
+			problems.push(`${rel}: og:image ${image} was not built`);
+			continue;
+		}
+		if (images.has(file)) problems.push(`${rel}: shares its og:image with ${images.get(file)}`);
+		images.set(file, rel);
+		const png = fs.readFileSync(path.join(dist, file));
+		const isPng = png.subarray(1, 4).toString() === 'PNG';
+		if (!isPng || png.readUInt32BE(16) !== 1200 || png.readUInt32BE(20) !== 630) problems.push(`${rel}: ${file} is not a 1200 x 630 PNG`);
+		if (png.length > 300 * 1024) problems.push(`${rel}: ${file} has ${Math.round(png.length / 1024)} KB, more than 300`);
+	}
+	return problems;
+}
 
 /* ---------- "Copy as Markdown" ---------- */
 
@@ -486,7 +529,7 @@ export function checkLlms({ dist, siteUrl }: CheckInput, unavailable: string[]) 
 /* ---------- who may index the site ---------- */
 
 // Pages that are never indexed, on any host
-export const NOINDEX_PAGES = new Set(['404.html']);
+export const NOINDEX_PAGES = new Set(['404.html', 'og/index.html']);
 
 /**
  * On production, robots.txt allows everything and names each AI crawler as allowed, and

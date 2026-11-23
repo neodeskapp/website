@@ -11,11 +11,14 @@ import type { StateBlock, StateCore, Token, RendererRule } from 'markdown-it';
 import hljs from 'highlight.js';
 import sharp from 'sharp';
 import config from './site.config.ts';
-import { docsIndexPage, docPage, sectionPage, notFoundPage, hreflangLinks, languageSwitch, esc } from './src/layout.ts';
+import { docsIndexPage, docPage, sectionPage, notFoundPage, contactSheetPage, hreflangLinks, languageSwitch, socialTags, esc } from './src/layout.ts';
+import type { PreviewItem } from './src/layout.ts';
+import { render as renderPreview } from './src/og.ts';
+import type { OgData, OgTemplate } from './src/og.ts';
 import type { Page, Section, Shared, Pager } from './src/types.ts';
 import { LOCALES, DEFAULT_LOCALE, missingStrings, stringsOf, fill } from './src/i18n.ts';
 import type { Locale, Strings } from './src/i18n.ts';
-import { checkOldNames, checkConsolePort, checkVersion, checkWithoutScripts, checkIndexing, checkLocales, checkLlms, checkStructuredData, checkMarkdownLinks, checkSeo } from './src/checks.ts';
+import { checkOldNames, checkConsolePort, checkVersion, checkWithoutScripts, checkIndexing, checkLocales, checkLlms, checkStructuredData, checkMarkdownLinks, checkSeo, checkPreviews } from './src/checks.ts';
 import { checkCommands } from './src/commands.ts';
 import { AGENT_TOOLS } from './src/agents.ts';
 import { INSTALLS, blocksOf, clientPorts, PORTS_PAGE } from './src/install.ts';
@@ -194,6 +197,9 @@ function loadPages(dir: string, locale: Locale, version: string): Page[] {
 			title: data.title ?? slug,
 			description: data.description ?? '',
 			order: Number(data.order ?? 99),
+			og: data.og,
+			product: data.product,
+			release: data.release,
 			body: body.trim() + '\n',
 			updated: updatedOf(file),
 			bodyLine,
@@ -659,10 +665,46 @@ async function build() {
 		}
 	}
 
+	// Link preview images: one per page, named after the page's address, from the template
+	// its type asks for. They are drawn after the pages, from the same list.
+	const host = new URL(SITE_URL).host;
+	const homeSource = read(at('src/home.html'));
+	const homeTitle = homeSource.match(/<title>([^<]*)<\/title>/)?.[1] ?? config.name;
+	const homeDescription = homeSource.match(/<meta name="description" content="([^"]*)"/)?.[1] ?? config.summary;
+	const homeHeadline = (homeSource.match(/<h1[^>]*>([\s\S]*?)<\/h1>/)?.[1] ?? homeTitle).replace(/<[^>]+>/g, '');
+	const previews: { path: string; title: string; data: OgData }[] = [];
+	const preview = (p: string, title: string, data: OgData) => previews.push({ path: p, title, data });
+	preview('/', homeTitle, { template: 'landing', title: homeHeadline, description: homeDescription, host });
+	const TEMPLATES: OgTemplate[] = ['docs', 'comparison', 'use-case', 'release'];
+	for (const site of sites) {
+		const { locale, t } = site;
+		preview(`${locale.prefix}/docs/`, fill(t.docsTitle, { name: config.name }), { template: 'landing', title: t.documentation, description: t.docsDescription, host: `${host}${locale.prefix}/docs` });
+		for (const s of site.sections) {
+			preview(`${locale.prefix}/docs/${s.slug}/`, s.label, { template: 'landing', title: s.label, description: s.description ?? s.intro, host: `${host}${locale.prefix}/docs` });
+		}
+		for (const page of site.pages) {
+			const template = (page.og ?? 'docs') as OgTemplate;
+			if (!TEMPLATES.includes(template)) problems.push(`${page.rel}: og: ${page.og} is not a template; use ${TEMPLATES.join(', ')}`);
+			if (template === 'comparison' && !page.product) problems.push(`${page.rel}: og: comparison needs product: in the front matter`);
+			preview(`${locale.prefix}/docs/${page.slug}/`, page.title, {
+				template,
+				title: template === 'comparison' ? (page.product ?? page.title) : page.title,
+				description: page.description,
+				kicker: site.sections.find((s) => s.slug === page.section)?.label,
+				version: template === 'release' ? (page.release ?? version) : undefined,
+				host: `${host}${locale.prefix}/docs`
+			});
+		}
+	}
+	/** The image file of a page: /docs/a/b/ has og/docs/a/b.png, the home page og/index.png */
+	const imageOf = (p: string) => `og${p === '/' ? '/index' : p.replace(/\/$/, '')}.png`;
+	const byPath = new Map(previews.map((p) => [p.path, { url: `${SITE_URL}/${imageOf(p.path)}`, alt: `${config.name}: ${p.data.title}` }]));
+	const previewOf = (p: string) => byPath.get(p);
+
 	const search: SearchEntry[] = [];
 	for (const site of sites) {
 		const { locale, t } = site;
-		const shared: Shared = { config, sections: site.sections, assets, version, siteUrl: SITE_URL, production: PRODUCTION, locale, t, versions };
+		const shared: Shared = { config, sections: site.sections, assets, version, siteUrl: SITE_URL, production: PRODUCTION, locale, t, versions, previewOf };
 		// Files of another language go under its prefix: de/docs/...
 		const out = (file: string) => `${locale.prefix.replace(/^\//, '')}${locale.prefix ? '/' : ''}${file}`;
 		const labelOf = (slug: string) => site.sections.find((s) => s.slug === slug)?.label ?? slug;
@@ -696,6 +738,46 @@ async function build() {
 		if (locale.default) write('404.html', notFoundPage(shared));
 	}
 	write('docs/search.json', JSON.stringify(search));
+
+	// Draw the link preview images, or take them from the cache when nothing about them changed
+	const items: PreviewItem[] = [];
+	let drawn = 0;
+	for (const p of previews) {
+		const out = renderPreview(p.data, CACHE);
+		if (!out.cached) drawn++;
+		write(imageOf(p.path), out.png);
+		items.push({ page: p.path, title: p.title, image: `/${imageOf(p.path)}`, template: p.data.template, bytes: out.png.length });
+	}
+	// The templates no page uses yet, with sample text, for the contact sheet only
+	const samples: [OgTemplate, OgData][] = [
+		['comparison', { template: 'comparison', title: 'Example product', description: 'Sample text: the line under the title comes from the page description.', host }],
+		['use-case', { template: 'use-case', title: 'Sample title of a use case page, long enough to wrap onto a second line', description: 'Sample text: the line under the title comes from the page description.', host }],
+		['release', { template: 'release', title: 'Sample release title', version, description: 'Sample text: the line under the title comes from the page description.', host }]
+	];
+	const templates: PreviewItem[] = samples
+		.filter(([name]) => !previews.some((p) => p.data.template === name))
+		.map(([name, data]) => {
+			const out = renderPreview(data, CACHE);
+			write(`og/templates/${name}.png`, out.png);
+			return { title: `Sample: ${data.title}`, image: `/og/templates/${name}.png`, template: name, bytes: out.png.length };
+		});
+	write(
+		'og/index.html',
+		contactSheetPage({
+			config,
+			sections: main.sections,
+			assets,
+			version,
+			siteUrl: SITE_URL,
+			production: PRODUCTION,
+			locale: DEFAULT_LOCALE,
+			t: main.t,
+			versions,
+			previewOf,
+			items,
+			templates
+		})
+	);
 	// Screenshots as PNG, for the link to the full picture, and as WebP for the page
 	for (const name of usedShots) {
 		for (const theme of ['dark', 'light']) {
@@ -735,6 +817,10 @@ async function build() {
 			.replace('{{CLIENT_PORTS}}', portList)
 			.replace('{{INSTALL_TABS}}', installMarkup().tabs)
 			.replace('{{INSTALL_PANELS}}', installMarkup().panels)
+			.replace(
+				'{{SOCIAL}}',
+				socialTags({ type: 'website', siteName: config.name, title: homeTitle, description: homeDescription, url: `${SITE_URL}/`, locale: DEFAULT_LOCALE.ogLocale, image: previewOf('/') })
+			)
 			.replace('{{JSONLD}}', `<script type="application/ld+json">${JSON.stringify(software).replace(/</g, '\\u003c')}</script>`)
 			.replaceAll('{{VERSION}}', version)
 			.replaceAll('{{SITE_URL}}', SITE_URL)
@@ -808,6 +894,7 @@ async function build() {
 		...checkStructuredData(checked),
 		...checkMarkdownLinks(checked),
 		...checkSeo(checked),
+		...checkPreviews(checked),
 		...checkLlms(checked, AGENT_TOOLS.filter((t) => !t.available).map((t) => t.name.replace(/`/g, '')))
 	);
 
@@ -829,7 +916,7 @@ async function build() {
 		return false;
 	}
 	const languages = sites.length > 1 ? ` in ${sites.map((s) => s.locale.label).join(' and ')}` : '';
-	console.log(`Built ${reading.length} pages in ${sections.length} sections${languages} for ${SITE_URL} (NeoDesk ${version}) in ${Date.now() - started} ms`);
+	console.log(`Built ${reading.length} pages in ${sections.length} sections${languages} for ${SITE_URL} (NeoDesk ${version}), drew ${drawn} of ${previews.length} link preview images, in ${Date.now() - started} ms`);
 	return true;
 }
 

@@ -52,6 +52,12 @@ export interface Page {
 	headings: Heading[];
 	links: string[];
 	html: string;
+	/** The link preview template, from front matter `og`; docs by default */
+	og?: string;
+	/** For the comparison template: the other product, from front matter `product` */
+	product?: string;
+	/** For the release template: the version, from front matter `release` */
+	release?: string;
 }
 
 export interface Section extends SectionConfig {
@@ -71,6 +77,8 @@ export interface Shared {
 	t: Strings;
 	/** The languages that have a page at this address, given without the language prefix */
 	versions: (path: string) => Locale[];
+	/** The link preview image of a page, by its full address (/de/docs/... for German) */
+	previewOf: (path: string) => { url: string; alt: string } | undefined;
 }
 
 export interface Pager {

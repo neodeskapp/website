@@ -26,6 +26,31 @@ export function hreflangLinks(shared: Pick<Shared, 'siteUrl' | 'versions'>, p: s
 	return links.join('\n');
 }
 
+/**
+ * The Open Graph and Twitter tags of a page: title, description, address, type, site name,
+ * language, and the link preview image with its size and alt text.
+ */
+export function socialTags(o: { type: string; siteName: string; title: string; description: string; url: string; locale: string; image?: { url: string; alt: string } }) {
+	return [
+		`<meta property="og:type" content="${esc(o.type)}">`,
+		`<meta property="og:site_name" content="${esc(o.siteName)}">`,
+		`<meta property="og:title" content="${esc(o.title)}">`,
+		`<meta property="og:description" content="${esc(o.description)}">`,
+		`<meta property="og:url" content="${esc(o.url)}">`,
+		`<meta property="og:locale" content="${esc(o.locale)}">`,
+		...(o.image
+			? [
+					`<meta property="og:image" content="${esc(o.image.url)}">`,
+					'<meta property="og:image:type" content="image/png">',
+					'<meta property="og:image:width" content="1200">',
+					'<meta property="og:image:height" content="630">',
+					`<meta property="og:image:alt" content="${esc(o.image.alt)}">`
+				]
+			: []),
+		'<meta name="twitter:card" content="summary_large_image">'
+	].join('\n');
+}
+
 /** Links to the same page in the other languages; nothing while a page has one language only. */
 export function languageSwitch(shared: Pick<Shared, 'versions' | 'locale' | 't'>, p: string) {
 	const others = shared.versions(p).filter((l) => l.code !== shared.locale.code);
@@ -89,11 +114,7 @@ function frame(o: FrameOptions) {
 <meta name="theme-color" content="#141616" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 ${noindex || !production ? '<meta name="robots" content="noindex">\n' : ''}${noindex ? '' : `<link rel="canonical" href="${esc(canonical)}">\n${hreflangLinks(o, o.path)}`}
-<meta property="og:type" content="${type}">
-<meta property="og:site_name" content="${esc(config.name)}">
-<meta property="og:title" content="${esc(full)}">
-<meta property="og:description" content="${esc(description)}">
-<meta property="og:url" content="${esc(canonical)}">
+${socialTags({ type, siteName: config.name, title: full, description, url: canonical, locale: locale.ogLocale, image: o.previewOf(own) })}
 ${markdown ? `<link rel="alternate" type="text/markdown" href="${esc(markdown)}">` : ''}
 <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
 ${o.display ? '<link rel="preload" href="/fonts/FunnelDisplay-latin.woff2" as="font" type="font/woff2" crossorigin>\n' : ''}<link rel="preload" href="/fonts/IBMPlexSans-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -289,6 +310,35 @@ ${page.html}
 			}
 		]
 	});
+}
+
+export interface PreviewItem {
+	/** The page's address, or none for a template that no page uses yet */
+	page?: string;
+	title: string;
+	image: string;
+	template: string;
+	bytes: number;
+}
+
+/** The page that shows every link preview image with its title. Not in the sitemap, noindex. */
+export function contactSheetPage(shared: Shared & { items: PreviewItem[]; templates: PreviewItem[] }) {
+	const kb = (b: number) => `${Math.round(b / 1024)} KB`;
+	const figure = (p: PreviewItem) => `      <figure class="og-item">
+        <img src="${esc(p.image)}" width="600" height="315" alt="${esc(`The link preview of ${p.title}`)}" loading="lazy" decoding="async">
+        <figcaption>${p.page ? `<a href="${esc(p.page)}">${esc(p.title)}</a>` : esc(p.title)}<span>${esc(p.template)}, ${kb(p.bytes)}</span></figcaption>
+      </figure>`;
+	const main = `    <h1>Link preview images</h1>
+    <p class="lead">Every page's link preview, 1200 by 630 pixels, with the title the page gives it. ${shared.items.length} images.</p>
+    <div class="og-grid">
+${shared.items.map(figure).join('\n')}
+    </div>
+    <h2>Templates no page uses yet</h2>
+    <p>These show sample text. A page uses one with <code>og: comparison</code>, <code>og: use-case</code> or <code>og: release</code> in its front matter.</p>
+    <div class="og-grid">
+${shared.templates.map(figure).join('\n')}
+    </div>`;
+	return frame({ ...shared, title: 'Link preview images', description: 'Every link preview image of the site with the title it shows.', path: '/og/', current: '', main, noindex: true });
 }
 
 export function notFoundPage(shared: Shared) {
