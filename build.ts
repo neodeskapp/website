@@ -14,8 +14,9 @@ import { docsIndexPage, docPage, sectionPage, notFoundPage, hreflangLinks, langu
 import type { Page, Section, Shared, Pager } from './src/types.ts';
 import { LOCALES, DEFAULT_LOCALE, missingStrings, stringsOf, fill } from './src/i18n.ts';
 import type { Locale, Strings } from './src/i18n.ts';
-import { checkOldNames, checkConsolePort, checkVersion, checkWithoutScripts, checkIndexing, checkLocales } from './src/checks.ts';
+import { checkOldNames, checkConsolePort, checkVersion, checkWithoutScripts, checkIndexing, checkLocales, checkLlms } from './src/checks.ts';
 import { checkCommands } from './src/commands.ts';
+import { ONE_LINE_INSTALLS, AGENT_TOOLS } from './src/agents.ts';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const at = (...p: string[]) => path.join(root, ...p);
@@ -421,6 +422,31 @@ function pageMarkdown(page: Page, locale: Locale, linkTo: (href: string) => stri
 const pageList = (items: Page[], prefix = '') =>
 	items.map((p) => `${p.parent ? '  ' : ''}- [${p.title}](${mdUrl(p.slug, prefix)})${p.description ? `: ${p.description}` : ''}`).join('\n');
 
+/* ---------- llms.txt ---------- */
+
+const kb = (bytes: number) => `${Math.max(1, Math.round(bytes / 1024))} KB`;
+
+/**
+ * The top of llms.txt: what NeoDesk is, a section for AI agents with the one-line installs
+ * and the agent tools that exist (src/agents.ts), and the docs as one file per section.
+ */
+function llmsTxt({ bundles, fullBytes, titleOf }: { bundles: { label: string; file: string; bytes: number; pages: number }[]; fullBytes: number; titleOf: (docs: string) => string }) {
+	const installs = ONE_LINE_INSTALLS.map((i) => `- ${i.label}. See [${titleOf(i.docs)}](${SITE_URL}${i.docs}.md).\n\n  \`\`\`bash\n  ${i.command}\n  \`\`\``).join('\n\n');
+	const tools = AGENT_TOOLS.filter((t) => t.available).map((t) => `- ${t.name}: ${t.summary} See [the docs](${SITE_URL}${t.docs}.md).`);
+	return [
+		`# ${config.name}`,
+		`> ${config.summary}`,
+		'## For AI agents',
+		`Install NeoDesk on a server with one command:\n\n${installs}`,
+		'Both print the address of the web console and the admin password at the end. In the docs every command is in a fenced block with its language, placeholders look like `<server-address>`, and the text next to a block says what to put in.',
+		...(tools.length ? [`Tools for agents:\n\n${tools.join('\n')}`] : []),
+		'## Docs as text',
+		'Every docs page below is Markdown at the address shown. The same page as HTML is at that address without .md. The docs of one section are also in one file:',
+		[...bundles.map((b) => `- [${b.label}](${SITE_URL}/${b.file}): ${kb(b.bytes)}, ${b.pages} page${b.pages === 1 ? '' : 's'}`), `- [All docs](${SITE_URL}/llms-full.txt): ${kb(fullBytes)}`].join('\n'),
+		''
+	].join('\n\n');
+}
+
 /* ---------- robots.txt ---------- */
 
 /** Everything is allowed; on production the AI crawlers are also named, so their access is explicit. */
@@ -581,17 +607,30 @@ async function build() {
 			.replace(/^ *\{\{LANGUAGES\}\}\n/m, languageSwitch(home, '/') ? `    ${languageSwitch(home, '/')}\n` : '')
 	);
 
-	// For AI tools: llms.txt lists every page, llms-full.txt holds them all
+	// For AI tools: llms.txt lists every page and file, one file per section holds that
+	// section's pages, and llms-full.txt holds them all
 	const { sections, reading } = main;
 	const linkTo = linkIn(DEFAULT_LOCALE);
+	const markdownOf = (p: Page) => pageMarkdown(p, DEFAULT_LOCALE, linkTo);
 	const about = `# ${config.name}\n\n> ${config.summary}\n\nEvery docs page below is Markdown at the address shown. The same page as HTML is at that address without .md. All docs in one file: ${SITE_URL}/llms-full.txt`;
+	const full = `${about}\n\n---\n\n${reading.map(markdownOf).join('\n---\n\n')}`;
+	write('llms-full.txt', full);
+	const bundles = sections.map((s) => {
+		const file = `llms-${s.slug}.txt`;
+		const text = `# ${config.name} docs: ${s.label}\n\n> ${s.intro}\n\nSource: ${SITE_URL}/docs/${s.slug}/\n\n---\n\n${s.items.map(markdownOf).join('\n---\n\n')}`;
+		write(file, text);
+		return { label: s.label, file, bytes: Buffer.byteLength(text), pages: s.items.length };
+	});
+	for (const tool of AGENT_TOOLS) {
+		if (tool.available && !(tool.docs && main.pages.some((p) => `/docs/${p.slug}` === tool.docs))) problems.push(`src/agents.ts: ${tool.id} is available, but its docs page "${tool.docs ?? ''}" does not exist`);
+	}
 	write(
 		'llms.txt',
-		`${about}\n\n## Start here\n\n- [Source code](${config.repo}): the repository, with the installers and the changelog\n\n` +
+		llmsTxt({ bundles, fullBytes: Buffer.byteLength(full), titleOf: (docs) => main.pages.find((p) => `/docs/${p.slug}` === docs)?.title ?? docs }) +
+			`## Start here\n\n- [Source code](${config.repo}): the repository, with the installers and the changelog\n\n` +
 			sections.map((s) => `## ${s.label}\n\n${s.intro}\n\n${pageList(s.items)}`).join('\n\n') +
 			'\n'
 	);
-	write('llms-full.txt', `${about}\n\n---\n\n${reading.map((p) => pageMarkdown(p, DEFAULT_LOCALE, linkTo)).join('\n---\n\n')}`);
 
 	// For search engines: every page in every language
 	const urls = ['/', ...sites.flatMap((site) => [`${site.locale.prefix}/docs/`, ...site.sections.map((s) => `${site.locale.prefix}/docs/${s.slug}/`), ...site.reading.map((p) => `${site.locale.prefix}/docs/${p.slug}/`)])];
@@ -611,7 +650,8 @@ async function build() {
 		...checkVersion(checked),
 		...checkWithoutScripts(checked),
 		...checkIndexing(checked),
-		...checkLocales(checked)
+		...checkLocales(checked),
+		...checkLlms(checked, AGENT_TOOLS.filter((t) => !t.available).map((t) => t.name.replace(/`/g, '')))
 	);
 
 	if (problems.length) {

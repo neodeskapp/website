@@ -76,8 +76,13 @@ There is no German text yet.
   sections.
 - Search over every page and every `##` section (`/` or Ctrl+K), from
   `docs/search.json`, with no server behind it.
-- A Markdown copy of every page at the page's address plus `.md`, and
-  `/llms.txt` and `/llms-full.txt`, for AI tools.
+- A Markdown copy of every page at the page's address plus `.md`, and files
+  for AI tools: `/llms-full.txt` with every page, one file per section
+  (`/llms-getting-started.txt` and so on), and `/llms.txt`, which lists all of
+  them with their sizes and every page. `/llms.txt` starts with a section for
+  AI agents: the one-line installs and the agent tools, both from
+  `src/agents.ts`. A tool there stays out of every published file while its
+  `available` is false; set it to true, with a `docs` page, once it ships.
 - `sitemap.xml`, `robots.txt` and `404.html`.
 
 ## Checks
@@ -113,6 +118,9 @@ The build checks the pages as it reads them and the files it wrote to
   itself and to `x-default` with `hreflang`, and every language version it
   names exists and names it back. A language with pages must have all its
   strings.
+- Files for AI tools: llms.txt starts with "For AI agents", lists every
+  `llms-*.txt` with its size in KB, every page is in exactly one section file,
+  and no agent tool that is not available is named anywhere.
 - Commands (`src/commands.ts`): every block has a language, no block has a
   shell prompt (`$ `, `PS C:\>`), a command the text asks the reader to run is
   in a block of its own, and placeholders follow the rule under [Code](#code).

@@ -242,6 +242,44 @@ export function checkLocales({ dist, siteUrl }: CheckInput) {
 	return problems;
 }
 
+/* ---------- the files for AI tools ---------- */
+
+/**
+ * llms.txt starts with the section for AI agents, lists every llms-*.txt file with its
+ * size, and every page of llms-full.txt is in exactly one section file. No agent tool
+ * that does not exist yet is named anywhere in the built site.
+ */
+export function checkLlms({ dist, siteUrl }: CheckInput, unavailable: string[]) {
+	const problems: string[] = [];
+	const llms = fs.readFileSync(path.join(dist, 'llms.txt'), 'utf8');
+	const agents = llms.indexOf('\n## For AI agents\n');
+	if (agents === -1 || llms.indexOf('\n## ') !== agents) problems.push('llms.txt: "## For AI agents" is not the first section');
+	const listed = new Set<string>();
+	for (const m of llms.matchAll(/^- \[[^\]]+\]\((\S+?\.txt)\): (\d+) KB/gm)) {
+		const file = fileOfUrl(m[1], siteUrl);
+		if (!file || !fs.existsSync(path.join(dist, file))) {
+			problems.push(`llms.txt: lists ${m[1]}, which was not built`);
+			continue;
+		}
+		listed.add(file);
+		const size = Math.max(1, Math.round(fs.statSync(path.join(dist, file)).size / 1024));
+		if (size !== Number(m[2])) problems.push(`llms.txt: gives ${file} as ${m[2]} KB, it is ${size} KB`);
+	}
+	const bundles = fs.readdirSync(dist).filter((f) => /^llms-.+\.txt$/.test(f));
+	for (const f of bundles) if (!listed.has(f)) problems.push(`llms.txt: does not list ${f}`);
+	const sources = (file: string) => [...fs.readFileSync(path.join(dist, file), 'utf8').matchAll(/^Source: (\S+)$/gm)].map((m) => m[1]);
+	const inSections = bundles.filter((f) => f !== 'llms-full.txt').flatMap((f) => sources(f).slice(1));
+	for (const page of sources('llms-full.txt')) {
+		const n = inSections.filter((s) => s === page).length;
+		if (n !== 1) problems.push(`llms-*.txt: ${page} is in ${n} section files, not one`);
+	}
+	for (const rel of listFiles(dist).filter((f) => TEXT.test(f))) {
+		const text = fs.readFileSync(path.join(dist, rel), 'utf8');
+		for (const name of unavailable) if (text.includes(name)) problems.push(`${rel}: names "${name}", which does not exist yet (src/agents.ts)`);
+	}
+	return problems;
+}
+
 /* ---------- who may index the site ---------- */
 
 // Pages that are never indexed, on any host
