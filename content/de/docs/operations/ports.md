@@ -16,7 +16,7 @@ RustDesk-Clients erreichen den Server über eine Handvoll Ports, und die Web-Kon
 | 21118 | TCP | RustDesk-Clients, die auf WebSocket eingestellt sind: der ID-Server | Nur für solche Clients |
 | 21119 | TCP | RustDesk-Clients, die auf WebSocket eingestellt sind: das Relay | Nur für solche Clients |
 | 21121 | TCP (HTTP) | RustDesk-Clients: die Client-API, für Systeminformationen, Anmeldung und das Adressbuch | Ja |
-| 21114 | TCP (HTTP) | Nur Linux und Windows: die eigene API des Servers, an die die Konsole 21121 weiterreicht | Nein, nur für einen Prometheus-Server |
+| 21114 | TCP (HTTP) | Nur Linux und Windows: die eigene API des Servers. Sie beantwortet die Aufrufe der Client-API, die die Konsole von 21121 weiterreicht | Nein, nur für einen Prometheus-Server |
 | 21122 | TCP | CDAP-Geräte-Agents | Nur, wenn du sie nutzt |
 | 5000 | TCP (HTTP) | Browser: die Web-Konsole und Remote Desktop im Browser | Nur über einen Reverse Proxy mit TLS |
 | 5443 | TCP (HTTPS) | Browser: die Konsole, wenn sie HTTPS selbst ausliefert | Nur, wenn kein Reverse Proxy davor steht |
