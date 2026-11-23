@@ -106,8 +106,10 @@ nächsten Update prüft der installierte Server die Signatur selbst.
 - Schreibt `neodesk-server.service`, startet den Dienst und wartet, bis die
   API, die Konsole und die Ports 21116 und 21117 antworten.
 - Öffnet diese Ports in ufw oder firewalld, wenn eines davon aktiv ist, oder
-  legt iptables-Regeln an, wenn keines aktiv ist: 21115, 21116 für TCP und UDP,
-  21117, 21121, 21122 und die Ports 5000 und 5443 der Konsole. Wählst du danach
+  legt iptables-Regeln an, wenn keines von beiden installiert ist: 21115, 21116
+  für TCP und UDP, 21117, 21121, 21122 und die Ports 5000 und 5443 der Konsole.
+  Ein ufw oder firewalld, das installiert, aber ausgeschaltet ist, bleibt, wie
+  es ist, und der Installer legt dann gar keine Regeln an. Wählst du danach
   bei der TLS-Frage einen Reverse Proxy auf demselben Server, schließt es die
   Ports der Konsole wieder. Ein Proxy auf einem anderen Rechner braucht sie:
   Beschränke ihre Regeln selbst auf die Adresse des Proxys. Firewalls

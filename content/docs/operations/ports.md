@@ -70,7 +70,9 @@ sudo firewall-cmd --permanent --add-port=21121/tcp
 sudo firewall-cmd --reload
 ```
 
-The Linux installer opens the ports itself when ufw or firewalld is active, and adds iptables rules when neither is: 21115 to 21117 over TCP, 21116 over UDP, the client API port 21121, 21122 while CDAP is on, and the console's port 5000 and, with HTTPS on, 5443. With `TRUST_PROXY` on it leaves the console's ports closed. It takes the ID server and relay ports from the env file, and at the end it prints the list for a firewall outside the machine, such as your cloud provider's.
+The Linux installer opens the ports itself when ufw or firewalld is active, and adds iptables rules only when neither of them is installed. A ufw or firewalld that is installed but switched off stays as it is, with no rules added. The ports it opens are 21115 to 21117 over TCP, 21116 over UDP, the client API port 21121, 21122 while CDAP is on, and the console's port 5000 and, with HTTPS on, 5443. With `TRUST_PROXY` on it leaves the console's ports closed. It takes the ID server and relay ports from the env file, and at the end it prints the list for a firewall outside the machine, such as your cloud provider's.
+
+The one-line install for Docker opens its ports in ufw or firewalld only when one of them is active, and adds no iptables rules; see [Install with the script](/docs/getting-started/docker#install-with-the-script).
 
 ::: note
 Docker publishes container ports through its own firewall rules, and ufw does not filter them. To keep the console off the network, publish it on the loopback address only: set `NEODESK_CONSOLE_BIND=127.0.0.1` in the `.env` file next to the compose file and recreate the container in that folder:

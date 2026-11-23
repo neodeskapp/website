@@ -70,7 +70,9 @@ sudo firewall-cmd --permanent --add-port=21121/tcp
 sudo firewall-cmd --reload
 ```
 
-Der Linux-Installer öffnet die Ports selbst, wenn ufw oder firewalld aktiv ist, und legt iptables-Regeln an, wenn keins von beiden aktiv ist: 21115 bis 21117 über TCP, 21116 über UDP, den Port 21121 der Client-API, 21122, solange CDAP eingeschaltet ist, sowie den Port 5000 der Konsole und, mit eingeschaltetem HTTPS, 5443. Ist `TRUST_PROXY` eingeschaltet, lässt er die Ports der Konsole geschlossen. Die Ports von ID-Server und Relay nimmt er aus der env-Datei, und am Ende gibt er die Liste für eine Firewall außerhalb des Rechners aus, etwa die deines Cloud-Anbieters.
+Der Linux-Installer öffnet die Ports selbst, wenn ufw oder firewalld aktiv ist, und legt iptables-Regeln nur an, wenn keins von beiden installiert ist. Ein ufw oder firewalld, das installiert, aber ausgeschaltet ist, bleibt, wie es ist, ohne neue Regeln. Er öffnet 21115 bis 21117 über TCP, 21116 über UDP, den Port 21121 der Client-API, 21122, solange CDAP eingeschaltet ist, sowie den Port 5000 der Konsole und, mit eingeschaltetem HTTPS, 5443. Ist `TRUST_PROXY` eingeschaltet, lässt er die Ports der Konsole geschlossen. Die Ports von ID-Server und Relay nimmt er aus der env-Datei, und am Ende gibt er die Liste für eine Firewall außerhalb des Rechners aus, etwa die deines Cloud-Anbieters.
+
+Die Ein-Zeilen-Installation für Docker öffnet ihre Ports in ufw oder firewalld nur, wenn eines davon aktiv ist, und legt keine iptables-Regeln an; siehe [Mit dem Skript installieren](/docs/getting-started/docker#install-with-the-script).
 
 ::: note
 Docker veröffentlicht Container-Ports über eigene Firewall-Regeln, und ufw filtert sie nicht. Um die Konsole vom Netz fernzuhalten, veröffentliche sie nur auf der Loopback-Adresse: Setze `NEODESK_CONSOLE_BIND=127.0.0.1` in der Datei `.env` neben der Compose-Datei und erstelle den Container in diesem Ordner neu:
