@@ -118,6 +118,14 @@ The build checks the pages as it reads them and the files it wrote to
   itself and to `x-default` with `hreflang`, and every language version it
   names exists and names it back. A language with pages must have all its
   strings.
+- Structured data: the home page has a JSON-LD SoftwareApplication with name,
+  license, operating systems, version and download address; every docs page a
+  TechArticle with `dateModified` and a BreadcrumbList that ends at the page.
+  `sitemap.xml` lists every page that has a canonical address, each with
+  `lastmod`: a page's date is the last commit of its file, a list's the newest
+  of its pages. Without git history (a shallow clone) every date is the same
+  commit, so CI needs the full history.
+- Heading ids: see [Heading ids](#heading-ids).
 - Files for AI tools: llms.txt starts with "For AI agents", lists every
   `llms-*.txt` with its size in KB, every page is in exactly one section file,
   and no agent tool that is not available is named anywhere.
@@ -158,6 +166,23 @@ hyphens, punctuation dropped):
 See [Ports](/docs/operations/ports) and
 [the enrollment modes](/docs/console/enrollment#enrollment-modes).
 ```
+
+### Heading ids
+
+A heading's id comes from its text, as above. Ids stay: `content/anchors.json`
+records every id a build has seen, and the build stops when one of them no
+longer leads to its page. When you rename a heading that others may link to,
+keep the old id as an alias, and the page answers to both:
+
+```markdown
+## Change a port {alias=changing-a-port}
+```
+
+`{#id}` at the end of a heading sets its id by hand, and the two combine:
+`{#change-a-port alias=changing-a-port,ports}`. Links inside the docs use the
+current id; the build stops on a link to an alias. The build adds new ids to
+`content/anchors.json` itself (not in CI); commit the file with the pages. To
+retire an id for good, delete it from the file.
 
 ### Notes
 

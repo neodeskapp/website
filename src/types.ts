@@ -11,6 +11,8 @@ export interface SiteConfig {
 	name: string;
 	url: string;
 	repo: string;
+	license: string;
+	downloadUrl: string;
 	versionUrl: string;
 	version: string;
 	editBase: string;
@@ -22,6 +24,8 @@ export interface SiteConfig {
 export interface Heading {
 	level: number;
 	id: string;
+	/** Old ids that still lead to this heading */
+	aliases: string[];
 	text: string;
 	line: number;
 }
@@ -38,7 +42,8 @@ export interface Page {
 	description: string;
 	order: number;
 	body: string;
-	updated: string | null;
+	/** When the file last changed, from git */
+	updated: string;
 	/** The line of the file where the body starts. */
 	bodyLine: number;
 	headings: Heading[];

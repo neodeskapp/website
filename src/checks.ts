@@ -242,6 +242,77 @@ export function checkLocales({ dist, siteUrl }: CheckInput) {
 	return problems;
 }
 
+/* ---------- structured data and the sitemap ---------- */
+
+type Thing = Record<string, unknown>;
+const validDate = (d: unknown) => typeof d === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(d) && !Number.isNaN(Date.parse(d));
+const canonicalOf = (head: string) => head.match(/<link rel="canonical" href="([^"]+)">/)?.[1];
+
+/**
+ * The home page has a SoftwareApplication with name, license, operating systems, version
+ * and download address. Every docs page has a TechArticle with dateModified and a
+ * BreadcrumbList that ends at the page. The sitemap lists every page with a canonical
+ * address, and only those, each with a lastmod date.
+ */
+export function checkStructuredData({ dist, siteUrl, version }: CheckInput) {
+	const problems: string[] = [];
+	const canonicals = new Set<string>();
+	for (const rel of listFiles(dist).filter((f) => f.endsWith('.html'))) {
+		const html = fs.readFileSync(path.join(dist, rel), 'utf8');
+		const head = html.split('</head>')[0];
+		const things: Thing[] = [];
+		for (const m of head.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
+			try {
+				const v = JSON.parse(m[1]);
+				things.push(...(Array.isArray(v) ? v : [v]));
+			} catch {
+				problems.push(`${rel}: JSON-LD that does not parse`);
+			}
+		}
+		const ofType = (type: string) => things.find((t) => t['@type'] === type);
+		const canonical = canonicalOf(head);
+		if (canonical) canonicals.add(canonical);
+		if (rel === 'index.html') {
+			const app = ofType('SoftwareApplication');
+			if (!app) problems.push('index.html: no SoftwareApplication in JSON-LD');
+			else {
+				for (const key of ['name', 'license', 'operatingSystem', 'softwareVersion', 'downloadUrl']) if (!app[key]) problems.push(`index.html: the SoftwareApplication has no ${key}`);
+				if (app.softwareVersion !== version) problems.push(`index.html: softwareVersion is ${app.softwareVersion}, the build is for ${version}`);
+			}
+		}
+		if (/<meta property="og:type" content="article">/.test(head)) {
+			const article = ofType('TechArticle');
+			if (!article) problems.push(`${rel}: no TechArticle in JSON-LD`);
+			else {
+				if (!validDate(article.dateModified)) problems.push(`${rel}: the TechArticle has no valid dateModified`);
+				if (!article.headline) problems.push(`${rel}: the TechArticle has no headline`);
+				if (article.url !== canonical) problems.push(`${rel}: the TechArticle's url is not the canonical address`);
+			}
+			if (!ofType('BreadcrumbList')) problems.push(`${rel}: no BreadcrumbList in JSON-LD`);
+		}
+		const crumbs = ofType('BreadcrumbList');
+		if (crumbs) {
+			const items = (crumbs.itemListElement ?? []) as Thing[];
+			if (items.length < 2) problems.push(`${rel}: the BreadcrumbList has fewer than two items`);
+			items.forEach((item, i) => {
+				if (item.position !== i + 1 || !item.name || typeof item.item !== 'string') problems.push(`${rel}: breadcrumb ${i + 1} lacks a position, name or address`);
+				else if (!fs.existsSync(path.join(dist, fileOfUrl(item.item, siteUrl) ?? '-'))) problems.push(`${rel}: breadcrumb ${i + 1} leads to ${item.item}, which is not a page`);
+			});
+			if (items.length && items[items.length - 1].item !== canonical) problems.push(`${rel}: the last breadcrumb is not the page itself`);
+		}
+	}
+	const sitemap = fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8');
+	const listed = new Set<string>();
+	for (const m of sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)) {
+		const loc = m[1].match(/<loc>([^<]+)<\/loc>/)?.[1] ?? '';
+		listed.add(loc);
+		if (!validDate(m[1].match(/<lastmod>([^<]+)<\/lastmod>/)?.[1])) problems.push(`sitemap.xml: ${loc} has no valid lastmod`);
+		if (!canonicals.has(loc)) problems.push(`sitemap.xml: ${loc} is not the canonical address of a built page`);
+	}
+	for (const c of canonicals) if (!listed.has(c)) problems.push(`sitemap.xml: does not list ${c}`);
+	return problems;
+}
+
 /* ---------- the files for AI tools ---------- */
 
 /**

@@ -230,7 +230,7 @@ ${tocItems.map((h) => `      <li${h.level === 3 ? ' class="sub"' : ''}><a href="
   </aside>`
 			: '';
 	const actions = [
-		page.updated ? `<span>${esc(t.updated)} <time datetime="${page.updated}">${formatDate(page.updated, locale.dateLocale)}</time></span>` : '',
+		`<span>${esc(t.updated)} <time datetime="${page.updated}">${formatDate(page.updated, locale.dateLocale)}</time></span>`,
 		`<a href="${inLocale(shared, `/docs/${page.slug}.md`)}">Markdown</a>`,
 		config.editBase ? `<a href="${esc(config.editBase)}/${page.slug}.md" rel="noopener">${esc(t.editOnGitHub)}</a>` : ''
 	]
@@ -270,7 +270,8 @@ ${page.html}
 				headline: page.title,
 				description: page.description,
 				url: `${siteUrl}${inLocale(shared, `/docs/${page.slug}/`)}`,
-				...(page.updated ? { dateModified: page.updated } : {})
+				inLanguage: locale.code,
+				dateModified: page.updated
 			}
 		]
 	});

@@ -14,7 +14,7 @@ import { docsIndexPage, docPage, sectionPage, notFoundPage, hreflangLinks, langu
 import type { Page, Section, Shared, Pager } from './src/types.ts';
 import { LOCALES, DEFAULT_LOCALE, missingStrings, stringsOf, fill } from './src/i18n.ts';
 import type { Locale, Strings } from './src/i18n.ts';
-import { checkOldNames, checkConsolePort, checkVersion, checkWithoutScripts, checkIndexing, checkLocales, checkLlms } from './src/checks.ts';
+import { checkOldNames, checkConsolePort, checkVersion, checkWithoutScripts, checkIndexing, checkLocales, checkLlms, checkStructuredData } from './src/checks.ts';
 import { checkCommands } from './src/commands.ts';
 import { ONE_LINE_INSTALLS, AGENT_TOOLS } from './src/agents.ts';
 
@@ -67,6 +67,26 @@ function slugify(text: string) {
 		.replace(/[^\p{L}\p{N}\s_-]/gu, '')
 		.replace(/\s/g, '-');
 }
+/** A heading line of Markdown that ends in an attribute block: "## Title {#id alias=old-id}". */
+const ATTR = String.raw`(?:#[a-z0-9][\w-]*|alias=[\w-]+(?:,[\w-]+)*)`;
+const HEADING_ATTRS_LINE = new RegExp(String.raw`^(#{2,6} .*?)\s*\{${ATTR}(?:\s+${ATTR})*\}\s*$`, 'gm');
+
+/** Takes the {#id alias=a,b} block off the end of a heading and returns what it says. */
+function headingAttrs(children: Token[]): { id?: string; aliases: string[]; bad?: string } {
+	const last = children[children.length - 1];
+	if (!last || last.type !== 'text') return { aliases: [] };
+	const m = last.content.match(/\s*\{([^}]*)\}\s*$/);
+	if (!m) return { aliases: [] };
+	const out: { id?: string; aliases: string[] } = { aliases: [] };
+	for (const part of m[1].trim().split(/\s+/)) {
+		if (/^#[a-z0-9][\w-]*$/.test(part)) out.id = part.slice(1);
+		else if (/^alias=[\w-]+(,[\w-]+)*$/.test(part)) out.aliases.push(...part.slice(6).split(','));
+		else return { aliases: [], bad: m[1] };
+	}
+	last.content = last.content.slice(0, m.index);
+	return out;
+}
+
 function slugger() {
 	const seen = new Map<string, number>();
 	return (text: string) => {
@@ -90,8 +110,11 @@ async function currentVersion(): Promise<string> {
 	return config.version;
 }
 
-/** The last commit that changed a file, when the content is in a git repository. */
-function updatedOf(file: string): string | null {
+/**
+ * When a file last changed: the date of the last commit that changed it. A file git does
+ * not know yet, or a checkout without history, gives the file's own time instead.
+ */
+function updatedOf(file: string): string {
 	try {
 		const out = execFileSync('git', ['log', '-1', '--format=%cI', '--', file], {
 			cwd: path.dirname(file),
@@ -99,11 +122,14 @@ function updatedOf(file: string): string | null {
 		})
 			.toString()
 			.trim();
-		return out || null;
+		if (out) return out;
 	} catch {
-		return null;
+		/* not in a git repository */
 	}
+	return fs.statSync(file).mtime.toISOString().replace(/\.\d{3}Z$/, 'Z');
 }
+/** The newest of some ISO dates. */
+const newest = (dates: string[]) => dates.reduce((a, b) => (Date.parse(b) > Date.parse(a) ? b : a));
 
 /* ---------- loading the pages ---------- */
 
@@ -224,7 +250,8 @@ function makeMarkdown(page: Page, usedShots: Set<string>, t: Strings, linkTo: (h
 	md.renderer.rules.note_open = (tokens: Token[], i: number) =>
 		`<div class="note note-${tokens[i].meta}" role="note"><p class="note-label">${tokens[i].meta === 'warning' ? t.warning : t.note}</p>\n`;
 
-	// Heading ids, the "On this page" list, and a link on each heading
+	// Heading ids, the "On this page" list, and a link on each heading. A heading may end
+	// in {#id} to fix its id and {alias=old-id} to keep an old id working after a rename.
 	md.core.ruler.push('headings', (state: StateCore) => {
 		const t = state.tokens;
 		for (let i = 0; i < t.length; i++) {
@@ -232,11 +259,14 @@ function makeMarkdown(page: Page, usedShots: Set<string>, t: Strings, linkTo: (h
 			const level = Number(t[i].tag.slice(1));
 			const inline = t[i + 1];
 			const children = inline.children ?? [];
+			const attrs = headingAttrs(children);
+			if (attrs.bad) problems.push(`${page.rel}:${(t[i].map?.[0] ?? 0) + page.bodyLine}: "{${attrs.bad}}" after a heading; write {#id} or {alias=old-id}`);
 			const text = children.filter((c) => c.type === 'text' || c.type === 'code_inline').map((c) => c.content).join('');
 			if (level === 1) continue;
-			const id = slug(text);
+			const id = attrs.id ?? slug(text);
 			t[i].attrSet('id', id);
-			page.headings.push({ level, id, text, line: t[i].map?.[0] ?? 0 });
+			t[i].meta = { aliases: attrs.aliases };
+			page.headings.push({ level, id, aliases: attrs.aliases, text, line: t[i].map?.[0] ?? 0 });
 			const a = new state.Token('link_open', 'a', 1);
 			a.attrSet('href', `#${id}`);
 			a.attrSet('class', 'anchor');
@@ -311,6 +341,10 @@ function makeMarkdown(page: Page, usedShots: Set<string>, t: Strings, linkTo: (h
 		for (const p of checkCommands(state.tokens)) problems.push(`${page.rel}:${p.line + page.bodyLine - 1}: ${p.message}`);
 	});
 
+	// The old ids of a renamed heading, as empty targets right before it
+	md.renderer.rules.heading_open = (tokens, i, opts, env, self) =>
+		(tokens[i].meta?.aliases ?? []).map((a: string) => `<span id="${esc(a)}" class="anchor-alias"></span>`).join('') + self.renderToken(tokens, i, opts);
+
 	md.renderer.rules.table_open = () => '<div class="table-wrap" tabindex="0"><table>\n';
 	md.renderer.rules.table_close = () => '</table></div>\n';
 	return md;
@@ -327,6 +361,7 @@ function docHref(href: string) {
 
 function plain(markdown: string) {
 	return markdown
+		.replace(HEADING_ATTRS_LINE, '$1')
 		.replace(/^:::.*$/gm, '')
 		.replace(/^```.*$/gm, '')
 		.replace(/!\[([^\]]*)\]\([^)]*\)/g, '')
@@ -375,7 +410,7 @@ function agentMarkdown(body: string, linkTo: (href: string) => string) {
 	const out: string[] = [];
 	let fence: string | null = null;
 	let note: string | null = null;
-	for (const line of body.split('\n')) {
+	for (let line of body.split('\n')) {
 		const mark = line.match(/^\s*(`{3,}|~{3,})/)?.[1];
 		if (fence) {
 			out.push(note ? `> ${line}` : line);
@@ -387,6 +422,7 @@ function agentMarkdown(body: string, linkTo: (href: string) => string) {
 			out.push(note ? `> ${line}` : line);
 			continue;
 		}
+		if (/^#{2,6} /.test(line)) line = line.replace(HEADING_ATTRS_LINE, '$1');
 		const open = line.match(/^:::\s*(note|warning)\s*$/);
 		if (open) {
 			note = open[1];
@@ -537,8 +573,15 @@ async function build() {
 			for (const href of page.links) {
 				if (/^(https?:|mailto:)/.test(href)) continue;
 				const [p, hash] = href.split('#');
+				// A link names a heading's id, not one of its old ids, which are for links from outside
+				const headingProblem = (on: Page) => {
+					if (on.headings.some((h) => h.id === hash)) return null;
+					const renamed = on.headings.find((h) => h.aliases.includes(hash));
+					return renamed ? `"#${hash}" is an old id; link to "#${renamed.id}"` : `no heading "#${hash}"`;
+				};
 				if (!p) {
-					if (!page.headings.some((h) => h.id === hash)) problems.push(`${page.rel}: no heading "#${hash}" on this page`);
+					const wrong = headingProblem(page);
+					if (wrong) problems.push(`${page.rel}: ${wrong} on this page`);
 					continue;
 				}
 				const target = p.replace(/\/$/, '');
@@ -546,7 +589,24 @@ async function build() {
 				if (p.endsWith('.md')) problems.push(`${page.rel}: link "${href}" should not end in .md`);
 				const to = own.get(target) ?? known.get(target);
 				if (!to) problems.push(`${page.rel}: link to "${href}", which is not a page`);
-				else if (hash && !to.headings.some((h) => h.id === hash)) problems.push(`${page.rel}: "${href}": no heading "#${hash}" on that page`);
+				else if (hash && headingProblem(to)) problems.push(`${page.rel}: "${href}": ${headingProblem(to)} on that page`);
+			}
+		}
+	}
+
+	// Heading ids stay: every id content/anchors.json has seen must still lead to its page,
+	// as a heading's id or as an alias of the heading that replaced it
+	const anchorsFile = at('content/anchors.json');
+	const recorded: Record<string, string[]> = !process.env.DOCS_DIR && fs.existsSync(anchorsFile) ? JSON.parse(read(anchorsFile)) : {};
+	for (const [slug, ids] of Object.entries(recorded)) {
+		const page = main.pages.find((p) => p.slug === slug);
+		if (!page) {
+			problems.push(`content/anchors.json: the page ${slug} is gone; if that is meant, remove it from the file`);
+			continue;
+		}
+		for (const id of ids) {
+			if (!page.headings.some((h) => h.id === id || h.aliases.includes(id))) {
+				problems.push(`${page.rel}: the heading id "#${id}" is gone; add {alias=${id}} to the heading that took its place (see README.md)`);
 			}
 		}
 	}
@@ -597,9 +657,23 @@ async function build() {
 
 	// The landing page, in the default language only so far
 	const home = { siteUrl: SITE_URL, versions, locale: DEFAULT_LOCALE, t: main.t };
+	const software = {
+		'@context': 'https://schema.org',
+		'@type': 'SoftwareApplication',
+		name: config.name,
+		description: config.summary,
+		url: `${SITE_URL}/`,
+		applicationCategory: 'UtilitiesApplication',
+		operatingSystem: 'Linux, Windows',
+		softwareVersion: version,
+		license: config.license,
+		downloadUrl: config.downloadUrl,
+		isAccessibleForFree: true
+	};
 	write(
 		'index.html',
 		read(at('src/home.html'))
+			.replace('{{JSONLD}}', `<script type="application/ld+json">${JSON.stringify(software).replace(/</g, '\\u003c')}</script>`)
 			.replaceAll('{{VERSION}}', version)
 			.replaceAll('{{SITE_URL}}', SITE_URL)
 			.replace('{{ROBOTS}}', PRODUCTION ? '' : '<meta name="robots" content="noindex">\n')
@@ -632,12 +706,20 @@ async function build() {
 			'\n'
 	);
 
-	// For search engines: every page in every language
-	const urls = ['/', ...sites.flatMap((site) => [`${site.locale.prefix}/docs/`, ...site.sections.map((s) => `${site.locale.prefix}/docs/${s.slug}/`), ...site.reading.map((p) => `${site.locale.prefix}/docs/${p.slug}/`)])];
+	// For search engines: every page in every language, dated by the last commit of its file,
+	// a list by the newest of its pages
+	const urls: [string, string][] = [
+		['/', updatedOf(at('src/home.html'))],
+		...sites.flatMap((site): [string, string][] => [
+			[`${site.locale.prefix}/docs/`, newest(site.pages.map((p) => p.updated))],
+			...site.sections.map((s): [string, string] => [`${site.locale.prefix}/docs/${s.slug}/`, newest(s.items.map((p) => p.updated))]),
+			...site.reading.map((p): [string, string] => [`${site.locale.prefix}/docs/${p.slug}/`, p.updated])
+		])
+	];
 	write(
 		'sitemap.xml',
 		`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-			urls.map((u) => `  <url><loc>${SITE_URL}${u}</loc></url>`).join('\n') +
+			urls.map(([u, date]) => `  <url><loc>${SITE_URL}${u}</loc><lastmod>${date}</lastmod></url>`).join('\n') +
 			'\n</urlset>\n'
 	);
 	write('robots.txt', robotsTxt());
@@ -651,8 +733,22 @@ async function build() {
 		...checkWithoutScripts(checked),
 		...checkIndexing(checked),
 		...checkLocales(checked),
+		...checkStructuredData(checked),
 		...checkLlms(checked, AGENT_TOOLS.filter((t) => !t.available).map((t) => t.name.replace(/`/g, '')))
 	);
+
+	// Record the heading ids of this build, so a later build notices one that goes away.
+	// CI only reads the file.
+	if (!problems.length && !process.env.DOCS_DIR && !process.env.CI) {
+		const next: Record<string, string[]> = { ...recorded };
+		for (const page of main.pages) next[page.slug] = [...new Set([...(recorded[page.slug] ?? []), ...page.headings.map((h) => h.id)])];
+		const sorted = Object.fromEntries(Object.keys(next).sort().map((k) => [k, next[k]]));
+		const text = `${JSON.stringify(sorted, null, '\t')}\n`;
+		if (!fs.existsSync(anchorsFile) || read(anchorsFile) !== text) {
+			fs.writeFileSync(anchorsFile, text);
+			console.log('Recorded the heading ids in content/anchors.json; commit it with the pages.');
+		}
+	}
 
 	if (problems.length) {
 		console.error(`\n${problems.length} problem${problems.length === 1 ? '' : 's'}:\n` + problems.map((p) => `  ${p}`).join('\n'));

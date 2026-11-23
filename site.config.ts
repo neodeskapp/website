@@ -6,6 +6,9 @@ const config: SiteConfig = {
 	// Where the site is served. SITE_URL overrides it for another host, such as the beta.
 	url: 'https://neode.sk',
 	repo: 'https://github.com/neodeskapp/neodesk',
+	// For the home page's structured data: the license text and where releases are
+	license: 'https://www.gnu.org/licenses/agpl-3.0.html',
+	downloadUrl: 'https://github.com/neodeskapp/neodesk/releases',
 	// The current NeoDesk version comes from the repository's VERSION file at build
 	// time (ND_VERSION overrides it). This one is used, with a warning, when it cannot be fetched.
 	versionUrl: 'https://raw.githubusercontent.com/neodeskapp/neodesk/main/VERSION',
