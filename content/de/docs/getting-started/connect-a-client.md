@@ -69,10 +69,10 @@ einer anderen Adresse liegt, etwa der eines Reverse Proxys.
 sie jemandem schicken kannst, der den Client einrichtet:
 
 ```text
-ID server: desk.example.com
-Relay server: desk.example.com:21117
-API server: http://desk.example.com:21121
-Key: <the server's public key>
+ID-Server: desk.example.com
+Relay-Server: desk.example.com:21117
+API-Server: http://desk.example.com:21121
+Schlüssel: <the server's public key>
 ```
 
 ### Handys und Tablets {#phones-and-tablets}
