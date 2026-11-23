@@ -56,7 +56,9 @@ the same name: ID server, relay server, API server and key.
 In a stock RustDesk client, **API server** can stay empty or be
 `http://desk.example.com:21121`; both work. Left empty, the client sends its
 API calls through the ID server, which answers them. A NeoDesk client set up
-by hand needs **API server** filled in.
+by hand with **API server** left empty uses port 21121 on the ID server's host,
+`http://desk.example.com:21121` here. Fill the field in when the API is at
+another address, such as a reverse proxy's.
 
 **Copy all** copies the four values at once, one per line, to send to someone
 who sets up the client:

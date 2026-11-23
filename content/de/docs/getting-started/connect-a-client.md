@@ -60,8 +60,10 @@ und Schlüssel.
 Im normalen RustDesk-Client kann **API-Server** leer bleiben oder
 `http://desk.example.com:21121` sein; beides funktioniert. Bleibt das Feld
 leer, schickt der Client seine API-Aufrufe über den ID-Server, und der
-beantwortet sie. Ein NeoDesk-Client, den du von Hand einrichtest, braucht einen
-Eintrag unter **API-Server**.
+beantwortet sie. Ein NeoDesk-Client, den du von Hand einrichtest und bei dem
+**API-Server** leer bleibt, nutzt Port 21121 auf dem Host des ID-Servers, hier
+also `http://desk.example.com:21121`. Trage das Feld ein, wenn die API unter
+einer anderen Adresse liegt, etwa der eines Reverse Proxys.
 
 **Alles kopieren** kopiert die vier Werte auf einmal, einen pro Zeile, damit du
 sie jemandem schicken kannst, der den Client einrichtet:
