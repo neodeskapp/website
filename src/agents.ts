@@ -1,27 +1,7 @@
 // What llms.txt tells AI agents first. This is build-time data: the build publishes an
 // entry only when it is true of NeoDesk today.
 
-export interface InstallLine {
-	/** What this install gives you, in a few words */
-	label: string;
-	command: string;
-	/** The docs page that explains it, without .md */
-	docs: string;
-}
-
-/** The one-line installs, as the docs pages they link to give them. */
-export const ONE_LINE_INSTALLS: InstallLine[] = [
-	{
-		label: 'Docker: the server and the web console in one container, from the published image',
-		command: 'curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/install.sh | sudo bash',
-		docs: '/docs/getting-started/docker'
-	},
-	{
-		label: 'Linux: one systemd service. Piped into bash like this, the script asks nothing and installs with the defaults',
-		command: 'curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/neodesk.sh | sudo bash',
-		docs: '/docs/getting-started/linux'
-	}
-];
+// The one-line installs come from src/install.ts, the same list the home page uses.
 
 export interface AgentTool {
 	id: string;

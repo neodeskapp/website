@@ -25,7 +25,8 @@ The build stops with a list of problems when a check fails. See
 content/docs/<section>/<page>.md     the documentation
 content/docs/<section>/<page>/<child>.md   a page under another page
 content/screenshots/<name>-dark.png, <name>-light.png
-src/home.html        the landing page
+src/home.html        the landing page; its install tabs come from src/install.ts
+src/install.ts       the install commands of the landing page and llms.txt
 src/layout.ts        the frame around every docs page, and the docs index
 src/checks.ts        the checks on the built site
 src/types.ts         the shapes the build passes around
@@ -80,8 +81,8 @@ There is no German text yet.
   for AI tools: `/llms-full.txt` with every page, one file per section
   (`/llms-getting-started.txt` and so on), and `/llms.txt`, which lists all of
   them with their sizes and every page. `/llms.txt` starts with a section for
-  AI agents: the one-line installs and the agent tools, both from
-  `src/agents.ts`. A tool there stays out of every published file while its
+  AI agents: the one-line installs from `src/install.ts` and the agent tools
+  from `src/agents.ts`. A tool there stays out of every published file while its
   `available` is false; set it to true, with a `docs` page, once it ships.
 - `sitemap.xml`, `robots.txt` and `404.html`.
 
@@ -126,6 +127,9 @@ The build checks the pages as it reads them and the files it wrote to
   of its pages. Without git history (a shallow clone) every date is the same
   commit, so CI needs the full history.
 - Heading ids: see [Heading ids](#heading-ids).
+- Install commands: every command in `src/install.ts`, which the landing page
+  and llms.txt show, is in a code block of the same language on its docs
+  page.
 - Files for AI tools: llms.txt starts with "For AI agents", lists every
   `llms-*.txt` with its size in KB, every page is in exactly one section file,
   and no agent tool that is not available is named anywhere.

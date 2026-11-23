@@ -16,7 +16,8 @@ import { LOCALES, DEFAULT_LOCALE, missingStrings, stringsOf, fill } from './src/
 import type { Locale, Strings } from './src/i18n.ts';
 import { checkOldNames, checkConsolePort, checkVersion, checkWithoutScripts, checkIndexing, checkLocales, checkLlms, checkStructuredData } from './src/checks.ts';
 import { checkCommands } from './src/commands.ts';
-import { ONE_LINE_INSTALLS, AGENT_TOOLS } from './src/agents.ts';
+import { AGENT_TOOLS } from './src/agents.ts';
+import { INSTALLS, blocksOf } from './src/install.ts';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const at = (...p: string[]) => path.join(root, ...p);
@@ -458,6 +459,27 @@ function pageMarkdown(page: Page, locale: Locale, linkTo: (href: string) => stri
 const pageList = (items: Page[], prefix = '') =>
 	items.map((p) => `${p.parent ? '  ' : ''}- [${p.title}](${mdUrl(p.slug, prefix)})${p.description ? `: ${p.description}` : ''}`).join('\n');
 
+/* ---------- the home page's install tabs ---------- */
+
+/** The tabs, notes and terminal panels of the home page's install section, from src/install.ts. */
+function installMarkup() {
+	const tabs = `        <div class="tabs" role="tablist" aria-label="Install on" hidden>\n${INSTALLS.map(
+		(m, i) =>
+			`          <button type="button" role="tab" id="tab-${m.id}" aria-controls="install-${m.id}" aria-selected="${i === 0}"${i ? ' tabindex="-1"' : ''} data-os="${m.id}">${esc(m.tab)}</button>`
+	).join('\n')}\n        </div>`;
+	const notes = INSTALLS.map(
+		(m) =>
+			`        <p class="body install-note" data-os="${m.id}"><b class="os-label">${esc(m.tab)}: </b>${esc(m.note)} <a class="teal" href="${m.docs}/">The docs page</a> has every option.</p>`
+	).join('\n');
+	const panels = INSTALLS.map(
+		(m) => `        <div class="term" role="tabpanel" id="install-${m.id}" aria-labelledby="tab-${m.id}" data-os="${m.id}">
+          <div class="term-bar"><span class="term-os">${esc(m.tab)}</span><button type="button" class="term-copy" aria-label="Copy the ${esc(m.tab)} install commands">Copy</button></div>
+          <pre class="term-lines" tabindex="0" aria-label="${esc(m.tab)} install commands">${m.lines.map((l) => `<code>${esc(l)}</code>`).join('\n')}</pre>
+        </div>`
+	).join('\n');
+	return { tabs: `${tabs}\n${notes}`, panels };
+}
+
 /* ---------- llms.txt ---------- */
 
 const kb = (bytes: number) => `${Math.max(1, Math.round(bytes / 1024))} KB`;
@@ -467,7 +489,9 @@ const kb = (bytes: number) => `${Math.max(1, Math.round(bytes / 1024))} KB`;
  * and the agent tools that exist (src/agents.ts), and the docs as one file per section.
  */
 function llmsTxt({ bundles, fullBytes, titleOf }: { bundles: { label: string; file: string; bytes: number; pages: number }[]; fullBytes: number; titleOf: (docs: string) => string }) {
-	const installs = ONE_LINE_INSTALLS.map((i) => `- ${i.label}. See [${titleOf(i.docs)}](${SITE_URL}${i.docs}.md).\n\n  \`\`\`bash\n  ${i.command}\n  \`\`\``).join('\n\n');
+	const installs = INSTALLS.filter((i) => i.oneLine)
+		.map((i) => `- ${i.oneLine}. See [${titleOf(i.docs)}](${SITE_URL}${i.docs}.md).\n\n  \`\`\`${i.lang}\n  ${i.lines[0]}\n  \`\`\``)
+		.join('\n\n');
 	const tools = AGENT_TOOLS.filter((t) => t.available).map((t) => `- ${t.name}: ${t.summary} See [the docs](${SITE_URL}${t.docs}.md).`);
 	return [
 		`# ${config.name}`,
@@ -673,6 +697,8 @@ async function build() {
 	write(
 		'index.html',
 		read(at('src/home.html'))
+			.replace('{{INSTALL_TABS}}', installMarkup().tabs)
+			.replace('{{INSTALL_PANELS}}', installMarkup().panels)
 			.replace('{{JSONLD}}', `<script type="application/ld+json">${JSON.stringify(software).replace(/</g, '\\u003c')}</script>`)
 			.replaceAll('{{VERSION}}', version)
 			.replaceAll('{{SITE_URL}}', SITE_URL)
@@ -695,6 +721,16 @@ async function build() {
 		write(file, text);
 		return { label: s.label, file, bytes: Buffer.byteLength(text), pages: s.items.length };
 	});
+	// The install commands of the home page and llms.txt are the docs' own
+	for (const m of INSTALLS) {
+		const page = main.pages.find((p) => `/docs/${p.slug}` === m.docs);
+		if (!page) {
+			problems.push(`src/install.ts: ${m.id} names ${m.docs}, which is not a page`);
+			continue;
+		}
+		const inDocs = blocksOf(page.body, m.lang);
+		for (const line of m.lines) if (!inDocs.includes(line)) problems.push(`src/install.ts: "${line}" is not in a ${m.lang} block of ${page.rel}`);
+	}
 	for (const tool of AGENT_TOOLS) {
 		if (tool.available && !(tool.docs && main.pages.some((p) => `/docs/${p.slug}` === tool.docs))) problems.push(`src/agents.ts: ${tool.id} is available, but its docs page "${tool.docs ?? ''}" does not exist`);
 	}

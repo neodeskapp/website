@@ -228,8 +228,10 @@ code, .mono { font-family: var(--mono); font-size: 0.92em; }
 }
 .term-bar button:hover { text-decoration: underline; }
 .term-lines { margin: 0; overflow-x: auto; padding: 0 24px 26px; font-family: var(--mono); white-space: normal; }
-.term-lines code { display: block; white-space: pre; font-size: 15px; line-height: 2; }
+.term-lines code { display: block; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 15px; line-height: 1.6; padding: 0.2em 0 0.2em 2ch; text-indent: -2ch; }
+.term[data-os="windows"] .term-lines code { padding-left: 4ch; text-indent: -4ch; }
 .term-lines code::before { content: "$ "; color: var(--term-accent); }
+.term[data-os="windows"] .term-lines code::before { content: "PS> "; }
 
 /* With scripts the systems are tabs, one at a time; without, each shows with its name */
 .term-bar button { display: none; }
@@ -341,14 +343,7 @@ footer {
       <div class="copy">
         <h2 class="display" id="server-title">One binary on <span class="blue">your server</span></h2>
         <p class="lead">RustDesk's own server is two programs, hbbs and hbbr. NeoDesk does both jobs in one Go binary, and the same binary serves the web console.</p>
-        <div class="tabs" role="tablist" aria-label="Install on" hidden>
-          <button type="button" role="tab" id="tab-docker" aria-controls="install-docker" aria-selected="true" data-os="docker">Docker</button>
-          <button type="button" role="tab" id="tab-linux" aria-controls="install-linux" aria-selected="false" tabindex="-1" data-os="linux">Linux</button>
-          <button type="button" role="tab" id="tab-windows" aria-controls="install-windows" aria-selected="false" tabindex="-1" data-os="windows">Windows</button>
-        </div>
-        <p class="body install-note" data-os="docker"><b class="os-label">Docker: </b>One container runs the server and the web console, built from the repository. The last command prints the admin username and password. Sign in with them at http://&lt;server-address&gt;:5000, which is plain HTTP, not HTTPS.</p>
-        <p class="body install-note" data-os="linux"><b class="os-label">Linux: </b>The script builds the server from the repository and installs it as a service. Choose 1 in the menu for a new install, or add --auto to skip the menu. The installer shows the admin username and password.</p>
-        <p class="body install-note" data-os="windows"><b class="os-label">Windows: </b>Run it in PowerShell as Administrator. The script builds the server from the repository. Add -Auto to install with the default settings.</p>
+{{INSTALL_TABS}}
         <p class="small">RustDesk clients connect on <span class="mono lime">21116</span> (TCP and UDP) and <span class="mono lime">21117</span>. The <a class="teal" href="/docs/operations/ports/">ports page</a> in the docs lists every port.</p>
       </div>
       <div class="fig fig-term" data-key="server">
@@ -358,25 +353,7 @@ footer {
           <circle class="ci" cx="150" cy="6" r="22"></circle>
           <rect class="ov" x="0" y="0" width="100" height="100" rx="31.25" clip-path="url(#clip-server)"></rect>
         </svg>
-        <div class="term" role="tabpanel" id="install-docker" aria-labelledby="tab-docker" data-os="docker">
-          <div class="term-bar"><span class="term-os">Docker</span><button type="button" class="term-copy" aria-label="Copy the Docker install commands">Copy</button></div>
-          <pre class="term-lines" tabindex="0" aria-label="Docker install commands"><code>git clone https://github.com/neodeskapp/neodesk.git</code>
-<code>cd neodesk</code>
-<code>docker compose -f docker-compose.single.yml up -d --build</code>
-<code>docker compose -f docker-compose.single.yml exec neodesk neodesk-show-admin-credentials</code></pre>
-        </div>
-        <div class="term" role="tabpanel" id="install-linux" aria-labelledby="tab-linux" data-os="linux">
-          <div class="term-bar"><span class="term-os">Linux</span><button type="button" class="term-copy" aria-label="Copy the Linux install commands">Copy</button></div>
-          <pre class="term-lines" tabindex="0" aria-label="Linux install commands"><code>git clone https://github.com/neodeskapp/neodesk.git</code>
-<code>cd neodesk</code>
-<code>sudo bash neodesk.sh --from-source</code></pre>
-        </div>
-        <div class="term" role="tabpanel" id="install-windows" aria-labelledby="tab-windows" data-os="windows">
-          <div class="term-bar"><span class="term-os">Windows</span><button type="button" class="term-copy" aria-label="Copy the Windows install commands">Copy</button></div>
-          <pre class="term-lines" tabindex="0" aria-label="Windows install commands"><code>git clone https://github.com/neodeskapp/neodesk.git</code>
-<code>cd neodesk</code>
-<code>.\neodesk.ps1 -FromSource</code></pre>
-        </div>
+{{INSTALL_PANELS}}
       </div>
     </section>
 
