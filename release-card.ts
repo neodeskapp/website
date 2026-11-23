@@ -7,7 +7,8 @@
 //                      same prefix, in version order; name it when that one was never published)
 //   --product <name>   says which product above the version, such as "Desktop client"
 //   --accent lime      the colour of that line: blue (default, the server) or lime (the client)
-//   --note "<text>"    a short line under the numbers, such as what makes them large
+//   --note "<text>"    a short sentence after "Since v<previous>." under the numbers, such as
+//                      what makes them large
 //   --out <file>       default public/img/releases/<tag>/card.png in this repository
 //   --width <px>       default 1600
 //
@@ -81,6 +82,8 @@ const figures: CardFigure[] = [
 if (people.size > 1) figures.push({ value: n(people.size), label: 'contributors' });
 if (fixes > 0) figures.push({ value: n(fixes), label: fixes === 1 ? 'fix' : 'fixes' });
 
+// The line under the numbers says what they count from, then the --note
+const since = `Since v${previous.match(/v?(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)$/)?.[1] ?? previous}.`;
 const prerelease = version.includes('-');
 const kind = prerelease ? 'pre-release' : 'release';
 const kicker = options.product ? `${options.product} ${kind}` : kind[0].toUpperCase() + kind.slice(1);
@@ -88,7 +91,7 @@ const kicker = options.product ? `${options.product} ${kind}` : kind[0].toUpperC
 const out = options.out ?? path.join(root, 'public/img/releases', tag, 'card.png');
 fs.mkdirSync(path.dirname(out), { recursive: true });
 const png = renderReleaseCard(
-	{ version: `v${version}`, title, kicker, accent: options.accent === 'lime' ? 'lime' : 'blue', date, figures, note: options.note },
+	{ version: `v${version}`, title, kicker, accent: options.accent === 'lime' ? 'lime' : 'blue', date, figures, note: [since, options.note].filter(Boolean).join(' ') },
 	Number(options.width ?? 1600)
 );
 fs.writeFileSync(out, png);
