@@ -13,6 +13,11 @@ The NeoDesk client needs none of this typed in: an invite link from
 **Add a computer** installs it and joins the computer, see
 [Add a computer](/docs/console/add-a-computer).
 
+The NeoDesk client has no ID server built in. Until an invite, a pairing code
+or its settings give it your server, it connects to no server, and it never
+falls back to a public one. A stock RustDesk client with no ID server set uses
+RustDesk's public server instead.
+
 ## Install the RustDesk client
 
 NeoDesk works with the standard RustDesk client. Get it from RustDesk's

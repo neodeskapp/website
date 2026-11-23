@@ -14,6 +14,12 @@ Beim NeoDesk-Client musst du nichts davon eintippen: Ein Einladungslink aus
 **Computer hinzufügen** installiert ihn und verbindet den Computer mit deinem
 Server, siehe [Computer hinzufügen](/docs/console/add-a-computer).
 
+Der NeoDesk-Client hat keinen eingebauten ID-Server. Bis eine Einladung, ein
+Kopplungscode oder seine Einstellungen ihm deinen Server nennen, verbindet er
+sich mit keinem Server, und er weicht nie auf einen öffentlichen aus. Ein
+normaler RustDesk-Client ohne eingetragenen ID-Server nutzt dagegen den
+öffentlichen Server von RustDesk.
+
 ## Den RustDesk-Client installieren {#install-the-rustdesk-client}
 
 NeoDesk funktioniert mit dem normalen RustDesk-Client. Du bekommst ihn auf der
