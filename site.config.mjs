@@ -5,9 +5,9 @@ export default {
 	url: 'https://neode.sk',
 	repo: 'https://github.com/neodeskapp/neodesk',
 	// The current NeoDesk version comes from the repository's VERSION file at build
-	// time (ND_VERSION overrides it). This one is used when it cannot be fetched.
+	// time (ND_VERSION overrides it). This one is used, with a warning, when it cannot be fetched.
 	versionUrl: 'https://raw.githubusercontent.com/neodeskapp/neodesk/main/VERSION',
-	version: '3.5.270',
+	version: '3.6.2',
 	// "Edit on GitHub" appears on docs pages once this points at the folder that holds
 	// content/docs in a repository, for example
 	// https://github.com/neodeskapp/website/edit/main/content/docs

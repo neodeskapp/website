@@ -10,6 +10,7 @@ import MarkdownIt from 'markdown-it';
 import hljs from 'highlight.js';
 import config from './site.config.mjs';
 import { docsIndexPage, docPage, sectionPage, notFoundPage, esc } from './src/layout.mjs';
+import { checkOldNames, checkConsolePort, checkVersion } from './src/checks.mjs';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const at = (...p) => path.join(root, ...p);
@@ -77,6 +78,7 @@ async function currentVersion() {
 	} catch {
 		/* offline: use the version in the config */
 	}
+	console.warn(`Could not read ${config.versionUrl}; building for version ${config.version} from site.config.mjs. Set ND_VERSION to choose one.`);
 	return config.version;
 }
 
@@ -480,6 +482,10 @@ async function build() {
 			'\n</urlset>\n'
 	);
 	write('robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`);
+
+	// Checks on what was written
+	const checked = { dist: DIST, siteUrl: SITE_URL, version };
+	problems.push(...checkOldNames(checked), ...checkConsolePort(checked), ...checkVersion(checked));
 
 	if (problems.length) {
 		console.error(`\n${problems.length} problem${problems.length === 1 ? '' : 's'}:\n` + problems.map((p) => `  ${p}`).join('\n'));

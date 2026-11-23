@@ -10,8 +10,8 @@ node build.mjs       # writes dist/
 node build.mjs --serve   # builds, then serves dist/ on http://localhost:4173
 ```
 
-The build stops with a list when a docs page links to a page, heading or
-screenshot that does not exist.
+The build stops with a list of problems when a check fails. See
+[Checks](#checks) for what it looks at.
 
 ## Layout
 
@@ -53,6 +53,26 @@ date once `content/docs` is in a git repository and `editBase` in
 - A Markdown copy of every page at the page's address plus `.md`, and
   `/llms.txt` and `/llms-full.txt`, for AI tools.
 - `sitemap.xml`, `robots.txt` and `404.html`.
+
+## Checks
+
+The build checks the pages as it reads them and the files it wrote to
+`dist/`, and stops when one fails:
+
+- Links: every link between docs pages, every heading a link names, and every
+  screenshot exist.
+- The old name: no BetterDesk, betterdesk, trybetterdesk or betterde.sk in the
+  built pages, `.md` copies and llms files, and no old image path
+  (`ghcr.io/<owner>/betterdesk...`). The allow list is `OLD_NAME_ALLOW` in
+  `src/checks.mjs`: links to the upstream repository UNITRONIX/BetterDesk, the
+  "started as a fork of BetterDesk by UNITRONIX" credit, and the license and
+  sponsors pages.
+- The console port: 21114 is the server's API port on Linux and Windows. A
+  sentence that names 21114 with the console, the browser or signing in, but
+  not the API, fails.
+- The version: every "NeoDesk X.Y.Z", "neodesk-server X.Y.Z" and
+  `softwareVersion` must name the version the build was made for, and no
+  `{{VERSION}}` may be left.
 
 ## Writing a docs page
 
