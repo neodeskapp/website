@@ -1,5 +1,7 @@
 // What the build needs to know about the site. Content is in content/docs.
-export default {
+import type { SiteConfig } from './src/types.ts';
+
+const config: SiteConfig = {
 	name: 'NeoDesk',
 	// Where the site is served. SITE_URL overrides it for another host, such as the beta.
 	url: 'https://neode.sk',
@@ -48,3 +50,5 @@ export default {
 		}
 	]
 };
+
+export default config;

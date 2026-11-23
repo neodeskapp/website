@@ -1,14 +1,20 @@
 # NeoDesk website and docs
 
 The website for neode.sk: the landing page and the documentation under
-`/docs`. `node build.mjs` turns this folder into static files in `dist/`, which
+`/docs`. `npm run build` turns this folder into static files in `dist/`, which
 any web server can host.
 
+The build is TypeScript that Node runs directly, without a compile step. It
+needs Node 22.18 or newer, which strips the types itself.
+
 ```sh
-npm install          # once: markdown-it and highlight.js
-node build.mjs       # writes dist/
-node build.mjs --serve   # builds, then serves dist/ on http://localhost:4173
+npm install            # once
+npm run build          # writes dist/, the same as node build.ts
+npm run serve          # builds, then serves dist/ on http://localhost:4173
+npm run typecheck      # checks the types with tsc; it writes nothing
 ```
+
+`node build.mjs` still works and runs `build.ts`.
 
 The build stops with a list of problems when a check fails. See
 [Checks](#checks) for what it looks at.
@@ -20,27 +26,29 @@ content/docs/<section>/<page>.md     the documentation
 content/docs/<section>/<page>/<child>.md   a page under another page
 content/screenshots/<name>-dark.png, <name>-light.png
 src/home.html        the landing page
-src/layout.mjs       the frame around every docs page, and the docs index
+src/layout.ts        the frame around every docs page, and the docs index
+src/checks.ts        the checks on the built site
+src/types.ts         the shapes the build passes around
 src/site.css         fonts, colours and base styles
 src/docs.css         the docs layout
 src/docs.js          search, copy buttons, "On this page", the menu on phones
 public/              copied to dist/ as is (fonts, images, favicon)
-site.config.mjs      site address, repository, sections and their order
-build.mjs            the generator
+site.config.ts       site address, repository, sections and their order
+build.ts             the generator
 deploy.sh            builds for beta or production and uploads to the web server
 shots.json           the console screenshots: page, steps to reach the state, annotations
-shots.mjs            takes every screenshot in light and dark from a running console
+shots.ts             takes every screenshot in light and dark from a running console
 ```
 
-`SITE_URL=https://beta.neode.sk node build.mjs` builds for another address.
+`SITE_URL=https://beta.neode.sk node build.ts` builds for another address.
 `DIST_DIR=<folder>` writes the build there instead of `dist/`.
 `ND_VERSION=3.6.0` sets the version by hand; without it the build reads the
 repository's VERSION file. `DOCS_DIR=<folder>` builds another content folder.
 
 A new section needs a folder under `content/docs` and an entry in
-`site.config.mjs`. Docs pages get an "Edit on GitHub" link and an "Updated"
+`site.config.ts`. Docs pages get an "Edit on GitHub" link and an "Updated"
 date once `content/docs` is in a git repository and `editBase` in
-`site.config.mjs` points at it.
+`site.config.ts` points at it.
 
 ## What the build makes
 
@@ -64,7 +72,7 @@ The build checks the pages as it reads them and the files it wrote to
 - The old name: no BetterDesk, betterdesk, trybetterdesk or betterde.sk in the
   built pages, `.md` copies and llms files, and no old image path
   (`ghcr.io/<owner>/betterdesk...`). The allow list is `OLD_NAME_ALLOW` in
-  `src/checks.mjs`: links to the upstream repository UNITRONIX/BetterDesk, the
+  `src/checks.ts`: links to the upstream repository UNITRONIX/BetterDesk, the
   "started as a fork of BetterDesk by UNITRONIX" credit, and the license and
   sponsors pages.
 - The console port: 21114 is the server's API port on Linux and Windows. A
@@ -129,8 +137,8 @@ Use them rarely: most pages need none.
 ### Screenshots
 
 Screenshots are in `content/screenshots/` in a dark and a light version.
-`shots.mjs` retakes them from a running console, as `shots.json` describes
-each one; `ND_ADMIN_PASSWORD_FILE=<file> node shots.mjs [name ...]`. A run of
+`shots.ts` retakes them from a running console, as `shots.json` describes
+each one; `ND_ADMIN_PASSWORD_FILE=<file> node shots.ts [name ...]`. A run of
 every shot deletes the ones `shots.json` no longer names. It needs
 Playwright with Chromium (`npm install --no-save playwright` and
 `npx playwright install chromium`, or `PLAYWRIGHT_MODULE` pointing at an

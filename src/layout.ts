@@ -1,13 +1,14 @@
 // The HTML around the docs: one frame, and the three kinds of page inside it.
+import type { Page, Pager, Section, Shared } from './types.ts';
 
-export const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+export const esc = (s: unknown) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 const SEARCH_ICON =
 	'<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M12.8 12.8 17 17"/></svg>';
 
-const formatDate = (iso) => new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+const formatDate = (iso: string) => new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 
-function sidebar(sections, current) {
+function sidebar(sections: Section[], current: string) {
 	return sections
 		.map(
 			(s) => `<div class="side-section">
@@ -22,7 +23,20 @@ ${s.items
 		.join('\n    ');
 }
 
-function frame({ config, sections, assets, siteUrl, title, description, path, current, main, toc = '', markdown, jsonLd, type = 'website', noindex = false }) {
+interface FrameOptions extends Shared {
+	title: string;
+	description: string;
+	path: string;
+	current: string;
+	main: string;
+	toc?: string;
+	markdown?: string;
+	jsonLd?: object;
+	type?: string;
+	noindex?: boolean;
+}
+
+function frame({ config, sections, assets, siteUrl, title, description, path, current, main, toc = '', markdown, jsonLd, type = 'website', noindex = false }: FrameOptions) {
 	const full = title === 'Documentation' ? `${config.name} documentation` : `${title} - ${config.name} docs`;
 	const canonical = `${siteUrl}${path}`;
 	return `<!doctype html>
@@ -100,7 +114,7 @@ ${main}
 `;
 }
 
-function rows(items) {
+function rows(items: Page[]) {
 	return `<ul class="rows">
 ${items
 	.map(
@@ -110,13 +124,13 @@ ${items
     </ul>`;
 }
 
-const crumbList = (siteUrl, crumbs) => ({
+const crumbList = (siteUrl: string, crumbs: { name: string; path: string }[]) => ({
 	'@context': 'https://schema.org',
 	'@type': 'BreadcrumbList',
 	itemListElement: crumbs.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.name, item: `${siteUrl}${c.path}` }))
 });
 
-export function docsIndexPage(shared) {
+export function docsIndexPage(shared: Shared) {
 	const { sections, version } = shared;
 	const main = `    <div class="docs-home">
       <h1 class="display">Documentation</h1>
@@ -142,7 +156,7 @@ ${sections
 	});
 }
 
-export function sectionPage(shared) {
+export function sectionPage(shared: Shared & { section: Section }) {
 	const { section, siteUrl } = shared;
 	const main = `    <div class="crumb"><span><a href="/docs/">Docs</a></span><span class="crumb-actions"><a href="/docs/${section.slug}.md">Markdown</a></span></div>
     <h1>${esc(section.label)}</h1>
@@ -163,7 +177,7 @@ export function sectionPage(shared) {
 	});
 }
 
-export function docPage(shared) {
+export function docPage(shared: Shared & { page: Page; sectionLabel: string; prev: Pager | null; next: Pager | null }) {
 	const { page, sectionLabel, prev, next, config, siteUrl } = shared;
 	const tocItems = page.headings.filter((h) => h.level === 2 || h.level === 3);
 	const toc =
@@ -182,7 +196,7 @@ ${tocItems.map((h) => `      <li${h.level === 3 ? ' class="sub"' : ''}><a href="
 	]
 		.filter(Boolean)
 		.join('\n        ');
-	const pagerLink = (p, cls) => (p ? `<a class="${cls}" href="${p.href}"><span>${esc(p.label)}</span>${esc(p.title)}</a>` : '<span></span>');
+	const pagerLink = (p: Pager | null, cls: string) => (p ? `<a class="${cls}" href="${p.href}"><span>${esc(p.label)}</span>${esc(p.title)}</a>` : '<span></span>');
 	const main = `    <div class="crumb">
       <span><a href="/docs/">Docs</a> / <a href="/docs/${page.section}/">${esc(sectionLabel)}</a></span>
       <span class="crumb-actions">
@@ -222,7 +236,7 @@ ${page.html}
 	});
 }
 
-export function notFoundPage(shared) {
+export function notFoundPage(shared: Shared) {
 	const main = `    <h1>Page not found</h1>
     <p class="lead">There is no page at this address. It may have moved.</p>
     <p><button type="button" class="search-button search-button-wide" aria-haspopup="dialog">${SEARCH_ICON}<span>Search the docs</span><kbd>Ctrl K</kbd></button></p>

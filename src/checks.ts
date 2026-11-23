@@ -4,8 +4,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 /** Every file under a folder, as paths relative to it with forward slashes. */
-export function listFiles(dir, base = dir) {
-	const out = [];
+export function listFiles(dir: string, base = dir): string[] {
+	const out: string[] = [];
 	for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
 		const file = path.join(dir, e.name);
 		if (e.isDirectory()) out.push(...listFiles(file, base));
@@ -15,7 +15,7 @@ export function listFiles(dir, base = dir) {
 }
 
 const TEXT = /\.(html|md|txt|json|xml)$/;
-const lineOf = (text, index) => text.slice(0, index).split('\n').length;
+const lineOf = (text: string, index = 0) => text.slice(0, index).split('\n').length;
 
 /* ---------- the old name ---------- */
 
@@ -35,7 +35,7 @@ const OLD_NAME = /betterdesk|betterde\.sk/gi;
 const OLD_IMAGE = /ghcr\.io\/[\w.-]+\/betterdesk[\w.-]*/gi;
 
 /** The docs page a file is the copy of: docs/a/b/index.html and docs/a/b.md are page a/b. */
-function pageOfFile(rel) {
+function pageOfFile(rel: string) {
 	const m = rel.match(/^docs\/(.+?)(?:\/index\.html|\.md)$/);
 	return m ? m[1] : null;
 }
@@ -45,7 +45,7 @@ function pageOfFile(rel) {
  * pages with their descriptions) belongs to that page; in the collected llms files
  * the rest belongs to the page under the last "Source:" line.
  */
-function pageAt(text, index, rel, siteUrl) {
+function pageAt(text: string, index: number, rel: string) {
 	const start = text.lastIndexOf('\n', index) + 1;
 	const end = text.indexOf('\n', index);
 	const line = text.slice(start, end === -1 ? text.length : end);
@@ -56,8 +56,14 @@ function pageAt(text, index, rel, siteUrl) {
 	return pageOfFile(rel);
 }
 
-export function checkOldNames({ dist, siteUrl }) {
-	const problems = [];
+export interface CheckInput {
+	dist: string;
+	siteUrl: string;
+	version: string;
+}
+
+export function checkOldNames({ dist }: CheckInput) {
+	const problems: string[] = [];
 	for (const rel of listFiles(dist).filter((f) => TEXT.test(f))) {
 		const raw = fs.readFileSync(path.join(dist, rel), 'utf8');
 		for (const m of raw.matchAll(OLD_IMAGE)) problems.push(`${rel}:${lineOf(raw, m.index)}: old image path "${m[0]}"`);
@@ -65,7 +71,7 @@ export function checkOldNames({ dist, siteUrl }) {
 		let text = raw;
 		for (const re of OLD_NAME_ALLOW.phrases) text = text.replace(re, (s) => ' '.repeat(s.length));
 		if (rel === 'docs/search.json') {
-			for (const entry of JSON.parse(raw)) {
+			for (const entry of JSON.parse(raw) as { u: string }[]) {
 				const page = entry.u.replace(/^\/docs\/|\/(#.*)?$|#.*$/g, '');
 				if (OLD_NAME_ALLOW.pages.includes(page)) continue;
 				let fields = JSON.stringify(entry);
@@ -76,7 +82,7 @@ export function checkOldNames({ dist, siteUrl }) {
 			continue;
 		}
 		for (const m of text.matchAll(OLD_NAME)) {
-			const page = pageAt(raw, m.index, rel, siteUrl);
+			const page = pageAt(raw, m.index, rel);
 			if (page && OLD_NAME_ALLOW.pages.includes(page)) continue;
 			const around = raw.slice(Math.max(0, m.index - 40), m.index + 40).replace(/\s+/g, ' ');
 			problems.push(`${rel}:${lineOf(raw, m.index)}: old name "${m[0]}" in "...${around}..."`);
@@ -93,7 +99,7 @@ const CONSOLE_WORDS = /\b(console|sign(?:s|ed)? in|browser|web interface|dashboa
 const API_WORDS = /\bAPI\b|\/api\b|api[-_ ]port|metrics/i;
 
 /** A file's text as sentences: tags, scripts and styles dropped, one block or line at a time. */
-function sentences(raw, rel) {
+function sentences(raw: string, rel: string) {
 	let text = raw;
 	if (rel.endsWith('.html')) {
 		text = text
@@ -108,8 +114,8 @@ function sentences(raw, rel) {
 	return text.split(/\n+|(?<=[.!?])\s+(?=[A-Z])/);
 }
 
-export function checkConsolePort({ dist }) {
-	const problems = [];
+export function checkConsolePort({ dist }: CheckInput) {
+	const problems: string[] = [];
 	for (const rel of listFiles(dist).filter((f) => /\.(html|md|txt)$/.test(f))) {
 		const raw = fs.readFileSync(path.join(dist, rel), 'utf8');
 		for (const s of sentences(raw, rel)) {
@@ -130,8 +136,8 @@ const VERSION_MENTIONS = [
 	/\bWritten for version (\d+\.\d+\.\d+(?:-[\w.]+)?)/g
 ];
 
-export function checkVersion({ dist, version }) {
-	const problems = [];
+export function checkVersion({ dist, version }: CheckInput) {
+	const problems: string[] = [];
 	for (const rel of listFiles(dist).filter((f) => TEXT.test(f))) {
 		const raw = fs.readFileSync(path.join(dist, rel), 'utf8');
 		if (raw.includes('{{VERSION}}')) problems.push(`${rel}: "{{VERSION}}" was not replaced`);

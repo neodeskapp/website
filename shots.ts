@@ -1,7 +1,7 @@
 // Retakes the console screenshots of the docs from shots.json, in light and dark.
 //
-//   ND_ADMIN_PASSWORD_FILE=<file> node shots.mjs            every shot
-//   ND_ADMIN_PASSWORD_FILE=<file> node shots.mjs devices    only the named ones
+//   ND_ADMIN_PASSWORD_FILE=<file> node shots.ts            every shot
+//   ND_ADMIN_PASSWORD_FILE=<file> node shots.ts devices    only the named ones
 //
 // It signs in to a running console (ND_URL, default the "base" in shots.json)
 // as ND_ADMIN_USER (default admin) with the password from ND_ADMIN_PASSWORD_FILE
@@ -13,11 +13,49 @@ import path from 'node:path';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 
+// Playwright is not a dependency of the site, so its objects are typed loosely here
+type Browser = any;
+type Context = any;
+type PwPage = any;
+
+interface Box {
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+}
+interface Annotation {
+	type: 'box' | 'arrow';
+	target: string;
+	label: string;
+	side?: 'above' | 'below' | 'left';
+}
+type Step = Record<string, any>;
+interface Shot {
+	name: string;
+	path: string;
+	signedIn?: boolean;
+	steps?: Step[];
+	annotations?: Annotation[];
+}
+interface ShotsConfig {
+	base: string;
+	viewport: { width: number; height: number };
+	scale: number;
+	shots: Shot[];
+}
+interface Item {
+	type: string;
+	box: Box;
+	text: string;
+	side?: string;
+}
+
 const root = path.dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
-const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
+const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright') as { chromium: { launch(): Promise<Browser> } };
 
-const config = JSON.parse(fs.readFileSync(path.join(root, 'shots.json'), 'utf8'));
+const config = JSON.parse(fs.readFileSync(path.join(root, 'shots.json'), 'utf8')) as ShotsConfig;
 const OUT = path.join(root, 'content/screenshots');
 const BASE = (process.env.ND_URL || config.base).replace(/\/$/, '');
 const USER = process.env.ND_ADMIN_USER || 'admin';
@@ -33,27 +71,27 @@ const only = process.argv.slice(2);
 const shots = only.length ? config.shots.filter((s) => only.includes(s.name)) : config.shots;
 for (const name of only) if (!config.shots.some((s) => s.name === name)) console.warn(`no shot named ${name}`);
 
-async function signIn(context) {
+async function signIn(context: Context) {
 	const page = await context.newPage();
 	await page.goto(BASE + '/login');
 	await page.locator('#username').fill(USER);
 	await page.locator('input[type=password]').first().fill(PASSWORD);
 	await page.locator('button[type=submit]').first().click();
-	await page.waitForURL((url) => !url.pathname.startsWith('/login'), { timeout: 15000 });
+	await page.waitForURL((url: URL) => !url.pathname.startsWith('/login'), { timeout: 15000 });
 	await page.close();
 }
 
-async function runStep(page, step) {
+async function runStep(page: PwPage, step: Step) {
 	const [kind] = Object.keys(step);
 	const arg = step[kind];
-	const at = (sel) => page.locator(sel).first();
+	const at = (sel: string) => page.locator(sel).first();
 	switch (kind) {
 		case 'click': return at(arg).click();
 		case 'fill': return at(arg[0]).fill(arg[1]);
 		case 'select': return at(arg[0]).selectOption({ label: arg[1] });
 		case 'press': return at(arg[0]).press(arg[1]);
 		case 'hover': return at(arg).hover();
-		case 'scroll': return at(arg).evaluate((el) => el.scrollIntoView({ block: 'start' }));
+		case 'scroll': return at(arg).evaluate((el: Element) => el.scrollIntoView({ block: 'start' }));
 		case 'waitFor': return at(arg).waitFor({ state: 'visible', timeout: 15000 });
 		case 'wait': return page.waitForTimeout(arg);
 		default: throw new Error(`unknown step ${kind}`);
@@ -62,7 +100,7 @@ async function runStep(page, step) {
 
 // Draws the annotations on top of the page: a box around the target, or an
 // arrow pointing at it, each with a short label.
-function draw({ items, theme }) {
+function draw({ items, theme }: { items: Item[]; theme: string }) {
 	const color = theme === 'dark' ? '#a3e635' : '#4d8f06';
 	const ink = theme === 'dark' ? '#141616' : '#ffffff';
 	const layer = document.createElement('div');
@@ -70,7 +108,7 @@ function draw({ items, theme }) {
 	// In the page from the start, so the labels can be measured
 	document.body.appendChild(layer);
 	const vw = window.innerWidth, vh = window.innerHeight;
-	const label = (text, x, y) => {
+	const label = (text: string, x: number, y: number) => {
 		const el = document.createElement('div');
 		el.textContent = text;
 		el.style.cssText = `position:absolute;left:${x}px;top:${y}px;background:${color};color:${ink};font:600 15px/1.2 "IBM Plex Sans",system-ui,sans-serif;padding:6px 11px;border-radius:999px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.25)`;
@@ -102,7 +140,7 @@ function draw({ items, theme }) {
 			const sx = Math.min(Math.max(tx, r.left + 20), r.right - 20), sy = below ? r.top - 4 : r.bottom + 4;
 			const ns = 'http://www.w3.org/2000/svg';
 			const svg = document.createElementNS(ns, 'svg');
-			svg.setAttribute('width', vw); svg.setAttribute('height', vh);
+			svg.setAttribute('width', String(vw)); svg.setAttribute('height', String(vh));
 			svg.style.cssText = 'position:absolute;left:0;top:0;overflow:visible';
 			svg.innerHTML = `<defs><marker id="bd-head" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="${color}"/></marker></defs><line x1="${sx}" y1="${sy}" x2="${tx}" y2="${ty}" stroke="${color}" stroke-width="4" stroke-linecap="round" marker-end="url(#bd-head)"/>`;
 			layer.insertBefore(svg, layer.firstChild);
@@ -110,7 +148,7 @@ function draw({ items, theme }) {
 	}
 }
 
-async function take(context, shot, theme) {
+async function take(context: Context, shot: Shot, theme: string) {
 	const page = await context.newPage();
 	await page.goto(BASE + shot.path);
 	await page.waitForLoadState('load');
@@ -120,7 +158,7 @@ async function take(context, shot, theme) {
 	await page.mouse.move(0, 799);
 	await page.evaluate(() => document.activeElement instanceof HTMLElement && document.activeElement.blur());
 	if (shot.annotations?.length) {
-		const items = [];
+		const items: Item[] = [];
 		for (const a of shot.annotations) {
 			const box = await page.locator(a.target).first().boundingBox();
 			if (!box) throw new Error(`${shot.name}: annotation target not visible: ${a.target}`);
@@ -147,7 +185,7 @@ try {
 				await take(shot.signedIn === false ? anonymous : signedIn, shot, theme);
 			} catch (err) {
 				failed++;
-				console.error(`${shot.name} (${theme}): ${err.message.split('\n')[0]}`);
+				console.error(`${shot.name} (${theme}): ${(err as Error).message.split('\n')[0]}`);
 			}
 		}
 		await signedIn.close();
