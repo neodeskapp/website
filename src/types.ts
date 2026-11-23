@@ -1,4 +1,5 @@
 // The shapes the build passes between its parts.
+import type { Locale, Strings } from './i18n.ts';
 
 export interface SectionConfig {
 	slug: string;
@@ -28,6 +29,8 @@ export interface Heading {
 export interface Page {
 	file: string;
 	rel: string;
+	/** The language code of the page */
+	locale: string;
 	slug: string;
 	section: string;
 	parent?: string;
@@ -49,12 +52,17 @@ export interface Section extends SectionConfig {
 
 export interface Shared {
 	config: SiteConfig;
+	/** The sections of the page's language, with their pages */
 	sections: Section[];
 	assets: Record<string, string>;
 	version: string;
 	siteUrl: string;
 	/** Whether this build is for the production address, which search engines may index */
 	production: boolean;
+	locale: Locale;
+	t: Strings;
+	/** The languages that have a page at this address, given without the language prefix */
+	versions: (path: string) => Locale[];
 }
 
 export interface Pager {

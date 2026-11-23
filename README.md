@@ -50,6 +50,24 @@ A new section needs a folder under `content/docs` and an entry in
 date once `content/docs` is in a git repository and `editBase` in
 `site.config.ts` points at it.
 
+## Languages
+
+English is the default and lives at the root. `src/i18n.ts` lists the other
+languages with their prefix (German at `/de/`) and holds the words of the frame
+around the pages for each language. A translated docs page goes into
+`content/<code>/docs/` with the same path as the English one, for example
+`content/de/docs/getting-started/docker.md`. The build writes `/de/` pages only
+for the files there, and only once that language has every string in
+`src/i18n.ts`, section names included; until then it stops with the list of
+missing strings. A link to a page that has no translation yet leads to the
+English page.
+
+Every page lists its language versions with `hreflang`, plus `x-default` for
+the English one, and shows a language switch when it has more than one. The
+landing page, the search index and the llms files are English only.
+
+There is no German text yet.
+
 ## What the build makes
 
 - `/docs/` with every section, `/docs/<section>/` with that section's pages,
@@ -91,6 +109,10 @@ The build checks the pages as it reads them and the files it wrote to
   says noindex. A build for any other address, such as beta.neode.sk, puts
   noindex on every page (the beta's web server also sends
   `X-Robots-Tag: noindex`).
+- Languages: `<html lang>` matches the page's address, every page links to
+  itself and to `x-default` with `hreflang`, and every language version it
+  names exists and names it back. A language with pages must have all its
+  strings.
 - Commands (`src/commands.ts`): every block has a language, no block has a
   shell prompt (`$ `, `PS C:\>`), a command the text asks the reader to run is
   in a block of its own, and placeholders follow the rule under [Code](#code).

@@ -31,6 +31,9 @@
 .top-docs:hover, .top-links a:hover { text-decoration: underline; }
 .top-links { display: flex; gap: 24px; font-size: 15px; font-weight: 500; }
 .top-links a { text-decoration: none; padding: 6px 0; }
+.lang-switch { display: flex; gap: 16px; font-size: 15px; font-weight: 500; }
+.lang-switch a { text-decoration: none; padding: 6px 0; color: var(--muted); }
+.lang-switch a:hover { color: var(--text); text-decoration: underline; }
 .menu-button {
   display: none;
   appearance: none;

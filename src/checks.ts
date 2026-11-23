@@ -2,7 +2,8 @@
 // the build fails when any check finds one.
 import fs from 'node:fs';
 import path from 'node:path';
-import { parse, find, findAll, byTag, isHidden, textOf } from './html.ts';
+import { parse, find, findAll, byTag, isHidden, textOf, decode } from './html.ts';
+import { localeOfPath } from './i18n.ts';
 
 /** Every file under a folder, as paths relative to it with forward slashes. */
 export function listFiles(dir: string, base = dir): string[] {
@@ -189,6 +190,54 @@ export function checkWithoutScripts({ dist }: CheckInput) {
 			if (id) seen.set(id, (seen.get(id) ?? 0) + 1);
 		}
 		for (const [id, n] of seen) if (n > 1) problems.push(`${rel}: ${n} tabs share the panel #${id}, so only one tab's content is in the page`);
+	}
+	return problems;
+}
+
+/* ---------- languages ---------- */
+
+/** The address a built HTML file is served at: docs/a/index.html is /docs/a/. */
+export const urlOfFile = (rel: string) => `/${rel.replace(/(^|\/)index\.html$/, '$1')}`;
+/** The built file an address of the site is served from, or null when it is outside the site. */
+export function fileOfUrl(url: string, siteUrl: string): string | null {
+	if (!url.startsWith(siteUrl)) return null;
+	const p = url.slice(siteUrl.length).split('#')[0] || '/';
+	return p.endsWith('/') ? `${p.slice(1)}index.html` : p.slice(1);
+}
+
+/**
+ * Every page says its language in <html lang>, which matches its address (/de/... is German),
+ * and lists every language version of itself with hreflang, itself and x-default included.
+ * Each version it lists exists and lists it back.
+ */
+export function checkLocales({ dist, siteUrl }: CheckInput) {
+	const problems: string[] = [];
+	const alternates = new Map<string, Map<string, string>>();
+	const files = listFiles(dist).filter((f) => f.endsWith('.html') && !NOINDEX_PAGES.has(f));
+	for (const rel of files) {
+		const html = fs.readFileSync(path.join(dist, rel), 'utf8');
+		const head = html.split('</head>')[0];
+		const url = urlOfFile(rel);
+		const locale = localeOfPath(url);
+		const lang = head.match(/<html lang="([^"]*)"/)?.[1];
+		if (lang !== locale.code) problems.push(`${rel}: <html lang="${lang}">, but its address is in ${locale.label} (${locale.code})`);
+		const links = new Map<string, string>();
+		for (const m of head.matchAll(/<link rel="alternate" hreflang="([^"]+)" href="([^"]+)">/g)) links.set(m[1], decode(m[2]));
+		alternates.set(rel, links);
+		if (links.get(locale.code) !== `${siteUrl}${url}`) problems.push(`${rel}: no hreflang="${locale.code}" link to itself`);
+		if (!links.has('x-default')) problems.push(`${rel}: no hreflang="x-default" link`);
+	}
+	for (const [rel, links] of alternates) {
+		for (const [code, href] of links) {
+			const target = fileOfUrl(href, siteUrl);
+			if (!target || !fs.existsSync(path.join(dist, target))) {
+				problems.push(`${rel}: hreflang="${code}" names ${href}, which is not a page of the site`);
+				continue;
+			}
+			if (code === 'x-default' || target === rel) continue;
+			const back = alternates.get(target);
+			if (!back || ![...back.values()].includes(`${siteUrl}${urlOfFile(rel)}`)) problems.push(`${rel}: hreflang="${code}" names ${href}, which does not name this page back`);
+		}
 	}
 	return problems;
 }

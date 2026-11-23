@@ -10,9 +10,11 @@ import MarkdownIt from 'markdown-it';
 import type { StateBlock, StateCore, Token, RendererRule } from 'markdown-it';
 import hljs from 'highlight.js';
 import config from './site.config.ts';
-import { docsIndexPage, docPage, sectionPage, notFoundPage, esc } from './src/layout.ts';
+import { docsIndexPage, docPage, sectionPage, notFoundPage, hreflangLinks, languageSwitch, esc } from './src/layout.ts';
 import type { Page, Section, Shared, Pager } from './src/types.ts';
-import { checkOldNames, checkConsolePort, checkVersion, checkWithoutScripts, checkIndexing } from './src/checks.ts';
+import { LOCALES, DEFAULT_LOCALE, missingStrings, stringsOf, fill } from './src/i18n.ts';
+import type { Locale, Strings } from './src/i18n.ts';
+import { checkOldNames, checkConsolePort, checkVersion, checkWithoutScripts, checkIndexing, checkLocales } from './src/checks.ts';
 import { checkCommands } from './src/commands.ts';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
@@ -121,7 +123,7 @@ function frontMatter(source: string, file: string) {
 	return { data, body: source.slice(m[0].length) };
 }
 
-function loadPages(version: string): Page[] {
+function loadPages(dir: string, locale: Locale, version: string): Page[] {
 	const pages: Page[] = [];
 	const add = (file: string, slug: string, section: string, parent?: string) => {
 		const rel = path.relative(root, file).replace(/\\/g, '/');
@@ -135,6 +137,7 @@ function loadPages(version: string): Page[] {
 		pages.push({
 			file,
 			rel,
+			locale: locale.code,
 			slug,
 			section,
 			parent,
@@ -149,15 +152,15 @@ function loadPages(version: string): Page[] {
 			html: ''
 		});
 	};
-	for (const s of fs.readdirSync(DOCS, { withFileTypes: true })) {
+	for (const s of fs.readdirSync(dir, { withFileTypes: true })) {
 		if (!s.isDirectory()) continue;
-		if (!config.sections.some((c) => c.slug === s.name)) problems.push(`content/docs/${s.name}: not listed in site.config.ts`);
-		const dir = path.join(DOCS, s.name);
-		for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
-			if (e.isFile() && e.name.endsWith('.md')) add(path.join(dir, e.name), `${s.name}/${e.name.slice(0, -3)}`, s.name);
+		if (!config.sections.some((c) => c.slug === s.name)) problems.push(`${path.relative(root, dir).replace(/\\/g, '/')}/${s.name}: not listed in site.config.ts`);
+		const sectionDir = path.join(dir, s.name);
+		for (const e of fs.readdirSync(sectionDir, { withFileTypes: true })) {
+			if (e.isFile() && e.name.endsWith('.md')) add(path.join(sectionDir, e.name), `${s.name}/${e.name.slice(0, -3)}`, s.name);
 			else if (e.isDirectory()) {
-				for (const c of fs.readdirSync(path.join(dir, e.name))) {
-					if (c.endsWith('.md')) add(path.join(dir, e.name, c), `${s.name}/${e.name}/${c.slice(0, -3)}`, s.name, `${s.name}/${e.name}`);
+				for (const c of fs.readdirSync(path.join(sectionDir, e.name))) {
+					if (c.endsWith('.md')) add(path.join(sectionDir, e.name, c), `${s.name}/${e.name}/${c.slice(0, -3)}`, s.name, `${s.name}/${e.name}`);
 				}
 			}
 		}
@@ -180,7 +183,11 @@ const LANG: Record<string, string> = { sh: 'bash', shell: 'bash', ps1: 'powershe
 // Files the reader pastes that highlight.js has no grammar for: shown plain, with a copy button
 const PLAIN_PASTE = new Set(['caddy', 'fstab']);
 
-function makeMarkdown(page: Page, usedShots: Set<string>) {
+/**
+ * The Markdown renderer for one page. `linkTo` turns a docs link into the address in the
+ * page's language, or the default language's when the page has no translation.
+ */
+function makeMarkdown(page: Page, usedShots: Set<string>, t: Strings, linkTo: (href: string) => string) {
 	const md = new MarkdownIt({ html: true, linkify: false, typographer: false });
 	const slug = slugger();
 	page.headings = [];
@@ -214,7 +221,7 @@ function makeMarkdown(page: Page, usedShots: Set<string>) {
 		return true;
 	});
 	md.renderer.rules.note_open = (tokens: Token[], i: number) =>
-		`<div class="note note-${tokens[i].meta}" role="note"><p class="note-label">${tokens[i].meta === 'warning' ? 'Warning' : 'Note'}</p>\n`;
+		`<div class="note note-${tokens[i].meta}" role="note"><p class="note-label">${tokens[i].meta === 'warning' ? t.warning : t.note}</p>\n`;
 
 	// Heading ids, the "On this page" list, and a link on each heading
 	md.core.ruler.push('headings', (state: StateCore) => {
@@ -247,7 +254,7 @@ function makeMarkdown(page: Page, usedShots: Set<string>) {
 		if (!token.meta?.anchor) {
 			page.links.push(href);
 			if (/^https?:\/\//.test(href)) token.attrSet('rel', 'noopener');
-			else if (href.startsWith('/docs')) token.attrSet('href', docHref(href));
+			else if (href.startsWith('/docs')) token.attrSet('href', linkTo(href));
 		}
 		return defaultLinkOpen(tokens, i, opts, env, self);
 	};
@@ -360,10 +367,10 @@ function searchEntries(page: Page, sectionLabel: string): SearchEntry[] {
 
 /* ---------- Markdown copies for AI tools ---------- */
 
-const mdUrl = (slug: string) => `${SITE_URL}/docs/${slug}.md`;
+const mdUrl = (slug: string, prefix = '') => `${SITE_URL}${prefix}/docs/${slug}.md`;
 
 /** A page's body as plain Markdown: notes become quotes, screenshots plain images, site links absolute. */
-function agentMarkdown(body: string) {
+function agentMarkdown(body: string, linkTo: (href: string) => string) {
 	const out: string[] = [];
 	let fence: string | null = null;
 	let note: string | null = null;
@@ -396,7 +403,7 @@ function agentMarkdown(body: string) {
 					? part
 					: part
 							.replace(/!\[([^\]]*)\]\(shot:([\w-]+)\)/g, (_, alt, name) => `![${alt}](${SITE_URL}/docs/shots/${name}-light.png)`)
-							.replace(/\]\((\/docs\/[^)#\s]+?)\/?(#[^)\s]*)?\)/g, (_, p, hash) => `](${SITE_URL}${p}.md${hash ?? ''})`)
+							.replace(/\]\((\/docs\/[^)#\s]+?)\/?(#[^)\s]*)?\)/g, (_, p, hash) => `](${SITE_URL}${linkTo(p).replace(/\/$/, '')}.md${hash ?? ''})`)
 							.replace(/\]\((\/[^)\s]*)\)/g, (_, p) => `](${SITE_URL}${p})`)
 			)
 			.join('');
@@ -405,14 +412,14 @@ function agentMarkdown(body: string) {
 	return out.join('\n').replace(/\n{3,}/g, '\n\n').trim() + '\n';
 }
 
-function pageMarkdown(page: Page) {
-	const head = [`# ${page.title}`, `Source: ${SITE_URL}/docs/${page.slug}/${page.updated ? `\nLast updated: ${page.updated.slice(0, 10)}` : ''}`];
+function pageMarkdown(page: Page, locale: Locale, linkTo: (href: string) => string) {
+	const head = [`# ${page.title}`, `Source: ${SITE_URL}${locale.prefix}/docs/${page.slug}/${page.updated ? `\nLast updated: ${page.updated.slice(0, 10)}` : ''}`];
 	if (page.description) head.push(`> ${page.description}`);
-	return `${head.join('\n\n')}\n\n${agentMarkdown(page.body)}`;
+	return `${head.join('\n\n')}\n\n${agentMarkdown(page.body, linkTo)}`;
 }
 
-const pageList = (items: Page[]) =>
-	items.map((p) => `${p.parent ? '  ' : ''}- [${p.title}](${mdUrl(p.slug)})${p.description ? `: ${p.description}` : ''}`).join('\n');
+const pageList = (items: Page[], prefix = '') =>
+	items.map((p) => `${p.parent ? '  ' : ''}- [${p.title}](${mdUrl(p.slug, prefix)})${p.description ? `: ${p.description}` : ''}`).join('\n');
 
 /* ---------- robots.txt ---------- */
 
@@ -425,16 +432,60 @@ function robotsTxt() {
 
 /* ---------- the build ---------- */
 
+/** The docs of one language. */
+interface Site {
+	locale: Locale;
+	t: Strings;
+	pages: Page[];
+	sections: Section[];
+	/** The pages in sidebar order, for previous and next */
+	reading: Page[];
+}
+
 async function build() {
 	const started = Date.now();
 	problems.length = 0;
 	const version = await currentVersion();
-	const pages = loadPages(version);
-	const sections: Section[] = config.sections
-		.map((s) => ({ ...s, items: inSidebarOrder(pages.filter((p) => p.section === s.slug)) }))
-		.filter((s) => s.items.length);
-	const reading = sections.flatMap((s) => s.items);
-	const labelOf = (slug: string) => sections.find((s) => s.slug === slug)?.label ?? slug;
+
+	// Every language with docs files: the default from content/docs, the others from content/<code>/docs
+	const sites: Site[] = [];
+	for (const locale of LOCALES) {
+		const dir = locale.default ? DOCS : at('content', locale.code, 'docs');
+		if (!fs.existsSync(dir)) continue;
+		const pages = loadPages(dir, locale, version);
+		if (!pages.length) continue;
+		const missing = missingStrings(locale.code, config.sections.map((s) => s.slug));
+		if (missing.length) {
+			problems.push(`content/${locale.code}/docs: ${locale.label} has pages, but src/i18n.ts lacks its strings: ${missing.join(', ')}`);
+			continue;
+		}
+		const t = stringsOf(locale.code);
+		const sections: Section[] = config.sections
+			.map((s) => ({ ...s, ...(locale.default ? {} : t.sections?.[s.slug]), items: inSidebarOrder(pages.filter((p) => p.section === s.slug)) }))
+			.filter((s) => s.items.length);
+		sites.push({ locale, t, pages, sections, reading: sections.flatMap((s) => s.items) });
+	}
+	const main = sites.find((s) => s.locale.default);
+	if (!main) {
+		console.error(`No docs in ${DOCS}`);
+		return false;
+	}
+
+	// Which languages have a page at each address; the landing page is in the default language only
+	const available = new Map<string, Locale[]>();
+	const offer = (p: string, l: Locale) => available.set(p, [...(available.get(p) ?? []), l]);
+	offer('/', DEFAULT_LOCALE);
+	for (const site of sites) {
+		offer('/docs/', site.locale);
+		for (const s of site.sections) offer(`/docs/${s.slug}/`, site.locale);
+		for (const p of site.pages) offer(`/docs/${p.slug}/`, site.locale);
+	}
+	const versions = (p: string) => available.get(p) ?? [];
+	// A docs link from a page: to the page in the same language when there is one, else to the default language's
+	const linkIn = (locale: Locale) => (href: string) => {
+		const clean = docHref(href);
+		return versions(clean.split('#')[0]).some((l) => l.code === locale.code) ? `${locale.prefix}${clean}` : clean;
+	};
 
 	fs.rmSync(DIST, { recursive: true, force: true });
 	copyDir(at('public'), DIST);
@@ -449,50 +500,68 @@ async function build() {
 
 	// Render every page
 	const usedShots = new Set<string>();
-	for (const page of pages) page.html = makeMarkdown(page, usedShots).render(page.body);
+	for (const site of sites) for (const page of site.pages) page.html = makeMarkdown(page, usedShots, site.t, linkIn(site.locale)).render(page.body);
 
-	// Check every link between pages
-	const known = new Map(pages.map((p) => [`/docs/${p.slug}`, p]));
-	for (const page of pages) {
-		for (const href of page.links) {
-			if (/^(https?:|mailto:)/.test(href)) continue;
-			const [p, hash] = href.split('#');
-			if (!p) {
-				if (!page.headings.some((h) => h.id === hash)) problems.push(`${page.rel}: no heading "#${hash}" on this page`);
-				continue;
+	// Check every link between pages. A translated page may link to a page that exists in the default language only.
+	const byAddress = (site: Site) => new Map(site.pages.map((p) => [`/docs/${p.slug}`, p]));
+	const known = byAddress(main);
+	for (const site of sites) {
+		const own = byAddress(site);
+		for (const page of site.pages) {
+			for (const href of page.links) {
+				if (/^(https?:|mailto:)/.test(href)) continue;
+				const [p, hash] = href.split('#');
+				if (!p) {
+					if (!page.headings.some((h) => h.id === hash)) problems.push(`${page.rel}: no heading "#${hash}" on this page`);
+					continue;
+				}
+				const target = p.replace(/\/$/, '');
+				if (target === '' || target === '/docs' || main.sections.some((s) => `/docs/${s.slug}` === target)) continue;
+				if (p.endsWith('.md')) problems.push(`${page.rel}: link "${href}" should not end in .md`);
+				const to = own.get(target) ?? known.get(target);
+				if (!to) problems.push(`${page.rel}: link to "${href}", which is not a page`);
+				else if (hash && !to.headings.some((h) => h.id === hash)) problems.push(`${page.rel}: "${href}": no heading "#${hash}" on that page`);
 			}
-			const target = p.replace(/\/$/, '');
-			if (target === '' || target === '/docs' || sections.some((s) => `/docs/${s.slug}` === target)) continue;
-			if (p.endsWith('.md')) problems.push(`${page.rel}: link "${href}" should not end in .md`);
-			const to = known.get(target);
-			if (!to) problems.push(`${page.rel}: link to "${href}", which is not a page`);
-			else if (hash && !to.headings.some((h) => h.id === hash)) problems.push(`${page.rel}: "${href}": no heading "#${hash}" on that page`);
 		}
 	}
 
-	const shared: Shared = { config, sections, assets, version, siteUrl: SITE_URL, production: PRODUCTION };
 	const search: SearchEntry[] = [];
-
-	reading.forEach((page, i) => {
-		const prev = reading[i - 1] ?? null;
-		const next = reading[i + 1] ?? null;
-		const pager = (word: string, other: Page | null): Pager | null =>
-			other ? { label: other.section === page.section ? word : `${word} in ${labelOf(other.section)}`, title: other.title, href: `/docs/${other.slug}/` } : null;
-		write(
-			`docs/${page.slug}/index.html`,
-			docPage({ ...shared, page, sectionLabel: labelOf(page.section), prev: pager('Previous', prev), next: pager('Next', next) })
-		);
-		write(`docs/${page.slug}.md`, pageMarkdown(page));
-		search.push(...searchEntries(page, labelOf(page.section)));
-	});
-
-	for (const section of sections) {
-		write(`docs/${section.slug}/index.html`, sectionPage({ ...shared, section }));
-		write(`docs/${section.slug}.md`, `# ${section.label}\n\nSource: ${SITE_URL}/docs/${section.slug}/\n\n${section.intro}\n\n${pageList(section.items)}\n`);
+	for (const site of sites) {
+		const { locale, t } = site;
+		const shared: Shared = { config, sections: site.sections, assets, version, siteUrl: SITE_URL, production: PRODUCTION, locale, t, versions };
+		// Files of another language go under its prefix: de/docs/...
+		const out = (file: string) => `${locale.prefix.replace(/^\//, '')}${locale.prefix ? '/' : ''}${file}`;
+		const labelOf = (slug: string) => site.sections.find((s) => s.slug === slug)?.label ?? slug;
+		const linkTo = linkIn(locale);
+		site.reading.forEach((page, i) => {
+			const pager = (word: string, wordIn: string, other: Page | undefined): Pager | null =>
+				other
+					? { label: other.section === page.section ? word : fill(wordIn, { section: labelOf(other.section) }), title: other.title, href: `${locale.prefix}/docs/${other.slug}/` }
+					: null;
+			write(
+				out(`docs/${page.slug}/index.html`),
+				docPage({
+					...shared,
+					page,
+					sectionLabel: labelOf(page.section),
+					prev: pager(t.previous, t.previousIn, site.reading[i - 1]),
+					next: pager(t.next, t.nextIn, site.reading[i + 1])
+				})
+			);
+			write(out(`docs/${page.slug}.md`), pageMarkdown(page, locale, linkTo));
+			if (locale.default) search.push(...searchEntries(page, labelOf(page.section)));
+		});
+		for (const section of site.sections) {
+			write(out(`docs/${section.slug}/index.html`), sectionPage({ ...shared, section }));
+			write(
+				out(`docs/${section.slug}.md`),
+				`# ${section.label}\n\nSource: ${SITE_URL}${locale.prefix}/docs/${section.slug}/\n\n${section.intro}\n\n${pageList(section.items, locale.prefix)}\n`
+			);
+		}
+		write(out('docs/index.html'), docsIndexPage(shared));
+		if (locale.default) write('404.html', notFoundPage(shared));
 	}
-	write('docs/index.html', docsIndexPage(shared));
 	write('docs/search.json', JSON.stringify(search));
-	write('404.html', notFoundPage(shared));
 	for (const name of usedShots) {
 		for (const theme of ['dark', 'light']) {
 			fs.mkdirSync(path.join(DIST, 'docs/shots'), { recursive: true });
@@ -500,16 +569,21 @@ async function build() {
 		}
 	}
 
-	// The landing page
+	// The landing page, in the default language only so far
+	const home = { siteUrl: SITE_URL, versions, locale: DEFAULT_LOCALE, t: main.t };
 	write(
 		'index.html',
 		read(at('src/home.html'))
 			.replaceAll('{{VERSION}}', version)
 			.replaceAll('{{SITE_URL}}', SITE_URL)
 			.replace('{{ROBOTS}}', PRODUCTION ? '' : '<meta name="robots" content="noindex">\n')
+			.replace('{{HREFLANG}}', hreflangLinks(home, '/'))
+			.replace(/^ *\{\{LANGUAGES\}\}\n/m, languageSwitch(home, '/') ? `    ${languageSwitch(home, '/')}\n` : '')
 	);
 
 	// For AI tools: llms.txt lists every page, llms-full.txt holds them all
+	const { sections, reading } = main;
+	const linkTo = linkIn(DEFAULT_LOCALE);
 	const about = `# ${config.name}\n\n> ${config.summary}\n\nEvery docs page below is Markdown at the address shown. The same page as HTML is at that address without .md. All docs in one file: ${SITE_URL}/llms-full.txt`;
 	write(
 		'llms.txt',
@@ -517,10 +591,10 @@ async function build() {
 			sections.map((s) => `## ${s.label}\n\n${s.intro}\n\n${pageList(s.items)}`).join('\n\n') +
 			'\n'
 	);
-	write('llms-full.txt', `${about}\n\n---\n\n${reading.map(pageMarkdown).join('\n---\n\n')}`);
+	write('llms-full.txt', `${about}\n\n---\n\n${reading.map((p) => pageMarkdown(p, DEFAULT_LOCALE, linkTo)).join('\n---\n\n')}`);
 
-	// For search engines
-	const urls = ['/', '/docs/', ...sections.map((s) => `/docs/${s.slug}/`), ...reading.map((p) => `/docs/${p.slug}/`)];
+	// For search engines: every page in every language
+	const urls = ['/', ...sites.flatMap((site) => [`${site.locale.prefix}/docs/`, ...site.sections.map((s) => `${site.locale.prefix}/docs/${s.slug}/`), ...site.reading.map((p) => `${site.locale.prefix}/docs/${p.slug}/`)])];
 	write(
 		'sitemap.xml',
 		`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
@@ -531,13 +605,21 @@ async function build() {
 
 	// Checks on what was written
 	const checked = { dist: DIST, siteUrl: SITE_URL, version, production: PRODUCTION, aiCrawlers: config.aiCrawlers };
-	problems.push(...checkOldNames(checked), ...checkConsolePort(checked), ...checkVersion(checked), ...checkWithoutScripts(checked), ...checkIndexing(checked));
+	problems.push(
+		...checkOldNames(checked),
+		...checkConsolePort(checked),
+		...checkVersion(checked),
+		...checkWithoutScripts(checked),
+		...checkIndexing(checked),
+		...checkLocales(checked)
+	);
 
 	if (problems.length) {
 		console.error(`\n${problems.length} problem${problems.length === 1 ? '' : 's'}:\n` + problems.map((p) => `  ${p}`).join('\n'));
 		return false;
 	}
-	console.log(`Built ${reading.length} pages in ${sections.length} sections for ${SITE_URL} (NeoDesk ${version}) in ${Date.now() - started} ms`);
+	const languages = sites.length > 1 ? ` in ${sites.map((s) => s.locale.label).join(' and ')}` : '';
+	console.log(`Built ${reading.length} pages in ${sections.length} sections${languages} for ${SITE_URL} (NeoDesk ${version}) in ${Date.now() - started} ms`);
 	return true;
 }
 
