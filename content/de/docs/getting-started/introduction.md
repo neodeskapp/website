@@ -105,8 +105,8 @@ braucht sie; wie das geht, steht auf den Installationsseiten.
 Docker ist der kürzeste Weg: Ein Befehl installiert alles, siehe
 [Mit dem Skript installieren](/docs/getting-started/docker#install-with-the-script).
 
-Egal welchen Weg du nimmst, die Clients müssen den Server erreichen: mindestens
-21116 über TCP und UDP sowie 21117 und 21121 über TCP. Verbinden sich deine
+Egal welchen Weg du nimmst, die Clients müssen den Server auf 21115 bis 21117
+und 21121 über TCP und auf 21116 über UDP erreichen. Verbinden sich deine
 Geräte über das Internet, braucht der Server eine Adresse, die sie von dort
 erreichen, etwa eine öffentliche IP-Adresse oder einen Domainnamen.
 

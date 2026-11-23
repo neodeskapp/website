@@ -91,8 +91,8 @@ say how.
 Docker is the shortest path: one command installs it, see
 [Install with the script](/docs/getting-started/docker#install-with-the-script).
 
-Whichever method you pick, the clients must reach the server: at least 21116 over
-TCP and UDP, and 21117 and 21121 over TCP. If your devices
+Whichever method you pick, the clients must reach the server on 21115 to 21117
+and 21121 over TCP and on 21116 over UDP. If your devices
 connect over the internet, the server needs an address they can reach from
 there, such as a public IP address or a domain name.
 
