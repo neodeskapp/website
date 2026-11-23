@@ -83,9 +83,7 @@ installiert und den Computer mit deinem Server verbindet, siehe
 
 Der Code liegt unter
 [github.com/neodeskapp/neodesk](https://github.com/neodeskapp/neodesk).
-NeoDesk ist als Fork von [BetterDesk](https://github.com/UNITRONIX/BetterDesk)
-von UNITRONIX entstanden und steht unter der
-[AGPL-3.0](/docs/project/license).
+NeoDesk steht unter der [AGPL-3.0](/docs/project/license).
 
 ## Was du brauchst {#what-you-need}
 

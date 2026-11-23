@@ -6,7 +6,7 @@ order: 1
 
 NeoDesk is free software under the GNU Affero General Public License, version 3 (AGPL-3.0). The [LICENSE file](https://github.com/neodeskapp/neodesk/blob/main/LICENSE) in the repository holds the full text and the notes this page sums up; where the two differ, the file counts. Neither is legal advice.
 
-NeoDesk started as a fork of BetterDesk, which UNITRONIX (Krzysztof Nienartowicz) created and maintains at [UNITRONIX/BetterDesk](https://github.com/UNITRONIX/BetterDesk). UNITRONIX holds the copyright the LICENSE file names. NeoDesk is maintained by Linus Rath at [neodeskapp/neodesk](https://github.com/neodeskapp/neodesk).
+NeoDesk is a modified version of BetterDesk by UNITRONIX, released under the AGPL-3.0. UNITRONIX holds the copyright the LICENSE file names. NeoDesk is maintained by Linus Rath at [neodeskapp/neodesk](https://github.com/neodeskapp/neodesk).
 
 ## AGPL-3.0
 

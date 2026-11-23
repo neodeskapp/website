@@ -123,8 +123,7 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		notFoundDescription: 'There is no page at this address.',
 		everySection: 'Every section and page.',
 		whatItIs: 'What NeoDesk is.',
-		footer:
-			'NeoDesk started as a fork of <a href="https://github.com/UNITRONIX/BetterDesk" rel="noopener">BetterDesk</a> by UNITRONIX and works with RustDesk clients. Open source under AGPL-3.0.',
+		footer: 'NeoDesk works with RustDesk clients. Open source under AGPL-3.0.',
 		changelog: 'Changelog',
 		security: 'Security',
 		note: 'Note',
@@ -172,8 +171,7 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		notFoundDescription: 'Unter dieser Adresse gibt es keine Seite.',
 		everySection: 'Alle Abschnitte und Seiten.',
 		whatItIs: 'Was NeoDesk ist.',
-		footer:
-			'NeoDesk ist als Fork von <a href="https://github.com/UNITRONIX/BetterDesk" rel="noopener">BetterDesk</a> von UNITRONIX entstanden und funktioniert mit RustDesk-Clients. Open Source unter der AGPL-3.0.',
+		footer: 'NeoDesk funktioniert mit RustDesk-Clients. Open Source unter der AGPL-3.0.',
 		changelog: 'Changelog',
 		security: 'Sicherheit',
 		note: 'Hinweis',

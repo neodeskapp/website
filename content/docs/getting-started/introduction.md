@@ -69,9 +69,8 @@ The NeoDesk client needs none of them typed in. **Add a computer** on the
 Devices page makes an invite link that installs it and joins the computer to
 your server, see [Add a computer](/docs/console/add-a-computer).
 
-The code is at [github.com/neodeskapp/neodesk](https://github.com/neodeskapp/neodesk).
-It started as a fork of [BetterDesk](https://github.com/UNITRONIX/BetterDesk) by
-UNITRONIX and is licensed under the [AGPL-3.0](/docs/project/license).
+The code is at [github.com/neodeskapp/neodesk](https://github.com/neodeskapp/neodesk)
+and is licensed under the [AGPL-3.0](/docs/project/license).
 
 ## What you need
 
