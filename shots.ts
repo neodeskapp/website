@@ -142,7 +142,7 @@ function draw({ items, theme }: { items: Item[]; theme: string }) {
 			const svg = document.createElementNS(ns, 'svg');
 			svg.setAttribute('width', String(vw)); svg.setAttribute('height', String(vh));
 			svg.style.cssText = 'position:absolute;left:0;top:0;overflow:visible';
-			svg.innerHTML = `<defs><marker id="bd-head" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="${color}"/></marker></defs><line x1="${sx}" y1="${sy}" x2="${tx}" y2="${ty}" stroke="${color}" stroke-width="4" stroke-linecap="round" marker-end="url(#bd-head)"/>`;
+			svg.innerHTML = `<defs><marker id="nd-head" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="${color}"/></marker></defs><line x1="${sx}" y1="${sy}" x2="${tx}" y2="${ty}" stroke="${color}" stroke-width="4" stroke-linecap="round" marker-end="url(#nd-head)"/>`;
 			layer.insertBefore(svg, layer.firstChild);
 		}
 	}

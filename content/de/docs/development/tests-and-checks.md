@@ -32,7 +32,7 @@ go install golang.org/x/vuln/cmd/govulncheck@latest
 Die Datenbanktests laufen immer auf SQLite. Sie laufen zusätzlich auf PostgreSQL, wenn `NEODESK_TEST_POSTGRES_DSN` einen Server nennt; jeder Test bekommt dort ein eigenes Schema. Ohne die Variable werden diese Tests übersprungen. Ein Wegwerf-Server in Docker:
 
 ```bash
-docker run -d --name bd-test-pg -p 127.0.0.1:5432:5432 \
+docker run -d --name nd-test-pg -p 127.0.0.1:5432:5432 \
   -e POSTGRES_USER=neodesk -e POSTGRES_DB=neodesk -e POSTGRES_PASSWORD=test-only \
   postgres:16-alpine
 NEODESK_TEST_POSTGRES_DSN='postgres://neodesk:test-only@127.0.0.1:5432/neodesk?sslmode=disable' \
