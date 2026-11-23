@@ -141,12 +141,14 @@ export function checkConsolePort({ dist }: CheckInput) {
 /* ---------- the version ---------- */
 
 // Places where the site names NeoDesk's version. Each must say the build's version.
+// A pre-release part ends on a letter or digit, so the full stop after
+// "3.6.0-rc.2." is not part of the version.
 const VERSION_MENTIONS = [
-	/\bNeoDesk v?(\d+\.\d+\.\d+(?:-[\w.]+)?)/g,
-	/\bneodesk-server v?(\d+\.\d+\.\d+(?:-[\w.]+)?)/g,
+	/\bNeoDesk v?(\d+\.\d+\.\d+(?:-[\w.]*\w)?)/g,
+	/\bneodesk-server v?(\d+\.\d+\.\d+(?:-[\w.]*\w)?)/g,
 	/"softwareVersion":\s*"([^"]*)"/g,
-	/\bWritten for version (\d+\.\d+\.\d+(?:-[\w.]+)?)/g,
-	/\bGeschrieben für Version (\d+\.\d+\.\d+(?:-[\w.]+)?)/g
+	/\bWritten for version (\d+\.\d+\.\d+(?:-[\w.]*\w)?)/g,
+	/\bGeschrieben für Version (\d+\.\d+\.\d+(?:-[\w.]*\w)?)/g
 ];
 
 export function checkVersion({ dist, version }: CheckInput) {
