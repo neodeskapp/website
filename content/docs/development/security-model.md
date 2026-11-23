@@ -82,7 +82,7 @@ Rate limits, lockouts and the logs use the client's address. The API and the con
 
 ### The console session
 
-The cookie is `bd.sid`, or `neodesk.sid` when the console is set up for HTTPS. Its value is a random 24-byte ID with an HMAC-SHA256 over it, keyed with the session secret. The session itself is a row in `panel_sessions`; the cookie holds nothing else. The cookie is `HttpOnly` and `SameSite=Lax`. It is `Secure` when the console serves HTTPS, and also when a request came over HTTPS through a reverse proxy the console trusts (`TRUST_PROXY`), which reports it in `X-Forwarded-Proto`. A session ends when it was idle too long or when its absolute lifetime is over; the defaults are on [Hardening](/docs/operations/security#sign-in).
+The cookie is `nd.sid`, or `neodesk.sid` when the console is set up for HTTPS. Its value is a random 24-byte ID with an HMAC-SHA256 over it, keyed with the session secret. The session itself is a row in `panel_sessions`; the cookie holds nothing else. The cookie is `HttpOnly` and `SameSite=Lax`. It is `Secure` when the console serves HTTPS, and also when a request came over HTTPS through a reverse proxy the console trusts (`TRUST_PROXY`), which reports it in `X-Forwarded-Proto`. A session ends when it was idle too long or when its absolute lifetime is over; the defaults are on [Hardening](/docs/operations/security#sign-in).
 
 Writes to the console's API, apart from the client and device API, need a CSRF token: 64 random bytes, sent back in the `X-CSRF-Token` header and checked against a cookie that holds the token and the SHA-256 of the token followed by the session secret.
 

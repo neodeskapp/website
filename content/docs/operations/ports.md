@@ -20,6 +20,7 @@ RustDesk clients reach the server on a handful of ports, and people open the web
 | 21122 | TCP | CDAP device agents | Only when you use them |
 | 5000 | TCP (HTTP) | Browsers: the web console, and remote desktop in the browser | Only through a reverse proxy with TLS |
 | 5443 | TCP (HTTPS) | Browsers: the console when it serves HTTPS itself | Only when no reverse proxy is in front |
+| 80, 443 | TCP (HTTP, HTTPS) | Browsers and Let's Encrypt: Traefik in front of the console, on Docker with [HTTPS with Let's Encrypt](/docs/getting-started/docker#https-with-lets-encrypt) | Yes, when you use it |
 
 The server works out three of these from the others: the NAT test port is one below the ID server port, and the two WebSocket ports are two above the ID server and relay ports.
 

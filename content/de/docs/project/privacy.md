@@ -87,6 +87,8 @@ Die Seiten der Konsole tragen eine Content-Security-Policy, nach der der Browser
 
 Die Installationsskripte laden NeoDesk von GitHub herunter, und die Docker-Compose-Dateien ziehen das Image `ghcr.io/neodeskapp/neodesk`. Fehlt Docker, lädt `neodesk-docker.sh` das Installationsskript von Docker von get.docker.com herunter. Ein Build aus dem Quellcode lädt Go von go.dev, Go-Module von proxy.golang.org und die npm-Pakete der Web-App herunter.
 
+Mit [HTTPS mit Let's Encrypt](/docs/getting-started/docker#https-with-lets-encrypt) zieht die Compose-Datei außerdem das Image `traefik` von Docker Hub. Traefik fragt Let's Encrypt (acme-v02.api.letsencrypt.org, oder mit `--letsencrypt-staging` dessen Staging-Server) nach dem Zertifikat und jeder Erneuerung und gibt dabei die E-Mail-Adresse aus `--email` als Kontakt an. Die eigene Update-Prüfung und die Nutzungsstatistik von Traefik sind ausgeschaltet.
+
 Auch die Installer fragen nach der öffentlichen IP-Adresse des Servers:
 
 | Wo | Hosts, die gefragt werden, in dieser Reihenfolge |

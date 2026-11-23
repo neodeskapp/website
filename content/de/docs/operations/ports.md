@@ -20,6 +20,7 @@ RustDesk-Clients erreichen den Server über eine Handvoll Ports, und die Web-Kon
 | 21122 | TCP | CDAP-Geräte-Agents | Nur, wenn du sie nutzt |
 | 5000 | TCP (HTTP) | Browser: die Web-Konsole und Remote Desktop im Browser | Nur über einen Reverse Proxy mit TLS |
 | 5443 | TCP (HTTPS) | Browser: die Konsole, wenn sie HTTPS selbst ausliefert | Nur, wenn kein Reverse Proxy davor steht |
+| 80, 443 | TCP (HTTP, HTTPS) | Browser und Let's Encrypt: Traefik vor der Konsole, unter Docker mit [HTTPS mit Let's Encrypt](/docs/getting-started/docker#https-with-lets-encrypt) | Ja, wenn du es nutzt |
 
 Drei davon leitet der Server aus den anderen ab: Der Port für den NAT-Test liegt eins unter dem Port des ID-Servers, und die beiden WebSocket-Ports liegen zwei über den Ports von ID-Server und Relay.
 

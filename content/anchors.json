@@ -311,7 +311,11 @@
 		"enrollment-mode",
 		"postgresql",
 		"updating",
-		"build-the-image-from-the-repository"
+		"build-the-image-from-the-repository",
+		"https-with-lets-encrypt",
+		"what-it-changes",
+		"when-not-to-use-it",
+		"turn-it-off"
 	],
 	"getting-started/docker/synology": [
 		"before-you-start",
@@ -437,7 +441,8 @@
 		"https-for-the-client-api",
 		"mesh-agents-behind-a-proxy",
 		"https-without-a-proxy",
-		"check-the-addresses-clients-get"
+		"check-the-addresses-clients-get",
+		"https-with-lets-encrypt-on-docker"
 	],
 	"operations/security": [
 		"keep-the-console-behind-tls",

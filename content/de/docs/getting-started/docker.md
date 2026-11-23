@@ -20,7 +20,8 @@ Repository baust, steht am Ende.
 - Zugriff auf `ghcr.io`, wo das Image veröffentlicht ist.
 - Freie Ports auf dem Host: 5000 und 5443 für die Konsole, 21115 bis 21119,
   21121 und 21122 über TCP und 21116 über UDP. Der Container veröffentlicht sie
-  alle.
+  alle. [HTTPS mit Let's Encrypt](#https-with-lets-encrypt) braucht zusätzlich
+  80 und 443.
 
 Das Installationsskript unten installiert Docker mit Dockers eigenem
 Installationsskript von get.docker.com, wenn es fehlt. Es bricht ab, wenn
@@ -34,7 +35,8 @@ curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/install.sh 
 
 Das speichert `neodesk-docker.sh` in `/opt/neodesk/docker` und führt es dort
 aus. Ist ufw oder firewalld aktiv, öffnet es danach 5000, 5443, 21115 bis
-21119, 21121 und 21122 über TCP und 21116 über UDP. Willst du das Skript
+21119, 21121 und 21122 über TCP und 21116 über UDP. Mit `--domain` öffnet es
+80 und 443 statt 5000 und 5443. Willst du das Skript
 lesen, bevor es läuft, lade es herunter und starte es selbst:
 
 ```bash
@@ -73,6 +75,10 @@ siehe [Aktualisieren](/docs/operations/updating).
 | `--postgres` | Installiert mit PostgreSQL statt SQLite, in einem zweiten Container. |
 | `--dir <path>` | Installiert in diesen Ordner statt nach `/opt/neodesk/docker`. |
 | `--no-install-docker` | Bricht mit einem Fehler ab, wenn Docker fehlt, statt es zu installieren. |
+| `--domain <domain>` | Liefert die Konsole unter diesem DNS-Namen über HTTPS aus, mit einem Zertifikat von Let's Encrypt. Siehe [HTTPS mit Let's Encrypt](#https-with-lets-encrypt). |
+| `--email <email-address>` | Die Adresse, an die Let's Encrypt Hinweise zum Zertifikat schickt. Nötig mit `--domain`. |
+| `--letsencrypt-staging` | Holt das Zertifikat vom Staging-Server von Let's Encrypt, dem Browser nicht vertrauen. Für einen Testlauf. |
+| `--no-traefik` | Nimmt HTTPS mit Let's Encrypt wieder heraus. |
 
 Willst du das Admin-Passwort selbst wählen, schreibe es hinter `sudo`, denn
 `sudo` verwirft Variablen, die du davor setzt. Setze für `<admin-password>`
@@ -89,8 +95,9 @@ einen Server, der nur dein lokales Netzwerk bedient:
 curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/install.sh | sudo bash -s -- --relay-mode local
 ```
 
-Dort heißen sie `--relay-servers`, `--relay-mode`, `--version` und
-`--admin-password`.
+Dort heißen sie `--relay-servers`, `--relay-mode`, `--version`,
+`--admin-password`, `--domain`, `--letsencrypt-email` und
+`--letsencrypt-staging`.
 
 ### Weitere Befehle des Skripts {#other-commands-of-the-script}
 
@@ -102,7 +109,7 @@ Dort heißen sie `--relay-servers`, `--relay-mode`, `--version` und
 | `backup` | Stoppt den Container, speichert die Daten-Volumes als `.tar.gz` in `backups` im Installationsordner und startet ihn wieder. Es behält die letzten fünf. |
 | `reset-password` | Setzt für `admin` ein neues zufälliges Passwort und zeigt es einmal an. `--user <name>` wählt ein anderes Konto. |
 | `postgres` | Zieht die Installation von SQLite auf PostgreSQL um; siehe [PostgreSQL](/docs/operations/postgresql). |
-| `uninstall` | Entfernt die Container. Die Volumes, das Image und der Ordner bleiben; `--purge` löscht nach einem Backup auch die Volumes. |
+| `uninstall` | Entfernt die Container. Die Volumes, das Image und der Ordner bleiben; `--purge` löscht nach einem Backup auch die Volumes. `--purge` lässt dich vorher `delete` eintippen; ohne Terminal, etwa in einem Skript, braucht es stattdessen `--yes`. |
 | `menu` | Dieselben Befehle als Menü. |
 
 Nach der Ein-Zeilen-Installation liegt das Skript in `/opt/neodesk/docker`. So
@@ -238,17 +245,129 @@ und das Log warnt bei einem, das kürzer als 12 Zeichen ist.
 hast, und melde dich als `admin` mit dem Passwort von oben an. Die Konsole
 spricht auf diesem Port einfaches HTTP, kein HTTPS.
 
+Mit [HTTPS mit Let's Encrypt](#https-with-lets-encrypt) öffnest du
+stattdessen `https://<domain>`.
+
 Weiter geht es mit [Die erste Anmeldung](/docs/getting-started/first-sign-in).
 
 ::: note
-Port 5000 hat kein TLS. Bevor die Konsole aus dem Internet erreichbar ist,
-setze einen Reverse Proxy mit TLS davor und setze `TRUST_PROXY=1`. Siehe
+Port 5000 hat kein TLS. Bevor die Konsole aus dem Internet erreichbar ist, gib
+ihr HTTPS: mit `--domain` wie unten oder mit einem eigenen Reverse Proxy davor
+und `TRUST_PROXY=1`. Siehe
 [Reverse Proxy und TLS](/docs/operations/reverse-proxy-tls).
 :::
 
 Die Konsole kann HTTPS auch selbst auf Port 5443 anbieten: Setze
 `HTTPS_ENABLED=true` sowie `SSL_CERT_PATH` und `SSL_KEY_PATH` auf ein
 Zertifikat und einen Schlüssel im Daten-Volume, unter `/opt/rustdesk`.
+
+## HTTPS mit Let's Encrypt {#https-with-lets-encrypt}
+
+Erreichen die Leute den Server unter einem DNS-Namen, kann das Skript der
+Konsole HTTPS geben. Es setzt einen kleinen Traefik-Container vor die Konsole.
+Traefik holt für den Namen ein Zertifikat von Let's Encrypt, erneuert es selbst
+und leitet einfaches HTTP auf HTTPS weiter.
+
+Dafür braucht es:
+
+- Einen DNS-Namen, der auf diesen Server zeigt. Für eine IP-Adresse oder einen
+  Namen ohne Punkt stellt Let's Encrypt kein Zertifikat aus.
+- Die Ports 80 und 443, frei auf dem Host und aus dem Internet erreichbar. Let's
+  Encrypt prüft den Namen über Port 80.
+- Eine E-Mail-Adresse, an die Let's Encrypt Hinweise zum Zertifikat schickt.
+
+Für eine neue Installation setzt du für `<domain>` den DNS-Namen und für
+`<email-address>` deine E-Mail-Adresse ein:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/install.sh | sudo bash -s -- --domain <domain> --letsencrypt-email <email-address>
+```
+
+Für eine Installation, die schon läuft, führst du das Skript in
+`/opt/neodesk/docker` aus, mit denselben Werten für `<domain>` und
+`<email-address>`. Es aktualisiert die Installation wie `update`, mit Backup,
+und schaltet HTTPS ein:
+
+```bash
+sudo bash neodesk-docker.sh --domain <domain> --email <email-address>
+```
+
+Das Skript bricht ab, wenn ein anderes Programm Port 80 oder 443 belegt, und
+warnt, wenn der Name noch nicht auf diesen Server zeigt. Dann wartet es bis zu
+zwei Minuten auf das Zertifikat, und die Zusammenfassung zeigt die Konsole
+unter `https://<domain>`. Ist das Zertifikat bis dahin nicht da, warnt es, und
+Traefik versucht es weiter. Das Log von Traefik, in `/opt/neodesk/docker`,
+sagt, warum:
+
+```bash
+docker compose logs traefik
+```
+
+### Was es ändert {#what-it-changes}
+
+Das Skript schreibt diese Einstellungen in `.env`:
+
+| Einstellung | Wert |
+|-------------|------|
+| `COMPOSE_PROFILES` | Bekommt `traefik`, das den Traefik-Container startet. |
+| `NEODESK_DOMAIN` | Der DNS-Name. |
+| `LETSENCRYPT_EMAIL` | Die E-Mail-Adresse. |
+| `NEODESK_CONSOLE_BIND` | `127.0.0.1`: Die eigenen Ports der Konsole, 5000 und 5443, antworten nur noch auf dem Host selbst. |
+| `TRUST_PROXY` | `1`: Die Konsole nimmt die Adresse jedes Besuchers von Traefik. |
+| `PANEL_PUBLIC_URL` | `https://<domain>`, für die Links in E-Mails, außer du hast dort selbst eine andere Adresse gesetzt. |
+| `LETSENCRYPT_CA_SERVER` | Nur mit `--letsencrypt-staging`: der Staging-Server von Let's Encrypt. |
+
+Traefik belegt die Ports 80 und 443, eine Firewall vor dem Rechner braucht
+also diese beiden statt 5000 und 5443. Traefik spricht TLS 1.2 oder neuer und
+sagt Browsern per HSTS, für diesen Namen ein Jahr lang nur HTTPS zu nutzen. Das
+Zertifikat liegt im Volume `neodesk-traefik-letsencrypt`.
+
+Traefik leitet nur die Konsole weiter. ID-Server, Relay und die Client-API auf
+21121 bleiben, wie sie sind, Clients behalten also ihre Werte und Ports.
+
+Willst du es von Hand mit der Compose-Datei einrichten, trag diese Zeilen in
+`.env` ein und setze für `<domain>` den DNS-Namen und für `<email-address>`
+deine E-Mail-Adresse ein. Mit PostgreSQL heißt die erste Zeile
+`COMPOSE_PROFILES=traefik,postgres`.
+
+```ini
+COMPOSE_PROFILES=traefik
+NEODESK_DOMAIN=<domain>
+LETSENCRYPT_EMAIL=<email-address>
+NEODESK_CONSOLE_BIND=127.0.0.1
+TRUST_PROXY=1
+PANEL_PUBLIC_URL=https://<domain>
+```
+
+Erstelle die Container dann neu:
+
+```bash
+docker compose up -d
+```
+
+### Wann du es nicht nutzt {#when-not-to-use-it}
+
+- Ein anderer Webserver oder ein eigener Reverse Proxy belegt auf diesem Host
+  die Ports 80 und 443. Setze die Konsole dann hinter diesen Proxy; siehe
+  [Reverse Proxy und TLS](/docs/operations/reverse-proxy-tls).
+- Der Server ist aus dem Internet nicht auf Port 80 erreichbar. Dann kann Let's
+  Encrypt den Namen nicht prüfen.
+
+### Wieder ausschalten {#turn-it-off}
+
+In `/opt/neodesk/docker`:
+
+```bash
+sudo bash neodesk-docker.sh --no-traefik
+```
+
+Das entfernt den Traefik-Container und nimmt `traefik` aus
+`COMPOSE_PROFILES`. Es löscht `NEODESK_DOMAIN`, `LETSENCRYPT_CA_SERVER` und
+`TRUST_PROXY` aus `.env`, dazu `NEODESK_CONSOLE_BIND` und `PANEL_PUBLIC_URL`,
+solange sie noch die Werte haben, die es gesetzt hat. Die Konsole ist dann
+wieder für jede Adresse auf Port 5000 veröffentlicht. `TRUST_PROXY` löscht es
+auch, wenn du den Wert selbst gesetzt hast: Setz ihn wieder, wenn ein eigener
+Proxy davor steht. Das Volume mit dem Zertifikat bleibt.
 
 ## Die Relay-Adresse {#the-relay-address}
 
@@ -260,6 +379,12 @@ Steht dort kein Wert, ermittelt der Container sie bei jedem Start: Er fragt
 checkip.amazonaws.com nach seiner öffentlichen IPv4-Adresse, bei einem Fehler
 dann api.ipify.org oder ifconfig.me, und nimmt die Antwort. Das Log zeigt das
 Ergebnis in einer Zeile, die mit `Relay IP:` beginnt.
+
+Der Server selbst fragt diese Dienste außerdem bei jedem Start einmal nach
+seiner Adresse, ob `RELAY_SERVERS` einen Wert hat oder nicht, und loggt die
+Antwort als `Detected public IP`. Steht ein Wert in `RELAY_SERVERS`, bekommen
+Clients trotzdem diesen Wert. [Datenschutz](/docs/project/privacy#the-public-ip-address)
+listet die Hosts.
 
 Schlägt die Abfrage fehl oder liefert sie eine private Adresse, zeigt das Log
 eine Warnung, und Clients außerhalb deines Netzwerks können das Relay nicht
@@ -285,6 +410,7 @@ docker compose up -d
 | `neodesk-data` | `/opt/rustdesk` | Die Datenbank `db_v2.sqlite3`, das Schlüsselpaar `id_ed25519` und `id_ed25519.pub`, der API-Schlüssel `.api_key`, `.admin_credentials` und der Schlüssel für gespeicherte Passwörter von Remote-Zielen, `.remote_target_vault_key` |
 | `neodesk-console-data` | `/app/data` | Die eigenen Dateien der Konsole, etwa hochgeladene Bilder, Schriften, Builds des Support-Agenten und die in der Konsole gespeicherten öffentlichen Client-Endpunkte |
 | `neodesk-postgres-data` | `/var/lib/postgresql/data` | Nur mit PostgreSQL |
+| `neodesk-traefik-letsencrypt` | `/letsencrypt` im Traefik-Container | Nur mit [HTTPS mit Let's Encrypt](#https-with-lets-encrypt): das Zertifikat und das Konto bei Let's Encrypt |
 
 Die Compose-Datei benennt die Volumes selbst, deshalb sind die Namen gleich,
 egal wie der Ordner heißt. `docker volume ls` listet sie.

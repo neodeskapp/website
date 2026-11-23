@@ -1,10 +1,28 @@
 ---
 title: Reverse proxy and TLS
-description: Put the web console behind nginx or Caddy with HTTPS, set TRUST_PROXY, and check the addresses clients get afterwards.
+description: Give the web console HTTPS with Let's Encrypt on Docker, with nginx or Caddy in front, or with its own certificate, and check what clients get.
 order: 3
 ---
 
-The web console listens on plain HTTP on port 5000. Before people use it over the internet, put a reverse proxy with a TLS certificate in front of it. This page has complete examples for nginx and Caddy, the settings NeoDesk needs behind a proxy, and what a proxy cannot carry.
+The web console listens on plain HTTP on port 5000. Before people use it over the internet, give it HTTPS. There are three ways:
+
+- Docker with a DNS name for the server: the install script puts Traefik in front of the console, with a certificate from Let's Encrypt. See [HTTPS with Let's Encrypt on Docker](#https-with-lets-encrypt-on-docker).
+- A reverse proxy of your own, such as nginx or Caddy. Most of this page is about this way, from [What goes through the proxy](#what-goes-through-the-proxy) on, with complete examples, the settings NeoDesk needs behind a proxy, and what a proxy cannot carry.
+- The console's own HTTPS, with a certificate you give it. See [HTTPS without a proxy](#https-without-a-proxy).
+
+## HTTPS with Let's Encrypt on Docker {#https-with-lets-encrypt-on-docker}
+
+On a Docker install, `--domain` and `--email` make the install script add a Traefik container in front of the console. Traefik gets a certificate for the name from Let's Encrypt, renews it by itself and sends plain HTTP on to HTTPS. The name has to point at the server, and ports 80 and 443 have to be free on the host and reachable from the internet.
+
+For an install that runs already, run the script in `/opt/neodesk/docker`, with the DNS name in place of `<domain>` and your email address in place of `<email-address>`:
+
+```bash
+sudo bash neodesk-docker.sh --domain <domain> --email <email-address>
+```
+
+The one-line install takes the same as `--domain` and `--letsencrypt-email`. The script turns on the compose profile `traefik`, publishes the console's own ports 5000 and 5443 on `127.0.0.1` only, and sets `TRUST_PROXY=1` and `PANEL_PUBLIC_URL=https://<domain>`. `--letsencrypt-staging` gets a test certificate from Let's Encrypt's staging server, and `--no-traefik` takes it all out again, `TRUST_PROXY` included. [HTTPS with Let's Encrypt](/docs/getting-started/docker#https-with-lets-encrypt) on the Docker page has the details.
+
+Use your own proxy instead when another web server already has ports 80 and 443 on the host, or when the server can't be reached from the internet on port 80, where Let's Encrypt checks the name.
 
 ## What goes through the proxy
 
@@ -19,7 +37,7 @@ Send every path on the console's host name to the console. It uses `/ws/rendezvo
 
 With the proxy on the same machine, let only the proxy reach port 5000:
 
-- Docker: set `NEODESK_CONSOLE_BIND=127.0.0.1` in the `.env` file next to the compose file, then recreate the container in that folder. The console's ports are then published on the loopback address only.
+- Docker: set `NEODESK_CONSOLE_BIND=127.0.0.1` in the `.env` file next to the compose file, then recreate the container in that folder. The console's ports are then published on the loopback address only. With `--domain` the install script sets this for you.
 
   ```bash
   docker compose up -d
@@ -121,7 +139,11 @@ TRUST_PROXY=Y
 TRUSTED_PROXIES=127.0.0.1/32,::1/128
 ```
 
-In Docker, put both lines in the `.env` file next to the compose file. Requests from a proxy on the host reach the container from the Docker network, so use that network's range for `TRUSTED_PROXIES`; `docker network inspect neodesk-net` shows it.
+In Docker, put both lines in the `.env` file next to the compose file. Requests from a proxy on the host reach the container from the Docker network, so use that network's range for `TRUSTED_PROXIES`. Compose puts the name of the install folder in front of the network's name: an install made with the script, in `/opt/neodesk/docker`, has the network `docker_neodesk-net`, and a compose file in a folder `neodesk` has `neodesk_neodesk-net`. `docker network ls` lists the networks. For an install made with the script, this shows the range under `Subnet`:
+
+```bash
+docker network inspect docker_neodesk-net
+```
 
 ::: warning
 `TRUST_PROXY=Y` trusts whoever connects to the console. Make sure only the proxy can reach port 5000, or anyone can claim any address.
@@ -191,5 +213,5 @@ Then check the rest:
 
 - Set `PANEL_PUBLIC_URL=https://<server-address>`, so links in mails point at the proxy. In Docker this goes into the `.env` file.
 - `curl https://<server-address>/health` answers `{"status":"ok",...}` through the proxy.
-- Sign in through the proxy. The browser's developer tools show the session cookie, `bd.sid` (or `neodesk.sid` with `HTTPS_ENABLED=true`), as Secure.
+- Sign in through the proxy. The browser's developer tools show the session cookie, `nd.sid` (or `neodesk.sid` with `HTTPS_ENABLED=true`), as Secure.
 - Clients still need the ID server and relay ports open. See [Connect a client](/docs/getting-started/connect-a-client).
