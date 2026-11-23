@@ -445,6 +445,28 @@ export function checkLocales({ dist, siteUrl }: CheckInput) {
 	return problems;
 }
 
+/**
+ * Every page of the default language exists in every other language, at the same
+ * address under that language's prefix: docs/console/devices/index.html needs
+ * de/docs/console/devices/index.html. The contact sheet of link previews is English only.
+ */
+export function checkTranslations({ dist }: CheckInput) {
+	const problems: string[] = [];
+	const files = listFiles(dist).filter((f) => f.endsWith('.html'));
+	const have = new Set(files);
+	const english = files.filter((f) => localeOfPath(urlOfFile(f)).default && f !== CONTACT_SHEET);
+	for (const locale of LOCALES.filter((l) => !l.default)) {
+		const dir = locale.prefix.slice(1);
+		for (const rel of english) {
+			if (have.has(`${dir}/${rel}`)) continue;
+			const page = rel.match(/^docs\/(.+\/.+)\/index\.html$/)?.[1];
+			const hint = page ? `: translate content/docs/${page}.md into content/${locale.code}/docs/${page}.md` : '';
+			problems.push(`${dir}/${rel}: ${rel} has no ${locale.label} version${hint}`);
+		}
+	}
+	return problems;
+}
+
 /* ---------- structured data and the sitemap ---------- */
 
 type Thing = Record<string, unknown>;

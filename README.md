@@ -126,8 +126,8 @@ link to a heading reads the same in every language:
 ```
 
 Links inside a translated page name the English address, `/docs/...`; the
-build turns them into `/de/docs/...`, or leaves them on the English page while
-there is no German one.
+build turns them into `/de/docs/...`. Every English page needs its German
+version: the build stops and names each page that has none.
 
 Every page lists its language versions with `hreflang`, plus `x-default` for
 the English one, and its language switch leads to the same page in the other
@@ -193,7 +193,8 @@ The build checks the pages as it reads them and the files it wrote to
 - Languages: `<html lang>` matches the page's address, every page links to
   itself and to `x-default` with `hreflang`, and every language version it
   names exists and names it back. A language with pages must have all its
-  strings.
+  strings. Every page of the English site has its German version at the same
+  address under `/de/` (the `/og/` contact sheet excepted).
 - Structured data: the home page has a JSON-LD SoftwareApplication with name,
   license, operating systems, version and download address; every docs page a
   TechArticle with `dateModified` and a BreadcrumbList that ends at the page.
