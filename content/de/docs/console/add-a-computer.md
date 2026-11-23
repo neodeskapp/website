@@ -69,6 +69,15 @@ Die Downloads sind die offiziellen Releases des NeoDesk-Clients. Dein Server
 holt sie von GitHub, prüft ihre Signatur und liefert sie selbst aus. Hat er
 noch kein Release, sagt die Seite, dass es gerade keinen Download gibt.
 
+Unter Linux installiert der Befehl das Paket des Clients mit der Paketverwaltung
+des Systems (apt-get, dnf, zypper oder yum) und lässt den Computer dann deinem
+Server beitreten. Der NeoDesk-Client installiert sich neben einem normalen
+RustDesk und lässt es, wo es ist: Er läuft als eigener Dienst,
+`neodesk.service`, und sein Programm ist `/usr/bin/neodesk`. Der Befehl
+installiert den Build, den dein Server anbietet, auch dann, wenn die
+Paketverwaltung das als Downgrade sieht, etwa nach einem Release Candidate, und
+installiert ihn erneut, wenn dieselbe Version schon da ist.
+
 Ist der Computer nach der Installation nicht aufgetaucht, lass die Person in
 NeoDesk **Einstellungen**, **Server**, **Server beitreten** öffnen und den Code
 eingeben.

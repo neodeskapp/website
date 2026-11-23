@@ -64,6 +64,14 @@ The downloads are the official NeoDesk client releases. Your server fetches
 them from GitHub, checks their signature, and serves them itself. When it has
 no release yet, the page says there is no download right now.
 
+On Linux the command installs the client's package with the system's package
+manager (apt-get, dnf, zypper or yum) and then joins the computer to your
+server. The NeoDesk client installs next to a stock RustDesk and leaves it in
+place: it runs as its own service, `neodesk.service`, and its program is
+`/usr/bin/neodesk`. The command installs the build your server offers even
+when the package manager counts it as a downgrade, for example after a release
+candidate, and installs it again when the same version is there already.
+
 If the computer has not shown up after the install, have the person open
 **Settings**, **Server**, **Join a server** in NeoDesk and type the code.
 
