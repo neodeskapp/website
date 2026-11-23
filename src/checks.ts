@@ -2,6 +2,7 @@
 // the build fails when any check finds one.
 import fs from 'node:fs';
 import path from 'node:path';
+import { parse, find, findAll, byTag, isHidden, textOf } from './html.ts';
 
 /** Every file under a folder, as paths relative to it with forward slashes. */
 export function listFiles(dir: string, base = dir): string[] {
@@ -146,6 +147,46 @@ export function checkVersion({ dist, version }: CheckInput) {
 				if (m[1] !== version) problems.push(`${rel}:${lineOf(raw, m.index)}: names version ${m[1]}, the build is for ${version}: "${m[0]}"`);
 			}
 		}
+	}
+	return problems;
+}
+
+/* ---------- readable without scripts ---------- */
+
+const squash = (s: string) => s.replace(/\s+/g, ' ').trim();
+
+/**
+ * Every page has its content, navigation and code in the HTML the server sends:
+ * the main content and a navigation with links are not empty, no code block is
+ * empty, and every tab has a panel of its own with content in it.
+ */
+export function checkWithoutScripts({ dist }: CheckInput) {
+	const problems: string[] = [];
+	for (const rel of listFiles(dist).filter((f) => f.endsWith('.html'))) {
+		const doc = parse(fs.readFileSync(path.join(dist, rel), 'utf8'));
+		const main = find(doc, byTag('main'));
+		if (!main) problems.push(`${rel}: no <main>`);
+		else if (squash(textOf(main)).length < 40) problems.push(`${rel}: the main content is empty without scripts`);
+		const links = findAll(doc, byTag('nav'))
+			.filter((nav) => !isHidden(nav))
+			.flatMap((nav) => findAll(nav, (el) => el.tag === 'a' && !!el.attrs.href && !isHidden(el) && squash(textOf(el)) !== ''));
+		if (!links.length) problems.push(`${rel}: no navigation links without scripts`);
+		if (rel.startsWith('docs/') && rel !== 'docs/index.html') {
+			const side = find(doc, (el) => el.attrs.id === 'sidebar');
+			if (!side || findAll(side, byTag('a')).length < 2) problems.push(`${rel}: the docs sidebar is empty`);
+		}
+		for (const pre of findAll(main ?? doc, byTag('pre'))) {
+			if (!squash(textOf(pre))) problems.push(`${rel}:${pre.line}: an empty code block`);
+		}
+		const seen = new Map<string, number>();
+		for (const tab of findAll(doc, (el) => el.attrs.role === 'tab')) {
+			const id = tab.attrs['aria-controls'];
+			const panel = id ? find(doc, (el) => el.attrs.id === id) : null;
+			if (!panel) problems.push(`${rel}:${tab.line}: tab "${squash(textOf(tab))}" controls no panel in the page`);
+			else if (!squash(textOf(panel))) problems.push(`${rel}:${tab.line}: the panel of tab "${squash(textOf(tab))}" is empty without scripts`);
+			if (id) seen.set(id, (seen.get(id) ?? 0) + 1);
+		}
+		for (const [id, n] of seen) if (n > 1) problems.push(`${rel}: ${n} tabs share the panel #${id}, so only one tab's content is in the page`);
 	}
 	return problems;
 }

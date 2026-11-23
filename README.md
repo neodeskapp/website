@@ -81,6 +81,11 @@ The build checks the pages as it reads them and the files it wrote to
 - The version: every "NeoDesk X.Y.Z", "neodesk-server X.Y.Z" and
   `softwareVersion` must name the version the build was made for, and no
   `{{VERSION}}` may be left.
+- Without scripts: `src/html.ts` parses every built page, without a browser.
+  The main content and a navigation with links must not be empty, no code
+  block may be empty, docs pages need their sidebar, and every tab needs a
+  panel of its own with content. Scripts may hide and show what is in the
+  HTML, but must not add content.
 
 ## Writing a docs page
 

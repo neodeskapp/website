@@ -60,6 +60,7 @@ ${markdown ? `<link rel="alternate" type="text/markdown" href="${esc(markdown)}"
 <link rel="preload" href="/fonts/IBMPlexSans-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="${assets['site.css']}">
 <link rel="stylesheet" href="${assets['docs.css']}">
+<noscript><style>.copy, .search-button, .menu-button { display: none !important; } @media (max-width: 860px) { .layout { display: flex !important; flex-direction: column; } .sidebar { display: block; position: static; order: 2; border-top: 1px solid var(--rule); } .top-docs, .top-links { display: inline-block; } }</style></noscript>
 ${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, '\\u003c')}</script>` : ''}
 <script src="${assets['docs.js']}" defer></script>
 </head>

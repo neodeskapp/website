@@ -12,7 +12,7 @@ import hljs from 'highlight.js';
 import config from './site.config.ts';
 import { docsIndexPage, docPage, sectionPage, notFoundPage, esc } from './src/layout.ts';
 import type { Page, Section, Shared, Pager } from './src/types.ts';
-import { checkOldNames, checkConsolePort, checkVersion } from './src/checks.ts';
+import { checkOldNames, checkConsolePort, checkVersion, checkWithoutScripts } from './src/checks.ts';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const at = (...p: string[]) => path.join(root, ...p);
@@ -502,7 +502,7 @@ async function build() {
 
 	// Checks on what was written
 	const checked = { dist: DIST, siteUrl: SITE_URL, version };
-	problems.push(...checkOldNames(checked), ...checkConsolePort(checked), ...checkVersion(checked));
+	problems.push(...checkOldNames(checked), ...checkConsolePort(checked), ...checkVersion(checked), ...checkWithoutScripts(checked));
 
 	if (problems.length) {
 		console.error(`\n${problems.length} problem${problems.length === 1 ? '' : 's'}:\n` + problems.map((p) => `  ${p}`).join('\n'));
