@@ -42,7 +42,7 @@ The RustDesk client signs in, syncs its address book and reports itself over HTT
 
 A client needs four values: ID server, relay server, API server and key. It gets them from its own settings, from the config string or from the QR code (`rustdesk://config/...` with the same string); see [Connect a RustDesk client](/docs/getting-started/connect-a-client). The relay address the console gives always carries a port, because RustDesk 1.4.8 and 1.4.9 clients that get a bare relay host ask the API port for the relay, and the session ends with "Pair timeout".
 
-**API server** can stay empty or be `http://<server>:21121`, the client API port on every install type, or the HTTPS address of a reverse proxy in front of it; both work. A stock client that leaves it empty tries the ID server's port minus 2 (21114), which no install opens, and then sends its API calls through the ID server as `HttpProxyRequest`. The signal server answers them itself, so heartbeat, system information, sign-in and the address book still arrive. A NeoDesk client set up by hand needs the field filled in: its enrollment calls go only over HTTP.
+**API server** can stay empty or be `http://<server-address>:21121`, the client API port on every install type, or the HTTPS address of a reverse proxy in front of it; both work. A stock client that leaves it empty tries the ID server's port minus 2 (21114), which no install opens, and then sends its API calls through the ID server as `HttpProxyRequest`. The signal server answers them itself, so heartbeat, system information, sign-in and the address book still arrive. A NeoDesk client set up by hand needs the field filled in: its enrollment calls go only over HTTP.
 
 The server can also send ID servers in `ConfigUpdate`, in its answer to the NAT test, but only when `RENDEZVOUS_SERVERS` is set, and never relay addresses. Don't use it to move clients to another server: set the servers in the client.
 
@@ -116,7 +116,7 @@ Run this when the upstream watch opens an issue, or when you notice a new releas
 
 ### 1. Client settings
 
-- The config string, the QR code and the four values on the console's **Client setup** still give the new client its ID server, relay (`host:port`), API server (`http://<server>:21121`) and key.
+- The config string, the QR code and the four values on the console's **Client setup** still give the new client its ID server, relay (`host:port`), API server (`http://<server-address>:21121`) and key.
 - On phones, the setting `allow-deep-link-server-settings`, or importing the config string, still works.
 - A client with wrong settings stays offline and doesn't fall back to RustDesk's public servers.
 - Check whether the client still applies a `ConfigUpdate` from the NAT test, and note it when it doesn't.

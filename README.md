@@ -86,6 +86,9 @@ The build checks the pages as it reads them and the files it wrote to
   block may be empty, docs pages need their sidebar, and every tab needs a
   panel of its own with content. Scripts may hide and show what is in the
   HTML, but must not add content.
+- Commands (`src/commands.ts`): every block has a language, no block has a
+  shell prompt (`$ `, `PS C:\>`), a command the text asks the reader to run is
+  in a block of its own, and placeholders follow the rule under [Code](#code).
 
 ## Writing a docs page
 
@@ -160,9 +163,23 @@ The alt text says what the picture shows, in one sentence.
 ### Code
 
 Fence code with its language (`bash`, `powershell`, `yaml`, `nginx`, `ini`,
-`json`, `sql`, `text`). Every block gets a copy button, so put only what the
-reader should paste into it, without a `$` prompt. Put output in a separate
-`text` block.
+`json`, `sql`, `caddy`, `fstab`, `text`). Every block but `text` gets a copy
+button, so put only what the reader should paste into it, without a `$` prompt.
+Put output in a separate `text` block.
+
+Every command the reader runs goes into a fenced block of its own, not into a
+sentence: "Recreate the container:" and the command in a block, not "run
+`docker compose up -d`". A command may stay inline where the text names it
+rather than asks for it to be run: "`docker compose ps` shows the container as
+healthy".
+
+Write placeholders as `<lower-case-with-hyphens>`, for example
+`<server-address>`, and say right before or after the block what goes in:
+"Put your server's address in place of `<server-address>`." No `YOUR_TOKEN`,
+`PASSWORD`, `{id}`, `/path/to/`, `--flag FILE`, `change-this-password`, and no
+`example.com` hosts or example IP addresses in blocks the reader pastes. A
+block that shows exactly what NeoDesk prints, with NeoDesk's own placeholder,
+is marked `quoted` after the language (```` ```powershell quoted ````).
 
 `{{VERSION}}` anywhere in a page becomes the current NeoDesk version.
 

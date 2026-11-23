@@ -145,14 +145,14 @@ The import:
 3. matches accounts that exist in both files by name: the account keeps its row and id in the main database and takes the console's profile, two-factor settings and password hash;
 4. writes the marker `sqlite_auth_consolidation_v1`, so an older version started after a rollback also reads the main database.
 
-`auth.db` is only read, never changed or deleted. To run the import by hand without starting the server, stop the server first and use the flags below. `-migrate-sqlite-auth-dry-run` imports into a copy in a temporary folder; both print a JSON report of what they did.
+`auth.db` is only read, never changed or deleted. To run the import by hand without starting the server, stop the server first and use the flags below. `-migrate-sqlite-auth-dry-run` imports into a copy in a temporary folder; both print a JSON report of what they did. Put the folder that holds the two databases in place of `<data-dir>`, and a folder for the snapshot in place of `<backup-dir>`:
 
 ```bash
-AUTH_DB_PATH=/path/to/auth.db neodesk-server -db /path/to/db_v2.sqlite3 \
+AUTH_DB_PATH=<data-dir>/auth.db neodesk-server -db <data-dir>/db_v2.sqlite3 \
   -migrate-sqlite-auth -migrate-sqlite-auth-dry-run
 
-AUTH_DB_PATH=/path/to/auth.db neodesk-server -db /path/to/db_v2.sqlite3 \
-  -migrate-sqlite-auth -migrate-sqlite-auth-backup-dir /path/to/backups
+AUTH_DB_PATH=<data-dir>/auth.db neodesk-server -db <data-dir>/db_v2.sqlite3 \
+  -migrate-sqlite-auth -migrate-sqlite-auth-backup-dir <backup-dir>
 ```
 
 `-rollback-sqlite-auth` with the snapshot's path puts the snapshot back and keeps the failed database next to it as `db_v2.sqlite3.failed-auth-consolidation-<time>`. The snapshot has no marker, so the console imports `auth.db` again at its next start unless you move `auth.db` away or set `SQLITE_AUTH_DB_MODE=consolidated` first.
@@ -181,17 +181,17 @@ The server classifies a device from `product_sku`: `neodesk-support` is a suppor
 
 The `telemetry` object holds `telemetry_schema`, `sample_id`, `collected_at`, `metrics`, a `status` map, `snapshots` and `results`. The server stores it only when the device signed it: inside `neodesk_envelope`, or in its own `telemetry_envelope`. A plain heartbeat's `telemetry` is ignored.
 
-- A snapshot has `kind`, `sample_id`, `status`, `collected_at` and `data`. `GET /api/peers/{id}/telemetry` returns the latest of each kind: `identity`, `metrics`, `hardware`, `services`, `processes`, `events`, `activity` and `files`.
+- A snapshot has `kind`, `sample_id`, `status`, `collected_at` and `data`. `GET /api/peers/<id>/telemetry` returns the latest of each kind: `identity`, `metrics`, `hardware`, `services`, `processes`, `events`, `activity` and `files`.
 - A status is `ok`, `unsupported`, `permission_denied`, `unavailable` or `error`; anything else is stored as `error`.
 - The telemetry may be up to 512 KiB, a command's result up to 256 KiB.
 
-Commands are on an allowlist: `collect.hardware`, `collect.metrics`, `collect.services`, `collect.processes`, `collect.events`, `collect.activity`, `files.browse`, `files.read`, `service.control` and `process.terminate`. An operator queues one with `POST /api/peers/{id}/telemetry/command` (permission to connect) or asks for a hardware inventory with `POST /api/peers/{id}/telemetry/refresh` (permission to edit). For a support client the server queues only `collect.metrics`. A command lives 10 minutes. It goes out only in the sealed answer to a signed heartbeat, as `telemetry_commands` with `id`, `command`, `args` and `expires_at`, at most 10 at a time. The client returns each result in `results` with the command's `id` and a status of `queued`, `ok`, `rejected`, `unsupported`, `permission_denied` or `error`. The server accepts results only for commands it queued for that device.
+Commands are on an allowlist: `collect.hardware`, `collect.metrics`, `collect.services`, `collect.processes`, `collect.events`, `collect.activity`, `files.browse`, `files.read`, `service.control` and `process.terminate`. An operator queues one with `POST /api/peers/<id>/telemetry/command` (permission to connect) or asks for a hardware inventory with `POST /api/peers/<id>/telemetry/refresh` (permission to edit). For a support client the server queues only `collect.metrics`. A command lives 10 minutes. It goes out only in the sealed answer to a signed heartbeat, as `telemetry_commands` with `id`, `command`, `args` and `expires_at`, at most 10 at a time. The client returns each result in `results` with the command's `id` and a status of `queued`, `ok`, `rejected`, `unsupported`, `permission_denied` or `error`. The server accepts results only for commands it queued for that device.
 
 ### The envelope
 
 The envelope protects telemetry and commands also where the API runs on plain HTTP. Use HTTPS in production anyway.
 
-1. The client fetches `GET /api/telemetry/key`. It answers `version`, `key_id`, `public_key` (the server's X25519 key) and `signature`, made with the server's Ed25519 key over `1|<key_id>|<public_key>`. The client checks it against the key in its own settings, the same key it uses for the ID server.
+1. The client fetches `GET /api/telemetry/key`. It answers `version`, `key_id`, `public_key` (the server's X25519 key) and `signature`, made with the server's Ed25519 key over `1|<key-id>|<public-key>`. The client checks it against the key in its own settings, the same key it uses for the ID server.
 2. The client encrypts the JSON with NaCl box between a fresh X25519 key of its own and the server's key, and sends `version` (1), `device_id`, `sequence`, `server_key_id`, `ephemeral_public_key`, `nonce` (24 bytes), `ciphertext`, `signature` and, to get a sealed answer, `response_public_key`. Binary values are base64.
 3. The signature is Ed25519 with the device's own key, the one it registered with the ID server, over `version|device_id|sequence|server_key_id|ephemeral_public_key|nonce|ciphertext`, with `|response_public_key` at the end when present.
 4. The server refuses a wrong signature, another device ID, another server key and a `sequence` that is not higher than the last one. It keeps the last sequence per device in `server_config` (`telemetry_seq_<id>`), so a restart doesn't reset it; a permanent delete of the device removes it.
@@ -202,7 +202,7 @@ After that first signed heartbeat, any other API request can go sealed too: the 
 
 ### Connection mode
 
-An operator with the permission `device.connection_mode` can switch a desktop client between `normal` and `incoming-only`: `POST /api/peers/{id}/connection-mode` on the API, `POST /api/devices/{id}/connection-mode` in the console, both with `mode` and a required `reason` of up to 500 characters.
+An operator with the permission `device.connection_mode` can switch a desktop client between `normal` and `incoming-only`: `POST /api/peers/<id>/connection-mode` on the API, `POST /api/devices/<id>/connection-mode` in the console, both with `mode` and a required `reason` of up to 500 characters.
 
 - Only a device whose signed identity is `neodesk-desktop` with the capability `connection-mode.remote-control` can be switched. A support client stays incoming-only.
 - The server stores the requested mode and sends the command, as `connection_mode_command` with `command_id`, `revision`, `target_id`, `target_uuid`, `mode`, `issued_at`, `expires_at` and `reason`, only inside the sealed answer to a signed heartbeat. Never in a plain answer and never in `strategy` or `config_options`. The command lives 10 minutes.

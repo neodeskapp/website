@@ -106,7 +106,7 @@ The answer:
 
 The server refuses the registration when the ID is banned, or when another account or API key registered the ID before (a device token is bound to its device and is exempt). A second connection with the same ID replaces the first one, which the server closes with code 4001.
 
-The answer is `{"type": "registered", "payload": {"device_id": "greenhouse-1", "server_time": "..."}}`. The device now shows in the device list: the manifest's name as its host name, its type, tags and linked device, and as its user the account, `apikey:<key name>` or `device:<id>`. When the device disconnects, the server marks it offline and drops the stored manifest.
+The answer is `{"type": "registered", "payload": {"device_id": "greenhouse-1", "server_time": "..."}}`. The device now shows in the device list: the manifest's name as its host name, its type, tags and linked device, and as its user the account, `apikey:<key-name>` or `device:<id>`. When the device disconnects, the server marks it offline and drops the stored manifest.
 
 ### The manifest
 
@@ -149,7 +149,7 @@ The roles rank viewer, operator, admin. Server admins and global admins rank bet
 An alert in the manifest fires while its `condition` holds and clears when it no longer does. The server checks every alert each time a value changes.
 
 - `severity` is `critical`, `warning` or `info`.
-- `condition` is `<widget id> <operator> <value>`, with `==`, `!=`, `>`, `<`, `>=` or `<=`. The widget ID there has to start with a letter or `_` and hold only letters, digits, `_` and `.`. When both sides are numbers they are compared as numbers (`true` and `false` count as 1 and 0). Otherwise only `==` and `!=` work, comparing the text without regard to case; quotes around the value are optional. A condition the server can't read, or a widget without a value yet, doesn't fire.
+- `condition` is `<widget-id> <operator> <value>`, with `==`, `!=`, `>`, `<`, `>=` or `<=`. The widget ID there has to start with a letter or `_` and hold only letters, digits, `_` and `.`. When both sides are numbers they are compared as numbers (`true` and `false` count as 1 and 0). Otherwise only `==` and `!=` work, comparing the text without regard to case; quotes around the value are optional. A condition the server can't read, or a widget without a value yet, doesn't fire.
 - `message` may hold `{widget id}`, which the server replaces with the current value.
 
 Firing alerts show under **Active alerts** on the device's page and in `GET /api/cdap/alerts`, and each change is an event on the API's event stream. They clear when the device disconnects.
@@ -196,7 +196,7 @@ An error from the server is `{"type": "error", "payload": {"code": 3003, "messag
 | `revoke` | `reason` | The device was revoked; the server then closes with code 4003 |
 | `error` | `code`, `message` | See above |
 
-The console sends `set` with the new value for toggles, sliders and lists, and `trigger` without a value for buttons; the API also takes `execute`, `reset` and `query`. `POST /api/peers/{id}/exec` reaches a CDAP device as a command for the widget `shell` with the action `run` and the value `{"command": "..."}`.
+The console sends `set` with the new value for toggles, sliders and lists, and `trigger` without a value for buttons; the API also takes `execute`, `reset` and `query`. `POST /api/peers/<id>/exec` reaches a CDAP device as a command for the widget `shell` with the action `run` and the value `{"command": "..."}`.
 
 Answer every command with a `command_response` that carries its `command_id`, and a `status` such as `ok` or `error`:
 

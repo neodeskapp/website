@@ -66,13 +66,19 @@ sudo install -m 600 /dev/null /root/.neodesk-smb
 sudoedit /root/.neodesk-smb
 ```
 
-The file holds two lines, `username=...` and `password=...`. Then add this line to `/etc/fstab`, so the share is mounted at every boot and the service account `neodesk` may write to it:
+The file holds two lines, `username=...` and `password=...`. Then add this line to `/etc/fstab`, so the share is mounted at every boot and the service account `neodesk` may write to it. Put the NAS's host name or address in place of `<nas-address>`:
 
-```text
-//nas.example.com/backups /mnt/neodesk-backups cifs credentials=/root/.neodesk-smb,uid=neodesk,gid=neodesk,file_mode=0600,dir_mode=0700,_netdev 0 0
+```fstab
+//<nas-address>/backups /mnt/neodesk-backups cifs credentials=/root/.neodesk-smb,uid=neodesk,gid=neodesk,file_mode=0600,dir_mode=0700,_netdev 0 0
 ```
 
-Mount it with `sudo mount /mnt/neodesk-backups`, choose **Custom local or mounted network path**, and enter `/mnt/neodesk-backups` as the **Destination path**.
+Mount it:
+
+```bash
+sudo mount /mnt/neodesk-backups
+```
+
+In the console, choose **Custom local or mounted network path**, and enter `/mnt/neodesk-backups` as the **Destination path**.
 
 In Docker the path is inside the container. Mount the share on the host the same way, with `uid=10001,gid=10001` (or your `PUID` and `PGID`) in place of `neodesk`, and give the container the folder in `docker-compose.override.yml` next to `docker-compose.yml`. Docker Compose reads that file together with the compose file, and the install script leaves it alone when it updates `docker-compose.yml`:
 
@@ -83,9 +89,15 @@ services:
       - /mnt/neodesk-backups:/backups
 ```
 
-Run `docker compose up -d` in that folder, and enter `/backups` as the **Destination path**.
+Recreate the container in that folder:
 
-On Windows, a UNC path such as `\\nas.example.com\backups` works as well, when the account the service runs as may write there.
+```bash
+docker compose up -d
+```
+
+Then enter `/backups` as the **Destination path**.
+
+On Windows, a UNC path such as `\\<nas-address>\backups` works as well, when the account the service runs as may write there.
 
 ## Cold backup of a Docker install
 

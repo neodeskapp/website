@@ -50,7 +50,11 @@ A stable release or a release candidate comes only from a tag you push. No merge
 2. **Release Go server** builds the release and publishes it with the release notes GitHub generates. A tag with a suffix, such as `v3.6.0-rc.1`, is published as a pre-release; a tag without one becomes the latest release.
 3. **Build & Publish Docker Images** starts on the same tag push and publishes both images, see [Docker images](#docker-images). It starts from the tag, not from the release: a release made with the workflow's own token starts no other workflow.
 
-Push the tag on its own, with `git push origin v<version>`. GitHub starts no workflow when more than three tags are pushed at once.
+Push the tag on its own, with the version in place of `<version>`. GitHub starts no workflow when more than three tags are pushed at once.
+
+```bash
+git push origin v<version>
+```
 
 ### What a release holds
 
@@ -90,9 +94,26 @@ Before you push the tag:
 
 - The commit you tag passed Go Server CI, Web UI CI, Installer CI, Secret Scan and Version Verify.
 - The [local gate](/docs/development/tests-and-checks#the-local-gate) passes, or at least the Go tests, the web app's tests and the version check.
-- The security suite passes: `bash scripts/run-security-suite.sh`.
-- The image built from the checkout starts and is healthy: `docker compose -f docker-compose.single.yml up -d --build`, then `curl http://localhost:21121/api/health` and `curl http://localhost:5000/health`.
-- On a disposable Linux machine: `sudo ./neodesk.sh --auto`, then `--update`, then `--uninstall` keeps the data, then a reinstall uses it. The same on Windows with `-Auto`, `-Update` and `-Uninstall`, and with `neodesk-docker.sh` for Docker.
+- The security suite passes:
+
+  ```bash
+  bash scripts/run-security-suite.sh
+  ```
+
+- The image built from the checkout starts and is healthy:
+
+  ```bash
+  docker compose -f docker-compose.single.yml up -d --build
+  curl http://localhost:21121/api/health
+  curl http://localhost:5000/health
+  ```
+
+- On a disposable Linux machine, an install with `--auto`, then `--update`, then `--uninstall` keeps the data, then a reinstall uses it:
+
+  ```bash
+  sudo ./neodesk.sh --auto
+  ```
+ The same on Windows with `-Auto`, `-Update` and `-Uninstall`, and with `neodesk-docker.sh` for Docker.
 - On a disposable install that still runs the Node.js console: `--update` (`-Update`) upgrades it, and `--rollback-go` (`-RollbackGo`) puts it back.
 - `neodesk-server check` passes against each install, see [Health checks](/docs/development/installers#health-checks).
 - The diff has no secrets, debug output or private addresses.

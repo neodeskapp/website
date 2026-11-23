@@ -13,6 +13,7 @@ import config from './site.config.ts';
 import { docsIndexPage, docPage, sectionPage, notFoundPage, esc } from './src/layout.ts';
 import type { Page, Section, Shared, Pager } from './src/types.ts';
 import { checkOldNames, checkConsolePort, checkVersion, checkWithoutScripts } from './src/checks.ts';
+import { checkCommands } from './src/commands.ts';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const at = (...p: string[]) => path.join(root, ...p);
@@ -122,7 +123,10 @@ function loadPages(version: string): Page[] {
 	const pages: Page[] = [];
 	const add = (file: string, slug: string, section: string, parent?: string) => {
 		const rel = path.relative(root, file).replace(/\\/g, '/');
-		const { data, body } = frontMatter(read(file).replaceAll('{{VERSION}}', version), rel);
+		const source = read(file).replaceAll('{{VERSION}}', version);
+		const { data, body } = frontMatter(source, rel);
+		// The file's line where the body starts, so problems name lines of the file
+		const bodyLine = source.slice(0, source.length - body.trimStart().length).split('\n').length;
 		if (!data.title) problems.push(`${rel}: no title`);
 		if (!data.description) problems.push(`${rel}: no description`);
 		if (/^# /m.test(body.replace(/```[\s\S]*?```/g, ''))) problems.push(`${rel}: the body has a "# " heading; the title is the h1`);
@@ -137,6 +141,7 @@ function loadPages(version: string): Page[] {
 			order: Number(data.order ?? 99),
 			body: body.trim() + '\n',
 			updated: updatedOf(file),
+			bodyLine,
 			headings: [],
 			links: [],
 			html: ''
@@ -170,6 +175,8 @@ function inSidebarOrder(items: Page[]): Page[] {
 /* ---------- Markdown ---------- */
 
 const LANG: Record<string, string> = { sh: 'bash', shell: 'bash', ps1: 'powershell', yml: 'yaml', conf: 'nginx', env: 'ini', text: 'plaintext', txt: 'plaintext' };
+// Files the reader pastes that highlight.js has no grammar for: shown plain, with a copy button
+const PLAIN_PASTE = new Set(['caddy', 'fstab']);
 
 function makeMarkdown(page: Page, usedShots: Set<string>) {
 	const md = new MarkdownIt({ html: true, linkify: false, typographer: false });
@@ -277,10 +284,10 @@ function makeMarkdown(page: Page, usedShots: Set<string>) {
 		let html;
 		if (lang && lang !== 'plaintext' && hljs.getLanguage(lang)) html = hljs.highlight(code, { language: lang, ignoreIllegals: true }).value;
 		else {
-			if (lang && lang !== 'plaintext') problems.push(`${page.rel}: unknown code language "${info}"`);
+			if (lang && lang !== 'plaintext' && !PLAIN_PASTE.has(lang)) problems.push(`${page.rel}: unknown code language "${info}"`);
 			html = esc(code);
 		}
-		if (!info) problems.push(`${page.rel}: a code block has no language (line ${(token.map?.[0] ?? 0) + 1})`);
+		if (!info) problems.push(`${page.rel}:${(token.map?.[0] ?? 0) + page.bodyLine}: a code block has no language`);
 		const output = lang === 'plaintext';
 		return (
 			`<div class="code${output ? ' code-output' : ''}">` +
@@ -288,6 +295,11 @@ function makeMarkdown(page: Page, usedShots: Set<string>) {
 			`<pre tabindex="0"><code>${html}</code></pre></div>\n`
 		);
 	};
+
+	// Commands can be copied as they are; see src/commands.ts
+	md.core.ruler.push('commands', (state: StateCore) => {
+		for (const p of checkCommands(state.tokens)) problems.push(`${page.rel}:${p.line + page.bodyLine - 1}: ${p.message}`);
+	});
 
 	md.renderer.rules.table_open = () => '<div class="table-wrap" tabindex="0"><table>\n';
 	md.renderer.rules.table_close = () => '</table></div>\n';

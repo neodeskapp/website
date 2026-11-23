@@ -17,10 +17,10 @@ Restart the server after changing a variable. It reads its environment and the e
 
 ## Docker
 
-The compose file passes every line of the `.env` file next to it to the container (Docker Compose 2.24 or newer), so put your settings there. After an install with the script, that is `/opt/neodesk/docker/.env`:
+The compose file passes every line of the `.env` file next to it to the container (Docker Compose 2.24 or newer), so put your settings there. After an install with the script, that is `/opt/neodesk/docker/.env`. For example, with the address clients reach the server at in place of `<public-address>`:
 
 ```ini
-RELAY_SERVERS=desk.example.com
+RELAY_SERVERS=<public-address>
 TRUST_PROXY=Y
 LOGIN_RATE_LIMIT_MAX=10
 ```

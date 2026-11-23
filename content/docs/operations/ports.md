@@ -23,13 +23,13 @@ RustDesk clients reach the server on a handful of ports, and people open the web
 
 The server works out three of these from the others: the NAT test port is one below the ID server port, and the two WebSocket ports are two above the ID server and relay ports.
 
-The console on port 5000 speaks plain HTTP. Open it as `http://desk.example.com:5000`, or put it behind a reverse proxy with TLS before people use it over the internet; see [Reverse proxy and TLS](/docs/operations/reverse-proxy-tls). The Linux and Windows installers turn on HTTPS with a self-signed certificate, so on those installs the console is on 5443 and port 5000 redirects there; see [HTTPS without a proxy](/docs/operations/reverse-proxy-tls#https-without-a-proxy).
+The console on port 5000 speaks plain HTTP. Open it as `http://<server-address>:5000`, or put it behind a reverse proxy with TLS before people use it over the internet; see [Reverse proxy and TLS](/docs/operations/reverse-proxy-tls). The Linux and Windows installers turn on HTTPS with a self-signed certificate, so on those installs the console is on 5443 and port 5000 redirects there; see [HTTPS without a proxy](/docs/operations/reverse-proxy-tls#https-without-a-proxy).
 
 ### The API port on Linux and Windows
 
-Clients use 21121 on every install type. In Docker the server's API itself listens there. On a Linux or Windows install the server's API listens on 21114, and the console answers the client API on 21121 and passes it on to 21114. The installers open 21121, and the console gives clients `http://desk.example.com:21121` as their API server. **What clients get now** under **Settings**, **General** shows the address in use.
+Clients use 21121 on every install type. In Docker the server's API itself listens there. On a Linux or Windows install the server's API listens on 21114, and the console answers the client API on 21121 and passes it on to 21114. The installers open 21121, and the console gives clients `http://<server-address>:21121` as their API server. **What clients get now** under **Settings**, **General** shows the address in use.
 
-In a stock RustDesk client, **API server** can stay empty or be `http://desk.example.com:21121`; both work. Left empty, the client sends its API calls through the ID server on 21116.
+In a stock RustDesk client, **API server** can stay empty or be `http://<server-address>:21121`; both work. Left empty, the client sends its API calls through the ID server on 21116.
 
 The installers' self-signed certificate is not used on 21121: they set `RUSTDESK_API_TLS=false` in the env file, which keeps the port on plain HTTP, because RustDesk clients don't accept a self-signed certificate. With a certificate clients trust in `SSL_CERT_PATH` and `SSL_KEY_PATH`, set `RUSTDESK_API_TLS=auto`, and after a restart 21121 serves HTTPS and clients get an `https://` address.
 
@@ -72,7 +72,11 @@ sudo firewall-cmd --reload
 The Linux installer opens the ports itself when ufw or firewalld is active, and adds iptables rules when neither is: 21115 to 21117 over TCP, 21116 over UDP, the client API port 21121, 21122 while CDAP is on, and the console's port 5000 and, with HTTPS on, 5443. With `TRUST_PROXY` on it leaves the console's ports closed. It takes the ID server and relay ports from the env file, and at the end it prints the list for a firewall outside the machine, such as your cloud provider's.
 
 ::: note
-Docker publishes container ports through its own firewall rules, and ufw does not filter them. To keep the console off the network, publish it on the loopback address only: set `NEODESK_CONSOLE_BIND=127.0.0.1` in the `.env` file next to the compose file and run `docker compose up -d` in that folder.
+Docker publishes container ports through its own firewall rules, and ufw does not filter them. To keep the console off the network, publish it on the loopback address only: set `NEODESK_CONSOLE_BIND=127.0.0.1` in the `.env` file next to the compose file and recreate the container in that folder:
+
+```bash
+docker compose up -d
+```
 :::
 
 ## Firewall on Windows
@@ -88,13 +92,13 @@ The Windows installer creates inbound rules for the same ports as the Linux inst
 
 ## Check the ports from outside
 
-From a machine outside your network, check that the TCP ports accept connections and that the client API answers:
+From a machine outside your network, check that the TCP ports accept connections and that the client API answers. Put your server's address in place of `<server-address>`:
 
 ```bash
-nc -vz desk.example.com 21115
-nc -vz desk.example.com 21116
-nc -vz desk.example.com 21117
-curl http://desk.example.com:21121/api/health
+nc -vz <server-address> 21115
+nc -vz <server-address> 21116
+nc -vz <server-address> 21117
+curl http://<server-address>:21121/api/health
 ```
 
 The API answers `{"status":"ok","version":"..."}`. UDP has no handshake, so `nc` can't show whether UDP 21116 is open; check the firewall rule for it instead.
@@ -103,7 +107,12 @@ The API answers `{"status":"ok","version":"..."}`. UDP has no handshake, so `nc`
 
 The console's port:
 
-- Docker: set `NEODESK_CONSOLE_PORT=8080` in the `.env` file next to the compose file, and `NEODESK_CONSOLE_HTTPS_PORT` for 5443, then run `docker compose up -d` in that folder. Inside the container the console stays on 5000 and 5443.
+- Docker: set `NEODESK_CONSOLE_PORT=8080` in the `.env` file next to the compose file, and `NEODESK_CONSOLE_HTTPS_PORT` for 5443, then recreate the container in that folder. Inside the container the console stays on 5000 and 5443.
+
+  ```bash
+  docker compose up -d
+  ```
+
 - Linux and Windows: set `CONSOLE_PORT` (and `HTTPS_PORT`) in the env file and restart the service.
 
 The RustDesk ports can move too, but then every client needs the port in its server addresses, so keep the defaults unless something else holds them.

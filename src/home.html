@@ -343,7 +343,7 @@ footer {
           <button type="button" role="tab" id="tab-linux" aria-controls="install-linux" aria-selected="false" tabindex="-1" data-os="linux">Linux</button>
           <button type="button" role="tab" id="tab-windows" aria-controls="install-windows" aria-selected="false" tabindex="-1" data-os="windows">Windows</button>
         </div>
-        <p class="body install-note" data-os="docker"><b class="os-label">Docker: </b>One container runs the server and the web console, built from the repository. The last command prints the admin username and password. Sign in with them at http://your-server:5000, which is plain HTTP, not HTTPS.</p>
+        <p class="body install-note" data-os="docker"><b class="os-label">Docker: </b>One container runs the server and the web console, built from the repository. The last command prints the admin username and password. Sign in with them at http://&lt;server-address&gt;:5000, which is plain HTTP, not HTTPS.</p>
         <p class="body install-note" data-os="linux"><b class="os-label">Linux: </b>The script builds the server from the repository and installs it as a service. Choose 1 in the menu for a new install, or add --auto to skip the menu. The installer shows the admin username and password.</p>
         <p class="body install-note" data-os="windows"><b class="os-label">Windows: </b>Run it in PowerShell as Administrator. The script builds the server from the repository. Add -Auto to install with the default settings.</p>
         <p class="small">RustDesk clients connect on <span class="mono lime">21116</span> (TCP and UDP) and <span class="mono lime">21117</span>. The <a class="teal" href="/docs/operations/ports/">ports page</a> in the docs lists every port.</p>

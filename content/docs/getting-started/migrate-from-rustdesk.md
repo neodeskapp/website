@@ -29,7 +29,13 @@ server on Linux, on Windows or in Docker.
    files are in the folder or volume it mounts; `docker inspect <container>`
    lists its mounts.
 2. Stop the old server and keep it from starting again: disable its services,
-   or run `docker compose down` in the folder of its containers. NeoDesk
+   or, when it runs in Docker, run this in the folder of its containers:
+
+   ```bash
+   docker compose down
+   ```
+
+   NeoDesk
    needs the same ports, and the Linux and Docker installers stop with an
    error while another program holds them. The Linux script stops and removes
    services named `rustdesksignal` and `rustdeskrelay` itself, so copy their
@@ -127,7 +133,7 @@ There are two ways to let them in:
 See [Changing the mode](/docs/console/enrollment#changing-the-mode).
 
 The clients' **API server** can stay empty, as a RustDesk server setup usually
-leaves it, or be `http://<server>:21121`; both work. See
+leaves it, or be `http://<server-address>:21121`; both work. See
 [Connect a client](/docs/getting-started/connect-a-client#get-the-four-values).
 
 ## Keep the device list on PostgreSQL
@@ -137,8 +143,19 @@ RustDesk's database into NeoDesk's. A copied device counts as known: it
 registers again without approval in every mode, and shows under **Devices**
 before it connects.
 
-1. Run `sudo ./neodesk.sh`, or `.\neodesk.ps1` on Windows, and choose
-   **Database migration**, then **Rust -> Go**.
+1. Start the installer. On Linux:
+
+   ```bash
+   sudo ./neodesk.sh
+   ```
+
+   On Windows:
+
+   ```powershell
+   .\neodesk.ps1
+   ```
+
+   Choose **Database migration**, then **Rust -> Go**.
 2. As the source, give RustDesk's database, for example
    `/opt/rustdesk-old/db_v2.sqlite3`, or the `db_v2.sqlite3.rustdesk-<date>-<time>`
    the server renamed it to.

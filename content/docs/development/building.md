@@ -34,7 +34,7 @@ On Windows, run the same commands in PowerShell, set `$env:CGO_ENABLED = "0"` be
 What the steps do:
 
 - `npm run build` writes the web app to `web-ui/build`. It reads the protocol files in `neodesk-server/protos` to generate the remote viewer's message code, so build from a complete checkout. It also writes the license of every bundled npm package into the build and fails on a license the console may not ship.
-- `go run ./cmd/embed-webui` copies `web-ui/build` into `console/webui/dist`, where the binary embeds it from, and records the time of every file so the binary answers with the same `Last-Modified` and `ETag` as the files on disk. `-from DIR` takes a build from another folder.
+- `go run ./cmd/embed-webui` copies `web-ui/build` into `console/webui/dist`, where the binary embeds it from, and records the time of every file so the binary answers with the same `Last-Modified` and `ETag` as the files on disk. `-from <dir>` takes a build from another folder.
 - Without the embed step the binary has no web console in it. It then serves the build that `WEB_UI_DIR` names.
 
 ## Build for another platform
@@ -102,8 +102,23 @@ To run the image with Compose, see [Build the image from the repository](/docs/g
 
 ## Install your build
 
-The installers take a build instead of a release:
+The installers take a build instead of a release. Run them from the checkout.
 
-- Linux: `sudo ./neodesk.sh --from-source` builds this checkout, `--binary FILE` installs a binary you built. See [Build from the repository](/docs/getting-started/linux#build-from-the-repository).
-- Windows: `.\neodesk.ps1 -FromSource` or `-Binary PATH`. See [Build from the repository](/docs/getting-started/windows#build-from-the-repository).
-- Docker: `sudo bash neodesk-docker.sh --build`, run from the checkout, builds the image and installs it like the published one.
+- Linux: `--from-source` builds this checkout, and `--binary <file>` installs a binary you built. See [Build from the repository](/docs/getting-started/linux#build-from-the-repository).
+
+  ```bash
+  sudo ./neodesk.sh --from-source
+  ```
+
+- Windows: `-FromSource`, or `-Binary <path>` for a binary you built. See [Build from the repository](/docs/getting-started/windows#build-from-the-repository).
+
+  ```powershell
+  .\neodesk.ps1 -FromSource
+  ```
+
+- Docker: `--build` builds the image and installs it like the published one.
+
+  ```bash
+  sudo bash neodesk-docker.sh --build
+  ```
+

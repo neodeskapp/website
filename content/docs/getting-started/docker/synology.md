@@ -12,8 +12,11 @@ names the files and settings NeoDesk needs, not every click. Read
 ## Before you start
 
 - Docker Compose 2.24 or newer: the compose file reads its settings from `.env`
-  in a way older versions refuse. Check it over SSH with
-  `sudo docker compose version`.
+  in a way older versions refuse. Check it over SSH:
+
+  ```bash
+  sudo docker compose version
+  ```
 - A free port for the console: DSM's own web interface listens on port 5000 by
   default, the same port the NeoDesk console uses. Give the console another
   host port with `NEODESK_CONSOLE_PORT` in `.env`.
@@ -28,18 +31,21 @@ names the files and settings NeoDesk needs, not every click. Read
 
    ```ini
    NEODESK_CONSOLE_PORT=5080
-   RELAY_SERVERS=192.168.1.20
+   RELAY_SERVERS=<nas-address>
    ```
 
-   `RELAY_SERVERS` is the address RustDesk clients reach the NAS at: its LAN
-   address when only devices in your network connect, or your public address or
-   DNS name when devices connect over the internet. Without it, the container
-   looks up its public address at every start.
+   Put the address RustDesk clients reach the NAS at in place of `<nas-address>`:
+   its LAN address when only devices in your network connect, or your public
+   address or DNS name when devices connect over the internet. Without
+   `RELAY_SERVERS`, the container looks up its public address at every start.
 4. In Container Manager, create a project from that folder's
-   `docker-compose.yml` and start it. Over SSH the same is
-   `sudo docker compose up -d` in the folder.
+   `docker-compose.yml` and start it. Over SSH, the same in the folder is:
 
-The console is then at `http://<NAS>:5080`. Print the admin password over SSH:
+   ```bash
+   sudo docker compose up -d
+   ```
+
+The console is then at `http://<nas-address>:5080`. Print the admin password over SSH:
 
 ```bash
 sudo docker exec neodesk neodesk-show-admin-credentials

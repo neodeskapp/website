@@ -10,8 +10,18 @@ Start with the log and the health checks below. The sections after them go by sy
 
 The server and the console write one log.
 
-- Docker: `docker compose logs -f neodesk` in the folder with the compose file, `/opt/neodesk/docker` after an install with the script.
-- Linux: `journalctl -u neodesk-server -f`. The installer's **Diagnostics** menu item collects more.
+- Docker, in the folder with the compose file, `/opt/neodesk/docker` after an install with the script:
+
+  ```bash
+  docker compose logs -f neodesk
+  ```
+
+- Linux, where the installer's **Diagnostics** menu item collects more:
+
+  ```bash
+  journalctl -u neodesk-server -f
+  ```
+
 - Windows: `C:\NeoDesk\logs\server.log`.
 
 `LOG_LEVEL` in the env file decides how much the log holds; a new install sets `info`. With `warn` or `error`, the lines at info level don't show, such as the start summary, `[console] listening on ...` and most lines quoted on this page. Set `LOG_LEVEL=info` in `/opt/NeoDeskConsole/.env` or `C:\NeoDeskConsole\.env` and restart the service to see them.
@@ -38,7 +48,11 @@ The binary can check the health addresses and ports in one go and prints a PASS 
 docker compose exec neodesk neodesk-server check --port 21116 --port 21117
 ```
 
-On a Linux install, name the API's port: `sudo /opt/neodesk/neodesk-server check --api http://127.0.0.1:21114/api/health --port 21116 --port 21117`.
+On a Linux install, name the API's port:
+
+```bash
+sudo /opt/neodesk/neodesk-server check --api http://127.0.0.1:21114/api/health --port 21116 --port 21117
+```
 
 `/api/health/detail` and `/metrics` give more, but only to the addresses in `METRICS_IP_ALLOWLIST` or with an API key.
 
@@ -88,7 +102,7 @@ Behind a reverse proxy without `TRUST_PROXY`, all people share the proxy's addre
 - In the `managed` and `locked` enrollment modes, a new device cannot register until someone approves it under **Enrollment requests**. A new install starts in `managed`. The log shows `Rejected new peer <id> from <address> (enrollment policy)`. See [Enrollment](/docs/console/enrollment).
 - `Rate limited RegisterPk for new peer` in the log means more than `SIGNAL_RATE_LIMIT_PER_IP` new devices (20 a minute) registered from one address. Raise it when many devices share a public address.
 - If the server lost its key file, it made a new key, and clients with the old one cannot connect. Restore the old key file or give clients the new key; see [why the key file matters](/docs/operations/backup#why-the-key-file-matters).
-- A RustDesk client shows online in the console, but without host name, user or OS, or signing in from it fails: its **API server** names the wrong address or port. Leave it empty or set it to `http://<server>:21121` in the client's network settings. See [the API port](/docs/operations/ports#the-api-port-on-linux-and-windows).
+- A RustDesk client shows online in the console, but without host name, user or OS, or signing in from it fails: its **API server** names the wrong address or port. Leave it empty or set it to `http://<server-address>:21121` in the client's network settings. See [the API port](/docs/operations/ports#the-api-port-on-linux-and-windows).
 - The first time a client registers after the server started, the log shows `[signal] New peer registered: <id> from <address>`.
 - `Rejected outbound from <address> (... reason=...)` names why the server refused to start a session for the computer that asked. `initiator_pending_enrollment`: it waits under **Enrollment requests**. `initiator_not_registered`: no device registered with this server from that address. `initiator_banned`: the device is banned. `initiator_ambiguous_same_nat`: several devices share the public address of the computer that asked, as in an office behind one router, and the server can't tell which one it is. The client then shows "ID does not exist". Setting `ALLOW_SHARED_NAT_INITIATOR=Y` lets a computer at such an address start sessions anyway, without the server knowing which device asked; see [Configuration](/docs/operations/configuration).
 - After a move from a RustDesk server, see [Move from a RustDesk server](/docs/getting-started/migrate-from-rustdesk).
@@ -98,7 +112,12 @@ Behind a reverse proxy without `TRUST_PROXY`, all people share the proxy's addre
 At every start the server logs its public key as `Server public key: <key>`. The **Key** in every client must be the same.
 
 - `Failed to initialize keypair: keys: public key file does not match private key`, and the server does not start: `id_ed25519.pub` does not belong to `id_ed25519`, for example because only one of the two was replaced. Put back the pair that belongs together.
-- `Failed to initialize keypair: keys: failed to read private key ...`: the account the server runs as cannot read `id_ed25519`. On Linux, run `sudo neodesk` and choose **Repair installation**, then **Repair permissions**.
+- `Failed to initialize keypair: keys: failed to read private key ...`: the account the server runs as cannot read `id_ed25519`. On Linux, start the installer's menu and choose **Repair installation**, then **Repair permissions**:
+
+  ```bash
+  sudo neodesk
+  ```
+
 - `Failed to initialize keypair: keys: invalid base64` or `invalid private key size`: `id_ed25519` is not a key file the server can read. Key files from `ssh-keygen` are of this kind. The server reads the files it makes itself and those of a RustDesk server.
 
 To make a new pair, stop the server, move both files away and start it again: with no `id_ed25519` it makes a new pair. Every client then needs the new key.
@@ -113,7 +132,12 @@ When two devices cannot connect directly, the server tells both to meet at its r
 
 So when **Public relay server** holds a wrong address, correct it there; `RELAY_SERVERS` doesn't count while it is set.
 
-- In Docker without `RELAY_SERVERS` in `.env`, the container looks the public address up at every start and logs `Relay IP: ... (auto-detected)`. `Auto-detected IP ... is private` or `Could not auto-detect public IP for relay` mean the lookup failed: set `RELAY_SERVERS=desk.example.com` in the `.env` file next to the compose file and run `docker compose up -d`. See [The relay address](/docs/getting-started/docker#the-relay-address).
+- In Docker without `RELAY_SERVERS` in `.env`, the container looks the public address up at every start and logs `Relay IP: ... (auto-detected)`. `Auto-detected IP ... is private` or `Could not auto-detect public IP for relay` mean the lookup failed: set `RELAY_SERVERS=<public-address>` in the `.env` file next to the compose file, with the address clients reach the server at, and recreate the container. See [The relay address](/docs/getting-started/docker#the-relay-address).
+
+  ```bash
+  docker compose up -d
+  ```
+
 - On Linux and Windows the installer put the relay address into the service's arguments at install time, the public or the LAN address. If it is wrong or your public address changed, set `RELAY_SERVERS` in the env file, which wins over the argument, and restart the service.
 - Port 21117 has to be open for TCP.
 - `[relay] Pair timeout for UUID ...` in the log means only one device reached the relay within 30 seconds. The other one cannot reach the relay address.

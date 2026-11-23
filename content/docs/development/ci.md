@@ -60,11 +60,19 @@ go run ./cmd/repotool bump-version --verify
 
 **Secret Scan: leaks found, or a sensitive pattern.** gitleaks found something that looks like a secret, or the sensitive path check found a private address or a home folder of a build machine. Remove it; in examples use addresses such as `203.0.113.10`.
 
-**Web UI CI: install fails.** npm 10, which comes with Node.js 22, can't resolve the web app's dependency tree. Install with `npx -y npm@11.6.2 ci`.
+**Web UI CI: install fails.** npm 10, which comes with Node.js 22, can't resolve the web app's dependency tree. Install with npm 11:
+
+```bash
+npx -y npm@11.6.2 ci
+```
 
 **Web UI CI: `npm audit`.** A package has a high or critical advisory. Update it, or pin a fixed version with `overrides` in `web-ui/package.json`.
 
-**Installer CI: a script is not executable in git.** `./script.sh` would fail in a fresh clone. Fix it with `git update-index --chmod=+x <script>`.
+**Installer CI: a script is not executable in git.** `./script.sh` would fail in a fresh clone. Fix it with this, with the script's path in place of `<script>`:
+
+```bash
+git update-index --chmod=+x <script>
+```
 
 **Version Bump: the push fails.** Another push came first. The workflow rebases and tries five times; when the bump does not rebase cleanly, run the job again once the other push is through.
 

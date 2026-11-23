@@ -21,7 +21,11 @@ With the race detector the console package alone takes longer than `go test`'s d
 go test -race -count=1 ./console/updater/... ./cli/...
 ```
 
-`govulncheck ./...` checks the Go dependencies for known vulnerabilities, as CI does. Install it with `go install golang.org/x/vuln/cmd/govulncheck@latest`.
+`govulncheck ./...` checks the Go dependencies for known vulnerabilities, as CI does. Install it with:
+
+```bash
+go install golang.org/x/vuln/cmd/govulncheck@latest
+```
 
 ### PostgreSQL
 
@@ -117,7 +121,7 @@ bash scripts/local-gate.sh
 .\scripts\local-gate.ps1
 ```
 
-Both run `go run ./cmd/repotool local-gate` in `neodesk-server`. `--preflight-only` (`-PreflightOnly`) only checks the tools, and `--dry-run` (`-DryRun`) lists the stages without running them, which is not a pass.
+Both call `go run ./cmd/repotool local-gate` in `neodesk-server`. `--preflight-only` (`-PreflightOnly`) only checks the tools, and `--dry-run` (`-DryRun`) lists the stages without running them, which is not a pass.
 
 What it runs:
 
@@ -142,7 +146,13 @@ The gate passes only when every required check passed. Its Docker tests use thei
 
 ## Repository checks
 
-`neodesk-server/cmd/repotool` holds the repository's own checks. Run them in `neodesk-server` with `go run ./cmd/repotool <command>`; `help` lists them. Each exits with 0 when it passed, 1 when it found something and 2 when it was called wrongly.
+`neodesk-server/cmd/repotool` holds the repository's own checks. Run them in `neodesk-server`, with the check's name in place of `<command>`; `help` lists them:
+
+```bash
+go run ./cmd/repotool <command>
+```
+
+ Each exits with 0 when it passed, 1 when it found something and 2 when it was called wrongly.
 
 | Command | What it checks |
 |---------|----------------|
@@ -152,7 +162,7 @@ The gate passes only when every required check passed. Its Docker tests use thei
 | `check-js` | No tracked JavaScript file outside `.github/javascript-allowlist.txt`. |
 | `check-port-docs` | No script or Go file presents port 21120 as a live port; that number never shipped. The port table it once compared with the code is [Ports and firewall](/docs/operations/ports) now. |
 | `check-provenance` | `THIRD_PARTY_NOTICES.md` keeps the short clean-room policy and the SBOM requirement, and `.github/go-server-context.md` makes no unverified provenance claim. See [Clean-room provenance](/docs/development/provenance#safeguards-in-the-repository). |
-| `docker-smoke` | Starts the local image `neodesk:local` with new volumes, waits for the API and the console, signs in, runs `neodesk-server check` inside, restarts the container and checks that its API key stayed the same. `--database-type postgres --database-url URL` runs it on PostgreSQL. |
+| `docker-smoke` | Starts the local image `neodesk:local` with new volumes, waits for the API and the console, signs in, runs `neodesk-server check` inside, restarts the container and checks that its API key stayed the same. `--database-type postgres --database-url <url>` runs it on PostgreSQL. |
 | `local-gate` | The local gate above. |
 
 Three scripts complete the secret scan: gitleaks, the check for private addresses and home folders of build machines, and the check that no installer or unit file in the repository puts a secret into a systemd unit:

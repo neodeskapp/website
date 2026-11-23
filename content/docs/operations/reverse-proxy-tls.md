@@ -19,16 +19,27 @@ Send every path on the console's host name to the console. It uses `/ws/rendezvo
 
 With the proxy on the same machine, let only the proxy reach port 5000:
 
-- Docker: set `NEODESK_CONSOLE_BIND=127.0.0.1` in the `.env` file next to the compose file, then run `docker compose up -d` in that folder. The console's ports are then published on the loopback address only.
+- Docker: set `NEODESK_CONSOLE_BIND=127.0.0.1` in the `.env` file next to the compose file, then recreate the container in that folder. The console's ports are then published on the loopback address only.
+
+  ```bash
+  docker compose up -d
+  ```
+
 - Linux and Windows: set `HOST=127.0.0.1` in the env file. The installers also turn on HTTPS with a self-signed certificate, and port 5000 then only redirects to 5443, so set `HTTPS_ENABLED=false` as well. Restart the service.
 
 With the proxy on another machine, keep `HOST=0.0.0.0` and allow port 5000 only from the proxy's address in the firewall.
 
-On Linux, the installer can make these settings: run `sudo ./neodesk.sh`, choose **Configure SSL certificates**, then **External reverse proxy**. A new install offers the same at its end. It asks for the console's public host name, turns off the console's own HTTPS, and sets `HOST`, `TRUST_PROXY=Y`, `PANEL_PUBLIC_HOST`, `PANEL_PUBLIC_URL`, `PUBLIC_SERVER_ID`, `WS_ALLOWED_ORIGINS` and, for a proxy on the same machine, `TRUSTED_PROXIES`. It also takes TLS off the ID server and relay, and writes example configurations for Caddy or nginx to `/opt/neodesk/reverse-proxy/`.
+On Linux, the installer can make these settings. Start it:
+
+```bash
+sudo ./neodesk.sh
+```
+
+Then choose **Configure SSL certificates**, then **External reverse proxy**. A new install offers the same at its end. It asks for the console's public host name, turns off the console's own HTTPS, and sets `HOST`, `TRUST_PROXY=Y`, `PANEL_PUBLIC_HOST`, `PANEL_PUBLIC_URL`, `PUBLIC_SERVER_ID`, `WS_ALLOWED_ORIGINS` and, for a proxy on the same machine, `TRUSTED_PROXIES`. It also takes TLS off the ID server and relay, and writes example configurations for Caddy or nginx to `/opt/neodesk/reverse-proxy/`.
 
 ## nginx
 
-Get a certificate for desk.example.com first, for example with certbot; the paths below are where certbot keeps it. Then save this as a site, for example `/etc/nginx/conf.d/neodesk.conf`:
+Get a certificate for the console's host name first, for example with certbot; the paths below are where certbot keeps it. Then save this as a site, for example `/etc/nginx/conf.d/neodesk.conf`, with the host name in place of `<server-address>`:
 
 ```nginx
 map $http_upgrade $connection_upgrade {
@@ -39,17 +50,17 @@ map $http_upgrade $connection_upgrade {
 server {
     listen 80;
     listen [::]:80;
-    server_name desk.example.com;
+    server_name <server-address>;
     return 301 https://$host$request_uri;
 }
 
 server {
     listen 443 ssl;
     listen [::]:443 ssl;
-    server_name desk.example.com;
+    server_name <server-address>;
 
-    ssl_certificate     /etc/letsencrypt/live/desk.example.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/desk.example.com/privkey.pem;
+    ssl_certificate     /etc/letsencrypt/live/<server-address>/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/<server-address>/privkey.pem;
 
     # The console takes backups of up to 200 MB for a restore
     client_max_body_size 200m;
@@ -80,10 +91,10 @@ sudo systemctl reload nginx
 
 ## Caddy
 
-Caddy gets and renews the certificate itself, passes WebSocket upgrades and sets the forwarded headers. Add this to `/etc/caddy/Caddyfile`:
+Caddy gets and renews the certificate itself, passes WebSocket upgrades and sets the forwarded headers. Add this to `/etc/caddy/Caddyfile`, with the console's host name in place of `<server-address>`:
 
-```text
-desk.example.com {
+```caddy
+<server-address> {
 	reverse_proxy 127.0.0.1:5000
 }
 ```
@@ -124,16 +135,16 @@ The console marks its session and form cookies Secure when the request came over
 
 ## HTTPS for the client API
 
-To give clients an HTTPS API address, route a second host name through the proxy to the client API port, 21121 on every install type. The API needs its own host name because the console has its own `/api/` paths. For nginx, add this server block next to the one above:
+To give clients an HTTPS API address, route a second host name through the proxy to the client API port, 21121 on every install type. The API needs its own host name because the console has its own `/api/` paths. For nginx, add this server block next to the one above, with the API's host name in place of `<api-address>`:
 
 ```nginx
 server {
     listen 443 ssl;
     listen [::]:443 ssl;
-    server_name api.desk.example.com;
+    server_name <api-address>;
 
-    ssl_certificate     /etc/letsencrypt/live/api.desk.example.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/api.desk.example.com/privkey.pem;
+    ssl_certificate     /etc/letsencrypt/live/<api-address>/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/<api-address>/privkey.pem;
 
     location / {
         proxy_pass http://127.0.0.1:21121;
@@ -148,15 +159,15 @@ server {
 }
 ```
 
-For Caddy:
+For Caddy, with the API's host name in place of `<api-address>`:
 
-```text
-api.desk.example.com {
+```caddy
+<api-address> {
 	reverse_proxy 127.0.0.1:21121
 }
 ```
 
-Then enter `https://api.desk.example.com` as **Public API URL** under **Settings**, **General**, and set `TRUSTED_PROXIES` as described above.
+Then enter `https://<api-address>` as **Public API URL** under **Settings**, **General**, and set `TRUSTED_PROXIES` as described above.
 
 The server can also serve TLS on its API port itself, with `TLS_API=Y`, `TLS_CERT` and `TLS_KEY`. The port then takes HTTPS only, and clients set up with an `http://` address fail. `TLS_SIGNAL=Y` and `TLS_RELAY=Y` are different: they add TLS to the ID server and relay ports and still take plain connections there.
 
@@ -178,7 +189,7 @@ Open **Settings**, **General**. Under **Public client endpoints**, enter the hos
 
 Then check the rest:
 
-- Set `PANEL_PUBLIC_URL=https://desk.example.com`, so links in mails point at the proxy. In Docker this goes into the `.env` file.
-- `curl https://desk.example.com/health` answers `{"status":"ok",...}` through the proxy.
+- Set `PANEL_PUBLIC_URL=https://<server-address>`, so links in mails point at the proxy. In Docker this goes into the `.env` file.
+- `curl https://<server-address>/health` answers `{"status":"ok",...}` through the proxy.
 - Sign in through the proxy. The browser's developer tools show the session cookie, `bd.sid` (or `neodesk.sid` with `HTTPS_ENABLED=true`), as Secure.
 - Clients still need the ID server and relay ports open. See [Connect a client](/docs/getting-started/connect-a-client).

@@ -10,7 +10,12 @@ An RDP or VNC target is a computer without a RustDesk or NeoDesk client, such as
 
 The server reaches RDP and VNC computers through guacd, the daemon of Apache Guacamole. guacd is not part of the server binary or its Docker image. The server talks to it only on a loopback address, `127.0.0.1:4822` unless `GUACD_ADDRESS` says otherwise, and refuses an address that isn't loopback.
 
-- **Docker**: `docker-compose.quick.single.yml`, which `neodesk-docker.sh` installs as `docker-compose.yml`, has guacd as an optional service. Add `guacd` to `COMPOSE_PROFILES` in the `.env` file next to it, for example `COMPOSE_PROFILES=guacd`, or `COMPOSE_PROFILES=postgres,guacd` with PostgreSQL, and run `docker compose up -d` in that folder.
+- **Docker**: `docker-compose.quick.single.yml`, which `neodesk-docker.sh` installs as `docker-compose.yml`, has guacd as an optional service. Add `guacd` to `COMPOSE_PROFILES` in the `.env` file next to it, for example `COMPOSE_PROFILES=guacd`, or `COMPOSE_PROFILES=postgres,guacd` with PostgreSQL, and recreate the containers in that folder:
+
+  ```bash
+  docker compose up -d
+  ```
+
 - **Linux and Windows**: the installers set `GUACD_ADDRESS=127.0.0.1:4822` but don't install guacd. Install it yourself and have it listen on `127.0.0.1` port 4822 only. The repository's `remote-gateway` folder has an example systemd unit that does this.
 
 Passwords saved on the server are encrypted with the key in `REMOTE_TARGET_VAULT_KEY`. The Linux and Windows installers write one into the env file. The Docker image makes one at its first start and keeps it in the data volume as `/opt/rustdesk/.remote_target_vault_key`. Without the key the server can't read the saved passwords, so keep it in your [backups](/docs/operations/backup).

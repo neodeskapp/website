@@ -60,7 +60,7 @@ refuses a release without a valid one.
 |-----------|-----------------------------|
 | `-Channel dev` | The development build. The install keeps this channel for later updates. |
 | `-FromSource` | A build of the checkout the script runs in, see [Build from the repository](#build-from-the-repository). |
-| `-Binary PATH` | A `neodesk-server.exe` you have. |
+| `-Binary <path>` | A `neodesk-server.exe` you have. |
 
 ### What the script asks
 
@@ -111,17 +111,18 @@ what it does:
 
 | Parameter | What it does |
 |-----------|--------------|
-| `-RelayServers ADDRESS` | Gives clients this relay address, an IP address or `host:port`. |
+| `-RelayServers <address>` | Gives clients this relay address, an IP address or `host:port`. |
 | `-RelayMode local` | Uses the machine's LAN address for the relay. |
-| `-PgUri URI` | Uses this existing PostgreSQL database instead of SQLite. |
+| `-PgUri <uri>` | Uses this existing PostgreSQL database instead of SQLite. |
 | `-Minimal` | Installs the server with the web console turned off. |
 | `-RunAsRoot` | Runs the service as LocalSystem instead of its own account. |
-| `-Channel dev`, `-FromSource`, `-Binary PATH` | Where the server comes from, see above. |
+| `-Channel dev`, `-FromSource`, `-Binary <path>` | Where the server comes from, see above. |
 
-To start with your own admin password, set it in the same window first:
+To start with your own admin password, set it in the same window first. Put
+your password in place of `<admin-password>`:
 
 ```powershell
-$env:ADMIN_PASSWORD = 'choose-a-long-password'
+$env:ADMIN_PASSWORD = '<admin-password>'
 .\neodesk.ps1 -Auto
 ```
 
@@ -134,10 +135,10 @@ During the install the script prints the account to sign in with:
 ```text
 PANEL LOGIN CREDENTIALS
 Login:    admin
-Password: <16 random letters and digits>
+Password: <password>
 ```
 
-Copy the password now. The script shows it once and removes it from the env file
+The password is 16 random letters and digits. Copy it now. The script shows it once and removes it from the env file
 when the server has started. If you lose it, run
 `C:\NeoDesk\neodesk.ps1` and choose **Reset admin password**. It generates a
 new random password, or sets one you type, with at least 8 characters.
@@ -148,7 +149,7 @@ At the end the script prints what you need next: the **Web console** line with t
 console's address, then the ID server, relay server, API server and key for
 RustDesk clients, and the ports a firewall outside this machine has to let
 through. With the self-signed certificate of a fresh install, the console is at
-`https://<server>:5443`, and `http://<server>:5000` leads there. Your browser
+`https://<server-address>:5443`, and `http://<server-address>:5000` leads there. Your browser
 warns about the certificate because nobody it trusts signed it.
 
 Keep the console away from the internet unless a reverse proxy with TLS is in

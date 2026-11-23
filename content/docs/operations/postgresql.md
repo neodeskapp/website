@@ -17,10 +17,15 @@ Either way, the server and the console share one database. The key pair, the API
 `DATABASE_URL` names the database. The server opens PostgreSQL when it starts with `postgres://` or `postgresql://`, and treats anything else as the path of a SQLite file:
 
 ```text
-postgres://neodesk:PASSWORD@db.example.com:5432/neodesk?sslmode=require
+postgres://neodesk:<password>@<database-host>:5432/neodesk?sslmode=require
 ```
 
-- Write special characters in the password URL-encoded, or use a password of letters and digits only, for example from `openssl rand -hex 24`.
+- Write special characters in the password URL-encoded, or use a password of letters and digits only. This makes one:
+
+  ```bash
+  openssl rand -hex 24
+  ```
+
 - The parameters after `?` go to the PostgreSQL driver: `sslmode=disable` for a database on the same machine or network without TLS, `require` or `verify-full` for one elsewhere, and `pool_max_conns=20` to change the size of the connection pool.
 - The server runs every database session in UTC, whatever the URL or the database says.
 
@@ -36,12 +41,12 @@ sudo bash neodesk-docker.sh --postgres
 
 It turns on the compose file's `postgres` service, which runs PostgreSQL in a second container, and writes a random password and the connection into `.env`.
 
-By hand, put these lines into the `.env` file next to `docker-compose.yml` before the first start, with the same password in both places:
+By hand, put these lines into the `.env` file next to `docker-compose.yml` before the first start, with the same password in place of both `<password>`:
 
 ```ini
 COMPOSE_PROFILES=postgres
-POSTGRES_PASSWORD=change-this-password
-DATABASE_URL=postgres://neodesk:change-this-password@postgres:5432/neodesk?sslmode=disable
+POSTGRES_PASSWORD=<password>
+DATABASE_URL=postgres://neodesk:<password>@postgres:5432/neodesk?sslmode=disable
 ```
 
 Then start both containers:
@@ -67,16 +72,16 @@ sudo bash neodesk.sh --auto --postgresql
 
 The Linux installer installs PostgreSQL on the same machine if it is missing, creates the role and the database `neodesk` with a generated password, and writes the connection into the env file as `DATABASE_URL`. For a database on this machine it also adds rules to `pg_hba.conf` that let the role sign in from `127.0.0.1` and `::1` with a password (`scram-sha-256`), and keeps a copy of the file it changed. In an interactive run, choose **PostgreSQL (production)** when it asks for the database type, then give the host, port, database, user and password, or leave the password empty to have one generated.
 
-To use a database that exists already, here or on another machine, give its address instead. The installer then sets up no PostgreSQL and asks nothing about the database:
+To use a database that exists already, here or on another machine, give its address instead, with the role's password in place of `<password>` and the database server in place of `<database-host>`. The installer then sets up no PostgreSQL and asks nothing about the database:
 
 ```bash
-sudo bash neodesk.sh --auto --pg-uri 'postgres://neodesk:PASSWORD@db.example.com:5432/neodesk?sslmode=require'
+sudo bash neodesk.sh --auto --pg-uri 'postgres://neodesk:<password>@<database-host>:5432/neodesk?sslmode=require'
 ```
 
-The Windows installer does not install PostgreSQL or create the database: both must exist. Give it the connection:
+The Windows installer does not install PostgreSQL or create the database: both must exist. Give it the connection, with the role's password in place of `<password>`:
 
 ```powershell
-.\neodesk.ps1 -Auto -PgUri 'postgres://neodesk:PASSWORD@localhost:5432/neodesk?sslmode=disable'
+.\neodesk.ps1 -Auto -PgUri 'postgres://neodesk:<password>@localhost:5432/neodesk?sslmode=disable'
 ```
 
 Or run it with `-Auto -PostgreSQL` and set `$env:POSTGRESQL_PASS`, and `POSTGRESQL_USER`, `POSTGRESQL_HOST`, `POSTGRESQL_PORT` and `POSTGRESQL_DB` where they differ from `neodesk`, `localhost`, `5432` and `neodesk`. In an interactive run it asks for them.
@@ -99,7 +104,12 @@ The script stops NeoDesk, backs up the data volumes, starts the PostgreSQL conta
 
 In the folder with `docker-compose.yml`:
 
-1. Stop NeoDesk: `docker compose stop neodesk`.
+1. Stop NeoDesk:
+
+   ```bash
+   docker compose stop neodesk
+   ```
+
 2. Add the three PostgreSQL lines to `.env` as shown above, start only the database, and wait until `docker compose ps` shows it as healthy:
 
    ```bash
@@ -112,7 +122,11 @@ In the folder with `docker-compose.yml`:
    docker compose run --rm --no-deps -T --user 10001:10001 --entrypoint sh neodesk -c 'exec /usr/local/bin/neodesk-server migrate -mode sqlite2pg -src /opt/rustdesk/db_v2.sqlite3 -dst "$DATABASE_URL"'
    ```
 
-4. Start NeoDesk, which now opens PostgreSQL: `docker compose up -d`.
+4. Start NeoDesk, which now opens PostgreSQL:
+
+   ```bash
+   docker compose up -d
+   ```
 
 The old SQLite file stays in the `neodesk-data` volume, next to the keys, until you delete it.
 
@@ -148,6 +162,12 @@ docker compose exec -T -u postgres postgres pg_restore -U neodesk -d neodesk --c
 docker compose start neodesk
 ```
 
-On Linux, the middle line is `sudo -u postgres pg_restore -d neodesk --clean --if-exists < neodesk-db.dump`, between `systemctl stop` and `systemctl start`.
+On Linux:
+
+```bash
+sudo systemctl stop neodesk-server
+sudo -u postgres pg_restore -d neodesk --clean --if-exists < neodesk-db.dump
+sudo systemctl start neodesk-server
+```
 
 The console's **Download backup** under **Settings**, **Backup** also holds every table on PostgreSQL, as a dump the console can restore, together with the keys and files. For the database itself, rely on `pg_dump`.

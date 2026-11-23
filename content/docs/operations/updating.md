@@ -19,7 +19,11 @@ Make a backup, see [Backup and restore](/docs/operations/backup), and note the v
 
 Stable is the default. A Linux or Windows install keeps its channel as `UPDATE_GITHUB_BRANCH` in the env file: `main` for Stable, `dev` for Development. The values name the channel, not a git branch. Change it with `--channel` (`-Channel` on Windows), with **Update**, then **Switch update channel** in the installer's menu, or with **Update channel** on the console's **Updates** page.
 
-When the repository has no release at all, a new Linux or Windows install without a channel given takes the development build and stays on that channel. Switch to Stable once a release is out, for example with `sudo neodesk --update --channel stable`.
+When the repository has no release at all, a new Linux or Windows install without a channel given takes the development build and stays on that channel. Switch to Stable once a release is out, for example on Linux:
+
+```bash
+sudo neodesk --update --channel stable
+```
 
 In Docker the image tag is the channel: `latest` is the newest release (the newest pre-release while there is no stable release, as for Stable above), `dev` the development build, and a release's version number pins that release.
 
@@ -78,8 +82,14 @@ sudo neodesk --update
 Without options, the new binary is the newest release of the install's channel, checked by its SHA-256 and the release signature before it replaces the old one. These options change where it comes from:
 
 - `--channel dev` or `--channel stable` switches the channel first.
-- `--from-source` builds it from a checkout: run `git pull` there first, then `sudo ./neodesk.sh --update --from-source`. That needs Go, and Node.js unless `web-ui/build` exists.
-- `--binary FILE` installs a binary you built yourself.
+- `--from-source` builds it from a checkout. That needs Go, and Node.js unless `web-ui/build` exists. In the checkout:
+
+  ```bash
+  git pull
+  sudo ./neodesk.sh --update --from-source
+  ```
+
+- `--binary <file>` installs a binary you built yourself.
 
 ## Windows
 
@@ -89,7 +99,7 @@ In PowerShell as Administrator:
 & 'C:\NeoDesk\neodesk.ps1' -Update
 ```
 
-It works like the Linux update: a backup to `C:\NeoDesk-Backups`, the new binary with the old one kept as `.prev`, the env file merged, the service `NeoDeskServer` written again and restarted, the old binary back if the new one fails, and the copy of the script replaced with the newest one. `-Channel`, `-FromSource` and `-Binary PATH` work as on Linux.
+It works like the Linux update: a backup to `C:\NeoDesk-Backups`, the new binary with the old one kept as `.prev`, the env file merged, the service `NeoDeskServer` written again and restarted, the old binary back if the new one fails, and the copy of the script replaced with the newest one. `-Channel`, `-FromSource` and `-Binary <path>` work as on Linux.
 
 ## The Updates page in the console
 
@@ -120,7 +130,19 @@ What it cannot do:
   docker compose exec neodesk neodesk-server -version
   ```
 
-  On Linux, `sudo /opt/neodesk/neodesk-server -version`, and on Windows `C:\NeoDesk\neodesk-server.exe -version`. The output looks like this:
+  On Linux:
+
+  ```bash
+  sudo /opt/neodesk/neodesk-server -version
+  ```
+
+  On Windows:
+
+  ```powershell
+  C:\NeoDesk\neodesk-server.exe -version
+  ```
+
+  The output looks like this:
 
   ```text
   neodesk-server {{VERSION}} (built <date>, commit <commit>)
@@ -128,7 +150,12 @@ What it cannot do:
 
   A binary built with `--from-source` shows `built unknown`, and one built without its commit leaves the commit out.
 
-- The API's health check answers with it: `curl http://localhost:21121/api/health`.
+- The API's health check answers with it:
+
+  ```bash
+  curl http://localhost:21121/api/health
+  ```
+
 - With the Docker script, `sudo bash neodesk-docker.sh status` shows it.
 
 ## Roll back
@@ -146,10 +173,10 @@ Stop-Service NeoDeskServer
 Start-Service NeoDeskServer
 ```
 
-In Docker, pin the version you ran before in `.env` and recreate the container:
+In Docker, pin the version you ran before in `.env`, in place of `<previous-version>`, and recreate the container:
 
 ```ini
-NEODESK_IMAGE_TAG=<the previous version>
+NEODESK_IMAGE_TAG=<previous-version>
 ```
 
 ```bash

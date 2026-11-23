@@ -27,19 +27,19 @@ In Docker the container's own health check asks the console and the API, over HT
 - the addresses and ranges in `METRICS_IP_ALLOWLIST`, comma-separated. The server checks the address the connection comes from, which behind a reverse proxy is the proxy's,
 - a request with an API key, or a sign-in token of an account that may view metrics.
 
-It refuses everything else. For a Prometheus server at 192.0.2.10, set this in the env file (in Docker, the `.env` file next to the compose file) and restart:
+It refuses everything else. To let a Prometheus server in, set this in the env file (in Docker, the `.env` file next to the compose file), with its address in place of `<prometheus-address>`, and restart:
 
 ```ini
-METRICS_IP_ALLOWLIST=192.0.2.10
+METRICS_IP_ALLOWLIST=<prometheus-address>
 ```
 
-Then add the target to Prometheus:
+Then add the target to Prometheus, with your server's address in place of `<server-address>`:
 
 ```yaml
 scrape_configs:
   - job_name: neodesk
     static_configs:
-      - targets: ["desk.example.com:21114"]
+      - targets: ["<server-address>:21114"]
 ```
 
 In Docker the port is 21121. On Linux and Windows the installers don't open 21114 in the firewall, so allow it from the Prometheus server only.

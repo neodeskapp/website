@@ -51,8 +51,11 @@ By default the script installs the newest stable release of
 neodeskapp/neodesk for this processor. While there is no stable release, it
 takes the newest pre-release, such as a release candidate. When there is none
 either and you gave no channel, it installs the development build, and later
-updates follow the development channel until you switch with
-`sudo neodesk --update --channel stable`.
+updates follow the development channel until you switch to stable:
+
+```bash
+sudo neodesk --update --channel stable
+```
 
 Before it installs a download, the script checks its SHA-256 against the
 release's `SHA256SUMS` and the release's signed manifest against the release key.
@@ -65,7 +68,7 @@ signature itself.
 |--------|-----------------------------|
 | `--channel dev` | The development build. The install keeps this channel for later updates. |
 | `--from-source` | A build of the checkout the script runs in, see [Build from the repository](#build-from-the-repository). |
-| `--binary FILE` | A `neodesk-server` binary you have. |
+| `--binary <file>` | A `neodesk-server` binary you have. |
 
 ### What the script asks
 
@@ -119,12 +122,12 @@ what it does:
 
 | Flag | What it does |
 |------|--------------|
-| `--relay-servers ADDRESS` | Gives clients this relay address, an IP address or `host:port`. |
+| `--relay-servers <address>` | Gives clients this relay address, an IP address or `host:port`. |
 | `--relay-mode local` | Uses the server's LAN address for the relay. |
 | `--postgresql` | Installs PostgreSQL on this machine and uses it instead of SQLite. |
-| `--pg-uri URI` | Uses this existing PostgreSQL database instead of SQLite, and installs no PostgreSQL. |
+| `--pg-uri <uri>` | Uses this existing PostgreSQL database instead of SQLite, and installs no PostgreSQL. |
 | `--minimal` | Installs the server with the web console turned off. |
-| `--channel dev`, `--from-source`, `--binary FILE` | Where the server comes from, see above. |
+| `--channel dev`, `--from-source`, `--binary <file>` | Where the server comes from, see above. |
 
 The flags also work with the one-line install, after `bash -s --`:
 
@@ -134,10 +137,10 @@ curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/neodesk.sh 
 
 The script also reads environment variables, such as `ADMIN_PASSWORD` for your
 own admin password. `sudo` drops variables you set in front of it, so put them
-after `sudo`:
+after `sudo`. Put your password in place of `<admin-password>`:
 
 ```bash
-sudo ADMIN_PASSWORD='choose-a-long-password' bash neodesk.sh --auto
+sudo ADMIN_PASSWORD='<admin-password>' bash neodesk.sh --auto
 ```
 
 `sudo bash neodesk.sh --help` lists every flag and variable.
@@ -149,12 +152,17 @@ During the install the script prints the account to sign in with:
 ```text
 PANEL LOGIN CREDENTIALS
 Login:    admin
-Password: <32 random characters>
+Password: <password>
 ```
 
-Copy the password now. The script shows it once and removes it from the env file
-when the server has started. If you lose it, run `sudo neodesk --reset-password`:
-it sets the password from `ADMIN_PASSWORD`, or a random one, and shows it once.
+The password is 32 random characters. Copy it now. The script shows it once and
+removes it from the env file when the server has started. If you lose it, this
+sets the password from `ADMIN_PASSWORD`, or a random one, and shows it once:
+
+```bash
+sudo neodesk --reset-password
+```
+
 In the menu, **Reset admin password** also lets you type one, with at least 8
 characters.
 

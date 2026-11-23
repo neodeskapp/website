@@ -10,7 +10,7 @@ Unattended access means connecting to a device when nobody is there to accept th
 
 Set the password in RustDesk on the device, or set it during the rollout with the Windows install script. On **Overview**, under **Client setup**, open **More** and choose **Windows install script (Intune)**. The script ends with two lines that are commented out:
 
-```powershell
+```powershell quoted
 # Optional unattended password:
 # Start-Process -FilePath $RustDesk -ArgumentList @('--password', 'YourPermanentPassword') -Wait -NoNewWindow
 ```

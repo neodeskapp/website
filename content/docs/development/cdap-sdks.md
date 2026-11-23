@@ -8,7 +8,7 @@ The repository has two SDKs for writing a CDAP device or bridge, three bridges b
 
 ## What a device needs
 
-- **The gateway's address**: `ws://<server>:21122/cdap`, or `wss://` with TLS on; see [The gateway](/docs/console/cdap#the-gateway).
+- **The gateway's address**: `ws://<server-address>:21122/cdap`, or `wss://` with TLS on; see [The gateway](/docs/console/cdap#the-gateway).
 - **A credential**: an API key, a console account or a device token, as in [Signing in](/docs/development/cdap-protocol#signing-in). An API key's or account's role needs **Approve enrollment**, which super admins, admins and global admins have by default; see [What each role can do](/docs/people/users-and-roles#what-each-role-can-do). Keys come from the API, see [API keys](/docs/development/api#api-keys).
 - **A device ID** of 1 to 64 letters, digits, `-` and `_`. Neither SDK makes one up: without one, the Python SDK raises `ValueError` and the Node.js SDK throws.
 - **A device type** the gateway takes: `scada`, `iot`, `os_agent`, `network`, `camera`, `desktop` or `custom`.
@@ -17,11 +17,11 @@ Both SDKs have the same example, a simulated greenhouse with a temperature, a hu
 
 ## Python SDK
 
-The package `neodesk_cdap` is in [`sdks/python`](https://github.com/neodeskapp/neodesk/tree/main/sdks/python). It needs Python 3.9 or newer and `websockets` 12 or newer. Install it from a checkout of the repository and start the example:
+The package `neodesk_cdap` is in [`sdks/python`](https://github.com/neodeskapp/neodesk/tree/main/sdks/python). It needs Python 3.9 or newer and `websockets` 12 or newer. Install it from a checkout of the repository and start the example, with your server's address in place of `<server-address>` and a CDAP API key in place of `<api-key>`:
 
 ```bash
 pip install ./sdks/python
-CDAP_SERVER=ws://desk.example.com:21122/cdap CDAP_API_KEY=... python sdks/python/examples/greenhouse.py
+CDAP_SERVER=ws://<server-address>:21122/cdap CDAP_API_KEY=<api-key> python sdks/python/examples/greenhouse.py
 ```
 
 A small device with a temperature, a switch and an alert:
@@ -33,7 +33,7 @@ import os
 from neodesk_cdap import CDAPBridge, gauge, toggle
 
 bridge = CDAPBridge(
-    server="ws://desk.example.com:21122/cdap",
+    server="ws://<server-address>:21122/cdap",
     auth_method="api_key",
     api_key=os.environ["CDAP_API_KEY"],
     device_id="greenhouse-1",
@@ -78,22 +78,28 @@ The [package README](https://github.com/neodeskapp/neodesk/blob/main/sdks/python
 
 ## Node.js SDK
 
-The package `neodesk-cdap` in [`sdks/nodejs`](https://github.com/neodeskapp/neodesk/tree/main/sdks/nodejs) is written in TypeScript and needs Node.js 22 or newer (22.18 or newer for the example, which Node runs as TypeScript). Build it and start the example:
+The package `neodesk-cdap` in [`sdks/nodejs`](https://github.com/neodeskapp/neodesk/tree/main/sdks/nodejs) is written in TypeScript and needs Node.js 22 or newer (22.18 or newer for the example, which Node runs as TypeScript). Build it and start the example, with your server's address in place of `<server-address>` and a CDAP API key in place of `<api-key>`:
 
 ```bash
 cd sdks/nodejs
 npm ci
 npm run build
-CDAP_SERVER=ws://desk.example.com:21122/cdap CDAP_API_KEY=... node examples/greenhouse.mts
+CDAP_SERVER=ws://<server-address>:21122/cdap CDAP_API_KEY=<api-key> node examples/greenhouse.mts
 ```
 
-To use it in your project, run `npm install /path/to/neodesk/sdks/nodejs` there after the build. A small device:
+To use it in your project, run this there after the build, with the path of your checkout in place of `<checkout>`:
+
+```bash
+npm install <checkout>/sdks/nodejs
+```
+
+A small device:
 
 ```js
 const { CDAPBridge, gauge, toggle } = require('neodesk-cdap');
 
 const bridge = new CDAPBridge({
-  server: 'ws://desk.example.com:21122/cdap',
+  server: 'ws://<server-address>:21122/cdap',
   apiKey: process.env.CDAP_API_KEY,
   deviceId: 'greenhouse-1',
   deviceName: 'Greenhouse',

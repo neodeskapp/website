@@ -38,7 +38,7 @@ Work that both native installers need lives in the server binary as commands, so
 `neodesk.sh` and `neodesk.ps1` install one of three things:
 
 - **The release of the update channel** (the default). While the repository has no stable release, the stable channel takes the newest pre-release, or the development build when there is no pre-release either; the script says which. They download the binary for the machine, check its SHA-256 and check it against the release's signed `manifest.json` and `manifest.sig`. An installed server checks the signature with `verify-release`. On Linux without one, `openssl` checks it with the release key in the script. A first install on Windows checks only the SHA-256 over HTTPS, since Windows has no tool for the signature before the server is installed. `--skip-verify` (`-SkipVerify`) skips the checks.
-- **A binary you give:** `--binary FILE` (`-Binary PATH`).
+- **A binary you give:** `--binary <file>` (`-Binary <path>`).
 - **A build of the checkout the script runs in:** `--from-source` (`-FromSource`). It needs Go, and Node.js unless `web-ui/build` exists. The Go the installers download or accept for this build must be the toolchain `neodesk-server/go.mod` names; `scripts/check-go-toolchain-pins.sh` checks that.
 
 `neodesk-docker.sh` pulls the image tag from `.env` (`NEODESK_IMAGE_TAG`, `latest` by default), uses an image already on the machine with `--no-pull`, or builds one from the checkout with `--build`. It reads no GitHub release. When Docker is missing it installs it with Docker's script from get.docker.com; `--no-install-docker` stops with an error instead.
@@ -67,7 +67,11 @@ Rules for every change:
 
 ### Configuration commands
 
-The console and the installers change settings only through an allowlist: every key in the env template `neodesk-server/console/managedconfig/env.example`. Paths, ports and switches are checked, the env file is backed up before the write, and unknown keys are refused. `neodesk-server config check` prints the capability report as JSON and exits with 1 when a part is not ready. The allowlist is compiled into the binary; after you change `env.example`, run `go generate` in `neodesk-server/console/managedconfig`.
+The console and the installers change settings only through an allowlist: every key in the env template `neodesk-server/console/managedconfig/env.example`. Paths, ports and switches are checked, the env file is backed up before the write, and unknown keys are refused. `neodesk-server config check` prints the capability report as JSON and exits with 1 when a part is not ready. The allowlist is compiled into the binary; after you change `env.example`, run this in `neodesk-server/console/managedconfig`:
+
+```bash
+go generate
+```
 
 ```bash
 sudo ./neodesk.sh --check-permissions

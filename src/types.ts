@@ -35,6 +35,8 @@ export interface Page {
 	order: number;
 	body: string;
 	updated: string | null;
+	/** The line of the file where the body starts. */
+	bodyLine: number;
 	headings: Heading[];
 	links: string[];
 	html: string;
