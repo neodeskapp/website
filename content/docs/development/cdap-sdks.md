@@ -1,6 +1,6 @@
 ---
 title: CDAP SDKs and bridges
-description: What the Python and Node.js SDKs and the three reference bridges in the repository do, how to start one against a server, and what the console's flow builder does.
+description: What the Python and Node.js SDKs and the three reference bridges do, how to start one against a server, and what the console's flow builder does.
 order: 14
 ---
 

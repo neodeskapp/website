@@ -47,12 +47,14 @@ const config: SiteConfig = {
 		{
 			slug: 'console',
 			label: 'Using the console',
-			intro: 'The web console page by page: the overview, the device list, adding a computer with an invite, a device\'s details and how to connect to it, enrollment requests, quick support, remote desktop in the browser and the activity log.'
+			intro: 'The web console page by page: the overview, the device list, adding a computer with an invite, a device\'s details and how to connect to it, enrollment requests, quick support, remote desktop in the browser and the activity log.',
+			description: 'The web console page by page: devices, adding a computer, enrollment, quick support, remote desktop in the browser and the activity log.'
 		},
 		{
 			slug: 'people',
 			label: 'People and sign-in',
-			intro: 'Who can sign in and what they can do: users, roles and permissions, two-factor sign-in, LDAP or Active Directory, single sign-on with OIDC, and organizations.'
+			intro: 'Who can sign in and what they can do: users, roles and permissions, two-factor sign-in, LDAP or Active Directory, single sign-on with OIDC, and organizations.',
+			description: 'Who can sign in and what they can do: users, roles, permissions, two-factor sign-in, LDAP or Active Directory, OIDC and organizations.'
 		},
 		{
 			slug: 'operations',
@@ -62,7 +64,8 @@ const config: SiteConfig = {
 		{
 			slug: 'development',
 			label: 'Development',
-			intro: 'For people who work on NeoDesk or build on it: contributing, building from source, the tests and checks, how the code fits together, releases, and the APIs and protocols.'
+			intro: 'For people who work on NeoDesk or build on it: contributing, building from source, the tests and checks, how the code fits together, releases, and the APIs and protocols.',
+			description: 'For people who work on NeoDesk or build on it: contributing, building, tests, how the code fits together, releases, APIs and protocols.'
 		},
 		{
 			slug: 'project',

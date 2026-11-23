@@ -9,12 +9,13 @@ import { fileURLToPath } from 'node:url';
 import MarkdownIt from 'markdown-it';
 import type { StateBlock, StateCore, Token, RendererRule } from 'markdown-it';
 import hljs from 'highlight.js';
+import sharp from 'sharp';
 import config from './site.config.ts';
 import { docsIndexPage, docPage, sectionPage, notFoundPage, hreflangLinks, languageSwitch, esc } from './src/layout.ts';
 import type { Page, Section, Shared, Pager } from './src/types.ts';
 import { LOCALES, DEFAULT_LOCALE, missingStrings, stringsOf, fill } from './src/i18n.ts';
 import type { Locale, Strings } from './src/i18n.ts';
-import { checkOldNames, checkConsolePort, checkVersion, checkWithoutScripts, checkIndexing, checkLocales, checkLlms, checkStructuredData, checkMarkdownLinks } from './src/checks.ts';
+import { checkOldNames, checkConsolePort, checkVersion, checkWithoutScripts, checkIndexing, checkLocales, checkLlms, checkStructuredData, checkMarkdownLinks, checkSeo } from './src/checks.ts';
 import { checkCommands } from './src/commands.ts';
 import { AGENT_TOOLS } from './src/agents.ts';
 import { INSTALLS, blocksOf, clientPorts, PORTS_PAGE } from './src/install.ts';
@@ -24,6 +25,8 @@ const at = (...p: string[]) => path.join(root, ...p);
 // DOCS_DIR builds another content folder, for trying the generator on sample pages
 const DOCS = process.env.DOCS_DIR ? path.resolve(process.env.DOCS_DIR) : at('content/docs');
 const SHOTS = at('content/screenshots');
+// Converted images and rendered link previews, kept between builds; safe to delete
+const CACHE = at('.cache');
 // DIST_DIR writes the build somewhere else than dist/, for a check that runs next to another build
 const DIST = process.env.DIST_DIR ? path.resolve(process.env.DIST_DIR) : at('dist');
 const SITE_URL = (process.env.SITE_URL || config.url).replace(/\/$/, '');
@@ -48,6 +51,25 @@ function copyDir(from: string, to: string) {
 	}
 }
 const hashOf = (data: string | Buffer) => crypto.createHash('sha256').update(data).digest('hex').slice(0, 10);
+/**
+ * A lossless WebP copy of a PNG: the same pixels in about a third of the bytes. Cached by
+ * the PNG's content, so a build converts only new or changed images.
+ */
+async function webpOf(file: string): Promise<Buffer> {
+	const data = fs.readFileSync(file);
+	const cached = path.join(CACHE, 'webp', `${hashOf(data)}.webp`);
+	if (fs.existsSync(cached)) return fs.readFileSync(cached);
+	const out = await sharp(data).webp({ lossless: true, effort: 4 }).toBuffer();
+	fs.mkdirSync(path.dirname(cached), { recursive: true });
+	fs.writeFileSync(cached, out);
+	return out;
+}
+
+/** The home page's screenshots as <picture> with a WebP source in front of the PNG. */
+function withWebp(html: string) {
+	return html.replace(/<img class="shot ([^"]*)" src="img\/([\w-]+)\.png"([^>]*)>/g, (_, cls, name, rest) => `<picture class="${cls}"><source type="image/webp" srcset="/img/${name}.webp"><img class="shot ${cls}" src="/img/${name}.png"${rest}></picture>`);
+}
+
 /** A PNG's width and height, from its IHDR chunk. */
 function pngSize(file: string) {
 	const head = Buffer.alloc(24);
@@ -311,7 +333,9 @@ function makeMarkdown(page: Page, usedShots: Set<string>, t: Strings, linkTo: (h
 		const { width, height } = pngSize(path.join(SHOTS, `${name}-light.png`));
 		return (
 			`<a class="shot" href="/docs/shots/${name}-light.png" data-dark="/docs/shots/${name}-dark.png"><picture>` +
+			`<source media="(prefers-color-scheme: dark)" type="image/webp" srcset="/docs/shots/${name}-dark.webp">` +
 			`<source media="(prefers-color-scheme: dark)" srcset="/docs/shots/${name}-dark.png">` +
+			`<source type="image/webp" srcset="/docs/shots/${name}-light.webp">` +
 			`<img src="/docs/shots/${name}-light.png" alt="${esc(alt)}" width="${width}" height="${height}" loading="lazy" decoding="async"></picture></a>`
 		);
 	};
@@ -672,12 +696,15 @@ async function build() {
 		if (locale.default) write('404.html', notFoundPage(shared));
 	}
 	write('docs/search.json', JSON.stringify(search));
+	// Screenshots as PNG, for the link to the full picture, and as WebP for the page
 	for (const name of usedShots) {
 		for (const theme of ['dark', 'light']) {
 			fs.mkdirSync(path.join(DIST, 'docs/shots'), { recursive: true });
 			fs.copyFileSync(path.join(SHOTS, `${name}-${theme}.png`), path.join(DIST, 'docs/shots', `${name}-${theme}.png`));
+			write(`docs/shots/${name}-${theme}.webp`, await webpOf(path.join(SHOTS, `${name}-${theme}.png`)));
 		}
 	}
+	for (const f of fs.readdirSync(at('public/img')).filter((f) => f.endsWith('.png'))) write(`img/${f.replace(/\.png$/, '.webp')}`, await webpOf(at('public/img', f)));
 
 	// The landing page, in the default language only so far
 	const home = { siteUrl: SITE_URL, versions, locale: DEFAULT_LOCALE, t: main.t };
@@ -704,7 +731,7 @@ async function build() {
 	};
 	write(
 		'index.html',
-		read(at('src/home.html'))
+		withWebp(read(at('src/home.html')))
 			.replace('{{CLIENT_PORTS}}', portList)
 			.replace('{{INSTALL_TABS}}', installMarkup().tabs)
 			.replace('{{INSTALL_PANELS}}', installMarkup().panels)
@@ -780,6 +807,7 @@ async function build() {
 		...checkLocales(checked),
 		...checkStructuredData(checked),
 		...checkMarkdownLinks(checked),
+		...checkSeo(checked),
 		...checkLlms(checked, AGENT_TOOLS.filter((t) => !t.available).map((t) => t.name.replace(/`/g, '')))
 	);
 
@@ -817,6 +845,7 @@ const TYPES: Record<string, string> = {
 	'.xml': 'application/xml',
 	'.svg': 'image/svg+xml',
 	'.png': 'image/png',
+	'.webp': 'image/webp',
 	'.woff2': 'font/woff2',
 	'.ttf': 'font/ttf'
 };

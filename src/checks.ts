@@ -194,6 +194,113 @@ export function checkWithoutScripts({ dist }: CheckInput) {
 	return problems;
 }
 
+/* ---------- technical SEO ---------- */
+
+export const TITLE_MAX = 60;
+export const DESCRIPTION_MAX = 155;
+
+/** The file a link in a built page points at, with its fragment, or null for an outside link. */
+function target(href: string, fromRel: string, siteUrl: string): { file: string; hash: string } | null {
+	let h = href;
+	if (h.startsWith(siteUrl)) h = h.slice(siteUrl.length) || '/';
+	if (/^[a-z][\w+.-]*:/i.test(h) || h.startsWith('//')) return null;
+	const [pathAndQuery, hash = ''] = h.split('#');
+	const p = pathAndQuery.split('?')[0];
+	const base = urlOfFile(fromRel).replace(/[^/]*$/, '');
+	const abs = !p ? urlOfFile(fromRel) : p.startsWith('/') ? p : new URL(p, `http://x${base}`).pathname;
+	return { file: abs.endsWith('/') ? `${abs.slice(1)}index.html` : decodeURIComponent(abs.slice(1)), hash };
+}
+
+/**
+ * Titles, descriptions, headings, canonical addresses, images and links of every page:
+ * a title of at most 60 characters, unique in its language; a description of at most 155;
+ * exactly one h1 and no skipped heading level; a canonical address on every page that may
+ * be indexed; alt, width and height on every image; every link and anchor inside the site
+ * leads somewhere; and every page is linked from another page.
+ */
+export function checkSeo({ dist, siteUrl }: CheckInput) {
+	const problems: string[] = [];
+	const files = listFiles(dist).filter((f) => f.endsWith('.html'));
+	const docs = new Map(files.map((rel) => [rel, parse(fs.readFileSync(path.join(dist, rel), 'utf8'))]));
+	const ids = (rel: string) => new Set(findAll(docs.get(rel)!, (el) => !!el.attrs.id).map((el) => el.attrs.id));
+	const titles = new Map<string, string>();
+	const linkedFrom = new Map<string, Set<string>>();
+	for (const [rel, doc] of docs) {
+		const noindex = !!find(doc, (el) => el.tag === 'meta' && el.attrs.name === 'robots' && /noindex/.test(el.attrs.content ?? '')) && NOINDEX_PAGES.has(rel);
+		const title = squash(textOf(find(doc, byTag('title')) ?? doc));
+		const lang = find(doc, byTag('html'))?.attrs.lang ?? '';
+		if (!title) problems.push(`${rel}: no <title>`);
+		else {
+			if (title.length > TITLE_MAX) problems.push(`${rel}: the title has ${title.length} characters, more than ${TITLE_MAX}: "${title}"`);
+			const key = `${lang}\n${title}`;
+			if (titles.has(key)) problems.push(`${rel}: the same title as ${titles.get(key)}: "${title}"`);
+			else titles.set(key, rel);
+		}
+		const description = find(doc, (el) => el.tag === 'meta' && el.attrs.name === 'description')?.attrs.content ?? '';
+		if (!description.trim()) problems.push(`${rel}: no meta description`);
+		else if (description.length > DESCRIPTION_MAX) problems.push(`${rel}: the description has ${description.length} characters, more than ${DESCRIPTION_MAX}`);
+		const headings = findAll(doc, (el) => /^h[1-6]$/.test(el.tag));
+		const h1s = headings.filter((h) => h.tag === 'h1');
+		if (h1s.length !== 1) problems.push(`${rel}: ${h1s.length} h1 headings, not one`);
+		let level = 0;
+		for (const h of headings) {
+			const n = Number(h.tag[1]);
+			if (n > level + 1) problems.push(`${rel}:${h.line}: an h${n} after an h${level || 'nothing'}: "${squash(textOf(h)).slice(0, 60)}"`);
+			level = n;
+		}
+		if (!noindex && !find(doc, (el) => el.tag === 'link' && el.attrs.rel === 'canonical')) problems.push(`${rel}: no canonical link`);
+		for (const img of findAll(doc, byTag('img'))) {
+			const name = img.attrs.src ?? '?';
+			if (!('alt' in img.attrs)) problems.push(`${rel}:${img.line}: the image ${name} has no alt`);
+			if (!img.attrs.width || !img.attrs.height) problems.push(`${rel}:${img.line}: the image ${name} has no width and height`);
+			const webp = img.parent?.tag === 'picture' && img.parent.children.some((c) => typeof c !== 'string' && c.tag === 'source' && c.attrs.type === 'image/webp');
+			if (/\.(png|jpe?g)$/i.test(name) && !webp) problems.push(`${rel}:${img.line}: the image ${name} has no WebP version`);
+		}
+		// Fonts: the page loads its text font early, as WOFF2, and every @font-face is WOFF2
+		const preloads = findAll(doc, (el) => el.tag === 'link' && el.attrs.rel === 'preload' && el.attrs.as === 'font');
+		if (!preloads.length) problems.push(`${rel}: no font is preloaded`);
+		for (const p of preloads) {
+			if (p.attrs.type !== 'font/woff2' || !('crossorigin' in p.attrs)) problems.push(`${rel}: the font preload ${p.attrs.href} needs type="font/woff2" and crossorigin`);
+		}
+		for (const style of findAll(doc, byTag('style'))) {
+			for (const m of style.children.join('').matchAll(/src:\s*url\("?([^")]+)"?\)\s*format\("([^"]+)"\)/g)) if (m[2] !== 'woff2') problems.push(`${rel}: @font-face loads ${m[1]} as ${m[2]}, not woff2`);
+		}
+		const refs = [
+			...findAll(doc, (el) => el.tag === 'a' && 'href' in el.attrs).map((el) => ({ el, url: el.attrs.href, kind: 'link' })),
+			...findAll(doc, (el) => (el.tag === 'img' || el.tag === 'script') && !!el.attrs.src).map((el) => ({ el, url: el.attrs.src, kind: 'file' })),
+			...findAll(doc, (el) => el.tag === 'source' && !!el.attrs.srcset).map((el) => ({ el, url: el.attrs.srcset.split(/\s+/)[0], kind: 'file' })),
+			...findAll(doc, (el) => el.tag === 'link' && /stylesheet|icon|preload/.test(el.attrs.rel ?? '')).map((el) => ({ el, url: el.attrs.href, kind: 'file' }))
+		];
+		for (const { el, url, kind } of refs) {
+			const to = target(url, rel, siteUrl);
+			if (!to) continue;
+			if (!fs.existsSync(path.join(dist, to.file))) {
+				problems.push(`${rel}:${el.line}: ${kind === 'link' ? 'a link' : 'a file'} to ${url}, which is not in the site`);
+				continue;
+			}
+			if (to.hash && to.file.endsWith('.html') && docs.has(to.file) && !ids(to.file).has(decodeURIComponent(to.hash))) problems.push(`${rel}:${el.line}: a link to ${url}, which has no "#${to.hash}"`);
+			if (kind === 'link' && to.file.endsWith('.html') && to.file !== rel) {
+				if (!linkedFrom.has(to.file)) linkedFrom.set(to.file, new Set());
+				linkedFrom.get(to.file)!.add(rel);
+			}
+		}
+	}
+	for (const rel of files) {
+		if (NOINDEX_PAGES.has(rel) || CONTACT_SHEET === rel) continue;
+		if (!linkedFrom.get(rel)?.size) problems.push(`${rel}: no other page links to it`);
+	}
+	for (const css of listFiles(dist).filter((f) => f.endsWith('.css'))) {
+		for (const m of fs.readFileSync(path.join(dist, css), 'utf8').matchAll(/src:\s*url\("?([^")]+)"?\)\s*format\("([^"]+)"\)/g)) {
+			if (m[2] !== 'woff2') problems.push(`${css}: @font-face loads ${m[1]} as ${m[2]}, not woff2`);
+			else if (!fs.existsSync(path.join(dist, m[1].replace(/^\//, '')))) problems.push(`${css}: @font-face loads ${m[1]}, which is not in the site`);
+		}
+	}
+	return problems;
+}
+
+/** The page that shows every link preview image; it is linked from nowhere on purpose. */
+export const CONTACT_SHEET = 'og/index.html';
+
 /* ---------- "Copy as Markdown" ---------- */
 
 /**

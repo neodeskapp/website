@@ -1,6 +1,6 @@
 ---
 title: Clean-room provenance
-description: The policy for code and protocol schemas that talk to stock RustDesk clients, the clean-room workflow, and the release gate before anyone calls them clean-room.
+description: The policy for code and protocol schemas that talk to stock RustDesk clients, the clean-room workflow, and the release gate for clean-room claims.
 order: 10
 ---
 

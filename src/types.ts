@@ -4,7 +4,10 @@ import type { Locale, Strings } from './i18n.ts';
 export interface SectionConfig {
 	slug: string;
 	label: string;
+	/** The paragraph on the section's own page */
 	intro: string;
+	/** The meta description, at most 155 characters, when the intro is longer */
+	description?: string;
 }
 
 export interface SiteConfig {

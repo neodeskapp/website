@@ -1,6 +1,6 @@
 ---
 title: Security model
-description: What the server trusts and how the code protects each boundary, from device identity and the encryption on each connection to accounts, tokens and the secrets it stores, and the gaps that remain.
+description: What the server trusts and how the code protects each boundary: device identity, encryption, accounts, tokens, stored secrets and the gaps that remain.
 order: 11
 ---
 

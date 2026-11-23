@@ -1,6 +1,6 @@
 ---
 title: Updating
-description: Update a Docker, Linux or Windows install, choose the release channel, what the console's Updates page can and cannot do, how to check the version and how to roll back.
+description: Update a Docker, Linux or Windows install, choose the release channel, use the console's Updates page, check the version and roll back.
 order: 5
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: RustDesk compatibility
-description: How the server stays compatible with the stock RustDesk client, the checklist to run when RustDesk releases a client or server version, and what the upstream watch does.
+description: How the server stays compatible with the stock RustDesk client, the checklist for a new RustDesk release, and what the upstream watch does.
 order: 9
 ---
 

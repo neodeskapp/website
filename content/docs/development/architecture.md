@@ -1,6 +1,6 @@
 ---
 title: Architecture
-description: How the repository is laid out, what runs inside the one neodesk-server process, how the console carries its web app, where the data lives, and the telemetry contract for NeoDesk's own clients.
+description: How the repository is laid out, what runs inside the one neodesk-server process, where the data lives, and the telemetry contract for NeoDesk's clients.
 order: 4
 ---
 

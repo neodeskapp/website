@@ -1,6 +1,6 @@
 ---
 title: Troubleshooting
-description: Where the logs are, the health checks, and what to check when the console does not open, sign-in is refused, clients cannot connect, the key does not match or the relay fails.
+description: Logs, health checks, and what to check when the console does not open, sign-in fails, clients cannot connect, the key does not match or the relay fails.
 order: 7
 ---
 

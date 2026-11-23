@@ -1,6 +1,6 @@
 ---
 title: Permissions
-description: Change what a role may do on the Roles and permissions page, narrow single console sections for one person or a user group with Panel access, and limit what they may do in remote sessions.
+description: Change what a role may do, narrow console sections for one person or a user group with Panel access, and limit what they may do in remote sessions.
 order: 2
 ---
 

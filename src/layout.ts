@@ -68,6 +68,8 @@ interface FrameOptions extends Shared {
 	noindex?: boolean;
 	/** The docs index has a title of its own */
 	fullTitle?: string;
+	/** Whether the page's h1 is set in Funnel Display, so that font is loaded early */
+	display?: boolean;
 }
 
 function frame(o: FrameOptions) {
@@ -94,7 +96,7 @@ ${noindex || !production ? '<meta name="robots" content="noindex">\n' : ''}${noi
 <meta property="og:url" content="${esc(canonical)}">
 ${markdown ? `<link rel="alternate" type="text/markdown" href="${esc(markdown)}">` : ''}
 <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
-<link rel="preload" href="/fonts/IBMPlexSans-latin.woff2" as="font" type="font/woff2" crossorigin>
+${o.display ? '<link rel="preload" href="/fonts/FunnelDisplay-latin.woff2" as="font" type="font/woff2" crossorigin>\n' : ''}<link rel="preload" href="/fonts/IBMPlexSans-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="${assets['site.css']}">
 <link rel="stylesheet" href="${assets['docs.css']}">
 <noscript><style>.copy, .search-button, .menu-button { display: none !important; } @media (max-width: 860px) { .layout { display: flex !important; flex-direction: column; } .sidebar { display: block; position: static; order: 2; border-top: 1px solid var(--rule); } .top-docs, .top-links { display: inline-block; } }</style></noscript>
@@ -201,6 +203,7 @@ ${sections
 		...shared,
 		title: t.documentation,
 		fullTitle: fill(t.docsTitle, { name: config.name }),
+		display: true,
 		description: t.docsDescription,
 		path: '/docs/',
 		current: '',
@@ -217,7 +220,7 @@ export function sectionPage(shared: Shared & { section: Section }) {
 	return frame({
 		...shared,
 		title: section.label,
-		description: section.intro,
+		description: section.description ?? section.intro,
 		path: `/docs/${section.slug}/`,
 		current: section.slug,
 		main,

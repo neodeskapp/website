@@ -33,7 +33,8 @@ src/types.ts         the shapes the build passes around
 src/site.css         fonts, colours and base styles
 src/docs.css         the docs layout
 src/docs.js          search, copy buttons, "On this page", the menu on phones
-public/              copied to dist/ as is (fonts, images, favicon)
+public/              copied to dist/ as is (web fonts, images, favicon)
+fonts/               the TrueType fonts the build itself uses, not served
 site.config.ts       site address, repository, sections and their order
 build.ts             the generator
 deploy.sh            builds for beta or production and uploads to the web server
@@ -50,6 +51,23 @@ A new section needs a folder under `content/docs` and an entry in
 `site.config.ts`. Docs pages get an "Edit on GitHub" link and an "Updated"
 date once `content/docs` is in a git repository and `editBase` in
 `site.config.ts` points at it.
+
+## Fonts and images
+
+The pages load WOFF2 fonts only, and preload the ones the first screen needs.
+IBM Plex Sans and Mono are Latin subsets already. `public/fonts/FunnelDisplay-latin.woff2`
+is the Latin subset of `fonts/FunnelDisplay.ttf`, the brand font file as it is,
+with every glyph and the weight axis kept. Make it again after a font change:
+
+```sh
+python -m fontTools.subset fonts/FunnelDisplay.ttf --unicodes="U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD" --layout-features='*' --flavor=woff2 --output-file=public/fonts/FunnelDisplay-latin.woff2
+```
+
+The build turns every screenshot and every PNG in `public/img` into a lossless
+WebP (with sharp), the same pixels in about a third of the bytes, and the pages
+show it with the PNG as fallback. A lossless AVIF came out larger than the PNG,
+so there is none. Converted files are kept in `.cache/`, so a build converts
+only new or changed images.
 
 ## Languages
 
@@ -132,6 +150,14 @@ The build checks the pages as it reads them and the files it wrote to
   page. The landing page's list of client ports comes from the table on the
   ports page: the rows RustDesk clients connect to that say Yes under "Open to
   the internet".
+- SEO: every page has a title of at most 60 characters that no other page in
+  its language has, a meta description of at most 155, exactly one h1, no
+  skipped heading level, a canonical link (the 404 page excepted), alt, width
+  and height on every image, a WebP version of every PNG, a preloaded WOFF2
+  font and only WOFF2 in `@font-face`. Every link, file and anchor inside the
+  site exists, and every page is linked from another one. A section whose
+  intro is longer than 155 characters gets a `description` in
+  `site.config.ts`.
 - "Copy as Markdown": every docs page and section page has it next to the
   h1, a plain link to the page's own `.md` copy, which must exist. With
   scripts a click copies the Markdown; without them the link opens it.
