@@ -84,7 +84,7 @@ Editing needs permission to edit devices. By default Super admin, Global admin a
 | Option | What it does | What it needs |
 |---|---|---|
 | **Web remote** (the **Connect** button) | Opens the device in the browser, without installing anything | An account that may connect to devices, and a desktop or tablet browser. See [Remote desktop in the browser](/docs/console/remote-in-browser) |
-| **Desktop client** (**Connect via desktop client** in the row menu) | Opens a `rustdesk://` link with the device's ID, which starts the RustDesk app on this computer | RustDesk installed on this computer and set up for this server, see [Connect a RustDesk client](/docs/getting-started/connect-a-client) |
+| **Desktop client** (**Connect via desktop client** in the row menu) | Opens a `rustdesk://` link with the device's ID, which starts the RustDesk app on this computer, or the NeoDesk client on a Windows computer without RustDesk; see [Links that open the app](/docs/getting-started/connect-a-client#links-that-open-the-app) | RustDesk installed on this computer and set up for this server, see [Connect a RustDesk client](/docs/getting-started/connect-a-client) |
 | **CDAP snapshot viewer** | Opens a viewer in a new tab that shows pictures of the screen instead of a live stream | A device that is reachable through its agent's channel (CDAP), not only through RustDesk |
 | **Guest access link** | Creates a link to the web viewer that works without a console account, for a limited time | Permission to create guest links |
 

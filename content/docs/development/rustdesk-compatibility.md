@@ -84,6 +84,12 @@ Several live devices at one public address and no better match refuse the sessio
 
 A refused `PunchHoleRequest` gets a `PunchHoleResponse` with the failure `ID_NOT_EXIST`, so the stock client says the ID does not exist. That often means the computer that asked isn't allowed, not that the remote ID is missing. The server's log names the reason. [Hardening](/docs/operations/security#limit-who-can-start-sessions) explains the switches for operators.
 
+### Link schemes
+
+`rustdesk://` belongs to stock RustDesk, with its connect links and the `rustdesk://config/...` of the QR code. The NeoDesk client has its own scheme, `neodesk://`, on Windows, macOS and Linux. It takes `rustdesk://` only on Windows, and only on a computer where stock RustDesk is not installed and no other program has the scheme. It never overwrites or removes a handler that points at another program, and when it is removed it deletes its `rustdesk://` entry while that still starts NeoDesk. On Linux and macOS it never registers `rustdesk://`. So a computer with both keeps opening RustDesk's links in RustDesk.
+
+The console's own links that open a device in an app use `rustdesk://`; see [Links that open the app](/docs/getting-started/connect-a-client#links-that-open-the-app).
+
 ## What needs NeoDesk's client
 
 A stock client registers, connects in both directions, runs the remote session itself (screen, input, file transfer, clipboard, chat in the session, audio, terminal, TCP tunnels), signs in with a console account and gets the address book. These need NeoDesk's own client, because a stock client doesn't send what they are built on:

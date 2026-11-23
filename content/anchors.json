@@ -235,7 +235,8 @@
 		"5-sessions",
 		"6-a-release-of-rustdesks-server",
 		"7-close-out",
-		"the-upstream-watch"
+		"the-upstream-watch",
+		"link-schemes"
 	],
 	"development/security-model": [
 		"trust-boundaries",
@@ -286,7 +287,8 @@
 		"pair-with-code",
 		"after-the-client-connects",
 		"sign-in-from-the-client",
-		"it-does-not-connect"
+		"it-does-not-connect",
+		"links-that-open-the-app"
 	],
 	"getting-started/connect-a-client/many-computers": [
 		"with-one-invite",

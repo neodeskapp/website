@@ -118,6 +118,25 @@ Seitenleiste listet die Codes, die noch aktiv sind, und lässt dich einen davon
 widerrufen. Die Schaltfläche **Mit Code koppeln** erscheint nur bei Konten, die
 neue Geräte genehmigen dürfen.
 
+## Links, die die App öffnen {#links-that-open-the-app}
+
+Ein Link kann auf dem Computer, auf dem jemand ihn anklickt, eine Client-App
+starten:
+
+- `neodesk://`-Links öffnen den NeoDesk-Client. Er übernimmt dieses Schema
+  unter Windows, macOS und Linux.
+- `rustdesk://`-Links gehören dem normalen RustDesk. Unter Windows übernimmt
+  der NeoDesk-Client sie nur auf einem Computer ohne normales RustDesk, wenn
+  kein anderes Programm sie hat, und gibt sie zurück, wenn er entfernt wird.
+  Unter Linux und macOS übernimmt er sie nie.
+
+Die Links der Konsole, die ein Gerät in einer App öffnen, nutzen `rustdesk://`:
+**Über Desktop-Client verbinden** in der Geräteliste, **In der RustDesk-App
+öffnen** auf Handys und **In der Desktop-App öffnen** in der
+[Schnellhilfe](/docs/console/quick-support). Sie starten das normale RustDesk.
+Auf einem Computer, der nur den NeoDesk-Client hat, starten sie ihn unter
+Windows und unter Linux und macOS nichts.
+
 ## Wenn der Client verbunden ist {#after-the-client-connects}
 
 Was dann passiert, hängt vom Registrierungsmodus des Servers ab:

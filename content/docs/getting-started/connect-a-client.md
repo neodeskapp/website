@@ -108,6 +108,24 @@ still goes through enrollment like any other.
 lists the codes that are still active and lets you revoke one. The
 **Pair with code** button only shows for accounts that may approve new devices.
 
+## Links that open the app
+
+A link can start a client app on the computer it is clicked on:
+
+- `neodesk://` links open the NeoDesk client. It takes this scheme on Windows,
+  macOS and Linux.
+- `rustdesk://` links belong to stock RustDesk. On Windows the NeoDesk client
+  takes them only on a computer without stock RustDesk, where no other program
+  has them, and gives them back when it is removed. On Linux and macOS it never
+  takes them.
+
+The console's links that open a device in an app use `rustdesk://`:
+**Connect via desktop client** in the device list, **Open in RustDesk app** on
+phones, and **Open in the desktop app** in
+[Quick support](/docs/console/quick-support). They start stock RustDesk. On a
+computer that has only the NeoDesk client, they start it on Windows and nothing
+on Linux and macOS.
+
 ## After the client connects
 
 What happens next depends on the server's enrollment mode:

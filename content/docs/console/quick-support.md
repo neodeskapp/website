@@ -34,8 +34,10 @@ The dialog shows where things stand:
 - The app is open on their computer and waits for them to click **Allow**.
 - The computer allowed access. **Connect** opens the session in
   [the browser](/docs/console/remote-in-browser); **Open in the desktop app**
-  opens it in the NeoDesk client. You don't need a password: the app hands
-  it to the server for you.
+  opens it with a `rustdesk://` link, in stock RustDesk, or in the NeoDesk
+  client on a Windows computer without stock RustDesk (see
+  [Links that open the app](/docs/getting-started/connect-a-client#links-that-open-the-app)).
+  You don't need a password: the app hands it to the server for you.
 - They declined, the session ended, or the link expired. **Make a new link**
   starts again.
 

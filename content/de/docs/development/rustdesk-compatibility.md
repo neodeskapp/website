@@ -84,6 +84,12 @@ Mehrere aktive Geräte an einer öffentlichen Adresse ohne bessere Übereinstimm
 
 Ein abgelehnter `PunchHoleRequest` bekommt eine `PunchHoleResponse` mit dem Fehler `ID_NOT_EXIST`, deshalb meldet der normale Client, die ID existiere nicht. Oft heißt das, dass der fragende Computer nicht zugelassen ist, und nicht, dass die entfernte ID fehlt. Das Log des Servers nennt den Grund. [Härtung](/docs/operations/security#limit-who-can-start-sessions) erklärt die Schalter für Betreiber.
 
+### Link-Schemata {#link-schemes}
+
+`rustdesk://` gehört dem normalen RustDesk, mit seinen Verbindungslinks und dem `rustdesk://config/...` des QR-Codes. Der NeoDesk-Client hat sein eigenes Schema, `neodesk://`, unter Windows, macOS und Linux. `rustdesk://` übernimmt er nur unter Windows, und nur auf einem Computer, auf dem kein normales RustDesk installiert ist und kein anderes Programm das Schema hat. Einen Handler, der auf ein anderes Programm zeigt, überschreibt oder entfernt er nie, und wenn er entfernt wird, löscht er seinen `rustdesk://`-Eintrag, solange dieser noch NeoDesk startet. Unter Linux und macOS registriert er `rustdesk://` nie. Ein Computer mit beiden öffnet die Links von RustDesk also weiter in RustDesk.
+
+Die eigenen Links der Konsole, die ein Gerät in einer App öffnen, nutzen `rustdesk://`; siehe [Links, die die App öffnen](/docs/getting-started/connect-a-client#links-that-open-the-app).
+
 ## Was den NeoDesk-Client braucht {#what-needs-neodesks-client}
 
 Ein normaler Client registriert sich, verbindet sich in beide Richtungen, führt die Remote-Sitzung selbst (Bildschirm, Eingabe, Dateiübertragung, Zwischenablage, Chat in der Sitzung, Audio, Terminal, TCP-Tunnel), meldet sich mit einem Konto der Konsole an und bekommt das Adressbuch. Die folgenden Funktionen brauchen den eigenen Client von NeoDesk, weil ein normaler Client nicht schickt, worauf sie aufbauen:
