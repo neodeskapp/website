@@ -160,12 +160,12 @@ Jede endet mit 0, wenn sie bestanden hat, mit 1, wenn sie etwas gefunden hat, un
 | `i18n-check --system console` | Die Sprachdateien der Konsole, siehe [Deine Arbeit prüfen](/docs/development/translations#check-your-work). |
 | `check-pairing-i18n` | Jede Sprachdatei hat die Schlüssel der Kopplungstexte und den Eintrag der Seitenleiste dafür. |
 | `check-js` | Keine eingecheckte JavaScript-Datei außerhalb von `.github/javascript-allowlist.txt`. |
-| `check-port-docs` | Kein Skript und keine Go-Datei stellt Port 21120 als aktiven Port dar; diese Nummer wurde nie ausgeliefert. Die Port-Tabelle, die der Befehl früher mit dem Code verglichen hat, ist jetzt [Ports und Firewall](/docs/operations/ports). |
+| `check-port-docs` | Kein Skript und keine Go- oder Markdown-Datei in `neodesk-server` oder `scripts` stellt Port 21120 als aktiven Port dar; diese Nummer wurde nie ausgeliefert. |
 | `check-provenance` | `THIRD_PARTY_NOTICES.md` enthält die Kurzfassung der Clean-Room-Richtlinie und die SBOM-Anforderung, und `.github/go-server-context.md` stellt keine ungeprüfte Behauptung zur Herkunft auf. Siehe [Clean-Room-Herkunftsnachweis](/docs/development/provenance#safeguards-in-the-repository). |
 | `docker-smoke` | Startet das lokale Image `neodesk:local` mit neuen Volumes, wartet auf API und Konsole, meldet sich an, führt darin `neodesk-server check` aus, startet den Container neu und prüft, dass sein API-Schlüssel gleich geblieben ist. `--database-type postgres --database-url <url>` lässt den Test auf PostgreSQL laufen. |
 | `local-gate` | Das lokale Gate oben. |
 
-Drei Skripte ergänzen den Secret-Scan: gitleaks, die Prüfung auf private Adressen und Home-Ordner von Build-Rechnern und die Prüfung, dass kein Installer und keine Unit-Datei im Repository ein Geheimnis in eine systemd-Unit schreibt:
+gitleaks und zwei Skripte ergänzen den Secret-Scan: die Prüfung auf private Adressen und Home-Ordner von Build-Rechnern und die Prüfung, dass kein Installer und keine Unit-Datei im Repository ein Geheimnis in eine systemd-Unit schreibt:
 
 ```bash
 gitleaks detect --source . --config .gitleaks.toml

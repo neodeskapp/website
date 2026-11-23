@@ -160,12 +160,12 @@ go run ./cmd/repotool <command>
 | `i18n-check --system console` | The console's language files, see [Check your work](/docs/development/translations#check-your-work). |
 | `check-pairing-i18n` | Every language file has the keys of the pairing texts and the sidebar entry for them. |
 | `check-js` | No tracked JavaScript file outside `.github/javascript-allowlist.txt`. |
-| `check-port-docs` | No script or Go file presents port 21120 as a live port; that number never shipped. The port table it once compared with the code is [Ports and firewall](/docs/operations/ports) now. |
+| `check-port-docs` | No script, Go or Markdown file in `neodesk-server` or `scripts` presents port 21120 as a live port; that number never shipped. |
 | `check-provenance` | `THIRD_PARTY_NOTICES.md` keeps the short clean-room policy and the SBOM requirement, and `.github/go-server-context.md` makes no unverified provenance claim. See [Clean-room provenance](/docs/development/provenance#safeguards-in-the-repository). |
 | `docker-smoke` | Starts the local image `neodesk:local` with new volumes, waits for the API and the console, signs in, runs `neodesk-server check` inside, restarts the container and checks that its API key stayed the same. `--database-type postgres --database-url <url>` runs it on PostgreSQL. |
 | `local-gate` | The local gate above. |
 
-Three scripts complete the secret scan: gitleaks, the check for private addresses and home folders of build machines, and the check that no installer or unit file in the repository puts a secret into a systemd unit:
+gitleaks and two scripts complete the secret scan: the check for private addresses and home folders of build machines, and the check that no installer or unit file in the repository puts a secret into a systemd unit:
 
 ```bash
 gitleaks detect --source . --config .gitleaks.toml
