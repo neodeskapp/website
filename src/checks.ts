@@ -61,6 +61,8 @@ export interface CheckInput {
 	dist: string;
 	siteUrl: string;
 	version: string;
+	production: boolean;
+	aiCrawlers: string[];
 }
 
 export function checkOldNames({ dist }: CheckInput) {
@@ -187,6 +189,34 @@ export function checkWithoutScripts({ dist }: CheckInput) {
 			if (id) seen.set(id, (seen.get(id) ?? 0) + 1);
 		}
 		for (const [id, n] of seen) if (n > 1) problems.push(`${rel}: ${n} tabs share the panel #${id}, so only one tab's content is in the page`);
+	}
+	return problems;
+}
+
+/* ---------- who may index the site ---------- */
+
+// Pages that are never indexed, on any host
+export const NOINDEX_PAGES = new Set(['404.html']);
+
+/**
+ * On production, robots.txt allows everything and names each AI crawler as allowed, and
+ * only the pages in NOINDEX_PAGES say noindex. On any other host every page says noindex.
+ */
+export function checkIndexing({ dist, production, aiCrawlers }: CheckInput) {
+	const problems: string[] = [];
+	const robots = fs.readFileSync(path.join(dist, 'robots.txt'), 'utf8');
+	const groups = robots.split(/\n\s*\n/).map((g) => g.split('\n').filter((l) => l && !l.startsWith('#')));
+	const allowed = (agent: string) =>
+		groups.some((g) => g.some((l) => l.toLowerCase() === `user-agent: ${agent.toLowerCase()}`) && g.includes('Allow: /') && !g.some((l) => /^Disallow:\s*\S/.test(l)));
+	if (!allowed('*')) problems.push('robots.txt: "User-agent: *" is not allowed everything');
+	if (production) for (const agent of aiCrawlers) if (!allowed(agent)) problems.push(`robots.txt: ${agent} is not named as allowed`);
+	if (!/^Sitemap: \S+\/sitemap\.xml$/m.test(robots)) problems.push('robots.txt: no Sitemap line');
+	for (const rel of listFiles(dist).filter((f) => f.endsWith('.html'))) {
+		const head = fs.readFileSync(path.join(dist, rel), 'utf8').split('</head>')[0];
+		const noindex = /<meta name="robots" content="[^"]*noindex/.test(head);
+		const wanted = !production || NOINDEX_PAGES.has(rel);
+		if (noindex && !wanted) problems.push(`${rel}: says noindex on the production site`);
+		if (!noindex && wanted) problems.push(`${rel}: has no noindex${production ? '' : ', and this build is not for the production address'}`);
 	}
 	return problems;
 }

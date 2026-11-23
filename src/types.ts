@@ -13,6 +13,7 @@ export interface SiteConfig {
 	versionUrl: string;
 	version: string;
 	editBase: string;
+	aiCrawlers: string[];
 	summary: string;
 	sections: SectionConfig[];
 }
@@ -52,6 +53,8 @@ export interface Shared {
 	assets: Record<string, string>;
 	version: string;
 	siteUrl: string;
+	/** Whether this build is for the production address, which search engines may index */
+	production: boolean;
 }
 
 export interface Pager {

@@ -14,6 +14,24 @@ const config: SiteConfig = {
 	// content/docs in a repository, for example
 	// https://github.com/neodeskapp/website/edit/main/content/docs
 	editBase: '',
+	// AI crawlers that robots.txt on neode.sk names as allowed, next to the allow-all,
+	// as each vendor's own crawler page spells them. Other hosts, such as the beta,
+	// get the allow-all only, and every page there says noindex.
+	aiCrawlers: [
+		'GPTBot', // OpenAI: developers.openai.com/api/docs/bots
+		'OAI-SearchBot',
+		'ChatGPT-User',
+		'ClaudeBot', // Anthropic: support.claude.com, "Does Anthropic crawl data from the web"
+		'Claude-User',
+		'Claude-SearchBot',
+		'PerplexityBot', // Perplexity: docs.perplexity.ai/guides/bots
+		'Perplexity-User',
+		'Google-Extended', // Google: developers.google.com, Google's common crawlers
+		'Applebot-Extended', // Apple: support.apple.com/en-us/119829
+		'CCBot', // Common Crawl: commoncrawl.org/ccbot
+		'Bytespider', // ByteDance: no crawler page of its own found; the name crawler lists use
+		'meta-externalagent' // Meta: developers.facebook.com, web crawlers
+	],
 	summary:
 		'NeoDesk is a remote desktop server you run yourself. It speaks the RustDesk protocol, so the normal RustDesk client connects to it, and one Go binary serves the ID server, the relay, the client API and a web console for the devices you look after. It is open source under AGPL-3.0.',
 	// The docs sections in sidebar order. `intro` is the paragraph on the section's own page.

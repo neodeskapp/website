@@ -36,7 +36,7 @@ interface FrameOptions extends Shared {
 	noindex?: boolean;
 }
 
-function frame({ config, sections, assets, siteUrl, title, description, path, current, main, toc = '', markdown, jsonLd, type = 'website', noindex = false }: FrameOptions) {
+function frame({ config, sections, assets, siteUrl, production, title, description, path, current, main, toc = '', markdown, jsonLd, type = 'website', noindex = false }: FrameOptions) {
 	const full = title === 'Documentation' ? `${config.name} documentation` : `${title} - ${config.name} docs`;
 	const canonical = `${siteUrl}${path}`;
 	return `<!doctype html>
@@ -49,7 +49,7 @@ function frame({ config, sections, assets, siteUrl, title, description, path, cu
 <meta name="color-scheme" content="dark light">
 <meta name="theme-color" content="#141616" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-${noindex ? '<meta name="robots" content="noindex">' : `<link rel="canonical" href="${esc(canonical)}">`}
+${noindex || !production ? '<meta name="robots" content="noindex">\n' : ''}${noindex ? '' : `<link rel="canonical" href="${esc(canonical)}">`}
 <meta property="og:type" content="${type}">
 <meta property="og:site_name" content="${esc(config.name)}">
 <meta property="og:title" content="${esc(full)}">

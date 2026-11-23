@@ -12,7 +12,7 @@ import hljs from 'highlight.js';
 import config from './site.config.ts';
 import { docsIndexPage, docPage, sectionPage, notFoundPage, esc } from './src/layout.ts';
 import type { Page, Section, Shared, Pager } from './src/types.ts';
-import { checkOldNames, checkConsolePort, checkVersion, checkWithoutScripts } from './src/checks.ts';
+import { checkOldNames, checkConsolePort, checkVersion, checkWithoutScripts, checkIndexing } from './src/checks.ts';
 import { checkCommands } from './src/commands.ts';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
@@ -23,6 +23,8 @@ const SHOTS = at('content/screenshots');
 // DIST_DIR writes the build somewhere else than dist/, for a check that runs next to another build
 const DIST = process.env.DIST_DIR ? path.resolve(process.env.DIST_DIR) : at('dist');
 const SITE_URL = (process.env.SITE_URL || config.url).replace(/\/$/, '');
+// Only the production address may be indexed; a build for any other host, such as the beta, says noindex
+const PRODUCTION = SITE_URL === config.url.replace(/\/$/, '');
 const problems: string[] = [];
 
 /* ---------- small helpers ---------- */
@@ -412,6 +414,15 @@ function pageMarkdown(page: Page) {
 const pageList = (items: Page[]) =>
 	items.map((p) => `${p.parent ? '  ' : ''}- [${p.title}](${mdUrl(p.slug)})${p.description ? `: ${p.description}` : ''}`).join('\n');
 
+/* ---------- robots.txt ---------- */
+
+/** Everything is allowed; on production the AI crawlers are also named, so their access is explicit. */
+function robotsTxt() {
+	const groups = ['User-agent: *\nAllow: /'];
+	if (PRODUCTION) groups.push(`# AI crawlers, allowed by name\n${config.aiCrawlers.map((a) => `User-agent: ${a}`).join('\n')}\nAllow: /`);
+	return `${groups.join('\n\n')}\n\nSitemap: ${SITE_URL}/sitemap.xml\n`;
+}
+
 /* ---------- the build ---------- */
 
 async function build() {
@@ -459,7 +470,7 @@ async function build() {
 		}
 	}
 
-	const shared: Shared = { config, sections, assets, version, siteUrl: SITE_URL };
+	const shared: Shared = { config, sections, assets, version, siteUrl: SITE_URL, production: PRODUCTION };
 	const search: SearchEntry[] = [];
 
 	reading.forEach((page, i) => {
@@ -490,7 +501,13 @@ async function build() {
 	}
 
 	// The landing page
-	write('index.html', read(at('src/home.html')).replaceAll('{{VERSION}}', version).replaceAll('{{SITE_URL}}', SITE_URL));
+	write(
+		'index.html',
+		read(at('src/home.html'))
+			.replaceAll('{{VERSION}}', version)
+			.replaceAll('{{SITE_URL}}', SITE_URL)
+			.replace('{{ROBOTS}}', PRODUCTION ? '' : '<meta name="robots" content="noindex">\n')
+	);
 
 	// For AI tools: llms.txt lists every page, llms-full.txt holds them all
 	const about = `# ${config.name}\n\n> ${config.summary}\n\nEvery docs page below is Markdown at the address shown. The same page as HTML is at that address without .md. All docs in one file: ${SITE_URL}/llms-full.txt`;
@@ -510,11 +527,11 @@ async function build() {
 			urls.map((u) => `  <url><loc>${SITE_URL}${u}</loc></url>`).join('\n') +
 			'\n</urlset>\n'
 	);
-	write('robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`);
+	write('robots.txt', robotsTxt());
 
 	// Checks on what was written
-	const checked = { dist: DIST, siteUrl: SITE_URL, version };
-	problems.push(...checkOldNames(checked), ...checkConsolePort(checked), ...checkVersion(checked), ...checkWithoutScripts(checked));
+	const checked = { dist: DIST, siteUrl: SITE_URL, version, production: PRODUCTION, aiCrawlers: config.aiCrawlers };
+	problems.push(...checkOldNames(checked), ...checkConsolePort(checked), ...checkVersion(checked), ...checkWithoutScripts(checked), ...checkIndexing(checked));
 
 	if (problems.length) {
 		console.error(`\n${problems.length} problem${problems.length === 1 ? '' : 's'}:\n` + problems.map((p) => `  ${p}`).join('\n'));

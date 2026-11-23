@@ -86,6 +86,11 @@ The build checks the pages as it reads them and the files it wrote to
   block may be empty, docs pages need their sidebar, and every tab needs a
   panel of its own with content. Scripts may hide and show what is in the
   HTML, but must not add content.
+- Indexing: on neode.sk, `robots.txt` allows everything and names each AI
+  crawler in `aiCrawlers` in `site.config.ts` as allowed, and only the 404 page
+  says noindex. A build for any other address, such as beta.neode.sk, puts
+  noindex on every page (the beta's web server also sends
+  `X-Robots-Tag: noindex`).
 - Commands (`src/commands.ts`): every block has a language, no block has a
   shell prompt (`$ `, `PS C:\>`), a command the text asks the reader to run is
   in a block of its own, and placeholders follow the rule under [Code](#code).
