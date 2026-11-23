@@ -124,6 +124,157 @@ Seitenleiste listet die Codes, die noch aktiv sind, und lässt dich einen davon
 widerrufen. Die Schaltfläche **Mit Code koppeln** erscheint nur bei Konten, die
 neue Geräte genehmigen dürfen.
 
+## Aus dem Paket-Repository installieren {#install-from-the-package-repository}
+
+Den NeoDesk-Client für Linux gibt es auch aus einem signierten
+Paket-Repository unter pkg.neode.sk, für amd64 (x86_64) und arm64 (aarch64).
+Dein System aktualisiert NeoDesk dann mit seinen normalen Updates. Der
+Schlüssel des Repositorys hat den Fingerabdruck
+`D9D7 D06A FB85 0424 31C6 08AB 79E8 A31B 2625 AA7B` und gilt bis zum
+22. November 2029.
+
+::: note
+Das Repository enthält noch keine Pakete. Die Suite `testing` bekommt den
+nächsten Release Candidate des Clients, `stable` das erste Release, das die
+neue Paketversion trägt. Bis dahin richten die Schritte unten das Repository
+ein, aber der letzte Schritt findet kein Paket `neodesk`. Installiere den Client
+bis dahin mit einer Einladung aus
+[Computer hinzufügen](/docs/console/add-a-computer).
+:::
+
+Nach der Installation lässt du den Computer mit dem Code einer Einladung deinem
+Server beitreten: in NeoDesk unter **Einstellungen**, **Server**, **Server
+beitreten**.
+
+### Debian und Ubuntu {#debian-and-ubuntu}
+
+1. Installiere curl:
+
+   ```bash
+   sudo apt install curl
+   ```
+
+2. Leg den Ordner für den Schlüssel an und lade den Schlüssel hinein:
+
+   ```bash
+   sudo install -d -m 0755 /etc/apt/keyrings
+   ```
+
+   ```bash
+   sudo curl -fsSLo /etc/apt/keyrings/neodesk.gpg https://pkg.neode.sk/neodesk.gpg
+   ```
+
+3. Füg das Repository hinzu:
+
+   ```bash
+   echo "deb [signed-by=/etc/apt/keyrings/neodesk.gpg] https://pkg.neode.sk/deb stable main" | sudo tee /etc/apt/sources.list.d/neodesk.list
+   ```
+
+4. Lies die Paketlisten neu ein und installiere dann NeoDesk:
+
+   ```bash
+   sudo apt update
+   ```
+
+   ```bash
+   sudo apt install neodesk
+   ```
+
+Der Schlüssel gilt nur für dieses Repository (`signed-by`), nicht für deine
+anderen Paketquellen.
+
+### Fedora, RHEL, Rocky Linux und AlmaLinux {#fedora-rhel-rocky-linux-and-almalinux}
+
+Füg das Repository hinzu:
+
+```bash
+sudo curl -fsSLo /etc/yum.repos.d/neodesk.repo https://pkg.neode.sk/rpm/neodesk.repo
+```
+
+Installiere dann NeoDesk:
+
+```bash
+sudo dnf install neodesk
+```
+
+dnf fragt einmal, ob es den NeoDesk-Schlüssel importieren soll. Vergleiche den
+Fingerabdruck oben, bevor du mit Ja antwortest.
+
+### openSUSE und SLES {#opensuse-and-sles}
+
+Füg das Repository hinzu, lies es ein und installiere dann NeoDesk:
+
+```bash
+sudo zypper addrepo https://pkg.neode.sk/suse/neodesk.repo
+```
+
+```bash
+sudo zypper refresh
+```
+
+```bash
+sudo zypper install neodesk
+```
+
+zypper fragt, ob es dem NeoDesk-Schlüssel vertrauen soll. Vergleiche den
+Fingerabdruck oben und wähle dann, ihm immer zu vertrauen.
+
+### Release Candidates {#release-candidates}
+
+Die Suite `testing` enthält Release Candidates und Releases. Du bekommst, was
+neuer ist.
+
+Unter Debian und Ubuntu schreibst du in der `echo`-Zeile oben `testing` statt
+`stable`.
+
+Unter Fedora und Verwandten installierst du einmal daraus:
+
+```bash
+sudo dnf --enablerepo=neodesk-testing install neodesk
+```
+
+Damit es eingeschaltet bleibt, setz in `/etc/yum.repos.d/neodesk.repo` unter
+`[neodesk-testing]` `enabled=1`.
+
+Unter openSUSE schaltest du es ein:
+
+```bash
+sudo zypper modifyrepo --enable neodesk-testing
+```
+
+### Entfernen {#remove}
+
+Unter Debian und Ubuntu entfernst du NeoDesk, dann das Repository und seinen
+Schlüssel:
+
+```bash
+sudo apt remove neodesk
+```
+
+```bash
+sudo rm /etc/apt/sources.list.d/neodesk.list /etc/apt/keyrings/neodesk.gpg
+```
+
+Unter Fedora und Verwandten:
+
+```bash
+sudo dnf remove neodesk
+```
+
+```bash
+sudo rm /etc/yum.repos.d/neodesk.repo
+```
+
+Unter openSUSE:
+
+```bash
+sudo zypper remove neodesk
+```
+
+```bash
+sudo zypper removerepo neodesk neodesk-testing
+```
+
 ## Links, die die App öffnen {#links-that-open-the-app}
 
 Ein Link kann auf dem Computer, auf dem jemand ihn anklickt, eine Client-App

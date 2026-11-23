@@ -289,7 +289,13 @@
 		"after-the-client-connects",
 		"sign-in-from-the-client",
 		"it-does-not-connect",
-		"links-that-open-the-app"
+		"links-that-open-the-app",
+		"install-from-the-package-repository",
+		"debian-and-ubuntu",
+		"fedora-rhel-rocky-linux-and-almalinux",
+		"opensuse-and-sles",
+		"release-candidates",
+		"remove"
 	],
 	"getting-started/connect-a-client/many-computers": [
 		"with-one-invite",

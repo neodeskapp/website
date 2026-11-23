@@ -113,6 +113,153 @@ still goes through enrollment like any other.
 lists the codes that are still active and lets you revoke one. The
 **Pair with code** button only shows for accounts that may approve new devices.
 
+## Install from the package repository
+
+The NeoDesk client for Linux also comes from a signed package repository at
+pkg.neode.sk, for amd64 (x86_64) and arm64 (aarch64). Your system then updates
+NeoDesk with its normal updates. The repository key has the fingerprint
+`D9D7 D06A FB85 0424 31C6 08AB 79E8 A31B 2625 AA7B` and is valid until
+22 November 2029.
+
+::: note
+The repository holds no packages yet. The `testing` suite gets the next client
+release candidate, and `stable` the first release that carries the new package
+version. Until then the steps below set up the repository, but the last step
+finds no `neodesk` package. Install the client with an invite from
+[Add a computer](/docs/console/add-a-computer) instead.
+:::
+
+After the install, join the computer to your server with the code of an
+invite: in NeoDesk, **Settings**, **Server**, **Join a server**.
+
+### Debian and Ubuntu
+
+1. Install curl:
+
+   ```bash
+   sudo apt install curl
+   ```
+
+2. Make the folder for the key, then download the key into it:
+
+   ```bash
+   sudo install -d -m 0755 /etc/apt/keyrings
+   ```
+
+   ```bash
+   sudo curl -fsSLo /etc/apt/keyrings/neodesk.gpg https://pkg.neode.sk/neodesk.gpg
+   ```
+
+3. Add the repository:
+
+   ```bash
+   echo "deb [signed-by=/etc/apt/keyrings/neodesk.gpg] https://pkg.neode.sk/deb stable main" | sudo tee /etc/apt/sources.list.d/neodesk.list
+   ```
+
+4. Read the package lists, then install NeoDesk:
+
+   ```bash
+   sudo apt update
+   ```
+
+   ```bash
+   sudo apt install neodesk
+   ```
+
+The key only applies to this repository (`signed-by`), not to your other
+package sources.
+
+### Fedora, RHEL, Rocky Linux and AlmaLinux
+
+Add the repository:
+
+```bash
+sudo curl -fsSLo /etc/yum.repos.d/neodesk.repo https://pkg.neode.sk/rpm/neodesk.repo
+```
+
+Then install NeoDesk:
+
+```bash
+sudo dnf install neodesk
+```
+
+dnf asks once whether to import the NeoDesk key. Compare the fingerprint above
+before you answer yes.
+
+### openSUSE and SLES
+
+Add the repository, read it, then install NeoDesk:
+
+```bash
+sudo zypper addrepo https://pkg.neode.sk/suse/neodesk.repo
+```
+
+```bash
+sudo zypper refresh
+```
+
+```bash
+sudo zypper install neodesk
+```
+
+zypper asks whether to trust the NeoDesk key. Compare the fingerprint above,
+then choose to trust it always.
+
+### Release candidates
+
+The `testing` suite has release candidates as well as releases. You get
+whichever is newer.
+
+On Debian and Ubuntu, write `testing` instead of `stable` in the `echo` line
+above.
+
+On Fedora and the like, install from it once:
+
+```bash
+sudo dnf --enablerepo=neodesk-testing install neodesk
+```
+
+To keep it on, set `enabled=1` under `[neodesk-testing]` in
+`/etc/yum.repos.d/neodesk.repo`.
+
+On openSUSE, turn it on:
+
+```bash
+sudo zypper modifyrepo --enable neodesk-testing
+```
+
+### Remove
+
+On Debian and Ubuntu, remove NeoDesk, then the repository and its key:
+
+```bash
+sudo apt remove neodesk
+```
+
+```bash
+sudo rm /etc/apt/sources.list.d/neodesk.list /etc/apt/keyrings/neodesk.gpg
+```
+
+On Fedora and the like:
+
+```bash
+sudo dnf remove neodesk
+```
+
+```bash
+sudo rm /etc/yum.repos.d/neodesk.repo
+```
+
+On openSUSE:
+
+```bash
+sudo zypper remove neodesk
+```
+
+```bash
+sudo zypper removerepo neodesk neodesk-testing
+```
+
 ## Links that open the app
 
 A link can start a client app on the computer it is clicked on:
