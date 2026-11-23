@@ -190,21 +190,31 @@ Timestamp: <first-start-time>
 Bei einer Installation mit dem Skript führst du den Befehl in
 `/opt/neodesk/docker` aus.
 
-Der Befehl liest `/opt/rustdesk/.admin_credentials` im Daten-Volume. Sobald du
-das Admin-Passwort in der Konsole änderst, löscht der Server diese Datei. Der
-Befehl meldet das dann und sagt, wie du ein neues Passwort setzt. Dieser
-Befehl erzeugt ein neues zufälliges Passwort und gibt es aus:
+Der Befehl liest `/opt/rustdesk/.admin_credentials` im Daten-Volume. Antwortet
+er mit „No readable admin credentials file found“, ist der erste Start noch
+nicht fertig. Warte einen Moment und versuch es noch einmal, oder verfolge den
+Start im Log:
+
+```bash
+docker compose logs -f neodesk
+```
+
+Sobald du das Admin-Passwort in der Konsole änderst, löscht der Server diese
+Datei. Der Befehl meldet das dann und sagt, wie du ein neues Passwort setzt.
+Bei einer Installation mit dem Skript erzeugt dieser Befehl ein neues
+zufälliges Passwort und gibt es aus:
 
 ```bash
 sudo bash neodesk-docker.sh reset-password
 ```
 
-Antwortet er mit „No readable admin credentials file found“, ist der erste
-Start noch nicht fertig. Warte einen Moment und versuch es noch einmal, oder
-verfolge den Start im Log:
+Bei einer Installation mit der Compose-Datei wählst du das neue Passwort selbst:
+Tippe es nach dem ersten Befehl ein (es wird nicht angezeigt) und führe dann den
+zweiten im Ordner mit der Compose-Datei aus:
 
 ```bash
-docker compose logs -f neodesk
+read -rs NEWPASS
+printf '%s\n' "$NEWPASS" | docker compose exec -T -u neodesk neodesk neodesk-server reset-password admin
 ```
 
 ### Das Passwort selbst wählen {#choose-the-password-yourself}

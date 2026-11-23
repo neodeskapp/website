@@ -177,19 +177,29 @@ Timestamp: <first-start-time>
 
 For an install made with the script, run it in `/opt/neodesk/docker`.
 
-The command reads `/opt/rustdesk/.admin_credentials` in the data volume. Once you
-change the admin password in the console, the server deletes that file, and the
-command says so and how to set a new password. This prints a new random one:
+The command reads `/opt/rustdesk/.admin_credentials` in the data volume. If it
+answers "No readable admin credentials file found", the first start has not
+finished yet. Wait a moment and run it again, or follow the start in the log:
+
+```bash
+docker compose logs -f neodesk
+```
+
+Once you change the admin password in the console, the server deletes that file,
+and the command says so and how to set a new password. On an install made with
+the script, this prints a new random one:
 
 ```bash
 sudo bash neodesk-docker.sh reset-password
 ```
 
-If it answers "No readable admin credentials file found", the first start has not
-finished yet. Wait a moment and run it again, or follow the start in the log:
+On an install with the compose file, choose the new password yourself: type it
+after the first command (it does not show), then run the second in the folder
+with the compose file:
 
 ```bash
-docker compose logs -f neodesk
+read -rs NEWPASS
+printf '%s\n' "$NEWPASS" | docker compose exec -T -u neodesk neodesk neodesk-server reset-password admin
 ```
 
 ### Choose the password yourself

@@ -67,7 +67,7 @@ sudo /opt/neodesk/neodesk-server check --api http://127.0.0.1:21114/api/health -
 
 ## Forgot the admin password
 
-In Docker, `neodesk-show-admin-credentials` prints the first password only until someone changes it; see [Get the admin password](/docs/getting-started/docker#get-the-admin-password). `sudo bash neodesk-docker.sh reset-password`, run in `/opt/neodesk/docker`, gives `admin` a new random password and prints it once. To choose the password yourself, type it after the first command (it does not show), then run the second in the folder with the compose file:
+In Docker, `neodesk-show-admin-credentials` prints the first password only until someone changes it; see [Get the admin password](/docs/getting-started/docker#get-the-admin-password). On an install made with the script, `sudo bash neodesk-docker.sh reset-password`, run in `/opt/neodesk/docker`, gives `admin` a new random password and prints it once. To choose the password yourself, and on an install with the compose file, type it after the first command (it does not show), then run the second in the folder with the compose file:
 
 ```bash
 read -rs NEWPASS
