@@ -37,11 +37,13 @@ If a reverse proxy sits in front of the console, it has to pass WebSocket connec
 
 A session to a RustDesk device always goes through the relay server, never directly, so the device has to be able to reach the relay port. See [Ports](/docs/operations/ports).
 
-### HTTPS for full speed
+### HTTPS for every device {alias=https-for-full-speed}
 
-The viewer works over plain HTTP, but with limits. When the console is opened over HTTP from another computer (not `localhost`), the viewer shows "HTTP mode: limited to H.264 software decode (~15 FPS). Use HTTPS for full performance (WebCodecs, VP9, 60 FPS)." Over HTTPS the browser decodes the video in hardware where it can.
+Over plain HTTP from another computer (not `localhost`), the browser plays only H.264 video. A RustDesk device, the NeoDesk client included, sends H.264 only when its computer has a hardware H.264 encoder. Every other device sends VP9, and the viewer can't show it over plain HTTP. Over HTTPS the browser decodes the video with WebCodecs, VP9 included, in hardware where it can, so every device shows.
 
-Pasting the clipboard can also fail over HTTP, and browsing whole local folders in the file transfer needs Chrome or Edge over HTTPS. Put the console behind TLS before you use the viewer every day; see [Reverse proxy and TLS](/docs/operations/reverse-proxy-tls).
+When the console is opened over plain HTTP from another computer, the viewer says so in a bar: "Over plain HTTP this browser plays only H.264 video. Devices without an H.264 encoder can't be shown. Open the console over HTTPS to see every device." A session to a device without an H.264 encoder then ends with the device's name and "can't be shown over plain HTTP.", followed by "This device has no H.264 encoder, and over HTTP the browser plays only H.264. Open the console over HTTPS to see its screen." **How to set up HTTPS** next to it opens [Reverse proxy and TLS](/docs/operations/reverse-proxy-tls). A device with an H.264 encoder shows. Over plain HTTP, **Video codec** offers only **Auto (recommended)** and **H264**, and the viewer asks the device for at most 30 frames per second.
+
+Pasting the clipboard can also fail over HTTP, and browsing whole local folders in the file transfer needs Chrome or Edge over HTTPS. Give the console HTTPS before you use the viewer every day; see [Reverse proxy and TLS](/docs/operations/reverse-proxy-tls).
 
 ## How it connects
 
@@ -103,7 +105,7 @@ When a key seems stuck on a RustDesk device, for example everything comes out in
 The viewer covers daily remote support, with these differences:
 
 - It doesn't run on phones. Use the RustDesk app there.
-- Over plain HTTP the video is limited, as described above.
+- Over plain HTTP it shows only devices with an H.264 encoder, as described above.
 - In **File transfer**, **Download folder** saves a folder from the device as one ZIP archive, of at most 4 GB and 65,535 files and folders. Browsing local folders needs Chrome or Edge over HTTPS; other browsers can still upload and download single files.
 - Sessions to RustDesk devices always use the relay server, so they use the server's bandwidth.
 - The console holds at most five of these WebSocket connections per client address at a time, and closes one that carries nothing for 120 seconds.

@@ -37,11 +37,13 @@ Steht ein Reverse Proxy vor der Konsole, muss er WebSocket-Verbindungen auf dies
 
 Eine Sitzung zu einem RustDesk-Gerät läuft immer über den Relay-Server, nie direkt, deshalb muss das Gerät den Relay-Port erreichen können. Siehe [Ports](/docs/operations/ports).
 
-### HTTPS für volle Geschwindigkeit {#https-for-full-speed}
+### HTTPS für jedes Gerät {#https-for-every-device alias=https-for-full-speed}
 
-Der Viewer funktioniert auch über reines HTTP, aber mit Einschränkungen. Wird die Konsole von einem anderen Computer (nicht `localhost`) über HTTP geöffnet, zeigt der Viewer „HTTP-Modus: begrenzt auf H.264 Software-Dekodierung (~15 FPS). HTTPS für volle Leistung verwenden (WebCodecs, VP9, 60 FPS).“ Über HTTPS dekodiert der Browser das Video, wo es geht, in Hardware.
+Über einfaches HTTP von einem anderen Computer aus (nicht `localhost`) spielt der Browser nur H.264-Video ab. Ein RustDesk-Gerät, auch eines mit dem NeoDesk-Client, schickt H.264 nur, wenn sein Computer einen Hardware-Encoder für H.264 hat. Jedes andere Gerät schickt VP9, und das kann der Viewer über einfaches HTTP nicht zeigen. Über HTTPS dekodiert der Browser das Video mit WebCodecs, auch VP9, wo es geht in Hardware, und jedes Gerät erscheint.
 
-Auch das Einfügen aus der Zwischenablage kann über HTTP fehlschlagen, und um in der Dateiübertragung ganze lokale Ordner zu durchsuchen, brauchst du Chrome oder Edge über HTTPS. Setze die Konsole hinter TLS, bevor du den Viewer täglich nutzt; siehe [Reverse Proxy und TLS](/docs/operations/reverse-proxy-tls).
+Wird die Konsole von einem anderen Computer über einfaches HTTP geöffnet, sagt der Viewer das in einer Leiste: „Über einfaches HTTP spielt dieser Browser nur H.264-Video ab. Geräte ohne H.264-Encoder können nicht angezeigt werden. Öffnen Sie die Konsole über HTTPS, um jedes Gerät zu sehen.“ Eine Sitzung zu einem Gerät ohne H.264-Encoder endet dann mit dem Namen des Geräts und „kann über einfaches HTTP nicht angezeigt werden.“, gefolgt von „Dieses Gerät hat keinen H.264-Encoder, und über HTTP spielt der Browser nur H.264 ab. Öffnen Sie die Konsole über HTTPS, um seinen Bildschirm zu sehen.“ **So richten Sie HTTPS ein** daneben öffnet [Reverse Proxy und TLS](/docs/operations/reverse-proxy-tls). Ein Gerät mit H.264-Encoder erscheint. Über einfaches HTTP bietet **Videocodec** nur **Automatisch (empfohlen)** und **H264** an, und der Viewer bittet das Gerät um höchstens 30 Bilder pro Sekunde.
+
+Auch das Einfügen aus der Zwischenablage kann über HTTP fehlschlagen, und um in der Dateiübertragung ganze lokale Ordner zu durchsuchen, brauchst du Chrome oder Edge über HTTPS. Gib der Konsole HTTPS, bevor du den Viewer täglich nutzt; siehe [Reverse Proxy und TLS](/docs/operations/reverse-proxy-tls).
 
 ## Wie er sich verbindet {#how-it-connects}
 
@@ -103,7 +105,7 @@ Scheint auf einem RustDesk-Gerät eine Taste zu hängen, etwa weil alles in Gro�
 Der Viewer deckt die tägliche Fernwartung ab, mit diesen Unterschieden:
 
 - Er läuft nicht auf Handys. Nutze dort die RustDesk-App.
-- Über reines HTTP ist das Video eingeschränkt, wie oben beschrieben.
+- Über einfaches HTTP zeigt er nur Geräte mit H.264-Encoder, wie oben beschrieben.
 - In **Dateiübertragung** speichert **Ordner herunterladen** einen Ordner vom Gerät als ein ZIP-Archiv mit höchstens 4 GB und 65.535 Dateien und Ordnern. Lokale Ordner zu durchsuchen braucht Chrome oder Edge über HTTPS; andere Browser können trotzdem einzelne Dateien hoch- und herunterladen.
 - Sitzungen zu RustDesk-Geräten laufen immer über den Relay-Server und verbrauchen deshalb die Bandbreite des Servers.
 - Die Konsole hält höchstens fünf dieser WebSocket-Verbindungen pro Client-Adresse gleichzeitig und schließt eine Verbindung, über die 120 Sekunden lang nichts läuft.

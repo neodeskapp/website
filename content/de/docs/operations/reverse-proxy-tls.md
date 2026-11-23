@@ -4,7 +4,7 @@ description: Der Web-Konsole HTTPS geben, mit Let's Encrypt unter Docker, mit ng
 order: 3
 ---
 
-Die Web-Konsole lauscht auf Port 5000 mit unverschlüsseltem HTTP. Bevor Menschen sie über das Internet nutzen, gib ihr HTTPS. Dafür gibt es drei Wege:
+Die Web-Konsole lauscht auf Port 5000 mit unverschlüsseltem HTTP. Bevor Menschen sie über das Internet nutzen, gib ihr HTTPS. Auch Remote Desktop im Browser braucht es: Über einfaches HTTP zeigt der Viewer nur Geräte mit Hardware-Encoder für H.264 (siehe [HTTPS für jedes Gerät](/docs/console/remote-in-browser#https-for-every-device)). Es gibt drei Wege zu HTTPS:
 
 - Docker mit einem DNS-Namen für den Server: Das Installationsskript setzt Traefik vor die Konsole, mit einem Zertifikat von Let's Encrypt. Siehe [HTTPS mit Let's Encrypt unter Docker](#https-with-lets-encrypt-on-docker).
 - Ein eigener Reverse Proxy, etwa nginx oder Caddy. Um diesen Weg geht es auf dem größten Teil dieser Seite, ab [Was über den Proxy läuft](#what-goes-through-the-proxy), mit vollständigen Beispielen, den Einstellungen, die NeoDesk hinter einem Proxy braucht, und dem, was ein Proxy nicht weiterleiten kann.

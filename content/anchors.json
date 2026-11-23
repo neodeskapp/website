@@ -89,7 +89,8 @@
 		"how-it-connects",
 		"during-a-session",
 		"keyboard",
-		"compared-with-the-rustdesk-app"
+		"compared-with-the-rustdesk-app",
+		"https-for-every-device"
 	],
 	"console/remote-targets": [
 		"what-the-server-needs",
