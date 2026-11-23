@@ -1,6 +1,6 @@
 ---
 title: The device list
-description: Find, filter, sort and organise devices, act on several at once, and add RDP or VNC computers.
+description: Find, filter, sort and organize devices, act on several at once, and add RDP or VNC computers.
 order: 2
 ---
 
@@ -68,7 +68,7 @@ Each folder has a menu (the three dots, or a right-click) with **Edit** and **De
 
 ## Groups
 
-Groups are a second way to organise devices, listed below the folders. A group is a set of devices you can filter the list by, apply access rules to, and limit to some people. **New group** asks for:
+Groups are a second way to organize devices, listed below the folders. A group is a set of devices you can filter the list by, apply access rules to, and limit to some people. **New group** asks for:
 
 - **Group name**.
 - **Dynamic group from tag**: when ticked, every device with the tag in **Tag filter** joins the group by itself. When not ticked, you add devices yourself.
