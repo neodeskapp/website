@@ -21,22 +21,39 @@ const lineOf = (text: string, index = 0) => text.slice(0, index).split('\n').len
 
 /* ---------- the old name ---------- */
 
-// Where the old name may stay. Everything else in the built site is an error.
-export const OLD_NAME_ALLOW = {
-	// Pages that are about the project's origin: every mention on them is attribution
-	pages: ['project/license', 'project/sponsors'],
-	// Phrases allowed on any page: the upstream repository and the credit line
-	phrases: [
-		/(?:https?:\/\/)?github\.com\/UNITRONIX\/BetterDesk\b[\w/#.?=&-]*/gi,
-		/\bUNITRONIX\/BetterDesk\b(?:#\d+)?/gi,
-		// "started as a fork of BetterDesk by UNITRONIX", as HTML or Markdown, across a line break
-		/fork of\s+(?:<a [^>]*>|\[)?BetterDesk(?:<\/a>|\]\([^)]*\))?\s+by\s+UNITRONIX/gi,
-		// The same in German: "als Fork von BetterDesk von UNITRONIX entstanden"
-		/Fork von\s+(?:<a [^>]*>|\[)?BetterDesk(?:<\/a>|\]\([^)]*\))?\s+von\s+UNITRONIX/gi
-	]
-};
-const OLD_NAME = /betterdesk|betterde\.sk/gi;
+// The old project's names; betterdesk also catches trybetterdesk
+const OLD_NAME = /betterdesk|betterde\.sk|unitronix/gi;
 const OLD_IMAGE = /ghcr\.io\/[\w.-]+\/betterdesk[\w.-]*/gi;
+// The built files the check reads: pages, Markdown copies, llms files, search, sitemap, scripts, styles and SVGs
+const OLD_NAME_FILES = /\.(html|md|txt|json|xml|js|css|svg)$/;
+
+/** A sentence as a pattern that matches it exactly, also across a line break. */
+const sentence = (text: string) => new RegExp(text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/ /g, '\\s+'), 'g');
+
+// The only sentences that may name the old project, each only on its own page, in
+// English and German: the notices on the license page and the copyright policy on the
+// contributing page. Any other mention in the built site fails the build. A change to
+// one of these sentences in the docs needs the same change here.
+export const OLD_NAME_ALLOW: { page: string; sentence: RegExp }[] = [
+	...[
+		'NeoDesk is a modified version of BetterDesk by UNITRONIX, released under the AGPL-3.0.',
+		'UNITRONIX holds the copyright the LICENSE file names.',
+		'NeoDesk ist eine veränderte Version von BetterDesk von UNITRONIX, veröffentlicht unter der AGPL-3.0.',
+		'UNITRONIX hält das Urheberrecht, das die LICENSE-Datei nennt.'
+	].map((s) => ({ page: 'project/license', sentence: sentence(s) })),
+	...[
+		"The copyright notice in LICENSE names the project's copyright holder, UNITRONIX.",
+		'It does not transfer the copyright in later contributions to UNITRONIX.',
+		"Where UNITRONIX has no assignment, the contributor's copyright and the AGPL treatment of their code are kept, and nobody claims exclusive ownership of it.",
+		'Where UNITRONIX needs exclusive control of a contribution, it gets a written copyright assignment or a suitable contributor agreement before the code is accepted.',
+		'A commercial grant or a dual license can only be offered for material whose copyright and third-party permissions UNITRONIX actually controls.',
+		'Der Urheberrechtsvermerk in LICENSE nennt den Urheberrechtsinhaber des Projekts, UNITRONIX.',
+		'Er überträgt das Urheberrecht an späteren Beiträgen nicht auf UNITRONIX.',
+		'Wo UNITRONIX keine Abtretung hat, bleiben das Urheberrecht der Mitwirkenden und die AGPL-Behandlung ihres Codes erhalten, und niemand beansprucht exklusives Eigentum daran.',
+		'Wo UNITRONIX die exklusive Kontrolle über einen Beitrag braucht, bekommt es vor der Annahme des Codes eine schriftliche Abtretung des Urheberrechts oder eine passende Vereinbarung mit den Mitwirkenden.',
+		'Eine kommerzielle Rechteeinräumung oder eine Doppellizenz lässt sich nur für Material anbieten, dessen Urheberrecht und Genehmigungen Dritter UNITRONIX tatsächlich kontrolliert.'
+	].map((s) => ({ page: 'development/contributing', sentence: sentence(s) }))
+];
 
 /** A built file's path without its language folder: de/docs/a.md is docs/a.md. */
 const withoutLocale = (rel: string) => {
@@ -76,26 +93,27 @@ export interface CheckInput {
 
 export function checkOldNames({ dist }: CheckInput) {
 	const problems: string[] = [];
-	for (const rel of listFiles(dist).filter((f) => TEXT.test(f))) {
+	for (const rel of listFiles(dist).filter((f) => OLD_NAME_FILES.test(f))) {
 		const raw = fs.readFileSync(path.join(dist, rel), 'utf8');
 		for (const m of raw.matchAll(OLD_IMAGE)) problems.push(`${rel}:${lineOf(raw, m.index)}: old image path "${m[0]}"`);
-		// Blank out the allowed phrases, keeping every other character where it was
-		let text = raw;
-		for (const re of OLD_NAME_ALLOW.phrases) text = text.replace(re, (s) => ' '.repeat(s.length));
 		if (withoutLocale(rel) === 'docs/search.json') {
 			for (const entry of JSON.parse(raw) as { u: string }[]) {
 				const page = withoutLocale(entry.u.slice(1)).replace(/^docs\/|\/(#.*)?$|#.*$/g, '');
-				if (OLD_NAME_ALLOW.pages.includes(page)) continue;
 				let fields = JSON.stringify(entry);
-				for (const re of OLD_NAME_ALLOW.phrases) fields = fields.replace(re, '');
+				for (const a of OLD_NAME_ALLOW) if (a.page === page) fields = fields.replace(a.sentence, '');
 				const hit = fields.match(OLD_NAME);
 				if (hit) problems.push(`${rel}: "${hit[0]}" in the search entry for ${entry.u}`);
 			}
 			continue;
 		}
+		// Blank out the allowed sentences where they are on their own page, keeping every other character where it was
+		let text = raw;
+		for (const a of OLD_NAME_ALLOW) {
+			for (const m of raw.matchAll(a.sentence)) {
+				if (pageAt(raw, m.index, rel) === a.page) text = text.slice(0, m.index) + ' '.repeat(m[0].length) + text.slice(m.index + m[0].length);
+			}
+		}
 		for (const m of text.matchAll(OLD_NAME)) {
-			const page = pageAt(raw, m.index, rel);
-			if (page && OLD_NAME_ALLOW.pages.includes(page)) continue;
 			const around = raw.slice(Math.max(0, m.index - 40), m.index + 40).replace(/\s+/g, ' ');
 			problems.push(`${rel}:${lineOf(raw, m.index)}: old name "${m[0]}" in "...${around}..."`);
 		}

@@ -193,12 +193,13 @@ The build checks the pages as it reads them and the files it wrote to
 
 - Links: every link between docs pages, every heading a link names, and every
   screenshot exist.
-- The old name: no BetterDesk, betterdesk, trybetterdesk or betterde.sk in the
-  built pages, `.md` copies and llms files, and no old image path
-  (`ghcr.io/<owner>/betterdesk...`). The allow list is `OLD_NAME_ALLOW` in
-  `src/checks.ts`: links to the upstream repository UNITRONIX/BetterDesk, the
-  "started as a fork of BetterDesk by UNITRONIX" credit, and the license and
-  sponsors pages.
+- The old name: no BetterDesk, betterdesk, trybetterdesk, betterde.sk or
+  UNITRONIX in the built pages, `.md` copies, llms files, search index,
+  scripts, styles and SVGs, and no old image path
+  (`ghcr.io/<owner>/betterdesk...`). `OLD_NAME_ALLOW` in `src/checks.ts` lists
+  the only sentences that may name them, each on its own page, in English and
+  German: the notices on the license page and the copyright policy on the
+  contributing page. When one of those sentences changes, change it there too.
 - The console port: 21114 is the server's API port on Linux and Windows. A
   sentence that names 21114 with the console, the browser or signing in, but
   not the API, fails.
