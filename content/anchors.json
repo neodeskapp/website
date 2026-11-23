@@ -553,9 +553,6 @@
 	"project/license": [
 		"agpl-30",
 		"which-versions",
-		"commercial-grant",
-		"what-the-grant-allows",
-		"start-and-end",
 		"trademark",
 		"clean-room-notice",
 		"third-party-notices"

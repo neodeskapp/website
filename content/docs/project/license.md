@@ -1,6 +1,6 @@
 ---
 title: License
-description: NeoDesk's license, the AGPL-3.0, the Commercial Grant for sponsors of upstream BetterDesk, the trademark note and where the third-party notices are.
+description: NeoDesk's license, the AGPL-3.0, the trademark note and where the third-party notices are.
 order: 1
 ---
 
@@ -19,35 +19,6 @@ NeoDesk started as a fork of BetterDesk, which UNITRONIX (Krzysztof Nienartowicz
 The AGPL-3.0 applies to all commits on the development branch since June 2026. v3.4.0 is the first stable release under the AGPL-3.0. Releases v3.3.x and earlier remain under the Apache License 2.0, as published in their release artifacts.
 
 Third-party contributions that were merged earlier under other terms have been withdrawn and recreated by the maintainer under the AGPL-3.0 where applicable.
-
-## Commercial Grant
-
-The AGPL-3.0 applies to everyone. The Commercial Grant is an optional exception to its copyleft for your private deployment patches. It is for:
-
-- sponsors of [UNITRONIX on GitHub Sponsors](https://github.com/sponsors/UNITRONIX) at $50 a month or more: the Bronze, Silver and Gold tiers
-- Honorary Supporters
-
-The $5 and $15 tiers and [Buy Me a Coffee](https://buymeacoffee.com/unitronix) don't include it.
-
-### What the grant allows
-
-While the eligible sponsorship is active, the organization may run modified NeoDesk (private patches, branding) for internal or client use, without publishing those private modifications under the AGPL, provided it:
-
-- does not resell NeoDesk as a standalone product (OEM)
-- keeps the features merged into the public repository open for everyone
-
-| Where | What applies |
-|---|---|
-| The public NeoDesk repository | Always AGPL-3.0, always open |
-| Your private deployment | With the grant, private patches are fine while you are eligible |
-
-### Start and end
-
-The grant starts with an active GitHub Sponsors subscription of $50 a month or more, or with Honorary Supporter status. It ends when the sponsorship ends. There are no certificates.
-
-The grant is self-service. GitHub Sponsors billing, or honorary status, is the only check: there are no license keys, endpoint counts or audits, and no contracts unless you ask for a large deal later. There is no guaranteed SLA either; priority triage is best effort, when the maintainer has time.
-
-A paid commercial license for OEM and special cases without sponsorship may be offered later. Normal sponsor use doesn't need one. Questions about the grant go to a GitHub issue in [UNITRONIX/BetterDesk](https://github.com/UNITRONIX/BetterDesk/issues), and the maintainer replies when there is time.
 
 ## Trademark
 

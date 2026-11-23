@@ -70,7 +70,7 @@ const config: SiteConfig = {
 		{
 			slug: 'project',
 			label: 'The project',
-			intro: 'The license with the Commercial Grant, and what the project does with your data.'
+			intro: 'The license and what the project does with your data.'
 		}
 	]
 };

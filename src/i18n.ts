@@ -212,7 +212,7 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 			},
 			project: {
 				label: 'Das Projekt',
-				intro: 'Die Lizenz mit dem Commercial Grant und was das Projekt mit deinen Daten macht.'
+				intro: 'Die Lizenz und was das Projekt mit deinen Daten macht.'
 			}
 		}
 	}
