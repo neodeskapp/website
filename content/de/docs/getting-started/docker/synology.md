@@ -64,7 +64,7 @@ Standardmäßig liegen die Daten in Docker-Volumes. Willst du sie stattdessen in
 Ordnern auf dem NAS haben, ersetze die beiden Volume-Zeilen des Services
 `neodesk` durch Ordner und setze `PUID` und `PGID` in `.env` auf die Nummern
 des Benutzers und der Gruppe, denen die Ordner gehören. `id <user>` über SSH
-gibt sie aus.
+gibt sie als `uid` und `gid` aus; setze sie für `<uid>` und `<gid>` ein.
 
 ```yaml
     volumes:
@@ -73,8 +73,8 @@ gibt sie aus.
 ```
 
 ```ini
-PUID=<uid of the folders' owner>
-PGID=<gid of the folders' group>
+PUID=<uid>
+PGID=<gid>
 ```
 
 Der Container startet als root, gibt seinem Benutzer `neodesk` diese Nummern

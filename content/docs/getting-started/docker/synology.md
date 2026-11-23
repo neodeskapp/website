@@ -58,7 +58,8 @@ Continue with [First sign-in](/docs/getting-started/first-sign-in).
 By default the data lives in Docker volumes. To keep it in folders on the NAS
 instead, replace the two volume lines of the `neodesk` service with folders and
 set `PUID` and `PGID` in `.env` to the numbers of the user and group that own
-them. `id <user>` over SSH prints them.
+them. `id <user>` over SSH prints them as `uid` and `gid`; put them in place of
+`<uid>` and `<gid>`.
 
 ```yaml
     volumes:
@@ -67,8 +68,8 @@ them. `id <user>` over SSH prints them.
 ```
 
 ```ini
-PUID=<uid of the folders' owner>
-PGID=<gid of the folders' group>
+PUID=<uid>
+PGID=<gid>
 ```
 
 The container starts as root, gives its `neodesk` user these numbers, and runs
