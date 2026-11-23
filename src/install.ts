@@ -12,8 +12,8 @@ export interface InstallMethod {
 	lang: 'bash' | 'powershell';
 	/** The commands, one per line, as the docs page has them */
 	lines: string[];
-	/** What happens, for the home page: plain text, one or two short sentences */
-	note: string;
+	/** What happens, for the home page, by language code: plain text, one or two short sentences */
+	note: Record<string, string>;
 	/** For llms.txt: set on an install that is a single command, with what it gives you */
 	oneLine?: string;
 }
@@ -25,7 +25,10 @@ export const INSTALLS: InstallMethod[] = [
 		docs: '/docs/getting-started/docker',
 		lang: 'bash',
 		lines: ['curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/install.sh | sudo bash'],
-		note: 'The script installs Docker when it is missing, pulls the published image and runs the server and the web console in one container. At the end it prints the console\'s address and the admin password. The console speaks plain HTTP on port 5000.',
+		note: {
+			en: 'The script installs Docker when it is missing, pulls the published image and runs the server and the web console in one container. At the end it prints the console\'s address and the admin password. The console speaks plain HTTP on port 5000.',
+			de: 'Das Skript installiert Docker, falls es fehlt, lädt das veröffentlichte Image und startet Server und Web-Konsole in einem Container. Am Ende zeigt es die Adresse der Konsole und das Admin-Passwort. Die Konsole spricht unverschlüsseltes HTTP auf Port 5000.'
+		},
 		oneLine: 'Docker: the server and the web console in one container, from the published image'
 	},
 	{
@@ -34,7 +37,10 @@ export const INSTALLS: InstallMethod[] = [
 		docs: '/docs/getting-started/linux',
 		lang: 'bash',
 		lines: ['curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/neodesk.sh | sudo bash'],
-		note: 'The script downloads the newest release, checks it and installs it as one systemd service. Piped into bash like this, it asks nothing and installs with the defaults. It shows the admin password once.',
+		note: {
+			en: 'The script downloads the newest release, checks it and installs it as one systemd service. Piped into bash like this, it asks nothing and installs with the defaults. It shows the admin password once.',
+			de: 'Das Skript lädt das neueste Release herunter, prüft es und installiert es als einen systemd-Dienst. So an bash übergeben, fragt es nichts und nimmt die Standardwerte. Das Admin-Passwort zeigt es nur einmal an.'
+		},
 		oneLine: 'Linux: one systemd service. Piped into bash like this, the script asks nothing and installs with the defaults'
 	},
 	{
@@ -46,7 +52,10 @@ export const INSTALLS: InstallMethod[] = [
 			'Invoke-WebRequest https://raw.githubusercontent.com/neodeskapp/neodesk/main/neodesk.ps1 -OutFile neodesk.ps1 -UseBasicParsing',
 			'.\\neodesk.ps1'
 		],
-		note: 'Run it in PowerShell as Administrator and choose Fresh installation in the menu. The script downloads the newest release and runs it as the Windows service NeoDeskServer, or as a scheduled task when NSSM is missing. It shows the admin password once.'
+		note: {
+			en: 'Run it in PowerShell as Administrator and choose Fresh installation in the menu. The script downloads the newest release and runs it as the Windows service NeoDeskServer, or as a scheduled task when NSSM is missing. It shows the admin password once.',
+			de: 'Führe es in PowerShell als Administrator aus und wähle im Menü Fresh installation. Das Skript lädt das neueste Release herunter und betreibt es als Windows-Dienst NeoDeskServer, oder als geplante Aufgabe, wenn NSSM fehlt. Das Admin-Passwort zeigt es nur einmal an.'
+		}
 	}
 ];
 
@@ -68,6 +77,15 @@ export function clientPorts(markdown: string): ClientPort[] {
 		.filter((l) => /^\|\s*\d{2,5}\s*\|/.test(l))
 		.map((l) => l.split('|').slice(1, -1).map((c) => c.trim()));
 	return rows.filter((r) => r.length >= 4 && /^RustDesk clients\b/.test(r[2]) && /^Yes\b/.test(r[3])).map((r) => ({ port: r[0], protocol: r[1] }));
+}
+
+/** The protocol column of the ports table, by port, in the language the page is written in. */
+export function protocolsOf(markdown: string): Map<string, string> {
+	const rows = markdown
+		.split('\n')
+		.filter((l) => /^\|\s*\d{2,5}\s*\|/.test(l))
+		.map((l) => l.split('|').slice(1, -1).map((c) => c.trim()));
+	return new Map(rows.filter((r) => r.length >= 2).map((r) => [r[0], r[1]]));
 }
 
 /** The lines of every fenced block of a language in a Markdown body. */

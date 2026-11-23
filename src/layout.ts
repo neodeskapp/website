@@ -132,8 +132,8 @@ ${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd).replace(
 <a class="skip" href="#content">${esc(t.skip)}</a>
 
 <header class="top">
-  <button type="button" class="menu-button" aria-controls="sidebar" aria-expanded="false">${esc(t.menu)}</button>
-  <a class="logo" href="${inLocale(o, '/')}" aria-label="${esc(config.name)} ${esc(t.home.toLowerCase())}">
+  <button type="button" class="menu-button" aria-controls="sidebar" aria-expanded="false" data-close="${esc(t.close)}">${esc(t.menu)}</button>
+  <a class="logo" href="${inLocale(o, '/')}" aria-label="${esc(fill(t.homeLabel, { name: config.name }))}">
     <img class="only-dark" src="/img/logo-on-dark.svg" alt="${esc(config.name)}" width="118" height="28">
     <img class="only-light" src="/img/logo-on-light.svg" alt="${esc(config.name)}" width="118" height="28">
   </a>
@@ -165,7 +165,7 @@ ${main}
   </nav>
 </footer>
 
-<dialog class="search" aria-label="${esc(t.searchDocs)}">
+<dialog class="search" aria-label="${esc(t.searchDocs)}" data-index="${inLocale(o, '/docs/search.json')}" data-results="${esc(t.resultsCount)}" data-nothing="${esc(t.nothingFound)}" data-failed="${esc(t.searchFailed)}">
   <div class="search-field">
     ${SEARCH_ICON}
     <input type="search" id="search-input" placeholder="${esc(t.searchDocs)}" aria-label="${esc(t.searchDocs)}" autocomplete="off" spellcheck="false" aria-controls="search-results">
@@ -271,7 +271,8 @@ ${tocItems.map((h) => `      <li${h.level === 3 ? ' class="sub"' : ''}><a href="
 			: '';
 	const actions = [
 		`<span>${esc(t.updated)} <time datetime="${page.updated}">${formatDate(page.updated, locale.dateLocale)}</time></span>`,
-		config.editBase ? `<a href="${esc(config.editBase)}/${page.slug}.md" rel="noopener">${esc(t.editOnGitHub)}</a>` : ''
+		// editBase points at content/docs; another language's files are in content/<code>/docs
+		config.editBase ? `<a href="${esc(locale.default ? config.editBase : config.editBase.replace(/\/docs$/, `/${locale.code}/docs`))}/${page.slug}.md" rel="noopener">${esc(t.editOnGitHub)}</a>` : ''
 	]
 		.filter(Boolean)
 		.join('\n        ');

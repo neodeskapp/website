@@ -1,5 +1,7 @@
 /* The docs' behaviour in the browser: search, copy buttons, the "On this page"
-   marker and the menu on small screens. The pages read fine without it. */
+   marker and the menu on small screens. The pages read fine without it. Its words
+   come from the page, in the page's language: data-copied on a copy button,
+   data-close on the menu button, and the search dialog's data attributes. */
 (function () {
   var doc = document;
   var $ = function (sel, el) { return (el || doc).querySelector(sel); };
@@ -27,10 +29,12 @@
   doc.addEventListener('click', function (e) {
     var btn = e.target.closest && e.target.closest('.copy');
     if (!btn) return;
+    var label = btn.getAttribute('data-label') || btn.textContent;
+    btn.setAttribute('data-label', label);
     copyText($('code', btn.parentNode).textContent, function () {
-      btn.textContent = 'Copied';
+      btn.textContent = btn.getAttribute('data-copied') || 'Copied';
       clearTimeout(btn._t);
-      btn._t = setTimeout(function () { btn.textContent = 'Copy'; }, 1600);
+      btn._t = setTimeout(function () { btn.textContent = label; }, 1600);
     });
   });
 
@@ -62,11 +66,12 @@
 
   /* ---- Menu on small screens ---- */
   var menu = $('.menu-button');
+  var menuLabel = menu ? menu.textContent : '';
   function setMenu(open) {
     doc.documentElement.classList.toggle('menu-open', open);
     if (menu) {
       menu.setAttribute('aria-expanded', open ? 'true' : 'false');
-      menu.textContent = open ? 'Close' : 'Menu';
+      menu.textContent = open ? menu.getAttribute('data-close') || 'Close' : menuLabel;
     }
   }
   if (menu) menu.addEventListener('click', function () { setMenu(menu.getAttribute('aria-expanded') !== 'true'); });
@@ -107,6 +112,8 @@
   var input = $('#search-input');
   var list = $('#search-results');
   var status = $('.search-status');
+  var hint = status.textContent;
+  var said = function (name, fallback) { return dialog.getAttribute('data-' + name) || fallback; };
   var index = null;
   var pages = null;
   var selected = -1;
@@ -115,7 +122,7 @@
 
   function load() {
     if (index) return Promise.resolve();
-    return fetch('/docs/search.json').then(function (r) { return r.json(); }).then(function (entries) {
+    return fetch(said('index', '/docs/search.json')).then(function (r) { return r.json(); }).then(function (entries) {
       index = entries;
       // Everything a page says, to require that all the words of a search occur on it
       pages = {};
@@ -206,7 +213,7 @@
     var q = input.value;
     if (!q.trim()) {
       list.innerHTML = '';
-      status.textContent = 'Type to search every page and section.';
+      status.textContent = hint;
       status.hidden = false;
       selected = -1;
       return;
@@ -220,7 +227,9 @@
         '<p class="result-text">' + r.text + '</p></a></li>';
     }).join('');
     status.hidden = results.length > 0;
-    status.textContent = results.length ? results.length + ' results' : 'Nothing found for "' + q.trim() + '". Try fewer or other words.';
+    status.textContent = results.length
+      ? said('results', '{count} results').replace('{count}', results.length)
+      : said('nothing', 'Nothing found for "{query}". Try fewer or other words.').replace('{query}', q.trim());
     select(results.length ? 0 : -1);
   }
 
@@ -228,7 +237,7 @@
     setMenu(false);
     if (!dialog.open) dialog.showModal();
     input.select();
-    load().then(render, function () { status.textContent = 'The search index could not be loaded.'; });
+    load().then(render, function () { status.textContent = said('failed', 'The search index could not be loaded.'); });
   }
 
   $$('.search-button').forEach(function (b) { b.addEventListener('click', open); });

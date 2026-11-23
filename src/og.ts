@@ -119,8 +119,11 @@ export function fit(text: string, face: Face, sizes: number[], max: number, maxL
 	return { size, lines, cut: true };
 }
 
-/** Words a cut line should not end on, such as "the" in "the Docker images from a…" */
-const LEADING = new Set(['a', 'an', 'the', 'and', 'or', 'of', 'to', 'with', 'for', 'from', 'in', 'on', 'at', 'by', 'its', 'their', 'that', 'what', 'how', 'which', 'who', 'as']);
+/** Words a cut line should not end on, such as "the" in "the Docker images from a…", in English and German */
+const LEADING = new Set([
+	...['a', 'an', 'the', 'and', 'or', 'of', 'to', 'with', 'for', 'from', 'in', 'on', 'at', 'by', 'its', 'their', 'that', 'what', 'how', 'which', 'who', 'as'],
+	...['der', 'die', 'das', 'den', 'dem', 'des', 'ein', 'eine', 'einen', 'einem', 'einer', 'und', 'oder', 'mit', 'für', 'von', 'vom', 'zu', 'zum', 'zur', 'im', 'auf', 'am', 'bei', 'aus', 'nach', 'über', 'wie', 'was', 'als', 'sein', 'seine', 'ihre', 'dass']
+]);
 
 /**
  * The same number of lines, as even as they go: the narrowest width that still needs no

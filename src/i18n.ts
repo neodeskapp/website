@@ -71,8 +71,21 @@ export interface Strings {
 	security: string;
 	note: string;
 	warning: string;
-	/** Section labels and intros; the default language takes them from site.config.ts */
-	sections?: Record<string, { label: string; intro: string }>;
+	/** The copy button of a code block, its label for screen readers, and what it says after a copy */
+	copy: string;
+	copyCode: string;
+	/** "{name} home", the logo's label */
+	homeLabel: string;
+	/** "{count} results", under the search field */
+	resultsCount: string;
+	/** "Nothing found for "{query}". ...", under the search field */
+	nothingFound: string;
+	searchFailed: string;
+	/** The lines at the top of a page's Markdown copy: "Source: <address>" and "Last updated: <date>" */
+	source: string;
+	lastUpdated: string;
+	/** Section labels, intros and descriptions; the default language takes them from site.config.ts */
+	sections?: Record<string, { label: string; intro: string; description?: string }>;
 }
 
 export const STRINGS: Record<string, Partial<Strings>> = {
@@ -115,10 +128,94 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		changelog: 'Changelog',
 		security: 'Security',
 		note: 'Note',
-		warning: 'Warning'
+		warning: 'Warning',
+		copy: 'Copy',
+		copyCode: 'Copy this code',
+		homeLabel: '{name} home',
+		resultsCount: '{count} results',
+		nothingFound: 'Nothing found for "{query}". Try fewer or other words.',
+		searchFailed: 'The search index could not be loaded.',
+		source: 'Source',
+		lastUpdated: 'Last updated'
 	},
-	// German: no text yet. Fill in every key of Strings, and sections, before adding content/de/docs.
-	de: {}
+	de: {
+		skip: 'Zum Inhalt springen',
+		menu: 'Menü',
+		close: 'Schließen',
+		docs: 'Doku',
+		documentation: 'Dokumentation',
+		searchDocs: 'Doku durchsuchen',
+		searchKey: 'Strg K',
+		searchHint: 'Durchsucht alle Seiten und Abschnitte.',
+		results: 'Ergebnisse',
+		site: 'Website',
+		more: 'Mehr',
+		language: 'Sprache',
+		onThisPage: 'Auf dieser Seite',
+		updated: 'Geändert am',
+		copyMarkdown: 'Als Markdown kopieren',
+		copied: 'Kopiert',
+		editOnGitHub: 'Auf GitHub bearbeiten',
+		previous: 'Zurück',
+		next: 'Weiter',
+		previousIn: 'Zurück: {section}',
+		nextIn: 'Weiter: {section}',
+		pager: 'Vorherige und nächste Seite',
+		home: 'Startseite',
+		docsTitle: '{name}-Dokumentation',
+		pageTitle: '{title} - {name}-Doku',
+		docsLead: 'Wie du NeoDesk installierst, RustDesk-Clients damit verbindest und den Server betreibst.',
+		writtenFor: 'Geschrieben für Version {version}.',
+		docsDescription: 'Wie du NeoDesk installierst, RustDesk-Clients damit verbindest und den Server betreibst.',
+		notFound: 'Seite nicht gefunden',
+		notFoundLead: 'Unter dieser Adresse gibt es keine Seite. Vielleicht ist sie umgezogen.',
+		notFoundDescription: 'Unter dieser Adresse gibt es keine Seite.',
+		everySection: 'Alle Abschnitte und Seiten.',
+		whatItIs: 'Was NeoDesk ist.',
+		footer:
+			'NeoDesk ist als Fork von <a href="https://github.com/UNITRONIX/BetterDesk" rel="noopener">BetterDesk</a> von UNITRONIX entstanden und funktioniert mit RustDesk-Clients. Open Source unter der AGPL-3.0.',
+		changelog: 'Changelog',
+		security: 'Sicherheit',
+		note: 'Hinweis',
+		warning: 'Achtung',
+		copy: 'Kopieren',
+		copyCode: 'Diesen Code kopieren',
+		homeLabel: '{name} Startseite',
+		resultsCount: '{count} Ergebnisse',
+		nothingFound: 'Nichts gefunden für „{query}“. Versuch es mit weniger oder anderen Wörtern.',
+		searchFailed: 'Der Suchindex ließ sich nicht laden.',
+		source: 'Quelle',
+		lastUpdated: 'Zuletzt geändert',
+		sections: {
+			'getting-started': {
+				label: 'Erste Schritte',
+				intro: 'Hier fängst du an: was NeoDesk ist, die Installation mit Docker, unter Linux oder Windows, die erste Anmeldung und der erste RustDesk-Client.'
+			},
+			console: {
+				label: 'Die Konsole',
+				intro: 'Die Web-Konsole Seite für Seite: die Übersicht, die Geräteliste, einen Computer per Einladung hinzufügen, die Details eines Geräts und wie du dich verbindest, Registrierungsanfragen, Schnellhilfe, Remote Desktop im Browser und das Aktivitätsprotokoll.',
+				description: 'Die Web-Konsole Seite für Seite: Geräte, Computer hinzufügen, Registrierung, Schnellhilfe, Remote Desktop im Browser und das Aktivitätsprotokoll.'
+			},
+			people: {
+				label: 'Benutzer und Anmeldung',
+				intro: 'Wer sich anmelden darf und was dann erlaubt ist: Benutzer, Rollen und Berechtigungen, Zwei-Faktor-Anmeldung, LDAP oder Active Directory, Single Sign-on mit OIDC und Organisationen.',
+				description: 'Wer sich anmelden darf und was erlaubt ist: Benutzer, Rollen, Berechtigungen, Zwei-Faktor-Anmeldung, LDAP oder Active Directory, OIDC, Organisationen.'
+			},
+			operations: {
+				label: 'Server betreiben',
+				intro: 'Für alle, die den Server betreiben: Konfiguration, Ports und Firewall, ein Reverse Proxy mit TLS, PostgreSQL, Updates, Backup und Fehlersuche.'
+			},
+			development: {
+				label: 'Entwicklung',
+				intro: 'Für alle, die an NeoDesk mitarbeiten oder darauf aufbauen: mitmachen, aus dem Quellcode bauen, Tests und Prüfungen, wie der Code zusammenhängt, Releases sowie die APIs und Protokolle.',
+				description: 'Für alle, die an NeoDesk mitarbeiten oder darauf aufbauen: mitmachen, bauen, Tests, Aufbau des Codes, Releases, APIs und Protokolle.'
+			},
+			project: {
+				label: 'Das Projekt',
+				intro: 'Die Lizenz und der Commercial Grant, was das Projekt mit deinen Daten macht, und die Sponsoren und Mitwirkenden dahinter.'
+			}
+		}
+	}
 };
 
 const KEYS = Object.keys(STRINGS.en) as (keyof Strings)[];

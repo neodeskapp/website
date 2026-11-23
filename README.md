@@ -108,21 +108,38 @@ python -m fontTools.varLib.instancer plex.ttf wght=600 --static --update-name-ta
 
 ## Languages
 
-English is the default and lives at the root. `src/i18n.ts` lists the other
-languages with their prefix (German at `/de/`) and holds the words of the frame
-around the pages for each language. A translated docs page goes into
-`content/<code>/docs/` with the same path as the English one, for example
-`content/de/docs/getting-started/docker.md`. The build writes `/de/` pages only
-for the files there, and only once that language has every string in
-`src/i18n.ts`, section names included; until then it stops with the list of
-missing strings. A link to a page that has no translation yet leads to the
-English page.
+English is the default and lives at the root; German lives under `/de/`.
+`src/i18n.ts` lists the languages with their prefix and holds the words of the
+frame around the docs pages, section names included. `src/home.ts` holds the
+words of the home page, whose layout, styles and script are in `src/home.html`;
+the install notes in `src/install.ts` have one text per language. A language
+gets pages only once it has every string in all three; until then the build
+stops with the list of missing strings.
+
+A translated docs page goes into `content/<code>/docs/` with the same path as
+the English one, for example `content/de/docs/getting-started/docker.md`. Every
+heading of a translated page keeps the English page's id with `{#id}`, so a
+link to a heading reads the same in every language:
+
+```markdown
+## Mit dem Skript installieren {#install-with-the-script}
+```
+
+Links inside a translated page name the English address, `/docs/...`; the
+build turns them into `/de/docs/...`, or leaves them on the English page while
+there is no German one.
 
 Every page lists its language versions with `hreflang`, plus `x-default` for
-the English one, and shows a language switch when it has more than one. The
-landing page, the search index and the llms files are English only.
+the English one, and its language switch leads to the same page in the other
+language. Each language has its own home page, search index
+(`/de/docs/search.json`), 404 page, Markdown copies and link preview images
+(`/og/de/...`). The web server sends `/404.html` for every address that does
+not exist; serving `/de/404.html` under `/de/` needs a rule there. The llms
+files stay in English: they are one set of files at the root for AI tools,
+and every German page's Markdown copy is next to it as for English.
 
-There is no German text yet.
+The German text says "du" to the reader. The console's own German says "Sie";
+where a page quotes a console message, it quotes it as the console words it.
 
 ## What the build makes
 

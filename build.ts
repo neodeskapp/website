@@ -21,7 +21,9 @@ import type { Locale, Strings } from './src/i18n.ts';
 import { checkOldNames, checkConsolePort, checkVersion, checkWithoutScripts, checkButtonNames, checkIndexing, checkLocales, checkLlms, checkStructuredData, checkMarkdownLinks, checkSeo, checkPreviews } from './src/checks.ts';
 import { checkCommands } from './src/commands.ts';
 import { AGENT_TOOLS } from './src/agents.ts';
-import { INSTALLS, blocksOf, clientPorts, PORTS_PAGE } from './src/install.ts';
+import { INSTALLS, blocksOf, clientPorts, protocolsOf, PORTS_PAGE } from './src/install.ts';
+import { missingHomeStrings, homeStringsOf } from './src/home.ts';
+import type { HomeStrings } from './src/home.ts';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const at = (...p: string[]) => path.join(root, ...p);
@@ -70,7 +72,7 @@ async function webpOf(file: string): Promise<Buffer> {
 
 /** The home page's screenshots as <picture> with a WebP source in front of the PNG. */
 function withWebp(html: string) {
-	return html.replace(/<img class="shot ([^"]*)" src="img\/([\w-]+)\.png"([^>]*)>/g, (_, cls, name, rest) => `<picture class="${cls}"><source type="image/webp" srcset="/img/${name}.webp"><img class="shot ${cls}" src="/img/${name}.png"${rest}></picture>`);
+	return html.replace(/<img class="shot ([^"]*)" src="\/img\/([\w-]+)\.png"([^>]*)>/g, (_, cls, name, rest) => `<picture class="${cls}"><source type="image/webp" srcset="/img/${name}.webp"><img class="shot ${cls}" src="/img/${name}.png"${rest}></picture>`);
 }
 
 /** A PNG's width and height, from its IHDR chunk. */
@@ -362,7 +364,7 @@ function makeMarkdown(page: Page, usedShots: Set<string>, t: Strings, linkTo: (h
 		const output = lang === 'plaintext';
 		return (
 			`<div class="code${output ? ' code-output' : ''}">` +
-			(output ? '' : '<button type="button" class="copy" aria-label="Copy this code">Copy</button>') +
+			(output ? '' : `<button type="button" class="copy" aria-label="${esc(t.copyCode)}" data-copied="${esc(t.copied)}">${esc(t.copy)}</button>`) +
 			`<pre tabindex="0"><code>${html}</code></pre></div>\n`
 		);
 	};
@@ -419,15 +421,15 @@ interface SearchEntry {
 }
 
 /** One entry for the page and one for each ## section, so a result can link to the heading. */
-function searchEntries(page: Page, sectionLabel: string): SearchEntry[] {
+function searchEntries(page: Page, sectionLabel: string, prefix: string): SearchEntry[] {
 	const lines = page.body.split('\n');
 	const h2 = page.headings.filter((h) => h.level === 2);
 	const entries: SearchEntry[] = [
-		{ t: page.title, s: sectionLabel, u: `/docs/${page.slug}/`, d: page.description, x: plain(lines.slice(0, h2[0]?.line ?? lines.length).join('\n')) }
+		{ t: page.title, s: sectionLabel, u: `${prefix}/docs/${page.slug}/`, d: page.description, x: plain(lines.slice(0, h2[0]?.line ?? lines.length).join('\n')) }
 	];
 	h2.forEach((h, i) => {
 		const body = lines.slice(h.line + 1, h2[i + 1]?.line ?? lines.length).join('\n');
-		entries.push({ t: page.title, s: sectionLabel, u: `/docs/${page.slug}/#${h.id}`, h: h.text, x: plain(body) });
+		entries.push({ t: page.title, s: sectionLabel, u: `${prefix}/docs/${page.slug}/#${h.id}`, h: h.text, x: plain(body) });
 	});
 	return entries;
 }
@@ -437,7 +439,7 @@ function searchEntries(page: Page, sectionLabel: string): SearchEntry[] {
 const mdUrl = (slug: string, prefix = '') => `${SITE_URL}${prefix}/docs/${slug}.md`;
 
 /** A page's body as plain Markdown: notes become quotes, screenshots plain images, site links absolute. */
-function agentMarkdown(body: string, linkTo: (href: string) => string) {
+function agentMarkdown(body: string, linkTo: (href: string) => string, t: Strings) {
 	const out: string[] = [];
 	let fence: string | null = null;
 	let note: string | null = null;
@@ -457,7 +459,7 @@ function agentMarkdown(body: string, linkTo: (href: string) => string) {
 		const open = line.match(/^:::\s*(note|warning)\s*$/);
 		if (open) {
 			note = open[1];
-			out.push(`> **${note === 'warning' ? 'Warning' : 'Note'}:**`);
+			out.push(`> **${note === 'warning' ? t.warning : t.note}:**`);
 			continue;
 		}
 		if (note && line.trim() === ':::') {
@@ -480,10 +482,10 @@ function agentMarkdown(body: string, linkTo: (href: string) => string) {
 	return out.join('\n').replace(/\n{3,}/g, '\n\n').trim() + '\n';
 }
 
-function pageMarkdown(page: Page, locale: Locale, linkTo: (href: string) => string) {
-	const head = [`# ${page.title}`, `Source: ${SITE_URL}${locale.prefix}/docs/${page.slug}/${page.updated ? `\nLast updated: ${page.updated.slice(0, 10)}` : ''}`];
+function pageMarkdown(page: Page, locale: Locale, t: Strings, linkTo: (href: string) => string) {
+	const head = [`# ${page.title}`, `${t.source}: ${SITE_URL}${locale.prefix}/docs/${page.slug}/${page.updated ? `\n${t.lastUpdated}: ${page.updated.slice(0, 10)}` : ''}`];
 	if (page.description) head.push(`> ${page.description}`);
-	return `${head.join('\n\n')}\n\n${agentMarkdown(page.body, linkTo)}`;
+	return `${head.join('\n\n')}\n\n${agentMarkdown(page.body, linkTo, t)}`;
 }
 
 const pageList = (items: Page[], prefix = '') =>
@@ -492,19 +494,19 @@ const pageList = (items: Page[], prefix = '') =>
 /* ---------- the home page's install tabs ---------- */
 
 /** The tabs, notes and terminal panels of the home page's install section, from src/install.ts. */
-function installMarkup() {
-	const tabs = `        <div class="tabs" role="tablist" aria-label="Install on" hidden>\n${INSTALLS.map(
+function installMarkup(locale: Locale, h: HomeStrings) {
+	const tabs = `        <div class="tabs" role="tablist" aria-label="${esc(h.installOn)}" hidden>\n${INSTALLS.map(
 		(m, i) =>
 			`          <button type="button" role="tab" id="tab-${m.id}" aria-controls="install-${m.id}" aria-selected="${i === 0}"${i ? ' tabindex="-1"' : ''} data-os="${m.id}">${esc(m.tab)}</button>`
 	).join('\n')}\n        </div>`;
 	const notes = INSTALLS.map(
 		(m) =>
-			`        <p class="body install-note" data-os="${m.id}"><b class="os-label">${esc(m.tab)}: </b>${esc(m.note)} <a class="teal" href="${m.docs}/">The docs page</a> has every option.</p>`
+			`        <p class="body install-note" data-os="${m.id}"><b class="os-label">${esc(m.tab)}: </b>${esc(m.note[locale.code])} ${fill(h.docsPageHas, { href: `${locale.prefix}${m.docs}/` })}</p>`
 	).join('\n');
 	const panels = INSTALLS.map(
 		(m) => `        <div class="term" role="tabpanel" id="install-${m.id}" aria-labelledby="tab-${m.id}" data-os="${m.id}">
-          <div class="term-bar"><span class="term-os">${esc(m.tab)}</span><button type="button" class="term-copy" aria-label="Copy the ${esc(m.tab)} install commands">Copy</button></div>
-          <pre class="term-lines" tabindex="0" aria-label="${esc(m.tab)} install commands">${m.lines.map((l) => `<code>${esc(l)}</code>`).join('\n')}</pre>
+          <div class="term-bar"><span class="term-os">${esc(m.tab)}</span><button type="button" class="term-copy" aria-label="${esc(fill(h.copyCommands, { os: m.tab }))}">${esc(h.copy)}</button></div>
+          <pre class="term-lines" tabindex="0" aria-label="${esc(fill(h.commands, { os: m.tab }))}">${m.lines.map((l) => `<code>${esc(l)}</code>`).join('\n')}</pre>
         </div>`
 	).join('\n');
 	return { tabs: `${tabs}\n${notes}`, panels };
@@ -570,14 +572,18 @@ async function build() {
 		if (!fs.existsSync(dir)) continue;
 		const pages = loadPages(dir, locale, version);
 		if (!pages.length) continue;
-		const missing = missingStrings(locale.code, config.sections.map((s) => s.slug));
+		const missing = [
+			...missingStrings(locale.code, config.sections.map((s) => s.slug)),
+			...missingHomeStrings(locale.code),
+			...INSTALLS.filter((m) => !m.note[locale.code]).map((m) => `the note of ${m.id} in src/install.ts`)
+		];
 		if (missing.length) {
-			problems.push(`content/${locale.code}/docs: ${locale.label} has pages, but src/i18n.ts lacks its strings: ${missing.join(', ')}`);
+			problems.push(`content/${locale.code}/docs: ${locale.label} has pages, but src/i18n.ts and src/home.ts lack its strings: ${missing.join(', ')}`);
 			continue;
 		}
 		const t = stringsOf(locale.code);
 		const sections: Section[] = config.sections
-			.map((s) => ({ ...s, ...(locale.default ? {} : t.sections?.[s.slug]), items: inSidebarOrder(pages.filter((p) => p.section === s.slug)) }))
+			.map((s) => ({ ...s, ...(locale.default ? {} : { description: undefined, ...t.sections?.[s.slug] }), items: inSidebarOrder(pages.filter((p) => p.section === s.slug)) }))
 			.filter((s) => s.items.length);
 		sites.push({ locale, t, pages, sections, reading: sections.flatMap((s) => s.items) });
 	}
@@ -587,11 +593,11 @@ async function build() {
 		return false;
 	}
 
-	// Which languages have a page at each address; the landing page is in the default language only
+	// Which languages have a page at each address
 	const available = new Map<string, Locale[]>();
 	const offer = (p: string, l: Locale) => available.set(p, [...(available.get(p) ?? []), l]);
-	offer('/', DEFAULT_LOCALE);
 	for (const site of sites) {
+		offer('/', site.locale);
 		offer('/docs/', site.locale);
 		for (const s of site.sections) offer(`/docs/${s.slug}/`, site.locale);
 		for (const p of site.pages) offer(`/docs/${p.slug}/`, site.locale);
@@ -668,16 +674,13 @@ async function build() {
 	// Link preview images: one per page, named after the page's address, from the template
 	// its type asks for. They are drawn after the pages, from the same list.
 	const host = new URL(SITE_URL).host;
-	const homeSource = read(at('src/home.html'));
-	const homeTitle = homeSource.match(/<title>([^<]*)<\/title>/)?.[1] ?? config.name;
-	const homeDescription = homeSource.match(/<meta name="description" content="([^"]*)"/)?.[1] ?? config.summary;
-	const homeHeadline = (homeSource.match(/<h1[^>]*>([\s\S]*?)<\/h1>/)?.[1] ?? homeTitle).replace(/<[^>]+>/g, '');
 	const previews: { path: string; title: string; data: OgData }[] = [];
 	const preview = (p: string, title: string, data: OgData) => previews.push({ path: p, title, data });
-	preview('/', homeTitle, { template: 'landing', title: homeHeadline, description: homeDescription, host });
 	const TEMPLATES: OgTemplate[] = ['docs', 'comparison', 'use-case', 'release'];
 	for (const site of sites) {
 		const { locale, t } = site;
+		const h = homeStringsOf(locale.code);
+		preview(`${locale.prefix}/`, h.title, { template: 'landing', title: h.heroTitle.replace(/<[^>]+>/g, ''), description: h.description, host: `${host}${locale.prefix}` });
 		preview(`${locale.prefix}/docs/`, fill(t.docsTitle, { name: config.name }), { template: 'landing', title: t.documentation, description: t.docsDescription, host: `${host}${locale.prefix}/docs` });
 		for (const s of site.sections) {
 			preview(`${locale.prefix}/docs/${s.slug}/`, s.label, { template: 'landing', title: s.label, description: s.description ?? s.intro, host: `${host}${locale.prefix}/docs` });
@@ -696,12 +699,11 @@ async function build() {
 			});
 		}
 	}
-	/** The image file of a page: /docs/a/b/ has og/docs/a/b.png, the home page og/index.png */
-	const imageOf = (p: string) => `og${p === '/' ? '/index' : p.replace(/\/$/, '')}.png`;
+	/** The image file of a page: /docs/a/b/ has og/docs/a/b.png, a home page og/index.png or og/de/index.png */
+	const imageOf = (p: string) => `og${p === '/' || LOCALES.some((l) => l.prefix && p === `${l.prefix}/`) ? `${p}index` : p.replace(/\/$/, '')}.png`;
 	const byPath = new Map(previews.map((p) => [p.path, { url: `${SITE_URL}/${imageOf(p.path)}`, alt: `${config.name}: ${p.data.title}` }]));
 	const previewOf = (p: string) => byPath.get(p);
 
-	const search: SearchEntry[] = [];
 	for (const site of sites) {
 		const { locale, t } = site;
 		const shared: Shared = { config, sections: site.sections, assets, version, siteUrl: SITE_URL, production: PRODUCTION, locale, t, versions, previewOf };
@@ -724,20 +726,21 @@ async function build() {
 					next: pager(t.next, t.nextIn, site.reading[i + 1])
 				})
 			);
-			write(out(`docs/${page.slug}.md`), pageMarkdown(page, locale, linkTo));
-			if (locale.default) search.push(...searchEntries(page, labelOf(page.section)));
+			write(out(`docs/${page.slug}.md`), pageMarkdown(page, locale, t, linkTo));
 		});
+		write(out('docs/search.json'), JSON.stringify(site.reading.flatMap((page) => searchEntries(page, labelOf(page.section), locale.prefix))));
 		for (const section of site.sections) {
 			write(out(`docs/${section.slug}/index.html`), sectionPage({ ...shared, section }));
 			write(
 				out(`docs/${section.slug}.md`),
-				`# ${section.label}\n\nSource: ${SITE_URL}${locale.prefix}/docs/${section.slug}/\n\n${section.intro}\n\n${pageList(section.items, locale.prefix)}\n`
+				`# ${section.label}\n\n${t.source}: ${SITE_URL}${locale.prefix}/docs/${section.slug}/\n\n${section.intro}\n\n${pageList(section.items, locale.prefix)}\n`
 			);
 		}
 		write(out('docs/index.html'), docsIndexPage(shared));
-		if (locale.default) write('404.html', notFoundPage(shared));
+		// The web server sends 404.html for an address that does not exist; another
+		// language's 404 page needs a rule of its own there, such as one for /de/
+		write(out('404.html'), notFoundPage(shared));
 	}
-	write('docs/search.json', JSON.stringify(search));
 
 	// Draw the link preview images, or take them from the cache when nothing about them changed
 	const items: PreviewItem[] = [];
@@ -788,52 +791,62 @@ async function build() {
 	}
 	for (const f of fs.readdirSync(at('public/img')).filter((f) => f.endsWith('.png'))) write(`img/${f.replace(/\.png$/, '.webp')}`, await webpOf(at('public/img', f)));
 
-	// The landing page, in the default language only so far
-	const home = { siteUrl: SITE_URL, versions, locale: DEFAULT_LOCALE, t: main.t };
+	// The home page of every language: the layout from src/home.html, the words from src/home.ts
 	// The ports clients need, from the table on the ports page
 	const ports = clientPorts(main.pages.find((p) => p.slug === PORTS_PAGE)?.body ?? '');
 	if (!ports.length) problems.push(`src/home.html: no client ports found in the table of content/docs/${PORTS_PAGE}.md`);
-	const portList = ports
-		// Plain TCP goes without saying; a port that also takes UDP says so
-		.map((p) => `<span class="mono lime">${esc(p.port)}</span>${/UDP/.test(p.protocol) ? ` (${esc(p.protocol)})` : ''}`)
-		.join(', ')
-		.replace(/, ([^,]*)$/, ' and $1');
-	const software = {
-		'@context': 'https://schema.org',
-		'@type': 'SoftwareApplication',
-		name: config.name,
-		description: config.summary,
-		url: `${SITE_URL}/`,
-		applicationCategory: 'UtilitiesApplication',
-		operatingSystem: 'Linux, Windows',
-		softwareVersion: version,
-		license: config.license,
-		downloadUrl: config.downloadUrl,
-		isAccessibleForFree: true
-	};
-	write(
-		'index.html',
-		withWebp(read(at('src/home.html')))
+	const homeTemplate = withWebp(read(at('src/home.html')));
+	for (const site of sites) {
+		const { locale } = site;
+		const h = homeStringsOf(locale.code);
+		const home = { siteUrl: SITE_URL, versions, locale, t: site.t };
+		// Which ports comes from the default language's table, how the protocol is written from this language's
+		const protocols = protocolsOf(site.pages.find((p) => p.slug === PORTS_PAGE)?.body ?? '');
+		const portList = ports
+			// Plain TCP goes without saying; a port that also takes UDP says so
+			.map((p) => `<span class="mono lime">${esc(p.port)}</span>${/UDP/.test(p.protocol) ? ` (${esc(protocols.get(p.port) ?? p.protocol)})` : ''}`)
+			.join(', ')
+			.replace(/, ([^,]*)$/, ` ${h.and} $1`);
+		const software = {
+			'@context': 'https://schema.org',
+			'@type': 'SoftwareApplication',
+			name: config.name,
+			description: locale.default ? config.summary : h.summary,
+			url: `${SITE_URL}${locale.prefix}/`,
+			applicationCategory: 'UtilitiesApplication',
+			operatingSystem: 'Linux, Windows',
+			softwareVersion: version,
+			license: config.license,
+			downloadUrl: config.downloadUrl,
+			isAccessibleForFree: true
+		};
+		const { tabs, panels } = installMarkup(locale, h);
+		const page = homeTemplate
+			.replace(/\{\{t:(\w+)\}\}/g, (m, key: keyof HomeStrings) => h[key] ?? m)
 			.replace('{{CLIENT_PORTS}}', portList)
-			.replace('{{INSTALL_TABS}}', installMarkup().tabs)
-			.replace('{{INSTALL_PANELS}}', installMarkup().panels)
+			.replace('{{INSTALL_TABS}}', tabs)
+			.replace('{{INSTALL_PANELS}}', panels)
 			.replace(
 				'{{SOCIAL}}',
-				socialTags({ type: 'website', siteName: config.name, title: homeTitle, description: homeDescription, url: `${SITE_URL}/`, locale: DEFAULT_LOCALE.ogLocale, image: previewOf('/') })
+				socialTags({ type: 'website', siteName: config.name, title: h.title, description: h.description, url: `${SITE_URL}${locale.prefix}/`, locale: locale.ogLocale, image: previewOf(`${locale.prefix}/`) })
 			)
 			.replace('{{JSONLD}}', `<script type="application/ld+json">${JSON.stringify(software).replace(/</g, '\\u003c')}</script>`)
+			.replace('{{LANG}}', locale.code)
+			.replaceAll('{{PREFIX}}', locale.prefix)
 			.replaceAll('{{VERSION}}', version)
 			.replaceAll('{{SITE_URL}}', SITE_URL)
 			.replace('{{ROBOTS}}', PRODUCTION ? '' : '<meta name="robots" content="noindex">\n')
 			.replace('{{HREFLANG}}', hreflangLinks(home, '/'))
-			.replace(/^ *\{\{LANGUAGES\}\}\n/m, languageSwitch(home, '/') ? `    ${languageSwitch(home, '/')}\n` : '')
-	);
+			.replace(/^ *\{\{LANGUAGES\}\}\n/m, languageSwitch(home, '/') ? `    ${languageSwitch(home, '/')}\n` : '');
+		for (const m of page.matchAll(/\{\{[\w:]+\}\}/g)) problems.push(`src/home.html: ${m[0]} was not filled in for ${locale.label}`);
+		write(`${locale.prefix.replace(/^\//, '')}${locale.prefix ? '/' : ''}index.html`, page);
+	}
 
 	// For AI tools: llms.txt lists every page and file, one file per section holds that
 	// section's pages, and llms-full.txt holds them all
 	const { sections, reading } = main;
 	const linkTo = linkIn(DEFAULT_LOCALE);
-	const markdownOf = (p: Page) => pageMarkdown(p, DEFAULT_LOCALE, linkTo);
+	const markdownOf = (p: Page) => pageMarkdown(p, DEFAULT_LOCALE, main.t, linkTo);
 	const about = `# ${config.name}\n\n> ${config.summary}\n\nEvery docs page below is Markdown at the address shown. The same page as HTML is at that address without .md. All docs in one file: ${SITE_URL}/llms-full.txt`;
 	const full = `${about}\n\n---\n\n${reading.map(markdownOf).join('\n---\n\n')}`;
 	write('llms-full.txt', full);
@@ -866,9 +879,10 @@ async function build() {
 
 	// For search engines: every page in every language, dated by the last commit of its file,
 	// a list by the newest of its pages
+	const homeUpdated = newest([updatedOf(at('src/home.html')), updatedOf(at('src/home.ts'))]);
 	const urls: [string, string][] = [
-		['/', updatedOf(at('src/home.html'))],
 		...sites.flatMap((site): [string, string][] => [
+			[`${site.locale.prefix}/`, homeUpdated],
 			[`${site.locale.prefix}/docs/`, newest(site.pages.map((p) => p.updated))],
 			...site.sections.map((s): [string, string] => [`${site.locale.prefix}/docs/${s.slug}/`, newest(s.items.map((p) => p.updated))]),
 			...site.reading.map((p): [string, string] => [`${site.locale.prefix}/docs/${p.slug}/`, p.updated])

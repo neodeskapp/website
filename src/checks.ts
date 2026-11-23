@@ -3,7 +3,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { parse, find, findAll, byTag, isHidden, textOf, decode } from './html.ts';
-import { localeOfPath } from './i18n.ts';
+import { LOCALES, localeOfPath } from './i18n.ts';
 
 /** Every file under a folder, as paths relative to it with forward slashes. */
 export function listFiles(dir: string, base = dir): string[] {
@@ -30,15 +30,23 @@ export const OLD_NAME_ALLOW = {
 		/(?:https?:\/\/)?github\.com\/UNITRONIX\/BetterDesk\b[\w/#.?=&-]*/gi,
 		/\bUNITRONIX\/BetterDesk\b(?:#\d+)?/gi,
 		// "started as a fork of BetterDesk by UNITRONIX", as HTML or Markdown, across a line break
-		/fork of\s+(?:<a [^>]*>|\[)?BetterDesk(?:<\/a>|\]\([^)]*\))?\s+by\s+UNITRONIX/gi
+		/fork of\s+(?:<a [^>]*>|\[)?BetterDesk(?:<\/a>|\]\([^)]*\))?\s+by\s+UNITRONIX/gi,
+		// The same in German: "als Fork von BetterDesk von UNITRONIX entstanden"
+		/Fork von\s+(?:<a [^>]*>|\[)?BetterDesk(?:<\/a>|\]\([^)]*\))?\s+von\s+UNITRONIX/gi
 	]
 };
 const OLD_NAME = /betterdesk|betterde\.sk/gi;
 const OLD_IMAGE = /ghcr\.io\/[\w.-]+\/betterdesk[\w.-]*/gi;
 
-/** The docs page a file is the copy of: docs/a/b/index.html and docs/a/b.md are page a/b. */
+/** A built file's path without its language folder: de/docs/a.md is docs/a.md. */
+const withoutLocale = (rel: string) => {
+	const l = LOCALES.find((x) => x.prefix && rel.startsWith(`${x.prefix.slice(1)}/`));
+	return l ? rel.slice(l.prefix.length) : rel;
+};
+
+/** The docs page a file is the copy of: docs/a/b/index.html, docs/a/b.md and de/docs/a/b.md are page a/b. */
 function pageOfFile(rel: string) {
-	const m = rel.match(/^docs\/(.+?)(?:\/index\.html|\.md)$/);
+	const m = withoutLocale(rel).match(/^docs\/(.+?)(?:\/index\.html|\.md)$/);
 	return m ? m[1] : null;
 }
 
@@ -51,7 +59,7 @@ function pageAt(text: string, index: number, rel: string) {
 	const start = text.lastIndexOf('\n', index) + 1;
 	const end = text.indexOf('\n', index);
 	const line = text.slice(start, end === -1 ? text.length : end);
-	const listed = [...line.matchAll(/(?:href="|\]\()(?:[a-z]+:\/\/[^/"]+)?\/docs\/([\w/-]+?)(?:\/|\.md)?(?:#[\w-]*)?(?:"|\))/g)].map((m) => m[1]);
+	const listed = [...line.matchAll(/(?:href="|\]\()(?:[a-z]+:\/\/[^/"]+)?(?:\/[a-z]{2})?\/docs\/([\w/-]+?)(?:\/|\.md)?(?:#[\w-]*)?(?:"|\))/g)].map((m) => m[1]);
 	if (listed.length === 1) return listed[0];
 	const sources = [...text.slice(0, index).matchAll(/^Source: \S+?\/docs\/([\w/-]+?)\/?$/gm)];
 	if (sources.length && rel.endsWith('.txt')) return sources[sources.length - 1][1];
@@ -74,9 +82,9 @@ export function checkOldNames({ dist }: CheckInput) {
 		// Blank out the allowed phrases, keeping every other character where it was
 		let text = raw;
 		for (const re of OLD_NAME_ALLOW.phrases) text = text.replace(re, (s) => ' '.repeat(s.length));
-		if (rel === 'docs/search.json') {
+		if (withoutLocale(rel) === 'docs/search.json') {
 			for (const entry of JSON.parse(raw) as { u: string }[]) {
-				const page = entry.u.replace(/^\/docs\/|\/(#.*)?$|#.*$/g, '');
+				const page = withoutLocale(entry.u.slice(1)).replace(/^docs\/|\/(#.*)?$|#.*$/g, '');
 				if (OLD_NAME_ALLOW.pages.includes(page)) continue;
 				let fields = JSON.stringify(entry);
 				for (const re of OLD_NAME_ALLOW.phrases) fields = fields.replace(re, '');
@@ -99,7 +107,7 @@ export function checkOldNames({ dist }: CheckInput) {
 
 // 21114 is the server's API port on Linux and Windows. A sentence that names it and
 // the console, the browser or signing in, without saying API, means the console.
-const CONSOLE_WORDS = /\b(console|sign(?:s|ed)? in|browser|web interface|dashboard|admin panel)\b/i;
+const CONSOLE_WORDS = /\b(console|sign(?:s|ed)? in|browser|web interface|dashboard|admin panel|konsole\w*|anmeld\w*|angemeldet|weboberfläche)\b/i;
 const API_WORDS = /\bAPI\b|\/api\b|api[-_ ]port|metrics/i;
 
 /** A file's text as sentences: tags, scripts and styles dropped, one block or line at a time. */
@@ -137,7 +145,8 @@ const VERSION_MENTIONS = [
 	/\bNeoDesk v?(\d+\.\d+\.\d+(?:-[\w.]+)?)/g,
 	/\bneodesk-server v?(\d+\.\d+\.\d+(?:-[\w.]+)?)/g,
 	/"softwareVersion":\s*"([^"]*)"/g,
-	/\bWritten for version (\d+\.\d+\.\d+(?:-[\w.]+)?)/g
+	/\bWritten for version (\d+\.\d+\.\d+(?:-[\w.]+)?)/g,
+	/\bGeschrieben für Version (\d+\.\d+\.\d+(?:-[\w.]+)?)/g
 ];
 
 export function checkVersion({ dist, version }: CheckInput) {
@@ -174,7 +183,7 @@ export function checkWithoutScripts({ dist }: CheckInput) {
 			.filter((nav) => !isHidden(nav))
 			.flatMap((nav) => findAll(nav, (el) => el.tag === 'a' && !!el.attrs.href && !isHidden(el) && squash(textOf(el)) !== ''));
 		if (!links.length) problems.push(`${rel}: no navigation links without scripts`);
-		if (rel.startsWith('docs/') && rel !== 'docs/index.html') {
+		if (withoutLocale(rel).startsWith('docs/') && withoutLocale(rel) !== 'docs/index.html') {
 			const side = find(doc, (el) => el.attrs.id === 'sidebar');
 			if (!side || findAll(side, byTag('a')).length < 2) problems.push(`${rel}: the docs sidebar is empty`);
 		}
@@ -547,8 +556,8 @@ export function checkLlms({ dist, siteUrl }: CheckInput, unavailable: string[]) 
 
 /* ---------- who may index the site ---------- */
 
-// Pages that are never indexed, on any host
-export const NOINDEX_PAGES = new Set(['404.html', 'og/index.html']);
+// Pages that are never indexed, on any host: every language's 404 page and the contact sheet
+export const NOINDEX_PAGES = new Set(['og/index.html', ...LOCALES.map((l) => `${l.prefix ? `${l.prefix.slice(1)}/` : ''}404.html`)]);
 
 /**
  * On production, robots.txt allows everything and names each AI crawler as allowed, and
