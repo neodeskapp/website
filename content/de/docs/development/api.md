@@ -46,7 +46,7 @@ curl -X POST http://127.0.0.1:21114/api/keys \
 
 Nur in dieser Antwort steht der ganze Schlüssel, speichere ihn also sofort.
 
-- `role` ist `viewer`, wenn das Feld fehlt. Ein Schlüssel bekommt nur eine Rolle, die der Aufrufer auch einem Konto geben könnte: Super-Admins jede Rolle, globale Administratoren `operator`, `viewer`, `pro` oder `guest_issuer`. Serveradministratoren können Schlüssel auflisten und löschen, aber keine anlegen.
+- `role` ist `viewer`, wenn das Feld fehlt. Ein Schlüssel bekommt nur eine Rolle, die der Aufrufer auch einem Konto geben könnte: Super-Admins jede Rolle, globale Administratoren `operator`, `viewer`, `pro` oder `guest_issuer`. Globale Administratoren haben **API-Schlüssel verwalten** standardmäßig nicht. Sie legen deshalb erst Schlüssel an, wenn ein Super-Admin der Rolle diese Berechtigung auf der Seite [Berechtigungen](/docs/people/permissions) gibt. Serveradministratoren können Schlüssel auflisten und löschen, aber keine anlegen.
 - `expires_in_days` ist optional. Nach diesem Tag lehnt der Server den Schlüssel ab wie einen falschen.
 - `GET /api/keys` listet die Schlüssel mit ihren ersten 8 Zeichen, Name, Rolle, Datumsangaben und letzter Nutzung auf, und `DELETE /api/keys/<id>` entfernt einen. Alle drei Routen brauchen **API-Schlüssel verwalten**.
 

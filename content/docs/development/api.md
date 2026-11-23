@@ -46,7 +46,7 @@ curl -X POST http://127.0.0.1:21114/api/keys \
 
 The answer is the only place the whole key appears, so store it right away.
 
-- `role` is `viewer` when left out. A key gets only a role the caller could give an account: super admins any role, global admins `operator`, `viewer`, `pro` or `guest_issuer`. Server admins can list and delete keys but create none.
+- `role` is `viewer` when left out. A key gets only a role the caller could give an account: super admins any role, global admins `operator`, `viewer`, `pro` or `guest_issuer`. Global admins don't have **Manage API keys** by default, so they create keys only after a super admin gives the role that permission on the [Permissions](/docs/people/permissions) page. Server admins can list and delete keys but create none.
 - `expires_in_days` is optional. After that day the server refuses the key like a wrong one.
 - `GET /api/keys` lists the keys with their first 8 characters, name, role, dates and last use, and `DELETE /api/keys/<id>` removes one. All three routes need **Manage API keys**.
 
