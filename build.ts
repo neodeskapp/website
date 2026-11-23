@@ -17,7 +17,7 @@ import type { Locale, Strings } from './src/i18n.ts';
 import { checkOldNames, checkConsolePort, checkVersion, checkWithoutScripts, checkIndexing, checkLocales, checkLlms, checkStructuredData } from './src/checks.ts';
 import { checkCommands } from './src/commands.ts';
 import { AGENT_TOOLS } from './src/agents.ts';
-import { INSTALLS, blocksOf } from './src/install.ts';
+import { INSTALLS, blocksOf, clientPorts, PORTS_PAGE } from './src/install.ts';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const at = (...p: string[]) => path.join(root, ...p);
@@ -681,6 +681,14 @@ async function build() {
 
 	// The landing page, in the default language only so far
 	const home = { siteUrl: SITE_URL, versions, locale: DEFAULT_LOCALE, t: main.t };
+	// The ports clients need, from the table on the ports page
+	const ports = clientPorts(main.pages.find((p) => p.slug === PORTS_PAGE)?.body ?? '');
+	if (!ports.length) problems.push(`src/home.html: no client ports found in the table of content/docs/${PORTS_PAGE}.md`);
+	const portList = ports
+		// Plain TCP goes without saying; a port that also takes UDP says so
+		.map((p) => `<span class="mono lime">${esc(p.port)}</span>${/UDP/.test(p.protocol) ? ` (${esc(p.protocol)})` : ''}`)
+		.join(', ')
+		.replace(/, ([^,]*)$/, ' and $1');
 	const software = {
 		'@context': 'https://schema.org',
 		'@type': 'SoftwareApplication',
@@ -697,6 +705,7 @@ async function build() {
 	write(
 		'index.html',
 		read(at('src/home.html'))
+			.replace('{{CLIENT_PORTS}}', portList)
 			.replace('{{INSTALL_TABS}}', installMarkup().tabs)
 			.replace('{{INSTALL_PANELS}}', installMarkup().panels)
 			.replace('{{JSONLD}}', `<script type="application/ld+json">${JSON.stringify(software).replace(/</g, '\\u003c')}</script>`)

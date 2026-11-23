@@ -50,6 +50,26 @@ export const INSTALLS: InstallMethod[] = [
 	}
 ];
 
+/** The docs page whose table of ports the home page's port list comes from. */
+export const PORTS_PAGE = 'operations/ports';
+
+export interface ClientPort {
+	port: string;
+	protocol: string;
+}
+
+/**
+ * The ports RustDesk clients need open to the internet, from the table on the ports page:
+ * the rows that RustDesk clients connect to and that say Yes under "Open to the internet".
+ */
+export function clientPorts(markdown: string): ClientPort[] {
+	const rows = markdown
+		.split('\n')
+		.filter((l) => /^\|\s*\d{2,5}\s*\|/.test(l))
+		.map((l) => l.split('|').slice(1, -1).map((c) => c.trim()));
+	return rows.filter((r) => r.length >= 4 && /^RustDesk clients\b/.test(r[2]) && /^Yes\b/.test(r[3])).map((r) => ({ port: r[0], protocol: r[1] }));
+}
+
 /** The lines of every fenced block of a language in a Markdown body. */
 export function blocksOf(markdown: string, lang: string): string[] {
 	const lines: string[] = [];

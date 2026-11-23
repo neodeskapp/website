@@ -129,7 +129,9 @@ The build checks the pages as it reads them and the files it wrote to
 - Heading ids: see [Heading ids](#heading-ids).
 - Install commands: every command in `src/install.ts`, which the landing page
   and llms.txt show, is in a code block of the same language on its docs
-  page.
+  page. The landing page's list of client ports comes from the table on the
+  ports page: the rows RustDesk clients connect to that say Yes under "Open to
+  the internet".
 - Files for AI tools: llms.txt starts with "For AI agents", lists every
   `llms-*.txt` with its size in KB, every page is in exactly one section file,
   and no agent tool that is not available is named anywhere.
