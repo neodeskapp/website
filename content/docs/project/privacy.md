@@ -100,3 +100,16 @@ The installers look up the server's public IP address too:
 ## Report a connection this page misses
 
 If you find NeoDesk contacting a host that this page doesn't list, report it the way [SECURITY.md](https://github.com/neodeskapp/neodesk/blob/main/SECURITY.md) describes, not in a public issue.
+
+## This website
+
+neode.sk counts its visits with [Umami](https://umami.is), an open-source analytics tool that we run ourselves on our server in Germany, at stats.neode.sk. No data goes to anyone else.
+
+- No cookies and nothing in your browser's storage.
+- For each page view we store the page and its title, the page you came from, your browser, operating system, device type, screen size and language, and the country, region and city that your IP address points to.
+- Your IP address is not stored. The stats server keeps no access log. Umami uses the address only while it handles the page view: together with your browser's user agent and a value that changes every day, it turns it into a visitor ID. So we can count visitors per day but can't follow anyone from one day to the next.
+- The address in the browser is recorded without the part after `?` or `#`.
+- If your browser sends Do Not Track or Global Privacy Control, nothing is recorded.
+- beta.neode.sk records nothing.
+
+The web server of neode.sk itself logs every request with the visitor's IP address, like most web servers, and deletes these logs after 14 days; copies in our encrypted nightly backup are kept for up to four months.

@@ -137,6 +137,7 @@ ${o.display ? '<link rel="preload" href="/fonts/FunnelDisplay-latin.woff2" as="f
 <noscript><style>.copy, .search-button, .menu-button { display: none !important; } @media (max-width: 860px) { .layout { display: flex !important; flex-direction: column; } .sidebar { display: block; position: static; order: 2; border-top: 1px solid var(--rule); } .top-docs, .top-links { display: inline-block; } }</style></noscript>
 ${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, '\\u003c')}</script>` : ''}
 <script src="${assets['docs.js']}" defer></script>
+<script defer src="https://stats.neode.sk/script.js" data-website-id="dfeff665-7d84-4338-adc7-dbae4e24d1a3" data-domains="neode.sk" data-do-not-track="true" data-exclude-search="true" data-exclude-hash="true"></script>
 </head>
 <body>
 <a class="skip" href="#content">${esc(t.skip)}</a>

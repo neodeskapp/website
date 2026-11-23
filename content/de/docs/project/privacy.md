@@ -100,3 +100,16 @@ Auch die Installer fragen nach der öffentlichen IP-Adresse des Servers:
 ## Eine Verbindung melden, die hier fehlt {#report-a-connection-this-page-misses}
 
 Stellst du fest, dass NeoDesk einen Host kontaktiert, den diese Seite nicht nennt, melde das so, wie es [SECURITY.md](https://github.com/neodeskapp/neodesk/blob/main/SECURITY.md) beschreibt, und nicht in einem öffentlichen Issue.
+
+## Diese Website {#this-website}
+
+neode.sk zählt seine Besuche mit [Umami](https://umami.is), einem Open-Source-Analysewerkzeug, das wir selbst auf unserem Server in Deutschland betreiben, unter stats.neode.sk. Die Daten gehen an niemanden sonst.
+
+- Keine Cookies und nichts im Speicher deines Browsers.
+- Pro Seitenaufruf speichern wir die Seite und ihren Titel, die Seite, von der du kamst, deinen Browser, dein Betriebssystem, die Geräteart, die Bildschirmgröße und die Sprache sowie Land, Region und Stadt, auf die deine IP-Adresse zeigt.
+- Deine IP-Adresse wird nicht gespeichert. Der Statistik-Server führt kein Zugriffsprotokoll. Umami nutzt die Adresse nur, solange es den Seitenaufruf verarbeitet: Zusammen mit dem User-Agent deines Browsers und einem Wert, der sich jeden Tag ändert, macht es daraus eine Besucher-ID. So können wir Besucher pro Tag zählen, aber niemanden von einem Tag zum nächsten verfolgen.
+- Die Adresse im Browser wird ohne den Teil nach `?` oder `#` gespeichert.
+- Wenn dein Browser Do Not Track oder Global Privacy Control sendet, wird nichts gespeichert.
+- beta.neode.sk zeichnet nichts auf.
+
+Der Webserver von neode.sk selbst protokolliert wie die meisten Webserver jeden Aufruf mit der IP-Adresse und löscht diese Protokolle nach 14 Tagen; Kopien in unserer verschlüsselten nächtlichen Sicherung bleiben bis zu vier Monate erhalten.
