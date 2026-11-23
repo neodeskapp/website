@@ -69,7 +69,7 @@ NeoDesk is distributed under the AGPL-3.0, as [LICENSE](https://github.com/neode
 
 - The copyright notice in LICENSE names the project's copyright holder, UNITRONIX. It does not transfer the copyright in later contributions to UNITRONIX. A contributor keeps the copyright in original code they write, unless a separate written agreement says otherwise.
 - A `Co-authored-by` trailer records authorship. It is not a copyright assignment, not a license grant beyond the project license and not a promise of exclusive ownership. Don't invent an email address for it.
-- Where UNITRONIX has no assignment, the contributor's copyright and the AGPL treatment of their code are kept, and nobody claims exclusive ownership of it. The source and what was actually used are recorded in the [contributor credits](/docs/project/sponsors#contributor-credits).
+- Where UNITRONIX has no assignment, the contributor's copyright and the AGPL treatment of their code are kept, and nobody claims exclusive ownership of it.
 - Where UNITRONIX needs exclusive control of a contribution, it gets a written copyright assignment or a suitable contributor agreement before the code is accepted. That agreement stays outside the public repository; the maintainer's contribution register records a reference to it.
 
 ### Direct contribution and clean-room work

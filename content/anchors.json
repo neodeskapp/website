@@ -577,17 +577,5 @@
 		"what-the-browser-loads",
 		"installers-and-docker",
 		"report-a-connection-this-page-misses"
-	],
-	"project/sponsors": [
-		"sponsor-the-project",
-		"tiers",
-		"sponsorship-terms",
-		"supporters",
-		"honorary-supporters",
-		"individual-backers",
-		"contributor-credits",
-		"linus-rath-rathlinus",
-		"remoover",
-		"rights"
 	]
 }

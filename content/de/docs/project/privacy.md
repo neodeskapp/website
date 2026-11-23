@@ -81,7 +81,7 @@ Diese Funktionen erreichen nur die Adressen, die jemand in der Konsole einträgt
 
 ## Was der Browser lädt {#what-the-browser-loads}
 
-Die Seiten der Konsole tragen eine Content-Security-Policy, nach der der Browser Skripte, Styles, Schriften und Bilder nur von der Konsole laden und sich mit nichts anderem verbinden darf. Die Links der Konsole zu GitHub, etwa zum Projekt, zu den Releases von RustDesk und zu den Sponsorenseiten, sind einfache Links: Es wird nichts gesendet, bis jemand auf einen davon klickt.
+Die Seiten der Konsole tragen eine Content-Security-Policy, nach der der Browser Skripte, Styles, Schriften und Bilder nur von der Konsole laden und sich mit nichts anderem verbinden darf. Die Links der Konsole zu GitHub, etwa zum Projekt und zu den Releases von RustDesk, sind einfache Links: Es wird nichts gesendet, bis jemand auf einen davon klickt.
 
 ## Installer und Docker {#installers-and-docker}
 

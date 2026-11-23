@@ -81,7 +81,7 @@ These reach only the addresses someone enters in the console:
 
 ## What the browser loads
 
-The console's pages carry a Content-Security-Policy that lets the browser load scripts, styles, fonts and images from the console only, and connect to nothing else. The console's links to GitHub, such as the project, RustDesk's releases and the sponsor pages, are plain links: nothing is sent until someone clicks one.
+The console's pages carry a Content-Security-Policy that lets the browser load scripts, styles, fonts and images from the console only, and connect to nothing else. The console's links to GitHub, such as the project and RustDesk's releases, are plain links: nothing is sent until someone clicks one.
 
 ## Installers and Docker
 

@@ -69,7 +69,7 @@ NeoDesk wird unter der AGPL-3.0 verbreitet, wie [LICENSE](https://github.com/neo
 
 - Der Urheberrechtsvermerk in LICENSE nennt den Urheberrechtsinhaber des Projekts, UNITRONIX. Er überträgt das Urheberrecht an späteren Beiträgen nicht auf UNITRONIX. Mitwirkende behalten das Urheberrecht an originalem Code, den sie schreiben, sofern keine gesonderte schriftliche Vereinbarung etwas anderes sagt.
 - Ein `Co-authored-by`-Trailer hält die Urheberschaft fest. Er ist keine Abtretung des Urheberrechts, keine Lizenzgewährung über die Projektlizenz hinaus und kein Versprechen exklusiven Eigentums. Erfinde dafür keine E-Mail-Adresse.
-- Wo UNITRONIX keine Abtretung hat, bleiben das Urheberrecht der Mitwirkenden und die AGPL-Behandlung ihres Codes erhalten, und niemand beansprucht exklusives Eigentum daran. Die Quelle und was tatsächlich davon verwendet wurde, stehen in den [Danksagungen an Mitwirkende](/docs/project/sponsors#contributor-credits).
+- Wo UNITRONIX keine Abtretung hat, bleiben das Urheberrecht der Mitwirkenden und die AGPL-Behandlung ihres Codes erhalten, und niemand beansprucht exklusives Eigentum daran.
 - Wo UNITRONIX die exklusive Kontrolle über einen Beitrag braucht, bekommt es vor der Annahme des Codes eine schriftliche Abtretung des Urheberrechts oder eine passende Vereinbarung mit den Mitwirkenden. Diese Vereinbarung bleibt außerhalb des öffentlichen Repositorys; das Beitragsregister des Maintainers hält einen Verweis darauf fest.
 
 ### Direkter Beitrag und Clean-Room-Arbeit {#direct-contribution-and-clean-room-work}

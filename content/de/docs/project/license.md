@@ -27,7 +27,7 @@ Die AGPL-3.0 gilt für alle. Der Commercial Grant ist eine optionale Ausnahme vo
 - Sponsoren von [UNITRONIX auf GitHub Sponsors](https://github.com/sponsors/UNITRONIX) mit 50 $ im Monat oder mehr: die Stufen Bronze, Silver und Gold
 - Honorary Supporters
 
-Die Stufen für 5 $ und 15 $ und [Buy Me a Coffee](https://buymeacoffee.com/unitronix) enthalten ihn nicht. Die Stufen stehen unter [Sponsoren und Danksagungen](/docs/project/sponsors#sponsor-the-project).
+Die Stufen für 5 $ und 15 $ und [Buy Me a Coffee](https://buymeacoffee.com/unitronix) enthalten ihn nicht.
 
 ### Was der Grant erlaubt {#what-the-grant-allows}
 
