@@ -37,7 +37,7 @@ Das selbst signierte Zertifikat der Installer wird auf 21121 nicht genutzt. Die 
 ### Weitere Ports {#other-ports}
 
 - 21118 und 21119 nehmen nur TLS an, solange ID-Server und Relay TLS nutzen (`TLS_SIGNAL` und `TLS_RELAY`). Die Installer für Linux und Windows schalten das mit ihrem selbst signierten Zertifikat ein.
-- 21122 ist standardmäßig an. Docker veröffentlicht den Port, und die Installer öffnen ihn, solange CDAP eingeschaltet ist. RustDesk-Clients nutzen ihn nicht. `CDAP_ENABLED=N` schaltet ihn aus.
+- 21122, das CDAP-Gateway, ist standardmäßig an. RustDesk-Clients nutzen ihn nicht. Die Docker-Compose-Dateien veröffentlichen ihn, und die Ein-Zeilen-Installation für Docker öffnet ihn in ufw oder firewalld, ob das Gateway an oder aus ist. Die Installer für Linux und Windows öffnen ihn, außer die env-Datei setzt `CDAP_ENABLED=N`; **Gateway ausschalten** auf der Seite der IoT-Geräte ändert nichts daran, was sie öffnen. [Das Gateway](/docs/console/cdap#the-gateway) erklärt, wie du es ausschaltest.
 - `ADMIN_PORT`: eine Verwaltungsschnittstelle, die standardmäßig aus ist, immer nur auf 127.0.0.1 lauscht und nur startet, wenn `ADMIN_PASSWORD` gesetzt ist.
 - PostgreSQL: Der Dienst `postgres` in der Compose-Datei veröffentlicht keinen Port.
 
@@ -70,9 +70,9 @@ sudo firewall-cmd --permanent --add-port=21121/tcp
 sudo firewall-cmd --reload
 ```
 
-Der Linux-Installer öffnet die Ports selbst, wenn ufw oder firewalld aktiv ist, und legt iptables-Regeln nur an, wenn keins von beiden installiert ist. Ein ufw oder firewalld, das installiert, aber ausgeschaltet ist, bleibt, wie es ist, ohne neue Regeln. Er öffnet 21115 bis 21117 über TCP, 21116 über UDP, den Port 21121 der Client-API, 21122, solange CDAP eingeschaltet ist, sowie den Port 5000 der Konsole und, mit eingeschaltetem HTTPS, 5443. Ist `TRUST_PROXY` eingeschaltet, lässt er die Ports der Konsole geschlossen. Die Ports von ID-Server und Relay nimmt er aus der env-Datei, und am Ende gibt er die Liste für eine Firewall außerhalb des Rechners aus, etwa die deines Cloud-Anbieters.
+Der Linux-Installer öffnet die Ports selbst, wenn ufw oder firewalld aktiv ist, und legt iptables-Regeln nur an, wenn keins von beiden installiert ist. Ein ufw oder firewalld, das installiert, aber ausgeschaltet ist, bleibt, wie es ist, ohne neue Regeln. Er öffnet 21115 bis 21117 über TCP, 21116 über UDP, den Port 21121 der Client-API, 21122, außer die env-Datei setzt `CDAP_ENABLED=N`, sowie den Port 5000 der Konsole und, mit eingeschaltetem HTTPS, 5443. Ist `TRUST_PROXY` eingeschaltet, lässt er die Ports der Konsole geschlossen. Die Ports von ID-Server und Relay nimmt er aus der env-Datei, und am Ende gibt er die Liste für eine Firewall außerhalb des Rechners aus, etwa die deines Cloud-Anbieters.
 
-Die Ein-Zeilen-Installation für Docker öffnet ihre Ports in ufw oder firewalld nur, wenn eines davon aktiv ist, und legt keine iptables-Regeln an; siehe [Mit dem Skript installieren](/docs/getting-started/docker#install-with-the-script).
+Die Ein-Zeilen-Installation für Docker öffnet ihre Ports, 21122 eingeschlossen, in ufw oder firewalld nur, wenn eines davon aktiv ist, und legt keine iptables-Regeln an; siehe [Mit dem Skript installieren](/docs/getting-started/docker#install-with-the-script).
 
 ::: note
 Docker veröffentlicht Container-Ports über eigene Firewall-Regeln, und ufw filtert sie nicht. Um die Konsole vom Netz fernzuhalten, veröffentliche sie nur auf der Loopback-Adresse: Setze `NEODESK_CONSOLE_BIND=127.0.0.1` in der Datei `.env` neben der Compose-Datei und erstelle den Container in diesem Ordner neu:

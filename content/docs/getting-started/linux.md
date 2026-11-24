@@ -102,7 +102,8 @@ signature itself.
   console and the ports 21116 and 21117 answer.
 - Opens these ports in ufw or firewalld when one of them is active, or adds
   iptables rules when neither is installed: 21115, 21116 for TCP and UDP,
-  21117, 21121, 21122 and the console's 5000 and 5443. A ufw or firewalld that
+  21117, 21121, 21122 for CDAP device agents unless the env file sets
+  `CDAP_ENABLED=N`, and the console's 5000 and 5443. A ufw or firewalld that
   is installed but switched off stays as it is, and the installer adds no rules
   at all then. When you then choose a reverse proxy
   on the same server at the TLS question, it closes the console's ports again.

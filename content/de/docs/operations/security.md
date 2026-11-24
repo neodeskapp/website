@@ -54,7 +54,7 @@ Für CDAP-Geräte-Agents schaltet `CDAP_TLS_REQUIRED=Y` mit `TLS_CERT` und `TLS_
 ## Schließen, was du nicht nutzt {#close-what-you-dont-use}
 
 - Öffne nur die Ports aus [Ports und Firewall](/docs/operations/ports), und 21118 und 21119 nur für Clients, die WebSocket nutzen.
-- Ohne CDAP-Geräte-Agents setzt du `CDAP_ENABLED=N`, dann bleibt Port 21122 zu.
+- Ohne CDAP-Geräte-Agents schaltest du das Gateway aus, siehe [Das Gateway](/docs/console/cdap#the-gateway), und hältst 21122 in der Firewall geschlossen. Die Installer für Linux und Windows lassen ihn nur mit `CDAP_ENABLED=N` in der env-Datei zu, und die Ein-Zeilen-Installation für Docker öffnet ihn in jedem Fall.
 - Beschränke `/metrics` und `/api/health/detail` auf die Adressen in `METRICS_IP_ALLOWLIST`, und lass `METRICS_PUBLIC` aus. Siehe [Monitoring](/docs/operations/monitoring#prometheus-metrics).
 - Lass `ADMIN_PORT` ungesetzt, außer du brauchst die Verwaltungsschnittstelle. Sie lauscht nur auf 127.0.0.1 und startet nur, wenn `ADMIN_PASSWORD` gesetzt ist.
 

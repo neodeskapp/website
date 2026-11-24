@@ -93,7 +93,8 @@ refuses a release without a valid one.
   `NT SERVICE\NeoDeskServer`. Without NSSM it is a scheduled task that runs as
   SYSTEM at startup.
 - Opens these ports in Windows Firewall, for every network profile: 21115, 21116
-  for TCP and UDP, 21117, 21121, 21122 and the console's 5000 and 5443.
+  for TCP and UDP, 21117, 21121, 21122 for CDAP device agents unless the env
+  file sets `CDAP_ENABLED=N`, and the console's 5000 and 5443.
 - Starts the server and waits until the API, the console and the ports 21116 and
   21117 answer.
 - Saves itself as `C:\NeoDesk\neodesk.ps1`.

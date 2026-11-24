@@ -32,7 +32,8 @@ curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/install.sh 
 
 This saves `neodesk-docker.sh` in `/opt/neodesk/docker` and runs it there.
 When ufw or firewalld is active, it then opens 5000, 5443, 21115 to 21119, 21121
-and 21122 over TCP and 21116 over UDP. With `--domain` it opens 80 and 443
+and 21122 over TCP and 21116 over UDP. It opens 21122, the CDAP gateway's
+port, whether the gateway is on or off. With `--domain` it opens 80 and 443
 instead of 5000 and 5443. To read the script before it runs, download it
 and start it yourself:
 

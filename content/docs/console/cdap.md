@@ -8,7 +8,7 @@ CDAP is the server's own protocol for devices that are not RustDesk clients: sen
 
 ## The gateway
 
-The gateway listens on port 21122 and is on unless it is turned off. **Disable gateway** and **Enable gateway** on the IoT devices page turn it off and on at the server's next restart, and what you choose there stays in place over `CDAP_ENABLED`. The variable decides only as long as nobody has used those buttons. `CDAP_PORT` moves the gateway to another port. The installers open the port in the firewall while CDAP is on, and the Docker compose files publish it. Devices have to reach it directly; it doesn't go through the console or a reverse proxy.
+The gateway listens on port 21122 and is on unless it is turned off. **Disable gateway** and **Enable gateway** on the IoT devices page turn it off and on at the server's next restart, and what you choose there stays in place over `CDAP_ENABLED`. The variable decides only as long as nobody has used those buttons. `CDAP_PORT` moves the gateway to another port. The Linux and Windows installers open 21122 in the firewall unless the env file sets `CDAP_ENABLED=N`; they don't look at the buttons. The Docker compose files publish 21122, and the one-line Docker install opens it in ufw or firewalld whether the gateway is on or off. Devices have to reach it directly; it doesn't go through the console or a reverse proxy.
 
 Without further settings the gateway takes plain connections. `CDAP_TLS=Y` adds TLS with the server's certificate (`TLS_CERT` and `TLS_KEY`), and `CDAP_TLS_REQUIRED=Y` refuses plain connections. Both need that certificate. See [Configuration](/docs/operations/configuration) and [Ports](/docs/operations/ports).
 

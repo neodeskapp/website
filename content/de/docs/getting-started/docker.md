@@ -35,8 +35,9 @@ curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/install.sh 
 
 Das speichert `neodesk-docker.sh` in `/opt/neodesk/docker` und führt es dort
 aus. Ist ufw oder firewalld aktiv, öffnet es danach 5000, 5443, 21115 bis
-21119, 21121 und 21122 über TCP und 21116 über UDP. Mit `--domain` öffnet es
-80 und 443 statt 5000 und 5443. Willst du das Skript
+21119, 21121 und 21122 über TCP und 21116 über UDP. 21122, den Port des
+CDAP-Gateways, öffnet es, ob das Gateway an oder aus ist. Mit `--domain` öffnet
+es 80 und 443 statt 5000 und 5443. Willst du das Skript
 lesen, bevor es läuft, lade es herunter und starte es selbst:
 
 ```bash

@@ -107,7 +107,8 @@ nächsten Update prüft der installierte Server die Signatur selbst.
   API, die Konsole und die Ports 21116 und 21117 antworten.
 - Öffnet diese Ports in ufw oder firewalld, wenn eines davon aktiv ist, oder
   legt iptables-Regeln an, wenn keines von beiden installiert ist: 21115, 21116
-  für TCP und UDP, 21117, 21121, 21122 und die Ports 5000 und 5443 der Konsole.
+  für TCP und UDP, 21117, 21121, 21122 für CDAP-Geräte-Agents, außer die
+  env-Datei setzt `CDAP_ENABLED=N`, und die Ports 5000 und 5443 der Konsole.
   Ein ufw oder firewalld, das installiert, aber ausgeschaltet ist, bleibt, wie
   es ist, und der Installer legt dann gar keine Regeln an. Wählst du danach
   bei der TLS-Frage einen Reverse Proxy auf demselben Server, schließt es die

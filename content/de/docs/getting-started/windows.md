@@ -100,8 +100,8 @@ gültige Signatur ab.
   `NT SERVICE\NeoDeskServer`. Ohne NSSM ist es eine geplante Aufgabe, die beim
   Systemstart als SYSTEM läuft.
 - Öffnet diese Ports in der Windows-Firewall, für alle Netzwerkprofile: 21115,
-  21116 für TCP und UDP, 21117, 21121, 21122 und die Ports 5000 und 5443 der
-  Konsole.
+  21116 für TCP und UDP, 21117, 21121, 21122 für CDAP-Geräte-Agents, außer die
+  env-Datei setzt `CDAP_ENABLED=N`, und die Ports 5000 und 5443 der Konsole.
 - Startet den Server und wartet, bis die API, die Konsole und die Ports 21116
   und 21117 antworten.
 - Speichert sich selbst als `C:\NeoDesk\neodesk.ps1`.
