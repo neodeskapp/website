@@ -116,11 +116,12 @@ lists the codes that are still active and lets you revoke one. The
 ## Install from the package repository
 
 ::: note
-The repository holds no packages yet. The `testing` suite gets the next client
-release candidate, and `stable` the first release that carries the new package
-version. Until then the steps below set up the repository, but the last step
-finds no `neodesk` package. Install the client with an invite from
-[Add a computer](/docs/console/add-a-computer) instead.
+The `stable` suite holds no packages yet, because the client has no final
+release. The steps below use `stable`, so their last step finds no `neodesk`
+package for now. The `testing` suite holds the release candidates, 1.5.0-rc.6
+at the moment. To install a release candidate on Debian or Ubuntu, write
+`testing` in place of `stable` in step 3. Or install the client with an invite
+from [Add a computer](/docs/console/add-a-computer).
 :::
 
 The NeoDesk client for Linux also comes from a signed package repository at

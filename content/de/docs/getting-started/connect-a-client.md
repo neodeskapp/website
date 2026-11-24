@@ -127,11 +127,12 @@ neue Geräte genehmigen dürfen.
 ## Aus dem Paket-Repository installieren {#install-from-the-package-repository}
 
 ::: note
-Das Repository enthält noch keine Pakete. Die Suite `testing` bekommt den
-nächsten Release Candidate des Clients, `stable` das erste Release, das die
-neue Paketversion trägt. Bis dahin richten die Schritte unten das Repository
-ein, aber der letzte Schritt findet kein Paket `neodesk`. Installiere den Client
-bis dahin mit einer Einladung aus
+Die Suite `stable` enthält noch keine Pakete, weil es vom Client noch kein
+fertiges Release gibt. Die Schritte unten nutzen `stable`, ihr letzter Schritt
+findet deshalb im Moment kein Paket `neodesk`. Die Suite `testing` enthält die
+Release Candidates, zurzeit 1.5.0-rc.6. Für einen Release Candidate unter
+Debian oder Ubuntu schreibst du in Schritt 3 `testing` statt `stable`. Oder du
+installierst den Client mit einer Einladung aus
 [Computer hinzufügen](/docs/console/add-a-computer).
 :::
 
