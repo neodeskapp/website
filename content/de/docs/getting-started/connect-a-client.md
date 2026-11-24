@@ -126,13 +126,6 @@ neue Geräte genehmigen dürfen.
 
 ## Aus dem Paket-Repository installieren {#install-from-the-package-repository}
 
-Den NeoDesk-Client für Linux gibt es auch aus einem signierten
-Paket-Repository unter pkg.neode.sk, für amd64 (x86_64) und arm64 (aarch64).
-Dein System aktualisiert NeoDesk dann mit seinen normalen Updates. Der
-Schlüssel des Repositorys hat den Fingerabdruck
-`D9D7 D06A FB85 0424 31C6 08AB 79E8 A31B 2625 AA7B` und gilt bis zum
-22. November 2029.
-
 ::: note
 Das Repository enthält noch keine Pakete. Die Suite `testing` bekommt den
 nächsten Release Candidate des Clients, `stable` das erste Release, das die
@@ -141,6 +134,13 @@ ein, aber der letzte Schritt findet kein Paket `neodesk`. Installiere den Client
 bis dahin mit einer Einladung aus
 [Computer hinzufügen](/docs/console/add-a-computer).
 :::
+
+Den NeoDesk-Client für Linux gibt es auch aus einem signierten
+Paket-Repository unter pkg.neode.sk, für amd64 (x86_64) und arm64 (aarch64).
+Dein System aktualisiert NeoDesk dann mit seinen normalen Updates. Der
+Schlüssel des Repositorys hat den Fingerabdruck
+`D9D7 D06A FB85 0424 31C6 08AB 79E8 A31B 2625 AA7B` und gilt bis zum
+22. November 2029.
 
 Nach der Installation lässt du den Computer mit dem Code einer Einladung deinem
 Server beitreten: in NeoDesk unter **Einstellungen**, **Server**, **Server

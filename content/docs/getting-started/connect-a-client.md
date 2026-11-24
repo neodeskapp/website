@@ -115,12 +115,6 @@ lists the codes that are still active and lets you revoke one. The
 
 ## Install from the package repository
 
-The NeoDesk client for Linux also comes from a signed package repository at
-pkg.neode.sk, for amd64 (x86_64) and arm64 (aarch64). Your system then updates
-NeoDesk with its normal updates. The repository key has the fingerprint
-`D9D7 D06A FB85 0424 31C6 08AB 79E8 A31B 2625 AA7B` and is valid until
-22 November 2029.
-
 ::: note
 The repository holds no packages yet. The `testing` suite gets the next client
 release candidate, and `stable` the first release that carries the new package
@@ -128,6 +122,12 @@ version. Until then the steps below set up the repository, but the last step
 finds no `neodesk` package. Install the client with an invite from
 [Add a computer](/docs/console/add-a-computer) instead.
 :::
+
+The NeoDesk client for Linux also comes from a signed package repository at
+pkg.neode.sk, for amd64 (x86_64) and arm64 (aarch64). Your system then updates
+NeoDesk with its normal updates. The repository key has the fingerprint
+`D9D7 D06A FB85 0424 31C6 08AB 79E8 A31B 2625 AA7B` and is valid until
+22 November 2029.
 
 After the install, join the computer to your server with the code of an
 invite: in NeoDesk, **Settings**, **Server**, **Join a server**.
