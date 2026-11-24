@@ -202,6 +202,8 @@ function loadPages(dir: string, locale: Locale, version: string): Page[] {
 			og: data.og,
 			product: data.product,
 			release: data.release,
+			fold: data.fold === 'true',
+			quoted: data.quoted === 'true',
 			body: body.trim() + '\n',
 			updated: updatedOf(file),
 			bodyLine,
@@ -371,7 +373,7 @@ function makeMarkdown(page: Page, usedShots: Set<string>, t: Strings, linkTo: (h
 
 	// Commands can be copied as they are; see src/commands.ts
 	md.core.ruler.push('commands', (state: StateCore) => {
-		for (const p of checkCommands(state.tokens)) problems.push(`${page.rel}:${p.line + page.bodyLine - 1}: ${p.message}`);
+		for (const p of checkCommands(state.tokens, { quotedPage: page.quoted })) problems.push(`${page.rel}:${p.line + page.bodyLine - 1}: ${p.message}`);
 	});
 
 	// The old ids of a renamed heading, as empty targets right before it

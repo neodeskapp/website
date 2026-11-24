@@ -62,6 +62,11 @@ const config: SiteConfig = {
 			intro: 'For the person who runs the server: configuration, ports and firewall, a reverse proxy with TLS, PostgreSQL, updating, backup and troubleshooting.'
 		},
 		{
+			slug: 'command-line',
+			label: 'Command line',
+			intro: 'The neodesk command line for scripts and AI agents, and the reference of every command it has.'
+		},
+		{
 			slug: 'development',
 			label: 'Development',
 			intro: 'For people who work on NeoDesk or build on it: contributing, building from source, the tests and checks, how the code fits together, releases, and the APIs and protocols.',

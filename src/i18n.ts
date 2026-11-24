@@ -203,6 +203,10 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 				label: 'Server betreiben',
 				intro: 'Für alle, die den Server betreiben: Konfiguration, Ports und Firewall, ein Reverse Proxy mit TLS, PostgreSQL, Updates, Backup und Fehlersuche.'
 			},
+			'command-line': {
+				label: 'Kommandozeile',
+				intro: 'Die Kommandozeile neodesk für Skripte und KI-Agenten, und die Referenz aller ihrer Befehle.'
+			},
 			development: {
 				label: 'Entwicklung',
 				intro: 'Für alle, die an NeoDesk mitarbeiten oder darauf aufbauen: mitmachen, aus dem Quellcode bauen, Tests und Prüfungen, wie der Code zusammenhängt, Releases sowie die APIs und Protokolle.',

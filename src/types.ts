@@ -58,6 +58,16 @@ export interface Page {
 	product?: string;
 	/** For the release template: the version, from front matter `release` */
 	release?: string;
+	/**
+	 * Front matter `fold: true`: the sidebar lists this page's children only on the page
+	 * and its children, and the section page and the docs index leave them out
+	 */
+	fold?: boolean;
+	/**
+	 * Front matter `quoted: true`: the page quotes NeoDesk's own help text, so its inline
+	 * code keeps NeoDesk's placeholders (`--file PATH`, `{id}`); see src/commands.ts
+	 */
+	quoted?: boolean;
 }
 
 export interface Section extends SectionConfig {

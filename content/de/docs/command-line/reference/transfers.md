@@ -1,0 +1,82 @@
+---
+title: neodesk transfers
+description: 5 Befehle. Dateiübertragungen zwischen der Konsole und Geräten.
+order: 56
+quoted: true
+---
+
+Dateiübertragungen zwischen der Konsole und Geräten.
+
+Die Befehle stehen hier auf Englisch, so wie die Kommandozeile sie mit `neodesk transfers --help` zeigt. Die Flags, die jeder Befehl kennt, stehen in der [Befehlsreferenz](/docs/command-line/reference#flags-for-every-command).
+
+## neodesk transfers cancel
+
+Cancel a file transfer.
+
+Give the request body with -f key=value (text), -F key=json (numbers, true or false, lists) or --data JSON (or --data @file.json). The answer to a wrong body names what is missing.
+
+```text quoted
+neodesk transfers cancel <id> [flags]
+```
+
+| Argument | What it is |
+|---|---|
+| `<id>` | The ID |
+
+Needs device.connect; changes something: needs a token with read and write access. Calls `POST /api/files/transfers/{id}/cancel`.
+
+## neodesk transfers download
+
+Download the file of a transfer (use --output).
+
+```text quoted
+neodesk transfers download <id> [flags]
+```
+
+| Argument | What it is |
+|---|---|
+| `<id>` | The ID |
+
+Needs device.connect; only reads; the answer holds secrets or private content. Calls `GET /api/files/transfers/{id}/download`.
+
+## neodesk transfers get
+
+Show one file transfer.
+
+```text quoted
+neodesk transfers get <id> [flags]
+```
+
+| Argument | What it is |
+|---|---|
+| `<id>` | The ID |
+
+Needs device.connect; only reads. Calls `GET /api/files/transfers/{id}`.
+
+## neodesk transfers list
+
+List file transfers.
+
+```text quoted
+neodesk transfers list [flags]
+```
+
+Needs device.connect; only reads. Calls `GET /api/files/transfers`.
+
+## neodesk transfers start
+
+Start a file transfer to or from a device.
+
+```text quoted
+neodesk transfers start [flags]
+```
+
+| Flag | What it is |
+|---|---|
+| `--direction DIRECTION` |  |
+| `--device-id DEVICE_ID` |  |
+| `--filename FILENAME` |  |
+| `--size SIZE` |  |
+| `--mime-type MIME_TYPE` |  |
+
+Needs device.connect; changes something: needs a token with read and write access; runs something on a device or the server. Calls `POST /api/files/transfer`.

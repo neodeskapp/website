@@ -64,13 +64,23 @@ export function languageSwitch(shared: Pick<Shared, 'versions' | 'locale' | 't'>
 		.join('')}</nav>`;
 }
 
+/**
+ * The pages a list shows: the children of a page with `fold: true` only while the reader
+ * is on that page or one of its children (current), and never in lists without a current page.
+ */
+function unfolded(items: Page[], current = ''): Page[] {
+	const folded = new Set(items.filter((p) => p.fold).map((p) => p.slug));
+	const open = items.find((p) => p.slug === current)?.parent ?? current;
+	return items.filter((p) => !p.parent || !folded.has(p.parent) || p.parent === open);
+}
+
 function sidebar(shared: Shared, current: string) {
 	return shared.sections
 		.map(
 			(s) => `<div class="side-section">
       <p class="side-label"><a href="${inLocale(shared, `/docs/${s.slug}/`)}"${current === s.slug ? ' aria-current="page"' : ''}>${esc(s.label)}</a></p>
       <ul>
-${s.items
+${unfolded(s.items, current)
 	.map(
 		(p) =>
 			`        <li${p.parent ? ' class="child"' : ''}><a href="${inLocale(shared, `/docs/${p.slug}/`)}"${current === p.slug ? ' aria-current="page"' : ''}>${esc(p.title)}</a></li>`
@@ -193,7 +203,7 @@ function pageHead(shared: Shared, title: string, markdownPath: string) {
 
 function rows(shared: Shared, items: Page[]) {
 	return `<ul class="rows">
-${items
+${unfolded(items)
 	.map(
 		(p) =>
 			`      <li${p.parent ? ' class="child"' : ''}><a href="${inLocale(shared, `/docs/${p.slug}/`)}">${esc(p.title)}</a>${p.description ? `<p>${esc(p.description)}</p>` : ''}</li>`

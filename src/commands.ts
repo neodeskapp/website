@@ -77,7 +77,13 @@ function textAround(tokens: Token[], i: number): string {
 
 const asText = (kids: Token[]) => kids.map((n) => (n.type === 'code_inline' ? '`' + n.content + '`' : n.content)).join('');
 
-export function checkCommands(tokens: Token[]): CommandProblem[] {
+/**
+ * quotedPage: the page quotes NeoDesk's own help text (front matter `quoted: true`, the
+ * generated command reference), so its inline code is NeoDesk's syntax as the command line
+ * prints it, `--file PATH` and `GET /api/devices/{id}` included, and is not held to the
+ * placeholder rule. Its blocks still are, unless they are marked quoted themselves.
+ */
+export function checkCommands(tokens: Token[], { quotedPage = false }: { quotedPage?: boolean } = {}): CommandProblem[] {
 	const problems: CommandProblem[] = [];
 	let inTable = 0;
 	let inHeading = false;
@@ -116,7 +122,7 @@ export function checkCommands(tokens: Token[]): CommandProblem[] {
 			const kids = t.children ?? [];
 			kids.forEach((c, k) => {
 				if (c.type !== 'code_inline') return;
-				for (const style of OTHER_STYLES) {
+				for (const style of quotedPage ? [] : OTHER_STYLES) {
 					if (style.pastedOnly || style.shellOnly) continue;
 					for (const m of c.content.matchAll(style.re)) {
 						if (!quoted.has(m[0])) problems.push({ line: lineOf(t), message: `${style.what} in \`${c.content}\`; write placeholders as <server-address>` });

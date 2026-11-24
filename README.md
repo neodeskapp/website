@@ -42,6 +42,7 @@ deploy.sh            builds for beta or production and uploads to the web server
 shots.json           the console screenshots: page, steps to reach the state, annotations
 shots.ts             takes every screenshot in light and dark from a running console
 release-card.ts      draws the card at the top of a release's notes, from git
+cli-reference.ts     writes the command reference from the server's clidocs output
 public/img/releases/ the images of the release notes, one folder per tag
 ```
 
@@ -133,6 +134,28 @@ It compares with the tag before by default; name the release with
 `--previous` when the tag before it was never published. The notes link the
 images by commit, as
 `https://raw.githubusercontent.com/neodeskapp/website/<commit>/public/img/releases/<tag>/card.png`.
+
+## The command reference
+
+The pages under `/docs/command-line/reference/` come from the server's own
+generator, which reads the command table the `neodesk` command line runs on.
+Don't edit them by hand; make them again after a release that changes commands:
+
+```sh
+cd ../neodesk/neodesk-server && go run ./cmd/clidocs -out /tmp/clidocs -version 3.6.0-rc.4
+node cli-reference.ts /tmp/clidocs
+```
+
+clidocs writes `index.md`, a page per command group, `excluded.md` and
+`commands.json`. `cli-reference.ts` turns them into
+`content/docs/command-line/reference.md`, one page per group under
+`content/docs/command-line/reference/` and `routes-left-out.md`, and the same in
+German, where the title, description and intro are German and the commands stay
+English, as the command line prints them. A new group needs its German summary
+in `GERMAN` in the script, or the script stops. Each run makes the folders new
+and drops these pages' recorded heading ids from `content/anchors.json`, so the
+next build records the ids of the commands that exist now. The hand-written pages
+of the section are not touched.
 
 ## Languages
 
@@ -260,6 +283,7 @@ The build checks the pages as it reads them and the files it wrote to
 - Commands (`src/commands.ts`): every block has a language, no block has a
   shell prompt (`$ `, `PS C:\>`), a command the text asks the reader to run is
   in a block of its own, and placeholders follow the rule under [Code](#code).
+  The inline code of a page with `quoted: true` is NeoDesk's own and exempt.
 
 ## Writing a docs page
 
@@ -283,6 +307,12 @@ One or two sentences that say what the page covers and who needs it.
 - `description` is one sentence. It shows under the title on section pages, in
   search results and in link previews.
 - `order` sorts the page in its section, starting at 1.
+- `fold: true` on a page with children lists the children in the sidebar only
+  on that page and its children; the section page and the docs index leave them
+  out. The command reference uses it for its 60 pages.
+- `quoted: true` says the page quotes NeoDesk's own help text, so its inline
+  code may keep NeoDesk's placeholders (`--file PATH`, `{id}`); see [Code](#code).
+  Only the generated command reference needs it.
 
 ### Links
 
