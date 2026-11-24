@@ -37,9 +37,13 @@ it in the same mode, where one process runs:
 - the API for RustDesk clients
 - the web console
 
-Each part listens on its own port. The console uses 5000, the ID and relay
-servers use 21115 to 21119, and the API for clients uses 21121.
-[Ports](/docs/operations/ports) lists them all and says which ones clients need.
+Each part listens on its own port. The ID server and the relay use 21115 to
+21117, and 21118 and 21119 for clients that connect over WebSocket. The API for
+clients uses 21121. The console uses 5000; the Linux and Windows installers
+give it HTTPS on 5443, and 5000 sends browsers there. On a Linux or Windows
+install the server's own API listens on 21114, and CDAP device agents connect
+on 21122. [Ports](/docs/operations/ports) lists them all and says which ones
+clients need.
 
 The web console is a Svelte app. It is built into the binary when the binary is
 built, so the running server needs no Node.js. Only a build from source needs

@@ -43,10 +43,14 @@ betreibt:
 - die API für RustDesk-Clients
 - die Web-Konsole
 
-Jeder Teil lauscht auf seinem eigenen Port. Die Konsole nutzt 5000, ID- und
-Relay-Server nutzen 21115 bis 21119, und die API für Clients nutzt 21121.
-[Ports](/docs/operations/ports) listet alle auf und sagt, welche davon die
-Clients brauchen.
+Jeder Teil lauscht auf seinem eigenen Port. ID-Server und Relay nutzen 21115
+bis 21117, dazu 21118 und 21119 für Clients, die sich über WebSocket
+verbinden. Die API für Clients nutzt 21121. Die Konsole nutzt 5000; die
+Installer für Linux und Windows geben ihr HTTPS auf 5443, und 5000 leitet
+Browser dorthin weiter. Bei einer Installation unter Linux oder Windows lauscht
+die eigene API des Servers auf 21114, und CDAP-Geräte-Agents verbinden sich auf
+21122. [Ports](/docs/operations/ports) listet alle auf und sagt, welche davon
+die Clients brauchen.
 
 Die Web-Konsole ist eine Svelte-App. Sie wird beim Bauen in das Binary
 eingebaut, deshalb braucht der laufende Server kein Node.js. Nur ein Build aus
