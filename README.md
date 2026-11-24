@@ -49,7 +49,7 @@ public/img/releases/ the images of the release notes, one folder per tag
 `SITE_URL=https://beta.neode.sk node build.ts` builds for another address.
 `DIST_DIR=<folder>` writes the build there instead of `dist/`.
 `ND_VERSION=3.6.0` sets the version by hand; without it the build reads the
-repository's VERSION file. `DOCS_DIR=<folder>` builds another content folder.
+newest published release of neodeskapp/neodesk, pre-releases included. `DOCS_DIR=<folder>` builds another content folder.
 
 A new section needs a folder under `content/docs` and an entry in
 `site.config.ts`. Docs pages get an "Edit on GitHub" link and an "Updated"

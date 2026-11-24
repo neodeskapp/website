@@ -46,7 +46,7 @@ jobs:
       - name: Build
         run: |
           if [ "$TARGET" = production ]; then host=neode.sk; else host=beta.neode.sk; fi
-          SITE_URL="https://$host" npm run build
+          SITE_URL="https://$host" GITHUB_TOKEN="${{ github.token }}" npm run build
       - name: Upload
         env:
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}

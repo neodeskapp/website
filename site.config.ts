@@ -9,10 +9,10 @@ const config: SiteConfig = {
 	// For the home page's structured data: the license text and where releases are
 	license: 'https://www.gnu.org/licenses/agpl-3.0.html',
 	downloadUrl: 'https://github.com/neodeskapp/neodesk/releases',
-	// The current NeoDesk version comes from the repository's VERSION file at build
+	// The current NeoDesk version is the newest published release, read at build
 	// time (ND_VERSION overrides it). This one is used, with a warning, when it cannot be fetched.
-	versionUrl: 'https://raw.githubusercontent.com/neodeskapp/neodesk/main/VERSION',
-	version: '3.6.2',
+	versionUrl: 'https://api.github.com/repos/neodeskapp/neodesk/releases?per_page=30',
+	version: '3.6.0-rc.4',
 	// "Edit on GitHub" appears on docs pages once this points at the folder that holds
 	// content/docs in a repository, for example
 	// https://github.com/neodeskapp/website/edit/main/content/docs

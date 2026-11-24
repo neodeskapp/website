@@ -128,9 +128,18 @@ function slugger() {
 async function currentVersion(): Promise<string> {
 	if (process.env.ND_VERSION) return process.env.ND_VERSION.trim();
 	try {
-		const res = await fetch(config.versionUrl, { signal: AbortSignal.timeout(5000) });
-		const text = (await res.text()).trim();
-		if (res.ok && /^\d+\.\d+\.\d+/.test(text)) return text;
+		// The newest published release, pre-releases included. The VERSION file on
+		// main runs ahead of the releases, so it is not what a visitor can install.
+		const headers: Record<string, string> = { accept: 'application/vnd.github+json' };
+		if (process.env.GITHUB_TOKEN) headers.authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
+		const res = await fetch(config.versionUrl, { headers, signal: AbortSignal.timeout(8000) });
+		if (res.ok) {
+			const releases = (await res.json()) as { tag_name: string; draft: boolean; published_at: string | null }[];
+			const newest = releases
+				.filter((r) => !r.draft && r.published_at && /^v\d+\.\d+\.\d+/.test(r.tag_name))
+				.sort((a, b) => (a.published_at! < b.published_at! ? 1 : -1))[0];
+			if (newest) return newest.tag_name.slice(1);
+		}
 	} catch {
 		/* offline: use the version in the config */
 	}
