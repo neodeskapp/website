@@ -118,7 +118,7 @@ lists the codes that are still active and lets you revoke one. The
 ::: note
 The `stable` suite holds no packages yet, because the client has no final
 release. The steps below use `stable`, so their last step finds no `neodesk`
-package for now. The `testing` suite holds the release candidates, 1.5.0-rc.6
+package for now. The `testing` suite holds the release candidates, 1.5.0-rc.7
 at the moment. To install a release candidate on Debian or Ubuntu, write
 `testing` in place of `stable` in step 3. Or install the client with an invite
 from [Add a computer](/docs/console/add-a-computer).

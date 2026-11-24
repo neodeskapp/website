@@ -130,7 +130,7 @@ neue Geräte genehmigen dürfen.
 Die Suite `stable` enthält noch keine Pakete, weil es vom Client noch kein
 fertiges Release gibt. Die Schritte unten nutzen `stable`, ihr letzter Schritt
 findet deshalb im Moment kein Paket `neodesk`. Die Suite `testing` enthält die
-Release Candidates, zurzeit 1.5.0-rc.6. Für einen Release Candidate unter
+Release Candidates, zurzeit 1.5.0-rc.7. Für einen Release Candidate unter
 Debian oder Ubuntu schreibst du in Schritt 3 `testing` statt `stable`. Oder du
 installierst den Client mit einer Einladung aus
 [Computer hinzufügen](/docs/console/add-a-computer).
