@@ -1,12 +1,43 @@
 ---
 title: Unattended access and Wake-on-LAN
-description: Reach a RustDesk device when nobody is at it, and wake a sleeping computer from the server.
+description: Reach a device when nobody is at it, with a permanent password in the NeoDesk client or in RustDesk, and wake a sleeping computer from the server.
 order: 10
 ---
 
-Unattended access means connecting to a device when nobody is there to accept the connection. With the RustDesk client this works with a permanent password that is set on the device itself. This page covers how the console helps you set that password and share it, and how to wake a computer that is asleep.
+Unattended access means connecting to a device when nobody is there to accept the connection. It works with a permanent password that is set on the device itself, in the NeoDesk client or in stock RustDesk. This page covers where to set that password, how the console helps you share it, and how to wake a computer that is asleep.
 
 ## Set the permanent password
+
+The console can't set the password or how the device accepts a session. An invite from [Add a computer](/docs/console/add-a-computer) sets the NeoDesk client's server, key and device token, not its password. Strategies, the settings the server pushes to desktop clients, carry only session permissions such as file transfer and the clipboard. Set the password on the device, in one of the ways below.
+
+### In the NeoDesk client
+
+The client has to be installed: NeoDesk that isn't installed takes connections only while its window is open. The download of an invite installs it on Windows and Linux.
+
+1. In NeoDesk, open **Settings**, then **Security**. On an installed client the page is locked at first: click **Unlock** and confirm with administrator rights, or with your PIN when one is set.
+2. In the **Password** section, pick how a session gets accepted. **Accept sessions via both**, the default, takes the password or a click on **Allow** at the computer. **Accept sessions via password** takes only the password. **Accept sessions via click** takes no password at all, so someone has to be at the computer.
+3. Pick which password works: **Use permanent password**, or **Use both passwords**, the default, which keeps the one-time password as well.
+4. Click **Set permanent password** and type the password twice. It needs at least 8 characters, with a digit, an upper-case and a lower-case letter.
+
+The client doesn't show the permanent password again.
+
+An administrator can also set the password on the command line of an installed client, for example from a deployment tool. On Windows, in PowerShell as Administrator, with the client in its default folder and the password in place of `<permanent-password>`:
+
+```powershell
+Start-Process -FilePath "$env:ProgramFiles\NeoDesk Client\neodesk.exe" -ArgumentList @('--password', '<permanent-password>') -Wait -NoNewWindow
+```
+
+On Linux, again with the password in place of `<permanent-password>`:
+
+```bash
+sudo neodesk --password '<permanent-password>'
+```
+
+The same program sets the other two choices with `--option`: `--option approve-mode password` is **Accept sessions via password**, and `--option verification-method use-permanent-password` is **Use permanent password**.
+
+The console's **Windows install script (Intune)** doesn't reach the NeoDesk client: it runs `rustdesk.exe` from the RustDesk folder, for stock RustDesk.
+
+### In stock RustDesk
 
 Set the password in RustDesk on the device, or set it during the rollout with the Windows install script. On **Overview**, under **Client setup**, open **More** and choose **Windows install script (Intune)**. The script ends with two lines that are commented out:
 
@@ -19,9 +50,9 @@ Remove the `#` at the start of the second line and put the password in place of 
 
 ## Share the password with your team
 
-People who sign in to the RustDesk client with their account can get a device's password from the server, so they don't have to type it. Add the device as a contact to an organization's shared address book and choose **Set password** on the contact. The password must match the one set on the device. [The shared address book](/docs/people/organizations#the-shared-address-book) explains who receives it.
+People who sign in to the RustDesk client with their account can get a device's password from the server, so they don't have to type it. Add the device as a contact to an organization's shared address book and choose **Set password** on the contact. The password must match the one set on the device. [The shared address book](/docs/people/organizations#the-shared-address-book) explains who receives it. When the device is also assigned to that organization, the console's browser viewer fills the password in as well.
 
-The console has no access schedule or list of allowed operators per device: whether a connection needs the password or someone at the device to accept is decided by RustDesk on the device. An access policy that was saved for a device stays stored, but nothing checks it when someone connects.
+The console has no access schedule or list of allowed operators per device: whether a connection needs the password or someone at the device to accept it is decided by the client on the device, NeoDesk or RustDesk. An access policy that was saved for a device stays stored, but nothing checks it when someone connects.
 
 ## Wake-on-LAN
 

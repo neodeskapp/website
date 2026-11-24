@@ -790,7 +790,9 @@
 	"console/unattended-access": [
 		"set-the-permanent-password",
 		"share-the-password-with-your-team",
-		"wake-on-lan"
+		"wake-on-lan",
+		"in-the-neodesk-client",
+		"in-stock-rustdesk"
 	],
 	"development/api": [
 		"where-it-listens",
