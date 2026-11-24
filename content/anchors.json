@@ -1037,7 +1037,8 @@
 		"which-steps-an-account-gets",
 		"when-a-step-counts-as-done",
 		"doing-a-step",
-		"hide-it-and-bring-it-back"
+		"hide-it-and-bring-it-back",
+		"on-the-command-line"
 	],
 	"getting-started/introduction": [
 		"what-it-does",

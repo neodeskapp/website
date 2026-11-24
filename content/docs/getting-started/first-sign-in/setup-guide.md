@@ -102,3 +102,15 @@ To show it again, choose **Show the setup guide** in one of two places:
 
 Both open the overview with the guide. Hiding the guide or bringing it back
 changes it only for your account.
+
+## On the command line
+
+The command line shows the same steps, for an account with
+**Server configuration**:
+
+```bash
+neodesk setup-guide status
+```
+
+`neodesk setup-guide hide` and `neodesk setup-guide show` do what the buttons
+do. See [neodesk setup-guide](/docs/command-line/reference/setup-guide).

@@ -114,3 +114,15 @@ Um sie wieder anzuzeigen, wähl an einer von zwei Stellen
 
 Beides öffnet die Übersicht mit der Anleitung. Ausblenden und Zurückholen
 ändern die Anleitung nur für dein Konto.
+
+## Auf der Kommandozeile {#on-the-command-line}
+
+Die Kommandozeile zeigt dieselben Schritte, für ein Konto mit
+**Server konfigurieren**:
+
+```bash
+neodesk setup-guide status
+```
+
+`neodesk setup-guide hide` und `neodesk setup-guide show` tun dasselbe wie die
+Schaltflächen. Siehe [neodesk setup-guide](/docs/command-line/reference/setup-guide).
