@@ -44,6 +44,12 @@ Ein Konto hat immer nur eine Sitzung: Meldest du dich in einem anderen Browser
 an, endet die erste Sitzung. [Konfiguration](/docs/operations/configuration)
 erklärt, wie du diese Grenzen änderst.
 
+Auf einer neuen Installation beginnt die Übersicht mit
+**Diesen Server einrichten**, einer Checkliste der ersten Schritte, die sich
+selbst abhakt. Diese Seite beschreibt die ersten drei Schritte genauer;
+[Die Einrichtungsanleitung](/docs/getting-started/first-sign-in/setup-guide)
+erklärt alle acht.
+
 ## Das Admin-Passwort ändern {#change-the-admin-password}
 
 1. Öffne **Einstellungen**, dann **Anmeldung**. Das Kontomenü unten in der

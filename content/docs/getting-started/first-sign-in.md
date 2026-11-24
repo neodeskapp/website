@@ -41,6 +41,11 @@ session at a time: signing in from another browser ends the first session.
 [Configuration](/docs/operations/configuration) explains how to change these
 limits.
 
+On a new install the overview starts with **Set up this server**, a checklist
+of the first steps that ticks itself as you go. This page covers its first
+three steps in detail; [The setup guide](/docs/getting-started/first-sign-in/setup-guide)
+explains all eight.
+
 ## Change the admin password
 
 1. Open **Settings**, then **Sign-in**. The account menu at the bottom of the

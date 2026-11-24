@@ -30,6 +30,18 @@
 			]
 		},
 		{
+			"name": "setup-guide",
+			"path": "/",
+			"steps": [
+				{
+					"waitFor": "h2:text-is(\"Set up this server\")"
+				},
+				{
+					"wait": 800
+				}
+			]
+		},
+		{
 			"name": "client-setup",
 			"path": "/",
 			"steps": [

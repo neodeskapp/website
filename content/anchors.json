@@ -345,6 +345,14 @@
 		"find-your-way-around",
 		"next-steps"
 	],
+	"getting-started/first-sign-in/setup-guide": [
+		"who-sees-it",
+		"the-steps",
+		"which-steps-an-account-gets",
+		"when-a-step-counts-as-done",
+		"doing-a-step",
+		"hide-it-and-bring-it-back"
+	],
 	"getting-started/introduction": [
 		"what-it-does",
 		"what-it-is-made-of",
