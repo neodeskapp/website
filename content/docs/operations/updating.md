@@ -6,6 +6,10 @@ order: 5
 
 How you update depends on how you installed. A Docker install pulls a newer image. The Linux and Windows installers replace the server binary and keep your data and settings, and the console's **Updates** page can replace the binary too. All of them take their releases from neodeskapp/neodesk on GitHub.
 
+## Releases so far
+
+NeoDesk has no stable release yet. The newest release, {{VERSION}}, is a release candidate, and there is no final 3.6.0. Until there is, the Stable channel installs the newest release candidate, and so does the `latest` image in Docker.
+
 ## Before you update
 
 Make a backup, see [Backup and restore](/docs/operations/backup), and note the version you run now (see [Check the version](#check-the-version)), so that you can go back to it.
