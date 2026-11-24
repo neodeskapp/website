@@ -8,6 +8,13 @@
 		"use-it-with-curl",
 		"see-and-revoke-tokens"
 	],
+	"command-line/mcp": [
+		"before-you-start",
+		"connect-an-mcp-client",
+		"what-the-agent-gets",
+		"left-out-on-purpose",
+		"asking-before-it-acts"
+	],
 	"command-line/neodesk": [
 		"where-to-find-it",
 		"sign-in",

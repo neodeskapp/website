@@ -44,8 +44,8 @@ export const AGENT_TOOLS: AgentTool[] = [
 		id: 'mcp',
 		name: '`neodesk mcp`',
 		summary:
-			'Serves the commands of the neodesk command line as MCP tools over standard input and output, with an API token: only the commands that read, unless `--allow-writes`, `--allow-exec` and `--allow-secrets` add more.',
+			'Serves the commands of the neodesk command line as MCP tools over standard input and output, with an API token: by default only the commands that read and answer without secrets; `--allow-writes`, `--allow-exec` and `--allow-secrets` add more.',
 		available: true,
-		docs: '/docs/command-line/reference'
+		docs: '/docs/command-line/mcp'
 	}
 ];

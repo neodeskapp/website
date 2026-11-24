@@ -64,7 +64,7 @@ const config: SiteConfig = {
 		{
 			slug: 'command-line',
 			label: 'Command line',
-			intro: 'The neodesk command line for scripts and AI agents, and the reference of every command it has.'
+			intro: 'The neodesk command line for scripts and AI agents: signing in with an API token, the MCP server for AI agents, and the reference of every command.'
 		},
 		{
 			slug: 'development',

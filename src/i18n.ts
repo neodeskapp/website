@@ -205,7 +205,7 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 			},
 			'command-line': {
 				label: 'Kommandozeile',
-				intro: 'Die Kommandozeile neodesk für Skripte und KI-Agenten, und die Referenz aller ihrer Befehle.'
+				intro: 'Die Kommandozeile neodesk für Skripte und KI-Agenten: die Anmeldung mit einem API-Token, der MCP-Server für KI-Agenten und die Referenz aller Befehle.'
 			},
 			development: {
 				label: 'Entwicklung',

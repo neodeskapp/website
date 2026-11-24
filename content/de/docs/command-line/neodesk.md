@@ -229,6 +229,8 @@ prüfen:
   der Name einer Gruppe dahinter beschränkt es auf diese Gruppe.
 - `neodesk api` schickt eine beliebige Anfrage an die API der Konsole, für das,
   was kein Befehl abdeckt, etwa `neodesk api GET /api/stats`.
+- `neodesk mcp` bietet die Befehle einem KI-Agenten als Werkzeuge an, siehe
+  [KI-Agenten über MCP](/docs/command-line/mcp).
 - `neodesk completion` gibt ein Skript zur Vervollständigung für bash, zsh,
   fish oder PowerShell aus.
 - `neodesk local` führt die eigenen Befehle des Server-Binarys auf diesem

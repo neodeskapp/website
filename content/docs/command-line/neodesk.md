@@ -216,6 +216,8 @@ The exit codes stay the same between releases, so scripts can test for them:
   group's name after it limits it to that group.
 - `neodesk api` sends any request to the console's API, for what no command
   covers, such as `neodesk api GET /api/stats`.
+- `neodesk mcp` serves the commands as tools for an AI agent, see
+  [AI agents over MCP](/docs/command-line/mcp).
 - `neodesk completion` prints a completion script for bash, zsh, fish or
   PowerShell.
 - `neodesk local` runs the server binary's own commands on this machine, such
