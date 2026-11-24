@@ -69,6 +69,16 @@ Without flags the agent can only read. Flags add more:
 The numbers are those of the release 3.6.0-rc.4. `--allow-exec` needs
 `--allow-writes`, since running something is a write; alone it is refused.
 
+`--allow-secrets` alone adds 10 tools, although 19 commands answer with
+secrets. `neodesk mcp` counts a command as reading only when it calls a GET
+route. Nine of the 19 call a POST route, because they make a device token or a
+link, take a one-time password, or ask a device for its screen or a file:
+`device-control screenshot`, `device-files read`, `device-tokens create`,
+`device-tokens create-many`, `devices device-token`, `guest-links create`,
+`mesh share`, `support device-password` and `support password`. They count as
+changes, so they come only with `--allow-writes` and `--allow-secrets`
+together.
+
 - `--groups` with a list of groups, such as `--groups devices,users`, offers
   only the commands of those groups.
 - `--compact` offers two tools instead of one per command: `neodesk_commands`

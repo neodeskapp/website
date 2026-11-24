@@ -72,6 +72,17 @@ Die Zahlen gelten für das Release 3.6.0-rc.4. `--allow-exec` braucht
 `--allow-writes`, weil etwas auszuführen ein Schreiben ist; allein wird es
 abgelehnt.
 
+`--allow-secrets` allein gibt 10 Werkzeuge frei, obwohl 19 Befehle mit
+Geheimnissen antworten. `neodesk mcp` zählt einen Befehl nur dann als lesend,
+wenn er eine GET-Route aufruft. Neun der 19 rufen eine POST-Route auf, weil sie
+ein Geräte-Token oder einen Link erzeugen, ein Einmalpasswort abholen oder ein
+Gerät nach seinem Bildschirm oder einer Datei fragen:
+`device-control screenshot`, `device-files read`, `device-tokens create`,
+`device-tokens create-many`, `devices device-token`, `guest-links create`,
+`mesh share`, `support device-password` und `support password`. Sie zählen als
+Änderungen und kommen deshalb nur mit `--allow-writes` und `--allow-secrets`
+zusammen.
+
 - `--groups` mit einer Liste von Gruppen, etwa `--groups devices,users`, bietet
   nur die Befehle dieser Gruppen an.
 - `--compact` bietet statt eines Werkzeugs pro Befehl zwei an:
