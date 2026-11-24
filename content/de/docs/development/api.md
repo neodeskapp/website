@@ -4,7 +4,7 @@ description: Wie sich Skripte und Integrationen an der API des Servers anmelden 
 order: 12
 ---
 
-Der NeoDesk-Server hat eine einzige HTTP-API. Die Web-Konsole, die RustDesk-Clients und deine eigenen Skripte sprechen alle mit ihr. Diese Seite ist für Skripte und Integrationen: wo die API lauscht, wie du dich anmeldest und auf welche Routen du bauen kannst. Die eigenen Adressen der Konsole unter `/api/` auf Port 5000 bedienen den Browser und stehen nicht auf dieser Seite.
+Der NeoDesk-Server hat eine einzige HTTP-API. Die Web-Konsole, die RustDesk-Clients und deine eigenen Skripte sprechen alle mit ihr. Diese Seite ist für Skripte und Integrationen: wo die API lauscht, wie du dich anmeldest und auf welche Routen du bauen kannst. Die eigenen Adressen der Konsole unter `/api/` auf Port 5000 bedienen den Browser und stehen nicht auf dieser Seite. Ein Skript kann sie auch nutzen, mit einem API-Token der Konsole, so wie die Kommandozeile `neodesk`; siehe [API-Tokens](/docs/command-line/api-tokens) und die [Befehlsreferenz](/docs/command-line/reference).
 
 ## Wo sie lauscht {#where-it-listens}
 

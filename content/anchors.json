@@ -1,4 +1,13 @@
 {
+	"command-line/api-tokens": [
+		"who-can-make-tokens",
+		"make-a-token",
+		"the-permissions",
+		"what-a-token-can-do",
+		"use-it-with-the-command-line",
+		"use-it-with-curl",
+		"see-and-revoke-tokens"
+	],
 	"command-line/reference": [
 		"api-tokens",
 		"groups",

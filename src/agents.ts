@@ -27,8 +27,10 @@ export const AGENT_TOOLS: AgentTool[] = [
 	{
 		id: 'scoped-token',
 		name: 'Scoped API token for agents',
-		summary: 'TODO when it ships: what the token may do and how to make one.',
-		available: false
+		summary:
+			'An admin makes it in the console under the account menu, API tokens: read only or read and write, with only the permissions picked for it and never more than its account, for at most a year, and optionally only from some addresses.',
+		available: true,
+		docs: '/docs/command-line/api-tokens'
 	},
 	{
 		id: 'describe-json',
