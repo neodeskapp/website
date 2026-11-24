@@ -1,6 +1,6 @@
 ---
 title: Lizenz
-description: Die NeoDesk-Lizenz AGPL-3.0, der Markenhinweis und die Drittanbieterhinweise.
+description: Die NeoDesk-Lizenz AGPL-3.0, Preis und Support, der Markenhinweis und die Drittanbieterhinweise.
 order: 1
 ---
 
@@ -21,6 +21,12 @@ Die AGPL-3.0 gilt für alle Commits auf dem Entwicklungs-Branch seit Juni 2026. 
 NeoDesk selbst hat noch kein stabiles Release. Die Releases in neodeskapp/neodesk sind bisher Release Candidates von 3.6.0, alle unter der AGPL-3.0; siehe [Aktualisieren](/docs/operations/updating#releases-so-far).
 
 Beiträge Dritter, die früher unter anderen Bedingungen übernommen wurden, hat der Maintainer, soweit zutreffend, zurückgezogen und unter der AGPL-3.0 neu erstellt.
+
+## Preis und Support {#price-and-support}
+
+NeoDesk ist kostenlos. Es gibt keine bezahlte Version, und jede Funktion steckt in dem Release, das alle bekommen.
+
+Hilfe bei Fragen und Fehlern gibt es kostenlos in den [Issues auf GitHub](https://github.com/neodeskapp/neodesk/issues). Bezahlten Support und Hilfe bei der Einrichtung gibt es auf Anfrage: Schreib an [support@neode.sk](mailto:support@neode.sk).
 
 ## Marke {#trademark}
 

@@ -1254,7 +1254,8 @@
 		"which-versions",
 		"trademark",
 		"clean-room-notice",
-		"third-party-notices"
+		"third-party-notices",
+		"price-and-support"
 	],
 	"project/privacy": [
 		"what-stays-on-your-server",

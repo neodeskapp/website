@@ -1,6 +1,6 @@
 ---
 title: License
-description: NeoDesk's license, the AGPL-3.0, the trademark note and where the third-party notices are.
+description: NeoDesk's license, the AGPL-3.0, what it costs and where to get support, the trademark note and the third-party notices.
 order: 1
 ---
 
@@ -21,6 +21,12 @@ The AGPL-3.0 applies to all commits on the development branch since June 2026. T
 NeoDesk itself has no stable release yet. The releases in neodeskapp/neodesk so far are release candidates of 3.6.0, all under the AGPL-3.0; see [Updating](/docs/operations/updating#releases-so-far).
 
 Third-party contributions that were merged earlier under other terms have been withdrawn and recreated by the maintainer under the AGPL-3.0 where applicable.
+
+## Price and support
+
+NeoDesk is free. There is no paid version, and every feature is in the release everyone gets.
+
+Help with questions and bugs is free in the [issues on GitHub](https://github.com/neodeskapp/neodesk/issues). Paid support and help with a setup are available on request: write to [support@neode.sk](mailto:support@neode.sk).
 
 ## Trademark
 
