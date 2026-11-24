@@ -71,7 +71,8 @@ Each device opens as a tab in the viewer; **New connection** adds another. **Con
 | **Actions** | **Ctrl+Alt+Del**, **Lock screen**, **Restart remote device**, **Refresh screen**, **Paste clipboard**, **Reset keyboard**, **Block input**, and **Windows sessions** when the device has several |
 | **Type text** | Types text on the remote keyboard, for example a password. Ctrl+Enter sends it |
 | **Display** | **Image quality** (**Best**, **Balanced**, **Performance**), **Frame rate** (30, 60 or **Adaptive**), **Scaling**, **Keyboard mode**, **Video codec**, and the options **Show remote cursor**, **Lock after session**, **Privacy mode** and **Disable clipboard** |
-| **Monitors** | Picks the screen to show, and adds or removes virtual displays when the device supports them. A device with two to four screens gets one button per screen instead |
+| **Displays** | For a device that sends several displays at once: the layout, the display you work on, a window of its own for a display, and virtual displays. See [Several displays](#several-displays) |
+| **Monitors** | For other devices: picks the screen to show, and adds or removes virtual displays when the device supports them. A device with two to four screens gets one button per screen instead |
 | **Chat** | Messages appear on the device's screen; replies show here |
 | **File transfer** | Copies files between this computer and the device |
 | **Session info** | The device, the connection, encryption, round trip time, frame rate, screen size and video format |
@@ -85,6 +86,25 @@ Text and pictures you copy on the device reach this computer's clipboard when th
 Not every control works on every connection. **Type text** works in RustDesk and CDAP sessions and says it is not available in the others. What an RDP or VNC session can do is in [RDP and VNC targets](/docs/console/remote-targets#in-the-viewer). A view-only guest link has no **Actions**, **Type text**, **Chat** or **File transfer**.
 
 **Image quality**, **Frame rate**, **Scaling**, **Keyboard mode** and **Video codec** are remembered for your account in this browser and apply to the next session too.
+
+## Several displays
+
+A RustDesk device of version 1.2.4 or later, the NeoDesk client included, sends all its displays in one session. When such a device has more than one display, the controls row has **Displays** in place of **Monitors**. Older devices switch between their screens one at a time, as in the table above.
+
+**Displays** has these parts:
+
+- **Layout**: **One at a time** shows one display. **As arranged** shows every display where it sits on the device's desktop. **Grid** shows them side by side in a grid. As arranged and Grid need a window at least 900 pixels wide and a mouse, so narrower windows and touch tablets show one display at a time.
+- **Show**, or **Work on** in the other two layouts: a small map of the displays as they sit on the device's desktop. Click a display to show it, or to pick the one you work on.
+- The picked display, by its number: **Original size (1:1)** shows it pixel for pixel instead of fitting it into its space, in As arranged and Grid or when it has a window of its own. **Open in a window of its own** opens it in a new browser window; once it is open, the entry says **Go to its window**.
+- **Windows**: **One display on each of my screens** puts one display on each screen of this computer and keeps one in this window. It shows when the browser knows of more than one screen, and the browser may ask first whether the site may place windows on them. Otherwise the entry is **Each display in a window of its own**, and you move the windows yourself. **Bring the displays back** closes those windows and shows their displays here again.
+- **Displays you are not working on**: **Live**, **A new picture every few seconds** or **Paused**. The last two take less bandwidth and less of the browser's time.
+- **Virtual displays**, when the device supports them.
+
+A display in a window of its own still uses the viewer's one connection to the device, so closing the viewer's tab closes the window too. Keys you type in that window go to the device. If the browser blocks the new window, the viewer says "The browser blocked the new window. Allow pop-ups for this site, then try again."
+
+On the remote screen, Ctrl+Alt+Shift with a number from 1 to 9 picks a display, Ctrl+Alt+Shift+L changes the layout, Ctrl+Alt+Shift+Z switches the zoom of the display you work on, and Ctrl+Alt+Shift+P opens it in a window of its own. The end of the **Displays** menu lists these too.
+
+**Session info** shows the frame rate and bitrate of each display, and the video of all displays together. The viewer keeps the layout, the display shown, each display's zoom and the setting for the other displays per device and console account in this browser, for the 50 devices used last.
 
 ## Keyboard
 

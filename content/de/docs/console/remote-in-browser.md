@@ -71,7 +71,8 @@ Jedes Gerät öffnet sich als Tab im Viewer; **Neue Verbindung** fügt einen wei
 | **Aktionen** | **Ctrl+Alt+Del**, **Bildschirm sperren**, **Entferntes Gerät neu starten**, **Bild neu laden**, **Zwischenablage einfügen**, **Tastatur zurücksetzen**, **Eingabe sperren** und **Windows-Sitzungen**, wenn das Gerät mehrere hat |
 | **Text eintippen** | Tippt Text auf der entfernten Tastatur, zum Beispiel ein Passwort. Strg+Enter sendet ihn |
 | **Anzeige** | **Bildqualität** (**Beste**, **Ausgewogen**, **Leistung**), **Bildrate** (30, 60 oder **Automatisch anpassen**), **Skalierung**, **Tastaturmodus**, **Videocodec** und die Optionen **Entfernten Mauszeiger zeigen**, **Nach der Sitzung sperren**, **Privatsphäre-Modus** und **Zwischenablage abschalten** |
-| **Monitore** | Wählt den Bildschirm, der angezeigt wird, und fügt virtuelle Bildschirme hinzu oder entfernt sie, wenn das Gerät das unterstützt. Ein Gerät mit zwei bis vier Bildschirmen bekommt stattdessen eine Schaltfläche pro Bildschirm |
+| **Bildschirme** | Für ein Gerät, das mehrere Bildschirme zugleich schickt: die Anordnung, der Bildschirm, auf dem du arbeitest, ein eigenes Fenster für einen Bildschirm und virtuelle Bildschirme. Siehe [Mehrere Bildschirme](#several-displays) |
+| **Monitore** | Für andere Geräte: wählt den Bildschirm, der angezeigt wird, und fügt virtuelle Bildschirme hinzu oder entfernt sie, wenn das Gerät das unterstützt. Ein Gerät mit zwei bis vier Bildschirmen bekommt stattdessen eine Schaltfläche pro Bildschirm |
 | **Chat** | Nachrichten erscheinen auf dem Bildschirm des Geräts; Antworten erscheinen hier |
 | **Dateiübertragung** | Kopiert Dateien zwischen diesem Computer und dem Gerät |
 | **Sitzungsinfo** | Das Gerät, die Verbindung, Verschlüsselung, Round-Trip-Zeit, Bildrate, Bildschirmgröße und Videoformat |
@@ -85,6 +86,25 @@ Text und Bilder, die du auf dem Gerät kopierst, landen in der Zwischenablage di
 Nicht jede Steuerung funktioniert bei jeder Verbindung. **Text eintippen** funktioniert in RustDesk- und CDAP-Sitzungen und meldet in den anderen, dass es nicht verfügbar ist. Was eine RDP- oder VNC-Sitzung kann, steht in [RDP- und VNC-Ziele](/docs/console/remote-targets#in-the-viewer). Ein Gastlink nur zum Ansehen bietet weder **Aktionen** noch **Text eintippen**, **Chat** oder **Dateiübertragung**.
 
 **Bildqualität**, **Bildrate**, **Skalierung**, **Tastaturmodus** und **Videocodec** werden für dein Konto in diesem Browser gespeichert und gelten auch für die nächste Sitzung.
+
+## Mehrere Bildschirme {#several-displays}
+
+Ein RustDesk-Gerät ab Version 1.2.4, der NeoDesk-Client eingeschlossen, schickt alle seine Bildschirme in einer Sitzung. Hat so ein Gerät mehr als einen Bildschirm, steht in der Steuerleiste **Bildschirme** statt **Monitore**. Ältere Geräte wechseln ihre Bildschirme einzeln, wie in der Tabelle oben.
+
+**Bildschirme** hat diese Teile:
+
+- **Anordnung**: **Einzeln** zeigt einen Bildschirm. **Wie angeordnet** zeigt jeden Bildschirm dort, wo er auf dem Desktop des Geräts liegt. **Raster** zeigt sie nebeneinander in einem Raster. „Wie angeordnet“ und „Raster“ brauchen ein Fenster ab 900 Pixel Breite und eine Maus, deshalb zeigen schmalere Fenster und Tablets mit Touch einen Bildschirm nach dem anderen.
+- **Anzeigen**, in den beiden anderen Anordnungen **Arbeiten auf**: eine kleine Karte der Bildschirme, so wie sie auf dem Desktop des Geräts liegen. Klick auf einen Bildschirm, um ihn anzuzeigen oder um den zu wählen, auf dem du arbeitest.
+- Der gewählte Bildschirm, mit seiner Nummer: **Originalgröße (1:1)** zeigt ihn Pixel für Pixel, statt ihn in seinen Platz einzupassen, in „Wie angeordnet“ und „Raster“ oder wenn er ein eigenes Fenster hat. **In eigenem Fenster öffnen** öffnet ihn in einem neuen Browserfenster; ist es offen, heißt der Eintrag **Zu seinem Fenster wechseln**.
+- **Fenster**: **Ein Bildschirm auf jedem meiner Monitore** legt auf jeden Monitor dieses Computers einen Bildschirm und behält einen in diesem Fenster. Der Eintrag erscheint, wenn der Browser mehr als einen Monitor kennt, und der Browser fragt eventuell zuerst, ob die Seite Fenster darauf platzieren darf. Sonst heißt der Eintrag **Jeder Bildschirm in eigenem Fenster**, und du schiebst die Fenster selbst. **Bildschirme zurückholen** schließt diese Fenster und zeigt ihre Bildschirme wieder hier.
+- **Bildschirme, auf denen Sie gerade nicht arbeiten**: **Live**, **Alle paar Sekunden ein neues Bild** oder **Angehalten**. Die beiden letzten brauchen weniger Bandbreite und weniger Rechenzeit im Browser.
+- **Virtuelle Bildschirme**, wenn das Gerät sie unterstützt.
+
+Ein Bildschirm in einem eigenen Fenster nutzt weiter die eine Verbindung des Viewers zum Gerät, deshalb schließt sich das Fenster mit dem Tab des Viewers. Tasten, die du in diesem Fenster drückst, gehen an das Gerät. Blockiert der Browser das neue Fenster, meldet der Viewer „Der Browser hat das neue Fenster blockiert. Erlauben Sie Pop-ups für diese Seite und versuchen Sie es erneut.“
+
+Auf dem entfernten Bildschirm wählt Strg+Alt+Umschalt mit einer Zahl von 1 bis 9 einen Bildschirm, Strg+Alt+Umschalt+L wechselt die Anordnung, Strg+Alt+Umschalt+Z die Größe des Bildschirms, auf dem du arbeitest, und Strg+Alt+Umschalt+P öffnet ihn in einem eigenen Fenster. Das Ende des Menüs **Bildschirme** nennt die Tasten auch.
+
+**Sitzungsinfo** zeigt die Bildrate und Bitrate jedes Bildschirms und das Video aller Bildschirme zusammen. Der Viewer merkt sich die Anordnung, den gezeigten Bildschirm, die Größe jedes Bildschirms und die Einstellung für die anderen Bildschirme pro Gerät und Konto der Konsole in diesem Browser, für die 50 zuletzt genutzten Geräte.
 
 ## Tastatur {#keyboard}
 
