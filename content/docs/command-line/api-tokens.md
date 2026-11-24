@@ -173,6 +173,17 @@ and `full`, which says whether it carries every permission of its account.
 Every route the command line calls takes the token the same way; each command
 in the [command reference](/docs/command-line/reference) names its route.
 
+This lists the devices the token's account may see, which needs **View
+devices**. Again with your console's address in place of `<console-address>`:
+
+```bash
+curl -H "Authorization: Bearer $NEODESK_TOKEN" https://<console-address>/api/devices
+```
+
+The answer is JSON with the devices in `data.devices` and how many there are in
+`data.total`. Add `?status=online` to the address for only the devices that
+are online.
+
 The console reads a token only from that header. A token in the address, a
 cookie or a form field is ignored, and the client API port, 21121, doesn't take
 tokens. A request with a token signs in with it alone: the console ignores its
@@ -186,6 +197,27 @@ When the console refuses a token, the answer is JSON with `error` and `code`:
 | 403 | `token_read_only` | A read-only token asked to change something |
 | 403 | `token_not_allowed` | No token may do this, such as signing in or changing its own account |
 | 429 | `token_rate_limited` | Too many requests, or too many refused tokens from this address |
+
+### A self-signed certificate
+
+The Linux and Windows installers give the console a self-signed certificate on
+port 5443, and curl refuses it until you name it with `--cacert`. On the Linux
+server only root and the service can read the file, so copy it first:
+
+```bash
+sudo cat /opt/neodesk/ssl/neodesk.crt > neodesk.crt
+```
+
+Then list the devices with your server's address in place of
+`<server-address>`:
+
+```bash
+curl --cacert neodesk.crt -H "Authorization: Bearer $NEODESK_TOKEN" https://<server-address>:5443/api/devices
+```
+
+On Windows the file is `C:\NeoDesk\ssl\neodesk.crt`. To run curl on another
+computer, copy the file there. Behind a reverse proxy with a certificate
+browsers trust, use the proxy's address and leave `--cacert` out.
 
 ## See and revoke tokens
 

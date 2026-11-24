@@ -181,6 +181,18 @@ Jede Route, die die Kommandozeile aufruft, nimmt das Token auf dieselbe Weise;
 jeder Befehl in der [Befehlsreferenz](/docs/command-line/reference) nennt
 seine Route.
 
+Das hier listet die Geräte, die das Konto des Tokens sehen darf, und braucht
+**Geräte anzeigen**. Wieder mit der Adresse deiner Konsole statt
+`<console-address>`:
+
+```bash
+curl -H "Authorization: Bearer $NEODESK_TOKEN" https://<console-address>/api/devices
+```
+
+Die Antwort ist JSON mit den Geräten in `data.devices` und ihrer Anzahl in
+`data.total`. Mit `?status=online` an der Adresse kommen nur die Geräte, die
+online sind.
+
 Die Konsole liest ein Token nur aus diesem Header. Ein Token in der Adresse,
 einem Cookie oder einem Formularfeld wird übergangen, und der Port der
 Client-API, 21121, nimmt keine Tokens. Eine Anfrage mit Token meldet sich
@@ -194,6 +206,29 @@ Lehnt die Konsole ein Token ab, antwortet sie mit JSON mit `error` und `code`:
 | 403 | `token_read_only` | Ein Token, das nur lesen darf, wollte etwas ändern |
 | 403 | `token_not_allowed` | Das darf kein Token, etwa sich anmelden oder sein eigenes Konto ändern |
 | 429 | `token_rate_limited` | Zu viele Anfragen, oder zu viele abgelehnte Tokens von dieser Adresse |
+
+### Ein selbst signiertes Zertifikat {#a-self-signed-certificate}
+
+Die Installer für Linux und Windows geben der Konsole auf Port 5443 ein selbst
+signiertes Zertifikat, und curl lehnt es ab, bis du es mit `--cacert` nennst.
+Auf dem Linux-Server können nur root und der Dienst die Datei lesen, also
+kopiere sie zuerst:
+
+```bash
+sudo cat /opt/neodesk/ssl/neodesk.crt > neodesk.crt
+```
+
+Dann liste die Geräte, mit der Adresse deines Servers statt
+`<server-address>`:
+
+```bash
+curl --cacert neodesk.crt -H "Authorization: Bearer $NEODESK_TOKEN" https://<server-address>:5443/api/devices
+```
+
+Unter Windows ist die Datei `C:\NeoDesk\ssl\neodesk.crt`. Um curl auf einem
+anderen Computer zu nutzen, kopiere die Datei dorthin. Hinter einem Reverse
+Proxy mit einem Zertifikat, dem Browser vertrauen, nimmst du die Adresse des
+Proxys und lässt `--cacert` weg.
 
 ## Tokens ansehen und widerrufen {#see-and-revoke-tokens}
 

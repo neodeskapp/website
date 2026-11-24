@@ -6,7 +6,8 @@
 		"what-a-token-can-do",
 		"use-it-with-the-command-line",
 		"use-it-with-curl",
-		"see-and-revoke-tokens"
+		"see-and-revoke-tokens",
+		"a-self-signed-certificate"
 	],
 	"command-line/mcp": [
 		"before-you-start",
