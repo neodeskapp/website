@@ -16,7 +16,9 @@ NeoDesk ist eine veränderte Version von BetterDesk von UNITRONIX, veröffentlic
 
 ### Welche Versionen {#which-versions}
 
-Die AGPL-3.0 gilt für alle Commits auf dem Entwicklungs-Branch seit Juni 2026. v3.4.0 ist das erste stabile Release unter der AGPL-3.0. Die Releases v3.3.x und älter bleiben unter der Apache License 2.0, so wie sie in ihren Release-Artefakten veröffentlicht sind.
+Die AGPL-3.0 gilt für alle Commits auf dem Entwicklungs-Branch seit Juni 2026. Die LICENSE-Datei nennt v3.4.0 als erstes stabiles Release unter der AGPL-3.0, und die Releases v3.3.x und älter bleiben unter der Apache License 2.0, so wie sie in ihren Release-Artefakten veröffentlicht sind. Das sind Releases des ursprünglichen Projekts, aus der Zeit vor NeoDesk.
+
+NeoDesk selbst hat noch kein stabiles Release. Die Releases in neodeskapp/neodesk sind bisher Release Candidates von 3.6.0, alle unter der AGPL-3.0; siehe [Aktualisieren](/docs/operations/updating#releases-so-far).
 
 Beiträge Dritter, die früher unter anderen Bedingungen übernommen wurden, hat der Maintainer, soweit zutreffend, zurückgezogen und unter der AGPL-3.0 neu erstellt.
 
