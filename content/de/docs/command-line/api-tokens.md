@@ -161,7 +161,9 @@ neodesk login --url https://<console-address>
 
 Setz für `<console-address>` die Adresse deiner Konsole ein, die du im Browser
 öffnest. `neodesk login` fragt nach dem Token und zeigt es beim Einfügen nicht
-an. Die Befehle stehen in der [Befehlsreferenz](/docs/command-line/reference).
+an. [Die Kommandozeile neodesk](/docs/command-line/neodesk) erklärt, wo der
+Befehl liegt, Zertifikate und die ersten Befehle, und die
+[Befehlsreferenz](/docs/command-line/reference) nennt sie alle.
 
 ## Mit curl nutzen {#use-it-with-curl}
 

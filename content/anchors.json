@@ -8,6 +8,16 @@
 		"use-it-with-curl",
 		"see-and-revoke-tokens"
 	],
+	"command-line/neodesk": [
+		"where-to-find-it",
+		"sign-in",
+		"certificates-and-plain-http",
+		"in-scripts",
+		"first-commands",
+		"output",
+		"exit-codes",
+		"more-commands-of-the-command-line-itself"
+	],
 	"command-line/reference": [
 		"api-tokens",
 		"groups",

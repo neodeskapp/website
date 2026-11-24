@@ -35,8 +35,10 @@ export const AGENT_TOOLS: AgentTool[] = [
 	{
 		id: 'describe-json',
 		name: '`neodesk describe --json`',
-		summary: 'TODO when it ships: what the command prints.',
-		available: false
+		summary:
+			'Prints every command of the neodesk command line as JSON: its arguments and flags, the permission it needs, whether it only reads, deletes something, runs something or answers with secrets, and the console route it calls.',
+		available: true,
+		docs: '/docs/command-line/neodesk'
 	},
 	{
 		id: 'mcp',

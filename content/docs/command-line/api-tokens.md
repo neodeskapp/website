@@ -154,7 +154,9 @@ neodesk login --url https://<console-address>
 
 Put your console's address in place of `<console-address>`, the one you open
 in the browser. `neodesk login` asks for the token and doesn't show it as you
-paste it. The commands are in the [command reference](/docs/command-line/reference).
+paste it. [The neodesk command line](/docs/command-line/neodesk) explains where
+the command is, certificates and the first commands, and the
+[command reference](/docs/command-line/reference) lists them all.
 
 ## Use it with curl
 
