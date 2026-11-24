@@ -294,6 +294,10 @@ Die Links der Konsole, die ein Gerät in einer App öffnen, nutzen `rustdesk://`
 Auf einem Computer, der nur den NeoDesk-Client hat, starten sie ihn unter
 Windows und unter Linux und macOS nichts.
 
+Diese Links öffnen die Sitzung auf deiner Seite. Die Schnellhilfe braucht
+NeoDesk nur auf dem Computer, dem du hilfst: Dort startet die Person die NeoDesk
+Schnellhilfe, und du verbindest dich im Browser oder in deiner Desktop-App.
+
 ## Wenn der Client verbunden ist {#after-the-client-connects}
 
 Was dann passiert, hängt vom Registrierungsmodus des Servers ab:

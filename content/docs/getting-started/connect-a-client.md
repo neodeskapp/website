@@ -278,6 +278,10 @@ phones, and **Open in the desktop app** in
 computer that has only the NeoDesk client, they start it on Windows and nothing
 on Linux and macOS.
 
+These links open the session on your side. Quick support needs NeoDesk only on
+the computer you help, where the person runs NeoDesk Quick Support; you
+connect from the browser or your desktop app.
+
 ## After the client connects
 
 What happens next depends on the server's enrollment mode:
