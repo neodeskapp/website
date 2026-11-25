@@ -4,6 +4,7 @@ description: NeoDesk ist eine freie Open-Source-Alternative zu RustDesk Server P
 order: 1
 og: comparison
 product: RustDesk Server Pro
+logo: rustdesk.svg
 ---
 
 Beide sind Server für den RustDesk-Client, die du selbst betreibst, mit

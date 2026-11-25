@@ -4,6 +4,7 @@ description: MeshCentral manages computers through its own agent. NeoDesk serves
 order: 3
 og: comparison
 product: MeshCentral
+logo: meshcentral.webp
 ---
 
 MeshCentral and NeoDesk are both open-source servers you run yourself, with a

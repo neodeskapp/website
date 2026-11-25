@@ -4,6 +4,7 @@ description: A self-hosted alternative to AnyDesk. How NeoDesk and AnyDesk diffe
 order: 5
 og: comparison
 product: AnyDesk
+logo: anydesk.svg
 ---
 
 AnyDesk is a remote access service with yearly subscriptions. Its top plan,

@@ -4,6 +4,7 @@ description: Eine selbst gehostete Alternative zu AnyDesk. Wie sich NeoDesk und 
 order: 5
 og: comparison
 product: AnyDesk
+logo: anydesk.svg
 ---
 
 AnyDesk ist ein Dienst für Fernwartung mit Jahresabos. Der oberste Tarif,

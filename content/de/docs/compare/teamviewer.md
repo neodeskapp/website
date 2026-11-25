@@ -4,6 +4,7 @@ description: Eine selbst gehostete Alternative zu TeamViewer. Wie sich NeoDesk u
 order: 4
 og: comparison
 product: TeamViewer
+logo: teamviewer.svg
 ---
 
 TeamViewer ist ein Dienst für Fernwartung: TeamViewer betreibt die Server, und

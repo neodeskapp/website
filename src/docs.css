@@ -177,6 +177,9 @@
 .rows { list-style: none; margin: 0; padding: 0; border-bottom: 1px solid var(--rule); }
 .rows li { padding: 14px 0; border-top: 1px solid var(--rule); }
 .rows li.child { padding-left: 24px; }
+.rows li.logo { display: grid; grid-template-columns: 40px 1fr; column-gap: 16px; align-items: start; }
+.rows li.logo img { grid-row: span 2; margin-top: 2px; border-radius: 10px; border: 1px solid var(--rule); background: #fff; }
+.rows li.logo a, .rows li.logo p { grid-column: 2; }
 .rows a { font-weight: 600; text-decoration: none; }
 .rows a:hover { text-decoration: underline; text-decoration-color: var(--teal); text-decoration-thickness: 2px; }
 .rows p { margin: 2px 0 0; color: var(--muted); font-size: 15px; }

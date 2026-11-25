@@ -4,6 +4,7 @@ description: A self-hosted alternative to TeamViewer. How NeoDesk and TeamViewer
 order: 4
 og: comparison
 product: TeamViewer
+logo: teamviewer.svg
 ---
 
 TeamViewer is a remote access service: TeamViewer runs the servers, and you

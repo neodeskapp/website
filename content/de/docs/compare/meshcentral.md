@@ -4,6 +4,7 @@ description: MeshCentral verwaltet Computer über seinen eigenen Agenten. NeoDes
 order: 3
 og: comparison
 product: MeshCentral
+logo: meshcentral.webp
 ---
 
 MeshCentral und NeoDesk sind beide Open-Source-Server, die du selbst
