@@ -11,8 +11,9 @@ dafür ausgewählt hast, und nie mehr als dein Konto.
 ## Wer Tokens erstellen kann {#who-can-make-tokens}
 
 Konten mit der Rolle Super-Admin, Administrator, Globaler Administrator oder
-Serveradministrator finden **API-Tokens** im Kontomenü unten in der
-Seitenleiste. Andere Konten haben die Seite nicht.
+Serveradministrator finden **API-Tokens** auf der Seite [Ihr Konto](/docs/people/your-account),
+die das Kontomenü am Ende der oberen Leiste öffnet. Das Kontomenü hat auch einen
+Eintrag **API-Tokens**, der dorthin führt. Andere Konten haben diesen Teil nicht.
 
 Tokens entstehen nur in der Konsole, in einer Browsersitzung. Ein Token kann
 kein weiteres Token erstellen. Ein Konto kann höchstens 50 aktive Tokens
@@ -20,7 +21,8 @@ haben.
 
 ## Ein Token erstellen {#make-a-token}
 
-1. Öffne das Kontomenü unten in der Seitenleiste und wähle **API-Tokens**.
+1. Öffne das Kontomenü am Ende der oberen Leiste und wähle **API-Tokens**.
+   Das öffnet **Ihr Konto** beim Teil **API-Tokens**.
 2. Wähle **Neues Token**.
 3. Schreib unter **Name**, wofür das Token ist, zum Beispiel „Backup-Skript“.
    Der Name darf 80 Zeichen lang sein.
@@ -119,8 +121,9 @@ Ein Token handelt als das Konto, das es erstellt hat, mit weniger Rechten:
   es deaktiviert oder gelöscht, verlieren seine Tokens sie sofort.
 - Ein Token, das nur lesen darf, liest nur. Jede Anfrage, die etwas ändern
   würde, bekommt „This API token is read-only: it can only read“.
-- Kein Token meldet sich an oder ab, ändert ein Passwort, einen zweiten Faktor
-  oder eine Sitzung, ändert sein eigenes Konto oder Profil, zeigt den
+- Kein Token meldet sich an oder ab, ändert ein Passwort oder einen zweiten
+  Faktor, meldet die Browser seines eigenen Kontos ab, ändert sein eigenes Konto
+  oder Profil, zeigt den
   API-Schlüssel der Konsole ganz oder erstellt ein weiteres Token.
 - Kein Token nutzt eine [gespeicherte Anmeldung](/docs/console/saved-sign-in),
   auch nicht mit **Gespeicherte Anmeldung verwenden**. Mit **Gespeicherte

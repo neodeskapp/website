@@ -11,14 +11,14 @@ With two-factor sign-in, a password alone no longer opens your account: after th
 
 ## Turn it on
 
-1. Open your account menu at the bottom of the sidebar and choose **Two-factor sign-in**. This opens **Settings**, **Sign-in** at the **Two-factor sign-in** section.
+1. Open the account menu at the end of the top bar, choose **Your account** and go to **Two-factor sign-in**. See [Your account](/docs/people/your-account).
 2. Click **Set up two-factor sign-in**.
 3. Install an authenticator app on your phone if you have none.
 4. Scan the QR code with the app. If you cannot scan it, type the **Manual key** into the app instead.
 5. Type the six-digit code the app shows into **Enter verification code** and click **Verify and turn on**.
 6. The page shows eight **Recovery codes**. Store them somewhere safe outside the phone, such as a password manager, then click **I have saved the codes**.
 
-The section now says **Two-factor sign-in is on**, and **Current state** on the right shows **Your two-factor sign-in** as **On**. Administrators see the same in the **Two-factor sign-in** column on the **Users** page.
+The section now says **Two-factor sign-in is on**. Administrators see the same in the **Two-factor sign-in** column on the **Users** page. Turning it on signs out your account's other browsers; the one you used stays signed in.
 
 In the app, the new entry is called NeoDesk followed by your username. Any app for time-based codes works: the codes have six digits and change every 30 seconds.
 
@@ -41,7 +41,7 @@ When you do not have your phone, click **Use a recovery code instead** on the co
 
 Each recovery code works once. To get a fresh set, for example when the codes run low:
 
-1. Open **Settings**, **Sign-in**, and in **Two-factor sign-in** click **New recovery codes**.
+1. Open **Your account**, and in **Two-factor sign-in** click **New recovery codes**.
 2. Type a current code from your app into **Verification code** and click **New recovery codes**.
 3. Store the eight new codes. The old ones stop working.
 
@@ -49,11 +49,11 @@ A wrong code counts as a failed sign-in.
 
 ## Turn it off
 
-1. Open **Settings**, **Sign-in**.
+1. Open **Your account** from the account menu.
 2. In **Two-factor sign-in**, click **Turn off two-factor sign-in**.
 3. Enter your **Current password** and click **Turn off two-factor sign-in** again. Directory and single sign-on accounts have no password in this console, so they type a current code from the app into **Verification code** instead.
 
-This deletes the key and the recovery codes. A wrong password or code counts as a failed sign-in.
+This deletes the key and the recovery codes and signs out your account's other browsers. A wrong password or code counts as a failed sign-in.
 
 ## When someone has lost the phone
 
@@ -62,7 +62,7 @@ If someone has lost both the phone and the recovery codes, an administrator turn
 1. Open **People**, then **Users**.
 2. In the person's row menu, choose **Turn off two-factor sign-in** and confirm.
 
-This deletes the person's key and recovery codes and ends their console sessions and RustDesk client sign-ins. They sign in with the password alone until they set it up again. The menu entry shows for accounts with two-factor sign-in on, to people with **Edit users** whose role may change the account (see [who can give which role](/docs/people/users-and-roles#who-can-give-which-role)). Your own two-factor sign-in you turn off under **Settings**, **Sign-in**.
+This deletes the person's key and recovery codes and ends their console sessions and RustDesk client sign-ins. They sign in with the password alone until they set it up again. The menu entry shows for accounts with two-factor sign-in on, to people with **Edit users** whose role may change the account (see [who can give which role](/docs/people/users-and-roles#who-can-give-which-role)). Your own two-factor sign-in you turn off under **Your account**.
 
 The server's password reset command leaves two-factor sign-in as it is.
 

@@ -31,6 +31,7 @@ Click the row, or choose **Edit** in the row's menu. The sheet shows the usernam
 - A new role or a new password signs the person out of the console. When you change your own password, your current session stays.
 - **Reset password…** in the row menu sets a new password for a password account in one step.
 - **Turn off two-factor sign-in** in the row menu helps someone who has lost their authenticator app (see [Two-factor sign-in](/docs/people/two-factor#when-someone-has-lost-the-phone)).
+- **Signed-in devices…** in the row menu lists the browsers the person is signed in on, with **Sign out** for each and **Sign out everywhere** (see [Your account](/docs/people/your-account#for-administrators)).
 - If your role may not change an account, a click on its row opens its organizations instead.
 
 ## Disable an account
@@ -122,7 +123,7 @@ The person's [client features](/docs/people/permissions#client-features) apply t
 - Global admin may give Viewer, Guest link issuer, Remote operator and Pro license, and change accounts that have one of those roles.
 - Every other role gives no roles. Changing a role's permissions does not change this.
 - Nobody gives more than they have. A role can be given only when every permission it has, with the changes on the [Permissions](/docs/people/permissions) page, is one the giver's role has too. When a super admin gives Remote operator a permission that Global admin lacks, a Global admin can no longer give Remote operator or change Remote operator accounts. The rule holds in the console, on the API port and for the role of a new API key.
-- Everyone with a password account may change their own password under **Settings**, **Sign-in**. A super admin cannot take the super admin role away from their own account.
+- Everyone with a password account may change their own password under [Your account](/docs/people/your-account). A super admin cannot take the super admin role away from their own account.
 - An account with **Edit users** may change its own password and email on the Users page. Only an account that may give its own role, in practice Super admin and Administrator, can change its own **Direct devices**, **Folder access** and **User groups**. Anyone else gets "You cannot change your own device access".
 
 ## Which devices a user sees
@@ -145,13 +146,13 @@ Someone who should connect to a few devices and see nothing else gets the Remote
 2. On the Users page, add the person with the role **Remote operator**. Under **Device access**, choose the folder in **Folder access**. For a team, make a user group instead, choose it in the folder's **Allowed user groups**, and put the people in the group.
 3. Under **Settings**, **General**, set **Device visibility default** to **Restricted**. Under **Open** the person would also see every device that is in no folder or group with an access list.
 
-The person can then connect from the console's [web viewer](/docs/console/remote-in-browser) or the RustDesk app and change their own password under **Settings**, **Sign-in**. Device access decides only which devices they see: when they connect, the device still asks for its RustDesk password or for approval on its screen. To hide parts of the console from them as well, use [panel access](/docs/people/permissions#panel-access).
+The person can then connect from the console's [web viewer](/docs/console/remote-in-browser) or the RustDesk app and change their own password under **Your account**. Device access decides only which devices they see: when they connect, the device still asks for its RustDesk password or for approval on its screen. To hide parts of the console from them as well, use [panel access](/docs/people/permissions#panel-access).
 
 For someone who needs a device for a short time and no account, a [guest access link](/docs/console/device-details#guest-access-links) is enough.
 
 ## Password rules
 
-A new password needs 8 to 128 characters, and nothing else about it is checked. The same rule applies on the Users page, when people change their own password under **Settings**, **Sign-in**, **Password**, to the accounts of an [organization](/docs/people/organizations), and to the reset command below. The strength line under the password field is only a hint. Saving your own new password ends your other console sessions.
+A new password needs 8 to 128 characters, and nothing else about it is checked. The same rule applies on the Users page, when people change their own password under **Your account**, **Password**, to the accounts of an [organization](/docs/people/organizations), and to the reset command below. The strength line under the password field is only a hint. Saving your own new password ends your other console sessions.
 
 If nobody can sign in as an administrator any more, run the server's reset command on the server, as the user and with the environment the service runs with, so it opens the same database. It reads the new password from standard input and makes an Administrator account of that name if none exists:
 
@@ -164,11 +165,11 @@ The commands for Docker, and the **Reset admin password** entry of the installer
 
 ## Sessions and failed sign-ins
 
-By default an account has one console session at a time: signing in somewhere else ends the older session, and that browser shows "Your session expired or was replaced by a new login." A session also ends after 30 minutes without activity, and 24 hours after sign-in at most. These environment variables change that (see [Configuration](/docs/operations/configuration)):
+An account can be signed in on up to 10 browsers and devices at once, and a sign-in beyond that signs out the one used longest ago. **One session per account** under **Settings**, **Sign-in** allows one instead. Everyone sees and signs out their own browsers under **Signed-in devices**; see [Your account](/docs/people/your-account#how-many-sessions-an-account-may-have). A session also ends after 30 minutes without activity, and 24 hours after sign-in at most. These environment variables change that (see [Configuration](/docs/operations/configuration)):
 
 | Variable | Default | Meaning |
 | --- | --- | --- |
-| `SESSION_MAX_PER_USER` | `1` | Console sessions per account. `0` allows any number. |
+| `SESSION_MAX_PER_USER` | not set | Console sessions per account, 1 to 1000, or `0` for any number. When set, it decides instead of **One session per account**. |
 | `SESSION_IDLE_TIMEOUT` | `1800000` | Milliseconds without activity before the session ends, 1 minute to 24 hours. |
 | `SESSION_MAX_AGE` | `86400000` | Milliseconds after sign-in when the session ends, 5 minutes to 7 days. |
 | `API_MAX_FAILED_ATTEMPTS` | `10` | Failed sign-ins of one account from one address that lock it there. |

@@ -13,16 +13,17 @@ it, and never more than your account can.
 ## Who can make tokens
 
 Accounts with the role Super admin, Administrator, Global admin or Server admin
-find **API tokens** in the account menu at the bottom of the sidebar. Other
-accounts don't have the page.
+find **API tokens** on [Your account](/docs/people/your-account), which the
+account menu at the end of the top bar opens. The account menu also has an
+**API tokens** entry that leads there. Other accounts don't have this part.
 
 Tokens are made in the console only, in a browser session. A token can't make
 another token. An account can have at most 50 active tokens.
 
 ## Make a token
 
-1. Open the account menu at the bottom of the sidebar and choose
-   **API tokens**.
+1. Open the account menu at the end of the top bar and choose **API tokens**.
+   This opens **Your account** at its **API tokens** part.
 2. Choose **New token**.
 3. Under **Name**, say what the token is for, like "Backup script". The name
    can be 80 characters long.
@@ -118,8 +119,8 @@ A token acts as the account that made it, with less:
   deleted, its tokens lose it at once.
 - A read-only token only reads. Any request that would change something gets
   "This API token is read-only: it can only read".
-- No token signs in or out, changes a password, a second factor or a session,
-  changes its own account or profile, shows the console's API key in full, or
+- No token signs in or out, changes a password or a second factor, signs out
+  its own account's browsers, changes its own account or profile, shows the console's API key in full, or
   makes another token.
 - No token uses a [saved sign-in](/docs/console/saved-sign-in), even with
   **Use saved sign-in**. With **Manage saved sign-in** it can save, change and

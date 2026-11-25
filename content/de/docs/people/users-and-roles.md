@@ -30,6 +30,7 @@ Klicke auf die Zeile oder wähle **Bearbeiten** im Menü der Zeile. Das Fenster 
 - Eine neue Rolle oder ein neues Passwort meldet die Person von der Konsole ab. Änderst du dein eigenes Passwort, bleibt deine aktuelle Sitzung bestehen.
 - **Passwort zurücksetzen…** im Menü der Zeile setzt in einem Schritt ein neues Passwort für ein Passwortkonto.
 - **Zwei-Faktor-Anmeldung ausschalten** im Menü der Zeile hilft jemandem, der seine Authenticator-App verloren hat (siehe [Zwei-Faktor-Anmeldung](/docs/people/two-factor#when-someone-has-lost-the-phone)).
+- **Angemeldete Geräte…** im Menü der Zeile listet die Browser, auf denen die Person angemeldet ist, mit **Abmelden** für jeden und **Überall abmelden** (siehe [Dein Konto](/docs/people/your-account#for-administrators)).
 - Darf deine Rolle ein Konto nicht ändern, öffnet ein Klick auf seine Zeile stattdessen seine Organisationen.
 
 ## Konto deaktivieren {#disable-an-account}
@@ -121,7 +122,7 @@ Die [Client-Funktionen](/docs/people/permissions#client-features) der Person gel
 - Die Rolle Globaler Administrator darf Betrachter, Gastlink-Aussteller, Remote-Operator und Pro-Lizenz vergeben und Konten mit einer dieser Rollen ändern.
 - Alle anderen Rollen vergeben keine Rollen. Daran ändert sich nichts, wenn du die Berechtigungen einer Rolle änderst.
 - Niemand vergibt mehr, als er selbst hat. Eine Rolle lässt sich nur vergeben, wenn jede ihrer Berechtigungen, mit den Änderungen auf der Seite [Berechtigungen](/docs/people/permissions), auch die Rolle dessen hat, der sie vergibt. Gibt ein Super-Admin der Rolle Remote-Operator eine Berechtigung, die der Globale Administrator nicht hat, kann ein Globaler Administrator Remote-Operator nicht mehr vergeben und Remote-Operator-Konten nicht mehr ändern. Die Regel gilt in der Konsole, am API-Port und für die Rolle eines neuen API-Schlüssels.
-- Jede Person mit einem Passwortkonto darf ihr eigenes Passwort unter **Einstellungen**, **Anmeldung** ändern. Ein Super-Admin kann seinem eigenen Konto die Rolle Super-Admin nicht wegnehmen.
+- Jede Person mit einem Passwortkonto darf ihr eigenes Passwort unter [Ihr Konto](/docs/people/your-account) ändern. Ein Super-Admin kann seinem eigenen Konto die Rolle Super-Admin nicht wegnehmen.
 - Ein Konto mit **Benutzer bearbeiten** darf auf der Seite Benutzer sein eigenes Passwort und seine E-Mail-Adresse ändern. Seine eigenen **Einzelne Geräte**, seinen **Ordnerzugriff** und seine **Benutzergruppen** kann nur ein Konto ändern, das seine eigene Rolle vergeben darf, also in der Praxis Super-Admin und Administrator. Alle anderen bekommen „You cannot change your own device access“.
 
 ## Welche Geräte ein Benutzer sieht {#which-devices-a-user-sees}
@@ -144,13 +145,13 @@ Wer sich mit ein paar Geräten verbinden und sonst nichts sehen soll, bekommt di
 2. Füge die Person auf der Seite Benutzer mit der Rolle **Remote-Operator** hinzu. Wähle unter **Gerätezugriff** den Ordner in **Ordnerzugriff**. Für ein Team legst du stattdessen eine Benutzergruppe an, wählst sie im Ordner unter **Zugelassene Benutzergruppen** aus und nimmst die Personen in die Gruppe auf.
 3. Setze unter **Einstellungen**, **Allgemein** die **Standard-Sichtbarkeit von Geräten** auf **Eingeschränkt**. Unter **Offen** würde die Person auch jedes Gerät sehen, das in keinem Ordner und keiner Gruppe mit Zugriffsliste liegt.
 
-Danach kann sich die Person über den [Web-Viewer](/docs/console/remote-in-browser) der Konsole oder die RustDesk-App verbinden und ihr eigenes Passwort unter **Einstellungen**, **Anmeldung** ändern. Der Gerätezugriff entscheidet nur, welche Geräte sie sieht: Beim Verbinden fragt das Gerät weiterhin nach seinem RustDesk-Passwort oder nach einer Bestätigung auf seinem Bildschirm. Willst du auch Teile der Konsole vor ihr verbergen, nutze den [Konsolenzugriff](/docs/people/permissions#panel-access).
+Danach kann sich die Person über den [Web-Viewer](/docs/console/remote-in-browser) der Konsole oder die RustDesk-App verbinden und ihr eigenes Passwort unter **Ihr Konto** ändern. Der Gerätezugriff entscheidet nur, welche Geräte sie sieht: Beim Verbinden fragt das Gerät weiterhin nach seinem RustDesk-Passwort oder nach einer Bestätigung auf seinem Bildschirm. Willst du auch Teile der Konsole vor ihr verbergen, nutze den [Konsolenzugriff](/docs/people/permissions#panel-access).
 
 Für jemanden, der kurz ein Gerät braucht und kein Konto, reicht ein [Gastzugangslink](/docs/console/device-details#guest-access-links).
 
 ## Passwortregeln {#password-rules}
 
-Ein neues Passwort braucht 8 bis 128 Zeichen, sonst wird nichts daran geprüft. Dieselbe Regel gilt auf der Seite Benutzer, wenn Personen ihr eigenes Passwort unter **Einstellungen**, **Anmeldung**, **Passwort** ändern, für die Konten einer [Organisation](/docs/people/organizations) und für den Befehl zum Zurücksetzen weiter unten. Die Stärkeanzeige unter dem Passwortfeld ist nur ein Hinweis. Speicherst du ein neues eigenes Passwort, enden deine anderen Konsolensitzungen.
+Ein neues Passwort braucht 8 bis 128 Zeichen, sonst wird nichts daran geprüft. Dieselbe Regel gilt auf der Seite Benutzer, wenn Personen ihr eigenes Passwort unter **Ihr Konto**, **Passwort** ändern, für die Konten einer [Organisation](/docs/people/organizations) und für den Befehl zum Zurücksetzen weiter unten. Die Stärkeanzeige unter dem Passwortfeld ist nur ein Hinweis. Speicherst du ein neues eigenes Passwort, enden deine anderen Konsolensitzungen.
 
 Kann sich niemand mehr als Admin anmelden, führe den Befehl zum Zurücksetzen auf dem Server aus. Nimm dafür den Benutzer und die Umgebung, mit denen der Dienst läuft, damit der Befehl dieselbe Datenbank öffnet. Er liest das neue Passwort von der Standardeingabe und legt ein Konto mit der Rolle Administrator und diesem Namen an, wenn es noch keines gibt:
 
@@ -163,11 +164,11 @@ Die Befehle für Docker und den Eintrag **Reset admin password** in den Menüs d
 
 ## Sitzungen und fehlgeschlagene Anmeldungen {#sessions-and-failed-sign-ins}
 
-Standardmäßig hat ein Konto jeweils nur eine Konsolensitzung: Eine Anmeldung an anderer Stelle beendet die ältere Sitzung, und dieser Browser zeigt „Ihre Sitzung ist abgelaufen oder wurde durch eine neue Anmeldung ersetzt.“ Eine Sitzung endet außerdem nach 30 Minuten ohne Aktivität und spätestens 24 Stunden nach der Anmeldung. Diese Umgebungsvariablen ändern das (siehe [Konfiguration](/docs/operations/configuration)):
+Ein Konto kann auf bis zu 10 Browsern und Geräten gleichzeitig angemeldet sein. Eine Anmeldung darüber hinaus meldet den am längsten nicht verwendeten ab. **Eine Sitzung pro Konto** unter **Einstellungen**, **Anmeldung** erlaubt stattdessen nur eine. Jede Person sieht ihre eigenen Browser unter **Angemeldete Geräte** und meldet sie dort ab; siehe [Dein Konto](/docs/people/your-account#how-many-sessions-an-account-may-have). Eine Sitzung endet außerdem nach 30 Minuten ohne Aktivität und spätestens 24 Stunden nach der Anmeldung. Diese Umgebungsvariablen ändern das (siehe [Konfiguration](/docs/operations/configuration)):
 
 | Variable | Standardwert | Bedeutung |
 | --- | --- | --- |
-| `SESSION_MAX_PER_USER` | `1` | Konsolensitzungen pro Konto. `0` erlaubt beliebig viele. |
+| `SESSION_MAX_PER_USER` | nicht gesetzt | Konsolensitzungen pro Konto, 1 bis 1000, oder `0` für beliebig viele. Ist es gesetzt, entscheidet es statt **Eine Sitzung pro Konto**. |
 | `SESSION_IDLE_TIMEOUT` | `1800000` | Millisekunden ohne Aktivität, bis die Sitzung endet, 1 Minute bis 24 Stunden. |
 | `SESSION_MAX_AGE` | `86400000` | Millisekunden nach der Anmeldung, bis die Sitzung endet, 5 Minuten bis 7 Tage. |
 | `API_MAX_FAILED_ATTEMPTS` | `10` | Fehlgeschlagene Anmeldungen eines Kontos von einer Adresse, nach denen das Konto für diese Adresse gesperrt wird. |
