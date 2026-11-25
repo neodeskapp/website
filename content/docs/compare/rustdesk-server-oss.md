@@ -64,8 +64,8 @@ takes over their key, so your clients keep working.
   and get their address book. [Organizations](/docs/people/organizations) share
   one address book with their members.
 - **Approval before access.** In the Managed mode a new device waits under
-  **Enrollment requests** until someone approves it; see
-  [Enrollment](/docs/console/enrollment).
+  **Join requests** until someone approves it; see
+  [Join requests](/docs/console/enrollment).
 - **A console.** The [device list](/docs/console/devices), users and roles, an
   [audit log](/docs/console/activity), [remote desktop in the browser](/docs/console/remote-in-browser)
   and [quick support links](/docs/console/quick-support).
@@ -96,7 +96,7 @@ every step, on Linux, Windows and Docker. In short:
 2. Give NeoDesk the old key pair: before the install on Linux and Windows, into
    the container after it in Docker.
 3. Run NeoDesk at the old address, or point the old DNS name at the new server.
-4. Let the clients in: approve them under **Enrollment requests**, or switch to
+4. Let the clients in: approve them under **Join requests**, or switch to
    Open while they come back.
 
 The clients keep their settings and their IDs. The device list starts empty

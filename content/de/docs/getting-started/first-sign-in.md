@@ -43,9 +43,11 @@ Installation es hinterlegt hat:
 Die Konsole öffnet sich auf **Übersicht**. Standardmäßig endet eine Sitzung
 nach 30 Minuten ohne Aktivität und spätestens 24 Stunden nach der Anmeldung.
 Die Konsole warnt dich eine Minute, bevor sie dich wegen Inaktivität abmeldet.
-Ein Konto hat immer nur eine Sitzung: Meldest du dich in einem anderen Browser
-an, endet die erste Sitzung. [Konfiguration](/docs/operations/configuration)
-erklärt, wie du diese Grenzen änderst.
+Ein Konto kann in bis zu 10 Browsern gleichzeitig angemeldet sein;
+**Angemeldete Geräte** im Kontomenü listet sie auf.
+[Ihr Konto](/docs/people/your-account) erklärt die Liste und die Einstellung
+**Eine Sitzung pro Konto**, und [Konfiguration](/docs/operations/configuration)
+erklärt, wie du die Grenzen änderst.
 
 Auf einer neuen Installation beginnt die Übersicht mit
 **Diesen Server einrichten**, einer Checkliste der ersten Schritte, die sich
@@ -55,8 +57,8 @@ erklärt alle acht.
 
 ## Das Admin-Passwort ändern {#change-the-admin-password}
 
-1. Öffne **Einstellungen**, dann **Anmeldung**. Das Kontomenü unten in der
-   Seitenleiste führt mit **Passwort ändern** direkt an dieselbe Stelle.
+1. Öffne das Kontomenü, deine Initialen ganz rechts in der oberen Leiste, und
+   wähle **Ihr Konto**.
 2. Fülle unter **Passwort** die Felder **Aktuelles Passwort**,
    **Neues Passwort** und **Neues Passwort wiederholen** aus. Das neue Passwort
    braucht mindestens 8 Zeichen.
@@ -66,8 +68,6 @@ Nutze das neue Passwort bei der nächsten Anmeldung. Unter Docker gibt der
 Befehl für die Zugangsdaten danach nicht mehr das erste Passwort aus: Der
 Server löscht es, und der Befehl meldet das und sagt, wie du ein neues
 Passwort setzt.
-
-![Die Anmeldeeinstellungen mit den Abschnitten Passwort und Zwei-Faktor-Anmeldung](shot:settings-auth)
 
 ## Die Zwei-Faktor-Anmeldung einschalten {#turn-on-two-factor-sign-in}
 
@@ -119,23 +119,127 @@ Wert hat, ist das Feld **Client-Serveradresse** auf **Übersicht** gesperrt.
 
 ## Sich in der Konsole zurechtfinden {#find-your-way-around}
 
-Die Seitenleiste hat fünf Abschnitte. Jeder zeigt die meistgenutzten Seiten,
-der Rest liegt unter **Mehr** im jeweiligen Abschnitt. So sieht es der Admin;
+### Die Seitenleiste {#the-sidebar}
+
+Die Seitenleiste hat sieben Abschnitte. Jeder zeigt die meistgenutzten Seiten,
+der Rest liegt unter **N weitere anzeigen** am Ende des Abschnitts, wobei N
+die Zahl der ausgeblendeten Seiten ist; **Weniger anzeigen** klappt sie wieder
+ein. Blendet ein Abschnitt nur eine Seite aus, zeigt er sie gleich. Lange
+Seitennamen brechen in eine zweite Zeile um. So sieht es ein Super-Admin;
 andere Konten sehen die Seiten, die ihre Rolle erlaubt, siehe
 [Benutzer und Rollen](/docs/people/users-and-roles).
 
-| Abschnitt | Zuerst gezeigte Seiten | Unter Mehr |
-|-----------|------------------------|------------|
-| Geräte | Übersicht, Alle Geräte, Registrierungsanfragen, Fernzugriff im Browser | Agent koppeln, Inventar, Netzwerküberwachung, Flottenaufgaben, Plattform-Unterstützung, IoT-Geräte (CDAP) |
+| Abschnitt | Zuerst gezeigte Seiten | Unter N weitere anzeigen |
+|-----------|------------------------|--------------------------|
+| Geräte | Übersicht, Alle Geräte, Beitrittsanfragen, Computer hinzufügen, Fernzugriff im Browser | Inventar, Netzwerküberwachung, Flottenaufgaben, IoT-Geräte |
 | Support | Hilfeanfragen, Tickets, Chat, Netzwerk-Tools | |
 | Personen | Benutzer | Organisationen, Rollen und Berechtigungen |
-| Aktivität | Sicherheit und Protokoll, Berichte | App-Nutzung, Abrechenbare Sitzungen |
-| Einstellungen | Allgemein, Client-Einrichtung, Serverstatus | Die übrigen Einstellungen, gruppiert als Konsole, Clients und Registrierung, Regeln, Server, Abrechnung und Entwicklerwerkzeuge |
+| Aktivität | Audit-Protokoll, Sicherheitsprüfungen, Berichte | App-Nutzung, Abrechnung |
+| Regeln | Richtlinien, Warnungen und Automatisierung | USB- und Laufwerkszugriff, Schutz vor Datenabfluss, Geräteidentität |
+| Server | Serverstatus, Relay-Server, Sicherungen, Updates | Konfigurationsdateien, Kapazitätstest |
+| Einstellungen | Allgemein, Anmeldung | Verzeichnis (LDAP), Single Sign-on, Beitritt, Darstellung, Branding, E-Mail, Zeit, MeshCentral, Übersetzungen, und unter Entwicklerwerkzeuge der Ablauf-Editor |
 
-Um zu einer Seite, einem Gerät oder einer Person zu springen, drück Strg+K oder
-`/` und tipp einen Teil des Namens. **Schnellhilfe** in der oberen Leiste
-erzeugt einen Link für eine einzelne Support-Sitzung, siehe
-[Schnellhilfe](/docs/console/quick-support).
+**Computer hinzufügen** sammelt alle Wege, auf denen ein Computer auf den
+Server kommt, als Tabs: **Einladungen und Installationslinks**,
+**Gerätetokens**, **Kopplungscodes**, **Support-Agenten** und
+**Manuelle Einrichtung**. Jeder Tab erscheint nur für Konten, die ihn nutzen
+dürfen; **Manuelle Einrichtung** mit den Werten, die ein Client braucht,
+erscheint für alle. Siehe [Computer hinzufügen](/docs/console/add-a-computer).
+
+**Einstellungen** enthält nur die Einstellungen des Servers und der Konsole.
+Dein eigenes Passwort, die Zwei-Faktor-Anmeldung, die angemeldeten Geräte und
+die API-Tokens liegen auf [Ihr Konto](/docs/people/your-account).
+
+### Die obere Leiste {#the-top-bar}
+
+Von links nach rechts:
+
+- **Der Pfad**: der Abschnitt und die Seite, auf der du bist.
+- **Das Suchfeld**, siehe [Suche](#search) unten.
+- **Schnellhilfe** erzeugt einen Link für eine einzelne Support-Sitzung, siehe
+  [Schnellhilfe](/docs/console/quick-support). Die Schaltfläche erscheint für
+  Konten, die sich mit Geräten verbinden dürfen.
+- **Chat** öffnet den Chat-Bereich über der Seite, auf der du bist, mit der
+  Zahl der ungelesenen Nachrichten, siehe [Chat](/docs/console/chat). Die
+  Schaltfläche erscheint für Konten mit **Support-Chat** oder **Team-Chat**.
+- **Benachrichtigungen** listet neue Hilfeanfragen und Geräte, die beitreten
+  möchten.
+- **Hilfe**, das Buch-Symbol, öffnet einen Bereich mit
+  **Einrichtungsanleitung anzeigen** (für Konten, die die Anleitung sehen
+  dürfen), **Tastenkürzel**, **Plattform-Unterstützung** und den Links
+  **Dokumentation**, **Community auf Discord** und **GitHub-Repository**. Auf
+  dem Handy steht Hilfe am Ende der Seitenleiste.
+- **Das Kontomenü**, deine Initialen ganz rechts. Es enthält **Mein Status**
+  für den Chat, **Ihr Konto**, **Angemeldete Geräte**, **API-Tokens** (für
+  Konten, die welche erstellen dürfen), **Design** mit
+  **Standard der Konsole**, **Hell** und **Dunkel** für diesen Browser,
+  **Sprache**, **Barrierefreiheit** und **Abmelden**.
+
+Eine Schaltfläche, um eine Seite neu zu laden, gibt es nicht. Seiten, die sich
+ändern, während du sie ansiehst, laden von selbst neu: das Audit-Protokoll,
+die Netzwerküberwachung, die Benutzer, die Organisationen, die Gerätetokens und
+die abrechenbaren Sitzungen alle 30 Sekunden, solange sie auf dem Bildschirm
+sind.
+
+Ein Rechtsklick auf das NeoDesk-Logo oben in der Seitenleiste öffnet den
+[Brand Guide](https://neode.sk/brand) in einem neuen Tab. Ein eigenes Logo
+behält das Menü des Browsers.
+
+### Suche {#search}
+
+Drück Strg+K (⌘K auf dem Mac) oder `/`, oder klick in das Suchfeld der oberen
+Leiste, und tipp los. Die Suche findet:
+
+- **Seiten**: jede Seite der Seitenleiste, auch unter anderen Wörtern und
+  früheren Namen.
+- **Aktionen**: **Schnellhilfe**, **Computer hinzufügen**,
+  **Neues Gerätetoken**, **Benutzer hinzufügen**, **Neues API-Token**,
+  **Chat-Einstellungen für diesen Server**, **Optionen für Barrierefreiheit**,
+  **Zum dunklen Design wechseln** (oder zum hellen) und **Abmelden**. Jede
+  erscheint nur für Konten, die ihre Schaltfläche in der Konsole sehen.
+- **Einstellungen**: jede Einstellung auf den Tabs von Einstellungen, auf den
+  Seiten unter Server und auf Ihr Konto, mit dem Ort, an dem sie liegt. Wählst
+  du eine, öffnet sich ihr Tab, die Seite scrollt zur Einstellung und hebt sie
+  kurz hervor. Jedes Konto sieht nur die Einstellungen, die es öffnen darf.
+- **Geräte** und **Personen**, nach Name, ID oder Benutzername.
+
+Jedes Wort, das du tippst, muss passen; Groß- und Kleinschreibung und Akzente
+spielen keine Rolle. Deutsche und englische Wörter finden dieselbe
+Einstellung, egal in welcher Sprache die Konsole läuft. Hat eine Gruppe mehr
+Treffer, als sie zeigt, sagt sie es, zum Beispiel „8 von 23“. Mit den
+Pfeiltasten bewegst du dich, Enter öffnet, Esc schließt. Ist das Feld leer,
+zeigt die Suche deine letzten Suchen in diesem Browser, mit
+**Letzte Suchen löschen**.
+
+### Was wohin umgezogen ist {#where-things-moved}
+
+Die Seiten der Konsole sind in die Abschnitte oben einsortiert. Die alten
+Adressen führen zu den neuen Seiten, Lesezeichen und Links in Mails
+funktionieren also weiter.
+
+| Vorher | Jetzt |
+|--------|-------|
+| Einstellungen, Sicherung | Server, Sicherungen |
+| Einstellungen, Updates | Server, Updates; die Sicherungen vor Updates liegen unter Server, Sicherungen |
+| Einstellungen, Erweitert | Server, Konfigurationsdateien |
+| Einstellungen, Serverstatus | Server, Serverstatus |
+| Einstellungen, Relay-Server | Server, Relay-Server |
+| Einstellungen, Anmeldung: dein Passwort und die Zwei-Faktor-Anmeldung | Ihr Konto |
+| Einstellungen, Anmeldung: LDAP und OIDC | Einstellungen, Verzeichnis (LDAP) und Einstellungen, Single Sign-on |
+| Einstellungen, Allgemein: Sichtbarkeit von Geräten und Verfügbarkeitsverlauf | Einstellungen, Beitritt |
+| Einstellungen, Allgemein: MeshCentral-Kompatibilität | Einstellungen, MeshCentral |
+| Einstellungen, Darstellung: Name, Logo, Anmeldeseite, Downloadseite und Fernzugriff im Browser | Einstellungen, Branding |
+| Branding der Client-App | Einstellungen, Branding, Client-App |
+| Client-Einrichtung, Gerätetokens, Kopplungscodes, Support-Agenten, NeoDesk-Agenten | Geräte, Computer hinzufügen, je ein Tab |
+| Registrierungsanfragen | Geräte, Beitrittsanfragen |
+| Sicherheit und Protokoll: Audit-Protokoll und Server-Ereignisse | Aktivität, Audit-Protokoll |
+| Sicherheit und Protokoll: Sicherheitsprüfungen und Härtung | Aktivität, Sicherheitsprüfungen |
+| Sicherheit und Protokoll: Ihre Sitzungen | Ihr Konto, Angemeldete Geräte |
+| API-Tokens | Ihr Konto, API-Tokens |
+| Kommerzialisierung und Abrechenbare Sitzungen | Aktivität, Abrechnung |
+| Richtlinien, Warnungen und Automatisierung, USB- und Laufwerkszugriff, Schutz vor Datenabfluss, Geräteidentität | Regeln |
+| Plattform-Unterstützung | Hilfe in der oberen Leiste |
+| Die Schaltflächen für Design, Sprache und Barrierefreiheit in der oberen Leiste | Das Kontomenü |
 
 ## Nächste Schritte {#next-steps}
 
@@ -143,7 +247,7 @@ erzeugt einen Link für eine einzelne Support-Sitzung, siehe
   oder [einen RustDesk-Client verbinden](/docs/getting-started/connect-a-client)
 - [Die Übersicht](/docs/console/overview) und
   [die Geräteliste](/docs/console/devices)
-- [Registrierungsanfragen](/docs/console/enrollment), wenn neue Geräte auf
+- [Beitrittsanfragen](/docs/console/enrollment), wenn neue Geräte auf
   eine Genehmigung warten sollen
 - [Benutzer und Rollen](/docs/people/users-and-roles), um anderen Leuten
   eigene Konten zu geben

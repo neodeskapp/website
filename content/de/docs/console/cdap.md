@@ -26,7 +26,7 @@ Ein angemeldetes Gerät erscheint auf der Seite **IoT-Geräte (CDAP)**, solange 
 
 ## Die Seite IoT-Geräte {#the-iot-devices-page}
 
-Öffne **Geräte**, dann **IoT-Geräte (CDAP)**; in der Seitenleiste steht der Eintrag meist unter **Mehr**. Die Seite braucht die Berechtigung **CDAP anzeigen**.
+Öffne **Geräte**, dann **IoT-Geräte**; in der Seitenleiste steht der Eintrag unter **4 weitere anzeigen**. Die Seite braucht die Berechtigung **CDAP anzeigen**.
 
 | Spalte | Zeigt |
 |---|---|

@@ -164,14 +164,14 @@ It works like the Linux update: a backup to `C:\NeoDesk-Backups`, the new binary
 
 ## The Updates page in the console
 
-**Settings**, **Updates** checks GitHub for a newer release and can install it.
+**Server**, **Updates** checks GitHub for a newer release and can install it.
 
 What it does:
 
 - **Check for updates** looks up the newest release of the update channel in neodeskapp/neodesk, or in the repository that `UPDATE_GITHUB_OWNER` and `UPDATE_GITHUB_REPO` name. While there is no stable release, Stable takes the newest pre-release, as the installers do. The side column shows the channel and the repository it asks.
 - **Install**, on a Linux or Windows install, downloads that release's binary for this machine into the data folder and checks its size, its SHA-256 and the release signature. It runs the binary to compare its version and commit with the release. With **Create backup before updating** ticked, it saves the running binary and a full backup of the data. Then it puts the new binary in place, keeps the old one as `neodesk-server.prev`, and the service starts the new one. If the new binary does not get ready within three starts, the fourth start puts the old one back and the page shows the failed update.
 - **Update channel** picks **Stable** or **Development**. The choice is saved as `UPDATE_GITHUB_BRANCH` in the env file.
-- **Backups made before updates** lists the backups each install made, with **Restore these files** to put that binary back.
+- **Backups made before updates**, under **Server**, **Backups**, lists the backups each install made, with **Restore these files** to put that binary back. **Keep update backups** on the same page sets how many it keeps.
 
 Release signatures: the release key is built into the server. A release without a valid signature is refused. `UPDATE_MANIFEST_PUBLIC_KEY` adds keys, for example for a fork's own releases.
 
@@ -185,7 +185,7 @@ What it cannot do:
 
 ## Check the version
 
-- In the console: **Settings**, **Updates** shows **Installed version**, and **Settings**, **General** shows **Server version** under **Server information**.
+- In the console: **Server**, **Updates** shows **Installed version**, and **Settings**, **General** shows **Server version** under **Server information**.
 - The binary prints it. In Docker:
 
   ```bash

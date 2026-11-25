@@ -42,9 +42,11 @@ Type `admin` under **Username**, the password from the install under
 
 The console opens on **Overview**. By default a session ends after 30 minutes
 without activity, and 24 hours after you signed in at the latest. The console
-warns you a minute before it signs you out for inactivity. An account has one
-session at a time: signing in from another browser ends the first session.
-[Configuration](/docs/operations/configuration) explains how to change these
+warns you a minute before it signs you out for inactivity. An account can be
+signed in on up to 10 browsers at once; **Signed-in devices** in the account
+menu lists them. [Your account](/docs/people/your-account) explains the list
+and the setting **One session per account**, and
+[Configuration](/docs/operations/configuration) explains how to change the
 limits.
 
 On a new install the overview starts with **Set up this server**, a checklist
@@ -54,8 +56,8 @@ explains all eight.
 
 ## Change the admin password
 
-1. Open **Settings**, then **Sign-in**. The account menu at the bottom of the
-   sidebar has a shortcut to the same place: **Change password**.
+1. Open the account menu, your initials at the end of the top bar, and choose
+   **Your account**.
 2. Under **Password**, fill in **Current password**, **New password** and
    **New password again**. The new password needs at least 8 characters.
 3. Choose **Change password**.
@@ -63,8 +65,6 @@ explains all eight.
 Use the new password the next time you sign in. On Docker, the credentials
 command no longer prints the first password after this: the server deletes it,
 and the command says so and how to set a new password.
-
-![The Sign-in settings with the Password and Two-factor sign-in sections](shot:settings-auth)
 
 ## Turn on two-factor sign-in
 
@@ -111,26 +111,123 @@ field on **Overview** is locked.
 
 ## Find your way around
 
-The sidebar has five sections. Each shows the pages used most, and the rest sit
-under **More** in that section. This is what the admin sees; other accounts see
-the pages their role allows, see [Users and roles](/docs/people/users-and-roles).
+### The sidebar
 
-| Section | Pages shown at first | Under More |
-|---------|----------------------|------------|
-| Devices | Overview, All devices, Enrollment requests, Remote desktop in browser | Pair agent, Inventory, Network monitoring, Fleet tasks, Platform support, IoT devices (CDAP) |
+The sidebar has seven sections. Each shows the pages used most, and the rest
+sit under **Show N more** at the end of the section, where N is the number of
+hidden pages; **Show fewer** folds them again. A section that hides only one
+page shows it right away. Long page names wrap onto a second line. This is
+what a super admin sees; other accounts see the pages their role allows, see
+[Users and roles](/docs/people/users-and-roles).
+
+| Section | Pages shown at first | Under Show N more |
+|---------|----------------------|-------------------|
+| Devices | Overview, All devices, Join requests, Add computers, Remote desktop in browser | Inventory, Network monitoring, Fleet tasks, IoT devices |
 | Support | Help requests, Tickets, Chat, Network tools | |
 | People | Users | Organizations, Roles and permissions |
-| Activity | Security and audit, Reports | App usage, Billable sessions |
-| Settings | General, Client setup, Server status | The other settings, grouped as Console, Clients and enrollment, Rules, Server, Billing and Developer tools |
+| Activity | Audit log, Security checks, Reports | App usage, Billing |
+| Rules | Policies, Alerts and automation | USB and drive access, Data loss prevention, Device identity |
+| Server | Server status, Relay servers, Backups, Updates | Configuration files, Capacity test |
+| Settings | General, Sign-in | Directory (LDAP), Single sign-on, Joining, Appearance, Branding, Email, Time, MeshCentral, Translations, and under Developer tools, Flow builder |
 
-To jump to a page, a device or a person, press Ctrl+K or `/` and type part of
-the name. **Quick support** in the top bar makes a link for one support session,
-see [Quick support](/docs/console/quick-support).
+**Add computers** gathers every way a computer gets onto the server, as tabs:
+**Invites and install links**, **Device tokens**, **Pairing codes**,
+**Support agents** and **Manual setup**. Each tab shows only for accounts that
+may use it; **Manual setup**, with the values a client needs, shows for
+everyone. See [Add a computer](/docs/console/add-a-computer).
+
+**Settings** holds only the settings of the server and the console. Your own
+password, two-factor sign-in, signed-in devices and API tokens are on
+[Your account](/docs/people/your-account).
+
+### The top bar
+
+From left to right:
+
+- **The breadcrumb**: the section and the page you are on.
+- **The search field**, see [Search](#search) below.
+- **Quick support** makes a link for one support session, see
+  [Quick support](/docs/console/quick-support). It shows for accounts that may
+  connect to devices.
+- **Chat** opens the chat panel over the page you are on, with the number of
+  unread messages, see [Chat](/docs/console/chat). It shows for accounts with
+  **Support chat** or **Team chat**.
+- **Notifications** lists new help requests and devices that ask to join.
+- **Help**, the book icon, opens a panel with **Show the setup guide** (for
+  accounts that may see the guide), **Keyboard shortcuts**, **Platform
+  support**, and the links **Documentation**, **Community on Discord** and
+  **GitHub repository**. On a phone, Help is at the end of the sidebar.
+- **The account menu**, your initials at the end. It has **My status** for the
+  chat, **Your account**, **Signed-in devices**, **API tokens** (for accounts
+  that may make them), **Theme** with **Console default**, **Light** and
+  **Dark** for this browser, **Language**, **Accessibility** and **Sign out**.
+
+There is no button to load a page again. Pages that change while you look at
+them load again by themselves: the audit log, network monitoring, users,
+organizations, device tokens and the billing sessions every 30 seconds while
+they are on screen.
+
+A right-click on the NeoDesk logo at the top of the sidebar opens the
+[brand guide](https://neode.sk/brand) in a new tab. A logo of your own keeps the
+browser's menu.
+
+### Search
+
+Press Ctrl+K (⌘K on a Mac) or `/`, or click the search field in the top bar,
+and type. The search finds:
+
+- **Pages**: any page in the sidebar, also by other words and former names.
+- **Actions**: **Quick support**, **Add a computer**, **New device token**,
+  **Add user**, **New API token**, **Chat settings for this server**,
+  **Accessibility options**, **Switch to the dark theme** (or the light one)
+  and **Sign out**. Each shows only for accounts that see its button in the
+  console.
+- **Settings**: every setting on the Settings tabs, on the Server pages and on
+  Your account, with where it lives. Picking one opens its tab, scrolls to the
+  setting and outlines it for a moment. Accounts see only the settings they
+  may open.
+- **Devices** and **People**, by name, ID or user name.
+
+Every word you type has to match; case and accents don't matter. English and
+German words find the same setting, whatever language the console is in. A
+group with more hits than it shows says so, for example "8 of 23". Use the
+arrow keys to move, Enter to open and Esc to close. With the field empty, the
+search shows your recent searches in this browser, with
+**Clear recent searches**.
+
+### Where things moved
+
+The console's pages were sorted into the sections above. The old addresses
+lead to the new pages, so bookmarks and links in mails keep working.
+
+| Before | Now |
+|--------|-----|
+| Settings, Backup | Server, Backups |
+| Settings, Updates | Server, Updates; the backups made before updates are on Server, Backups |
+| Settings, Advanced | Server, Configuration files |
+| Settings, Server status | Server, Server status |
+| Settings, Relay servers | Server, Relay servers |
+| Settings, Sign-in: your password and two-factor sign-in | Your account |
+| Settings, Sign-in: LDAP and OIDC | Settings, Directory (LDAP) and Settings, Single sign-on |
+| Settings, General: device visibility and availability history | Settings, Joining |
+| Settings, General: MeshCentral compatibility | Settings, MeshCentral |
+| Settings, Appearance: name, logo, sign-in page, download page and remote viewer | Settings, Branding |
+| Client app branding | Settings, Branding, Client app |
+| Client setup, Device tokens, Pairing codes, Support agents, NeoDesk Agents | Devices, Add computers, one tab each |
+| Enrollment requests | Devices, Join requests |
+| Security and audit: Audit log and Server events | Activity, Audit log |
+| Security and audit: Security checks and Hardening | Activity, Security checks |
+| Security and audit: Your sessions | Your account, Signed-in devices |
+| API tokens | Your account, API tokens |
+| Commercialization and Billable sessions | Activity, Billing |
+| Policies, Alerts and automation, USB and drive access, Data loss prevention, Device identity | Rules |
+| Platform support | Help, in the top bar |
+| Theme, language and accessibility buttons in the top bar | The account menu |
 
 ## Next steps
 
 - [Add a computer](/docs/console/add-a-computer) with the NeoDesk client, or
   [connect a RustDesk client](/docs/getting-started/connect-a-client)
 - [The Overview page](/docs/console/overview) and [the device list](/docs/console/devices)
-- [Enrollment](/docs/console/enrollment), if new devices should wait for approval
+- [Join requests](/docs/console/enrollment), if new devices should wait for approval
 - [Users and roles](/docs/people/users-and-roles), to give other people their own accounts

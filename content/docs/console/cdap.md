@@ -27,7 +27,7 @@ A device that has signed in shows on the **IoT devices (CDAP)** page while it is
 
 ## The IoT devices page
 
-Open **Devices**, then **IoT devices (CDAP)**; in the sidebar it is usually under **More**. The page needs the **View CDAP devices** permission.
+Open **Devices**, then **IoT devices**; in the sidebar it is under **Show 4 more**. The page needs the **View CDAP devices** permission.
 
 | Column | Shows |
 |---|---|

@@ -30,14 +30,14 @@ do itself, so another admin can see fewer than eight.
 
 | Step | Where it leads | Ticks itself when |
 |---|---|---|
-| **Change the first password** | **Settings**, **Sign-in**, the password form | The first admin's password is no longer the one the install made |
-| **Turn on two-factor sign-in** | **Settings**, **Sign-in**, **Two-factor sign-in** | Your account has two-factor sign-in on |
+| **Change the first password** | **Your account**, **Password** | The first admin's password is no longer the one the install made |
+| **Turn on two-factor sign-in** | **Your account**, **Two-factor sign-in** | Your account has two-factor sign-in on |
 | **Set the address clients use** | **Settings**, **General**, **Public client endpoints** | The address clients get is one other computers can reach |
 | **Put HTTPS in front of the console** | [Reverse proxy and TLS](/docs/operations/reverse-proxy-tls), in a new tab | You opened the console over HTTPS, or the console serves HTTPS itself |
 | **Add your first computer** | **Add a computer**, right on the overview | The server has a device |
 | **Open a remote session** | **All devices** | The server has seen a remote session |
 | **Add the people who help** | **Users** | Another account that is not disabled exists, or single sign-on or LDAP is on |
-| **Make a backup** | **Settings**, **Backup**, **Create a backup** | A backup was made by hand, or a scheduled backup succeeded |
+| **Make a backup** | **Server**, **Backups**, **Create a backup** | A backup was made by hand, or a scheduled backup succeeded |
 
 The progress line above the list counts the steps, for example "3 of 8 done. A
 step ticks itself once the server sees it done." When every step is done it
@@ -87,8 +87,8 @@ you back to the overview. **Add your first computer** opens
 **Put HTTPS in front of the console** opens the docs in a new tab, because
 HTTPS is set up outside the console.
 
-The overview checks the steps every 30 seconds while its tab is open, when you
-choose **Refresh**, and when **Add a computer** closes.
+The overview checks the steps every 30 seconds while its tab is open, and when
+**Add a computer** closes.
 
 ## Hide it and bring it back
 

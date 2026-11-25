@@ -61,7 +61,7 @@ Die Releases enthalten diese drei und `linux/amd64`.
 neodesk-server {{VERSION}} (built unknown)
 ```
 
-Ein einfacher Build nimmt seine Version aus `neodesk-server/internal/productversion/VERSION` und kennt weder seine Build-Zeit noch seinen Commit. Die Seite **Updates** der Konsole bietet einem Binary ohne Commit kein Update an (siehe [Aktualisieren](/docs/operations/updating)). Der Release-Workflow setzt alle drei Werte. Um dasselbe zu tun, führe in `neodesk-server` aus:
+Ein einfacher Build nimmt seine Version aus `neodesk-server/internal/productversion/VERSION` und kennt weder seine Build-Zeit noch seinen Commit. Die Seite **Updates** der Konsole unter **Server** bietet einem Binary ohne Commit kein Update an (siehe [Aktualisieren](/docs/operations/updating)). Der Release-Workflow setzt alle drei Werte. Um dasselbe zu tun, führe in `neodesk-server` aus:
 
 ```bash
 CGO_ENABLED=0 go build -trimpath \

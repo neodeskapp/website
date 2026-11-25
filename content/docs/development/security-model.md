@@ -27,7 +27,7 @@ At its first start the server makes an Ed25519 key pair: `id_ed25519` holds the 
 
 - When a client asks to connect to a device, the server signs the pair of that device's ID and public key (the `IdPk` message) with its key. The client checks the signature with the server's public key, and so knows the device's key came from this server.
 - A device ID is bound to the UUID and the public key it first registered with, in memory and in the database. A registration with another UUID is refused with `UUID_MISMATCH`, one with another key with `NOT_SUPPORT`, so an ID can't be taken over by another installation.
-- The enrollment mode decides whether a new ID is admitted at all; see [Enrollment](/docs/console/enrollment#enrollment-modes). A banned or deleted device can't register, and neither they nor a device that waits for approval can start a session.
+- The join mode decides whether a new ID is admitted at all; see [Join requests](/docs/console/enrollment#enrollment-modes). A banned or deleted device can't register, and neither they nor a device that waits for approval can start a session.
 
 ## The ID server connection
 
@@ -95,7 +95,7 @@ The session secret is `SESSION_SECRET`, or else the file `.session_secret` in th
 
 - A code is 8 symbols from an alphabet without 0, 1, I, L, O and U, about 39 bits. The server keeps only its SHA-256 hash, in `server_config`, with its kind, expiry and uses left.
 - Every route that takes a code (the page data, the package download, the Linux scripts and the redeem) counts against one limit of 20 requests a minute per address. Wrong, expired, used and revoked codes all get the same answer.
-- A join code works for 7 days unless its maker chose another lifetime (at most 30 days), for the number of uses it was made with. Its redeem approves the device whatever the enrollment mode and gives the client the server's addresses, its key and a device token.
+- A join code works for 7 days unless its maker chose another lifetime (at most 30 days), for the number of uses it was made with. Its redeem approves the device whatever the join mode and gives the client the server's addresses, its key and a device token.
 - A support code works for one hour and once. Its redeem gives the quick support app a session token, kept as a hash, that opens only that session's routes. The person at the computer has to allow the session on their screen. The app then hands its session password to the server, which keeps it in memory only and gives it once to the account that made the session. The session ends when the app closes, the supporter ends it, or the app stops calling in for 3 minutes.
 - The pages and the client warn when the console runs on plain HTTP.
 

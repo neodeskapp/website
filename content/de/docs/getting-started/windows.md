@@ -94,7 +94,7 @@ gültige Signatur ab.
   gilt, und schaltet damit HTTPS für die Konsole ein. Die Client-API auf 21121
   bleibt bei einfachem HTTP, weil RustDesk-Clients ein selbstsigniertes
   Zertifikat ablehnen.
-- Setzt den Registrierungsmodus einer neuen Installation auf **Verwaltet**,
+- Setzt den Beitrittsmodus einer neuen Installation auf **Verwaltet**,
   damit neue RustDesk-Clients auf eine Genehmigung warten.
 - Registriert `NeoDeskServer`. Mit NSSM ist das ein Dienst, der mit Windows
   startet und unter einem eigenen Konto mit wenigen Rechten läuft,
@@ -207,10 +207,10 @@ Get-ScheduledTask -TaskName NeoDeskServer
 Start-ScheduledTask -TaskName NeoDeskServer
 ```
 
-Die env-Datei setzt **Verwaltet** nur als ersten Registrierungsmodus. Ein
+Die env-Datei setzt **Verwaltet** nur als ersten Beitrittsmodus. Ein
 Modus, den du in der Konsole wählst, bleibt nach einem Neustart erhalten. Was
 die Modi bewirken, steht unter
-[Registrierungsanfragen](/docs/console/enrollment).
+[Beitrittsanfragen](/docs/console/enrollment).
 
 ## Später: aktualisieren und deinstallieren {#later-update-and-uninstall}
 

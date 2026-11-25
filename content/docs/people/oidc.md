@@ -9,7 +9,7 @@ With single sign-on turned on, the sign-in page gets a button that sends people 
 
 ## Where it is set
 
-Open **Settings**, **Sign-in** and go to **OIDC / OAuth2 (SSO)** under **For everyone**. The section is there for accounts with the **Server configuration** permission: Super admin, Administrator and Server admin by default.
+Open **Settings**, **Single sign-on**. The tab is there for accounts with the **Server configuration** permission: Super admin, Administrator and Server admin by default.
 
 The settings are saved in the server's database and apply to the next sign-in without a restart. People who are already signed in stay signed in.
 
@@ -44,13 +44,13 @@ Tick **Turn on single sign-on** to show the fields. Turning it on fills **Redire
 | **Use PKCE (recommended)** | Adds PKCE to the sign-in. Ticked for a single sign-on that was never saved; a saved one keeps the value it was saved with. |
 | **Auto-discovery** | On by default. Turned off, it shows **Authorization endpoint**, **Token endpoint** and **Userinfo endpoint** to fill in by hand. |
 | **Auto-create users** | On by default: the first sign-in makes an account. Off: only people who already have a single sign-on account here can sign in. |
-| **Prefer SSO login** | The sign-in page goes straight to the provider (see below). Off by default. |
+| **Prefer single sign-on** | The sign-in page goes straight to the provider (see below). Off by default. |
 | **User name claim** | Under **Claims**. The claim that becomes the account name. Default `preferred_username`. |
 | **Email claim** | Default `email`. Stored with the account at every sign-in and shown in the **Email** column of the Users page. Used for the account name, the part before the @, only when the provider sends no user name claim and says the address is verified. |
 | **Display name claim** | Default `name`. Stored with the account at every sign-in. |
 | **Groups claim** | The claim with the person's groups. Default `groups`. |
 | **Default role** | Under **Roles**: **Viewer**, **Operator** or **Admin**. These are the roles Viewer, Remote operator and Administrator in the [roles table](/docs/people/users-and-roles#roles). |
-| **Group → Role Mapping** | Groups and the role each gives (see below). |
+| **Groups to roles** | Groups and the role each gives (see below). |
 
 To save with single sign-on on, the server needs a Client ID, a Redirect URL, and an Issuer URL or both the authorization and token endpoints.
 
@@ -70,7 +70,7 @@ With a map filled in, the role is set again at every sign-in. Someone whose grou
 
 The sign-in page shows the password form, then "or" and a button **Sign in with** followed by the **Button text**, or **Sign in with SSO** without one. After the provider, people land on the page they wanted to open, signed in. Accounts made this way carry the **SSO** tag on the Users page and cannot sign in with a password. The console does not ask them for a [two-factor code](/docs/people/two-factor).
 
-With **Prefer SSO login**, the sign-in page says "Opening single sign-on…" and goes to the provider by itself, except:
+With **Prefer single sign-on**, the sign-in page says "Opening single sign-on…" and goes to the provider by itself, except:
 
 - when the address is `/login?autoLaunch=0`,
 - right after a failed single sign-on,
@@ -78,7 +78,7 @@ With **Prefer SSO login**, the sign-in page says "Opening single sign-on…" and
 
 Behind a reverse proxy the console sees the proxy's address unless it is told to trust the proxy. With a proxy on the same machine or on a private network, everyone then counts as local and the page never goes to the provider by itself. [Trusting the proxy](/docs/operations/reverse-proxy-tls#trusting-the-proxy) covers that. To see how the console counts you, open `/api/auth/oidc/status` on the console's address. For the page to go to the provider by itself, `enabled` and `prefer_sso` have to be `true` and `local_bypass` `false`.
 
-Prefer SSO login only changes the sign-in page. Password sign-in keeps working.
+**Prefer single sign-on** only changes the sign-in page. Password sign-in keeps working.
 
 To stop one person from signing in by single sign-on, disable their account on the Users page (see [Disable an account](/docs/people/users-and-roles#disable-an-account)). Deleting it is not enough while **Auto-create users** is on, because the next sign-in makes a new account.
 
@@ -106,7 +106,7 @@ A refused sign-in shows "Sign-in failed" in the browser with the reason, such as
 | **Use PKCE (recommended)** | Ticked |
 | **Default role** | **Viewer** |
 
-**Group → Role Mapping**, for a provider that sends these names in `groups`:
+**Groups to roles**, for a provider that sends these names in `groups`:
 
 ```text
 neodesk-admins=global_admin

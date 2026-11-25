@@ -78,8 +78,8 @@ VNC-Hosts in derselben Geräteliste.
   sind immer dabei. Verzeichnis- und Single-Sign-on-Konten melden sich auch im
   normalen RustDesk-Client an.
 - **Freigabe vor dem Zugriff.** Im Modus **Verwaltet** wartet ein neues Gerät
-  unter **Registrierungsanfragen**, bis es jemand genehmigt; siehe
-  [Registrierung](/docs/console/enrollment).
+  unter **Beitrittsanfragen**, bis es jemand genehmigt; siehe
+  [Beitrittsanfragen](/docs/console/enrollment).
 - **Remote Desktop im Browser** in jeder Installation, für Browser auf
   Desktop und Tablet; siehe [Remote Desktop im Browser](/docs/console/remote-in-browser).
 - **Hilfe ohne Einrichtung.** Die [Schnellhilfe](/docs/console/quick-support)

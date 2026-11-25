@@ -33,14 +33,14 @@ eventuell weniger als acht.
 
 | Schritt | Wohin er führt | Hakt sich ab, wenn |
 |---|---|---|
-| **Erstes Passwort ändern** | **Einstellungen**, **Anmeldung**, das Passwortformular | Das Passwort des ersten Admins nicht mehr das ist, das die Installation erzeugt hat |
-| **Zwei-Faktor-Anmeldung einschalten** | **Einstellungen**, **Anmeldung**, **Zwei-Faktor-Anmeldung** | Dein Konto die Zwei-Faktor-Anmeldung eingeschaltet hat |
+| **Erstes Passwort ändern** | **Ihr Konto**, **Passwort** | Das Passwort des ersten Admins nicht mehr das ist, das die Installation erzeugt hat |
+| **Zwei-Faktor-Anmeldung einschalten** | **Ihr Konto**, **Zwei-Faktor-Anmeldung** | Dein Konto die Zwei-Faktor-Anmeldung eingeschaltet hat |
 | **Adresse für Clients festlegen** | **Einstellungen**, **Allgemein**, **Öffentliche Client-Endpunkte** | Die Adresse, die Clients bekommen, für andere Computer erreichbar ist |
 | **HTTPS vor die Konsole setzen** | [Reverse Proxy und TLS](/docs/operations/reverse-proxy-tls), in einem neuen Tab | Du die Konsole über HTTPS geöffnet hast oder die Konsole selbst HTTPS anbietet |
 | **Ersten Computer hinzufügen** | **Computer hinzufügen**, direkt auf der Übersicht | Der Server ein Gerät hat |
 | **Eine Fernsitzung öffnen** | **Alle Geräte** | Der Server eine Fernsitzung gesehen hat |
 | **Weitere Personen hinzufügen** | **Benutzer** | Es ein weiteres Konto gibt, das nicht deaktiviert ist, oder Single Sign-on oder LDAP eingeschaltet ist |
-| **Sicherung erstellen** | **Einstellungen**, **Sicherung**, **Sicherung erstellen** | Eine Sicherung von Hand erstellt wurde oder eine geplante Sicherung geklappt hat |
+| **Sicherung erstellen** | **Server**, **Sicherungen**, **Sicherung erstellen** | Eine Sicherung von Hand erstellt wurde oder eine geplante Sicherung geklappt hat |
 
 Die Fortschrittszeile über der Liste zählt die Schritte, zum Beispiel „3 von 8
 erledigt. Ein Schritt hakt sich selbst ab, sobald der Server ihn erledigt
@@ -96,8 +96,7 @@ und **HTTPS vor die Konsole setzen** öffnet die Doku in einem neuen Tab, weil
 HTTPS außerhalb der Konsole eingerichtet wird.
 
 Die Übersicht prüft die Schritte alle 30 Sekunden, solange ihr Tab offen ist,
-wenn du **Aktualisieren** wählst und wenn **Computer hinzufügen** sich
-schließt.
+und wenn **Computer hinzufügen** sich schließt.
 
 ## Ausblenden und zurückholen {#hide-it-and-bring-it-back}
 

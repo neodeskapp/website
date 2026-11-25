@@ -8,7 +8,7 @@ Ist Single Sign-on eingeschaltet, bekommt die Anmeldeseite eine Schaltfläche, d
 
 ## Wo du es einstellst {#where-it-is-set}
 
-Öffne **Einstellungen**, **Anmeldung** und gehe unter **Für alle** zu **OIDC / OAuth2 (SSO)**. Den Bereich sehen Konten mit der Berechtigung **Server konfigurieren**: standardmäßig Super-Admin, Administrator und Serveradministrator.
+Öffne **Einstellungen**, **Single Sign-on**. Den Tab sehen Konten mit der Berechtigung **Server konfigurieren**: standardmäßig Super-Admin, Administrator und Serveradministrator.
 
 Die Einstellungen liegen in der Datenbank des Servers und gelten ohne Neustart ab der nächsten Anmeldung. Wer schon angemeldet ist, bleibt angemeldet.
 
@@ -43,13 +43,13 @@ Setze den Haken bei **Single Sign-on einschalten**, damit die Felder erscheinen.
 | **PKCE verwenden (empfohlen)** | Ergänzt die Anmeldung um PKCE. Angehakt bei einem Single Sign-on, das noch nie gespeichert wurde; ein gespeichertes behält den Wert, mit dem es gespeichert wurde. |
 | **Automatische Discovery** | Standardmäßig an. Ausgeschaltet erscheinen **Autorisierungs-Endpoint**, **Token-Endpoint** und **UserInfo-Endpoint**, die du von Hand ausfüllst. |
 | **Benutzer automatisch erstellen** | Standardmäßig an: Die erste Anmeldung legt ein Konto an. Aus: Nur wer hier schon ein Single-Sign-on-Konto hat, kann sich anmelden. |
-| **SSO-Anmeldung bevorzugen** | Die Anmeldeseite geht direkt zum Anbieter (siehe unten). Standardmäßig aus. |
+| **Single Sign-on bevorzugen** | Die Anmeldeseite geht direkt zum Anbieter (siehe unten). Standardmäßig aus. |
 | **Benutzername-Claim** | Unter **Claims**. Der Claim, der zum Kontonamen wird. Standard `preferred_username`. |
 | **E-Mail-Claim** | Standard `email`. Wird bei jeder Anmeldung mit dem Konto gespeichert und in der Spalte **E-Mail** der Seite Benutzer angezeigt. Der Teil vor dem @ dient nur dann als Kontoname, wenn der Anbieter keinen Benutzername-Claim schickt und die Adresse als bestätigt meldet. |
 | **Anzeigename-Claim** | Standard `name`. Wird bei jeder Anmeldung mit dem Konto gespeichert. |
 | **Gruppen-Claim** | Der Claim mit den Gruppen der Person. Standard `groups`. |
 | **Standardrolle** | Unter **Rollen**: **Betrachter**, **Operator** oder **Administrator**. Das sind die Rollen Betrachter, Remote-Operator und Administrator aus der [Rollentabelle](/docs/people/users-and-roles#roles). |
-| **Gruppen → Rollen-Zuordnung** | Gruppen und die Rolle, die jede davon gibt (siehe unten). |
+| **Gruppen zu Rollen** | Gruppen und die Rolle, die jede davon gibt (siehe unten). |
 
 Damit du mit eingeschaltetem Single Sign-on speichern kannst, braucht der Server eine Client-ID, eine Weiterleitungs-URL und entweder eine Aussteller-URL oder sowohl den Autorisierungs- als auch den Token-Endpoint.
 
@@ -69,7 +69,7 @@ Ist eine Zuordnung ausgefüllt, wird die Rolle bei jeder Anmeldung neu gesetzt. 
 
 Die Anmeldeseite zeigt das Passwortformular, dann „oder“ und eine Schaltfläche **Mit … anmelden**, in der statt der Punkte der **Text der Schaltfläche** steht; ohne ihn heißt sie **Mit SSO anmelden**. Nach dem Anbieter landen Personen angemeldet auf der Seite, die sie öffnen wollten. Konten, die so entstehen, haben auf der Seite Benutzer den Tag **SSO** und können sich nicht mit einem Passwort anmelden. Die Konsole fragt sie nicht nach einem [Zwei-Faktor-Code](/docs/people/two-factor).
 
-Mit **SSO-Anmeldung bevorzugen** zeigt die Anmeldeseite „Single Sign-on wird geöffnet…“ und geht von selbst zum Anbieter, außer:
+Mit **Single Sign-on bevorzugen** zeigt die Anmeldeseite „Single Sign-on wird geöffnet…“ und geht von selbst zum Anbieter, außer:
 
 - wenn die Adresse `/login?autoLaunch=0` ist,
 - direkt nach einem fehlgeschlagenen Single Sign-on,
@@ -77,7 +77,7 @@ Mit **SSO-Anmeldung bevorzugen** zeigt die Anmeldeseite „Single Sign-on wird g
 
 Hinter einem Reverse Proxy sieht die Konsole die Adresse des Proxys, es sei denn, sie ist so eingestellt, dass sie dem Proxy vertraut. Steht der Proxy auf demselben Rechner oder in einem privaten Netz, zählen dann alle als lokal, und die Seite geht nie von selbst zum Anbieter. Wie du das einstellst, steht unter [Dem Proxy vertrauen](/docs/operations/reverse-proxy-tls#trusting-the-proxy). Wie die Konsole dich einordnet, siehst du, wenn du `/api/auth/oidc/status` unter der Adresse der Konsole öffnest. Damit die Seite von selbst zum Anbieter geht, müssen `enabled` und `prefer_sso` auf `true` stehen und `local_bypass` auf `false`.
 
-SSO-Anmeldung bevorzugen ändert nur die Anmeldeseite. Die Anmeldung mit Passwort funktioniert weiter.
+**Single Sign-on bevorzugen** ändert nur die Anmeldeseite. Die Anmeldung mit Passwort funktioniert weiter.
 
 Um eine einzelne Person von der Anmeldung per Single Sign-on abzuhalten, deaktiviere ihr Konto auf der Seite Benutzer (siehe [Konto deaktivieren](/docs/people/users-and-roles#disable-an-account)). Löschen reicht nicht, solange **Benutzer automatisch erstellen** eingeschaltet ist, denn die nächste Anmeldung legt ein neues Konto an.
 
@@ -105,7 +105,7 @@ Eine abgelehnte Anmeldung zeigt im Browser „Sign-in failed“ mit dem Grund, e
 | **PKCE verwenden (empfohlen)** | Angehakt |
 | **Standardrolle** | **Betrachter** |
 
-**Gruppen → Rollen-Zuordnung** für einen Anbieter, der diese Namen in `groups` schickt:
+**Gruppen zu Rollen** für einen Anbieter, der diese Namen in `groups` schickt:
 
 ```text
 neodesk-admins=global_admin

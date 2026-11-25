@@ -8,7 +8,7 @@ Ist die LDAP-Anmeldung eingeschaltet, melden sich Personen aus deinem Verzeichni
 
 ## Wo du es einstellst {#where-it-is-set}
 
-Öffne **Einstellungen**, **Anmeldung** und gehe unter **Für alle** zu **LDAP / Active Directory**. Den Bereich sehen Konten mit der Berechtigung **Server konfigurieren**: standardmäßig Super-Admin, Administrator und Serveradministrator.
+Öffne **Einstellungen**, **Verzeichnis (LDAP)**. Den Tab sehen Konten mit der Berechtigung **Server konfigurieren**: standardmäßig Super-Admin, Administrator und Serveradministrator.
 
 Die Einstellungen liegen in der Datenbank des Servers. Es gibt keine Umgebungsvariablen dafür, und nach dem Speichern gelten sie ohne Neustart ab der nächsten Anmeldung. Wer schon angemeldet ist, bleibt angemeldet.
 

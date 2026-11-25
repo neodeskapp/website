@@ -445,15 +445,15 @@ Volumes. Der Container hat die Restart-Policy `unless-stopped`: Nach einem
 Neustart des Hosts kommt er wieder hoch, außer du hast ihn gestoppt.
 
 Die ersten Zeilen des Logs zeigen die Version, die Datenbank und die
-Relay-Adresse. Beim ersten Start zeigen sie auch den Registrierungsmodus.
+Relay-Adresse. Beim ersten Start zeigen sie auch den Beitrittsmodus.
 
-## Registrierungsmodus {#enrollment-mode}
+## Beitrittsmodus {#enrollment-mode}
 
-Auf einem neuen Daten-Volume startet der Container im Registrierungsmodus
+Auf einem neuen Daten-Volume startet der Container im Beitrittsmodus
 **Verwaltet**. Ein RustDesk-Client, der sich zum ersten Mal verbindet, wartet
-unter **Registrierungsanfragen**, bis jemand ihn genehmigt. Du kannst den
+unter **Beitrittsanfragen**, bis jemand ihn genehmigt. Du kannst den
 Modus in der Konsole ändern, siehe
-[Registrierungsanfragen](/docs/console/enrollment). Der Modus, den du dort
+[Beitrittsanfragen](/docs/console/enrollment). Der Modus, den du dort
 wählst, bleibt nach einem Neustart erhalten.
 
 `ENROLLMENT_MODE=open`, `managed` oder `locked` in `.env` legt nur den Modus

@@ -93,7 +93,7 @@ Then decide which devices they see:
 1. Keep each customer's computers in a folder of its own.
 2. Give the technician that folder under **Device access**, or put several
    technicians in a user group and allow the group on the folder.
-3. Under **Settings**, **General**, set **Device visibility default** to
+3. Under **Settings**, **Joining**, set **Device visibility default** to
    **Restricted**, so people see only the devices they were given.
 
 [Users and roles](/docs/people/users-and-roles#example-an-operator-for-some-devices)
@@ -110,9 +110,9 @@ guest gets full control. See
 
 ## Keep track and bill the work
 
-The **Audit log** under **Activity**, **Security and audit** records who
+The **Audit log** under **Activity** records who
 signed in, approved, banned or changed what, with the time and the address.
-**Billable sessions** lists the remote sessions that count against a
+The **Sessions** tab of **Activity**, **Billing** lists the remote sessions that count against a
 customer's support package, with a filter for each organization, and, when
 you require work reports, the sessions still waiting for one. See [Activity and audit log](/docs/console/activity).
 

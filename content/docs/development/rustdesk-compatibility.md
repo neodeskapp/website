@@ -68,7 +68,7 @@ A stock client applies these options from the plain heartbeat answer. NeoDesk's 
 - `HttpProxyRequest` is answered only for a path under `/api/` with GET, POST, PUT, PATCH or DELETE, and only by this server's own API; the ID server sends nothing on to another host. Any other request gets an `HttpProxyResponse` with an error, and so does an answer whose body is larger than 60 KiB.
 - `IceCandidate` is passed on only between the two ends of a punch the server started.
 - A `FetchLocalAddr` that comes from a client is dropped: only the server sends it.
-- A new device that the enrollment mode turns away gets `RegisterPkResponse` with `NOT_DEPLOYED`.
+- A new device that the join mode turns away gets `RegisterPkResponse` with `NOT_DEPLOYED`.
 - A known ID is bound to the UUID and key it registered with. A `RegisterPk` with another UUID gets `UUID_MISMATCH`, one with another key `NOT_SUPPORT`.
 
 ### Who may start a session
@@ -81,9 +81,9 @@ The ID server decides for each `PunchHoleRequest` and `RequestRelay` which devic
 4. A registered device has exactly this address and port.
 5. The `udp_port` in the request matches exactly one live device at this public address.
 6. Exactly one live device has this public address.
-7. `ALLOW_LEGACY_OUTBOUND` is on and the enrollment mode is Open: an app that never registered gets a temporary identity and is sent through the relay.
+7. `ALLOW_LEGACY_OUTBOUND` is on and the join mode is Open: an app that never registered gets a temporary identity and is sent through the relay.
 
-Several live devices at one public address and no better match refuse the session (`initiator_ambiguous_same_nat`), unless `ALLOW_SHARED_NAT_INITIATOR` is on. This hits offices where several clients share one public address, also when all of them are approved: a client often sends its request on a new TCP port, so sources 4 and 5 miss, and the session is refused. `ALLOW_SHARED_NAT_INITIATOR` lets such requests through without naming the device that asks. With **Only signed-in RustDesk apps can start sessions** on, only sources 2 and 3 count. In Managed and Locked mode the device must also be approved; a device that still waits for approval can't start a session. In Managed mode, a client that sends a valid sign-in token for a device the server doesn't know is put under **Enrollment requests**, so phones that only control others can be approved too.
+Several live devices at one public address and no better match refuse the session (`initiator_ambiguous_same_nat`), unless `ALLOW_SHARED_NAT_INITIATOR` is on. This hits offices where several clients share one public address, also when all of them are approved: a client often sends its request on a new TCP port, so sources 4 and 5 miss, and the session is refused. `ALLOW_SHARED_NAT_INITIATOR` lets such requests through without naming the device that asks. With **Only signed-in RustDesk apps can start sessions** on, only sources 2 and 3 count. In Managed and Locked mode the device must also be approved; a device that still waits for approval can't start a session. In Managed mode, a client that sends a valid sign-in token for a device the server doesn't know is put under **Join requests**, so phones that only control others can be approved too.
 
 A refused `PunchHoleRequest` gets a `PunchHoleResponse` with the failure `ID_NOT_EXIST`, so the stock client says the ID does not exist. That often means the computer that asked isn't allowed, not that the remote ID is missing. The server's log names the reason. [Hardening](/docs/operations/security#limit-who-can-start-sessions) explains the switches for operators.
 
@@ -98,7 +98,7 @@ The console's own links that open a device in an app use `rustdesk://`; see [Lin
 A stock client registers, connects in both directions, runs the remote session itself (screen, input, file transfer, clipboard, chat in the session, audio, terminal, TCP tunnels), signs in with a console account and gets the address book. These need NeoDesk's own client, because a stock client doesn't send what they are built on:
 
 - **Telemetry and hardware inventory**: NeoDesk's client seals them into its heartbeat; the server ignores them in a plain one.
-- **Logo and colours** from **Client app branding**: only NeoDesk's client fetches them. A stock client gets only the `display-name` option.
+- **Logo and colours** from **Client app** under **Settings**, **Branding**: only NeoDesk's client fetches them. A stock client gets only the `display-name` option.
 - **Add a computer, Quick support and Pair with code**: they install or configure NeoDesk's client. A stock client is set up by hand; see [Add a computer](/docs/console/add-a-computer) and [Quick support](/docs/console/quick-support).
 - **Connection mode**: switching a device to incoming-only.
 - **A device token**: the server issues one only when a device joins through one of NeoDesk's own steps, and an account's sign-in proves no device. Without it the device routes stay closed: help requests from the device, chat with an operator outside a session, remote commands, files sent from the console and data loss prevention policies.
@@ -125,7 +125,7 @@ Run this when the upstream watch opens an issue, or when you notice a new releas
 
 ### 1. Client settings
 
-- The config string, the QR code and the four values on the console's **Client setup** still give the new client its ID server, relay (`host:port`), API server (`http://<server-address>:21121`) and key.
+- The config string, the QR code and the four values under **Client setup** on the console's overview, and on the **Manual setup** tab of **Add computers**, still give the new client its ID server, relay (`host:port`), API server (`http://<server-address>:21121`) and key.
 - On phones, the setting `allow-deep-link-server-settings`, or importing the config string, still works.
 - A client with wrong settings stays offline and doesn't fall back to RustDesk's public servers.
 - Check whether the client still applies a `ConfigUpdate` from the NAT test, and note it when it doesn't.

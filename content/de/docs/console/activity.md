@@ -1,22 +1,22 @@
 ---
 title: Aktivität und Audit-Protokoll
-description: Das Audit-Protokoll, die Ereignisse des Servers, die Sicherheitsprüfungen, Berichte und App-Nutzung, und wer sie sehen darf.
+description: Das Audit-Protokoll, die Ereignisse des Servers, die Sicherheitsprüfungen, Berichte, App-Nutzung und Abrechnung, und wer sie sehen darf.
 order: 8
 ---
 
-Die Gruppe **Aktivität** in der Seitenleiste enthält, was die Konsole und der Server aufgezeichnet haben: wer was getan hat, was der Server selbst protokolliert hat, Berichte, die du erstellen und aufbewahren kannst, und welche Apps auf Geräten genutzt werden. **Sicherheit und Protokoll** und **Berichte** stehen oben; **App-Nutzung** und **Abrechenbare Sitzungen** liegen meist unter **Mehr**.
+Der Bereich **Aktivität** in der Seitenleiste enthält, was die Konsole und der Server aufgezeichnet haben: wer was getan hat, was der Server selbst protokolliert hat, welche Sicherheitsprüfungen der Server besteht, Berichte, die du erstellen und aufbewahren kannst, welche Apps auf Geräten genutzt werden, und die Abrechnung. **Audit-Protokoll**, **Sicherheitsprüfungen** und **Berichte** stehen oben; **App-Nutzung** und **Abrechnung** liegen unter **2 weitere anzeigen**.
 
 ## Wer es sehen darf {#who-can-see-it}
 
-**Sicherheit und Protokoll**, **Berichte** und **App-Nutzung** brauchen die Berechtigung, das Audit-Protokoll anzusehen. Standardmäßig hat jede Rolle der Konsole sie: Super-Admin, Serveradministrator, Globaler Administrator, Remote-Operator und Betrachter. **Abrechenbare Sitzungen** braucht die Berechtigung, die Abrechnung anzusehen, die Konten mit den Rollen Super-Admin, Globaler Administrator und Remote-Operator standardmäßig haben. Ein Administrator kann beides ändern und einem Konto ganze Bereiche ausblenden; siehe [Benutzer und Rollen](/docs/people/users-and-roles).
+**Audit-Protokoll**, **Sicherheitsprüfungen**, **Berichte** und **App-Nutzung** brauchen die Berechtigung, das Audit-Protokoll anzusehen. Standardmäßig hat jede Rolle der Konsole sie: Super-Admin, Serveradministrator, Globaler Administrator, Remote-Operator und Betrachter. **Abrechnung** braucht die Berechtigung, die Abrechnung anzusehen, die Konten mit den Rollen Super-Admin, Globaler Administrator und Remote-Operator standardmäßig haben. Ein Administrator kann beides ändern und einem Konto ganze Bereiche ausblenden; siehe [Benutzer und Rollen](/docs/people/users-and-roles).
 
-## Sicherheit und Protokoll {#security-and-audit}
+## Audit-Protokoll {#audit-log alias=security-and-audit,your-sessions}
 
-Die Seite hat fünf Tabs: **Audit-Protokoll**, **Server-Ereignisse**, **Sicherheitsprüfungen**, **Härtung** und **Ihre Sitzungen**. Jeder Tab lädt, wenn du ihn zum ersten Mal öffnest, und die Schaltfläche zum Aktualisieren in der oberen Leiste lädt den offenen Tab neu.
+Die Seite hat zwei Tabs: **Audit-Protokoll** und **Server-Ereignisse**. Jeder Tab lädt, wenn du ihn zum ersten Mal öffnest. Das Audit-Protokoll lädt alle 30 Sekunden neu, solange es auf dem Bildschirm ist, und **Aktualisieren** auf beiden Tabs lädt es sofort.
 
 ![Das Audit-Protokoll mit Anmeldungen und Änderungen an Gerätegruppen](shot:security-audit)
 
-### Audit-Protokoll {#audit-log}
+### Tab Audit-Protokoll {#audit-log-tab}
 
 Jede Aktion, die Personen in dieser Konsole ausgeführt haben: Anmeldungen, Sperren, Genehmigungen und Änderungen an Geräten, Personen und Einstellungen.
 
@@ -39,7 +39,7 @@ Tippe in **Nach Person, Aktion, Gerät oder Details suchen**, um Einträge zu fi
 - **Personen und Rollen**
 - **Einstellungen und Server**
 
-Der Tab lädt die neuesten 2.000 Einträge und zeigt 50 pro Seite. Suche und Filter landen in der Adressleiste, sodass du eine gefilterte Ansicht teilen oder als Lesezeichen speichern kannst. **Aktualisieren** lädt die Einträge neu.
+Der Tab lädt die neuesten 2.000 Einträge und zeigt 50 pro Seite. Suche und Filter landen in der Adressleiste, sodass du eine gefilterte Ansicht teilen oder als Lesezeichen speichern kannst.
 
 Die Konsole ersetzt Passwörter, Secrets, Tokens und Schlüssel in den Details durch drei Sternchen, bevor sie die Einträge speichert. Einträge, die älter als 90 Tage sind, löscht sie.
 
@@ -51,7 +51,13 @@ Ereignisse, die der Server selbst aufzeichnet, 25 pro Seite. **Anzeigen** grenzt
 
 Der Server speichert diese Ereignisse in seiner Datenbank und löscht sie nach 90 Tagen, sie bleiben also über Neustarts erhalten. Über der Tabelle zeigt ein Diagramm die Ereignisse pro Tag für die letzten 14 Tage, sobald die Ereignisse so weit zurückreichen; bis dahin sagt ein Satz, welchen Zeitraum sie abdecken.
 
-### Sicherheitsprüfungen {#security-checks}
+Deine eigenen Anmeldungen an der Konsole stehen auf [Ihr Konto](/docs/people/your-account) unter **Angemeldete Geräte**.
+
+## Sicherheitsprüfungen {#security-checks}
+
+Die Seite hat zwei Tabs: **Sicherheitsprüfungen** und **Härtung**. Jeder lädt, wenn du ihn zum ersten Mal öffnest.
+
+### Tab Sicherheitsprüfungen {#security-checks-tab}
 
 Eine Liste von Prüfungen, jeweils **Bestanden** oder **Nicht bestanden**, und bei einer nicht bestandenen Prüfung, was zu tun ist:
 
@@ -71,13 +77,9 @@ Unter den Prüfungen stehen die Zahlen, auf denen sie beruhen, und ob jede Serve
 Die Härtungseinstellungen, mit denen dieser Server läuft, aus seiner Konfiguration gelesen, jeweils mit **An** oder **Aus**, Schweregrad und Bereich. Es gibt zwei:
 
 - **Panel Idle and Absolute Session Timeout** ist immer an. Der Eintrag sagt, nach wie vielen Minuten ohne Anfrage und wie viele Minuten nach der Anmeldung eine Sitzung in der Konsole endet (`SESSION_IDLE_TIMEOUT`, `SESSION_MAX_AGE`).
-- **Concurrent Panel Session Limit per Account** ist an, solange `SESSION_MAX_PER_USER` größer als 0 ist, und nennt das aktuelle Limit. Eine neue Anmeldung beendet dann die Sitzungen eines Kontos, die über das Limit hinausgehen, und zwar die, die am längsten nicht genutzt wurden.
+- **Concurrent Panel Session Limit per Account** ist an, solange es eine Grenze für Sitzungen pro Konto gibt, und nennt sie. Die Grenze kommt aus `SESSION_MAX_PER_USER`, wenn das gesetzt ist, sonst aus **Eine Sitzung pro Konto** unter **Einstellungen**, **Anmeldung**. Eine neue Anmeldung beendet dann die Sitzungen des Kontos, die über die Grenze hinausgehen, und zwar die, die am längsten nicht genutzt wurden.
 
 Wie du sie änderst, steht in [Konsole, Sitzungen und Logs](/docs/operations/configuration#console-sessions-and-logs).
-
-### Ihre Sitzungen {#your-sessions}
-
-Deine eigenen Anmeldungen an dieser Konsole: ob jede aktiv ist, die Adresse, wann sie begann, die letzte Aktivität, wann und warum sie endete, und der Browser. Standardmäßig kann jedes Konto eine aktive Sitzung haben, und eine neue Anmeldung beendet die vorherige; `SESSION_MAX_PER_USER` ändert das Limit. Eine Zeile über der Tabelle sagt, nach wie vielen Minuten ohne Aktivität und nach wie vielen Stunden spätestens eine Sitzung endet.
 
 ## Berichte {#reports}
 
@@ -113,8 +115,10 @@ Die Seitenspalte zählt die Berichte zusammen: **Aktive und inaktive Zeit** sagt
 
 Die Konsole löscht Daten zur App-Nutzung, die älter als 90 Tage sind.
 
-## Abrechenbare Sitzungen {#billable-sessions}
+## Abrechnung {#billing alias=billable-sessions}
 
-**Abrechenbare Sitzungen** listet die Remote-Sitzungen, die auf Supportpakete angerechnet werden: die Sitzungen, die noch auf einen Arbeitsbericht warten, wie viel der enthaltenen Zeit jede Paketzuweisung in diesem Monat verbraucht hat, und jede Sitzung mit Filtern für Organisation, Status und Gerät. Die Seite gehört zu den Abrechnungsfunktionen und erscheint nur für Konten, die die Abrechnung ansehen dürfen.
+**Abrechnung** enthält die Abrechnungsfunktionen und erscheint nur für Konten, die die Abrechnung ansehen dürfen. Die Seite hat drei Tabs: **Pakete**, **Sitzungen** und **Berichte**.
+
+**Sitzungen** listet die Remote-Sitzungen, die auf Supportpakete angerechnet werden: die Sitzungen, die noch auf einen Arbeitsbericht warten, wie viel der enthaltenen Zeit jede Paketzuweisung in diesem Monat verbraucht hat, und jede Sitzung mit Filtern für Organisation, Status und Gerät. Der Tab lädt alle 30 Sekunden neu, solange er auf dem Bildschirm ist.
 
 Eine beendete Sitzung wartet nur dann auf einen Arbeitsbericht, wenn der Server mit `BILLING_REQUIRE_WORK_REPORT=Y` läuft; ohne diese Einstellung wird eine Sitzung abgeschlossen, sobald sie endet. Jede Sitzung wird auf ganze Minutenblöcke aufgerundet: `BILLING_ROUNDING_MINUTES` legt die Blockgröße fest, standardmäßig 1, und der Vertrag eines Pakets kann eine eigene festlegen.

@@ -75,8 +75,8 @@ MeshAgent-Geräte sowie RDP- und VNC-Hosts in einer Geräteliste haben willst.
   [RDP- und VNC-Hosts](/docs/console/remote-targets) stehen unter **Geräte**
   nebeneinander.
 - **Freigabe für jeden Agenten.** Ein neuer MeshAgent wartet immer unter
-  **Registrierungsanfragen**, bis ihn jemand genehmigt, egal in welchem
-  [Registrierungsmodus](/docs/console/enrollment).
+  **Beitrittsanfragen**, bis ihn jemand genehmigt, egal in welchem
+  [Beitrittsmodus](/docs/console/enrollment).
 - **Hilfe für einen Computer, der nicht eingerichtet ist.** Die
   [Schnellhilfe](/docs/console/quick-support) erstellt einen Link, der einmal
   für eine Stunde gilt. Die Person lädt eine kleine App, klickt auf
@@ -101,11 +101,11 @@ lässt ihn auf NeoDesk zeigen. Die Schritte stehen unter
 1. Mach die Konsole über HTTPS erreichbar, unter der Adresse, die die Agenten
    nutzen werden: hinter einem [Reverse Proxy mit TLS](/docs/operations/reverse-proxy-tls)
    oder mit dem eigenen HTTPS der Konsole.
-2. Öffne unter **Einstellungen**, **Allgemein**, **MeshCentral-Kompatibilität**
+2. Öffne unter **Einstellungen**, **MeshCentral**, **MeshCentral-Kompatibilität**
    den Punkt **MeshAgent auf einem Gerät installieren** und lade die .msh-Datei
    herunter. Prüfe ihre Zeile `MeshServer=`.
 3. Installiere den MeshAgent auf jedem Gerät mit dieser .msh-Datei.
-4. Genehmige jeden Agenten unter **Registrierungsanfragen**.
+4. Genehmige jeden Agenten unter **Beitrittsanfragen**.
 
 NeoDesk übernimmt nichts aus MeshCentral: Benutzer, Gruppen und Anmeldung
 richtest du in der Konsole neu ein. Aufzeichnungen und Ereignisse bleiben bei

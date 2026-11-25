@@ -14,19 +14,16 @@ geht die Einrichtung durch, mit einem Link in die Doku für jeden Schritt.
 
 ## Mit den Konten der Firma anmelden {#sign-in-with-the-companys-accounts}
 
-Öffne **Einstellungen**, **Anmeldung**. Unter **Für alle** findest du zwei
-Wege, dein Verzeichnis anzubinden:
+**Einstellungen** hat zwei Tabs, um dein Verzeichnis anzubinden:
 
-- **LDAP / Active Directory**: Die Leute melden sich mit Benutzernamen und
+- **Verzeichnis (LDAP)**: Die Leute melden sich mit Benutzernamen und
   Passwort aus dem Verzeichnis an. Ihr Konto entsteht bei der ersten
   Anmeldung, und ihre Rolle kommt bei jeder Anmeldung aus ihren
   Verzeichnisgruppen. Siehe [LDAP und Active Directory](/docs/people/ldap).
-- **OIDC / OAuth2 (SSO)**: Die Anmeldeseite bekommt eine Schaltfläche, die zu
+- **Single Sign-on**: Die Anmeldeseite bekommt eine Schaltfläche, die zu
   deinem Identity Provider führt, etwa Keycloak, Okta, Azure AD oder Google.
   Rollen können aus den Gruppen kommen, die der Provider schickt. Siehe
   [Single Sign-on mit OIDC](/docs/people/oidc).
-
-![Die Einstellungsseite Anmeldung mit den Bereichen Passwort und Zwei-Faktor-Anmeldung](shot:settings-auth)
 
 Beides funktioniert auch im normalen RustDesk-Client: Die Leute melden sich
 dort mit demselben Konto an und bekommen ihr Adressbuch.
@@ -74,13 +71,13 @@ unbeaufsichtigten Zugriff setzen. Für den NeoDesk-Client erstellst du unter
 funktioniert. Siehe
 [Viele Computer auf einmal einrichten](/docs/getting-started/connect-a-client/many-computers).
 
-Neue Installationen starten im Registrierungsmodus **Verwaltet**: Ein neuer
-RustDesk-Client wartet unter **Registrierungsanfragen**, bis ihn jemand aus der
+Neue Installationen starten im Beitrittsmodus **Verwaltet**: Ein neuer
+RustDesk-Client wartet unter **Beitrittsanfragen**, bis ihn jemand aus der
 IT genehmigt. Ein Computer kommt also nicht schon deshalb herein, weil er die
 Adresse des Servers kennt. Computer, die über einen Einladungslink kommen,
-sind sofort genehmigt. Siehe [Registrierung](/docs/console/enrollment).
+sind sofort genehmigt. Siehe [Beitrittsanfragen](/docs/console/enrollment).
 
-![Registrierungsanfragen mit zehn wartenden Geräten und dem Registrierungsmodus rechts](shot:registrations)
+![Beitrittsanfragen mit zehn wartenden Geräten und dem Beitrittsmodus rechts](shot:registrations)
 
 ## Einem Kollegen helfen {#help-a-colleague}
 
@@ -96,7 +93,7 @@ Stunde, und installiert wird nichts.
 
 ## Sehen, wer was getan hat {#see-who-did-what}
 
-Unter **Aktivität**, **Sicherheit und Protokoll** liegt das Audit-Protokoll:
+Unter **Aktivität**, **Audit-Protokoll** liegt das Audit-Protokoll:
 jede Anmeldung, Sperre, Genehmigung und Änderung an Geräten, Personen und
 Einstellungen, mit Konto, Zeit und Adresse. Filtere es nach Art, oder such
 nach einer Person oder einem Gerät. Der Server hält diese Einträge 90 Tage;

@@ -9,7 +9,7 @@ NeoDesk speaks the protocol of MeshAgent, the agent of MeshCentral. A computer w
 
 ## The MeshCentral layer
 
-The layer is on unless the server starts with `MESH_ENABLED=N`, see [Configuration](/docs/operations/configuration). Its settings are under **Settings**, **General**, in the section **MeshCentral compatibility**, for accounts that may change server settings. The section shows:
+The layer is on unless the server starts with `MESH_ENABLED=N`, see [Configuration](/docs/operations/configuration). Its settings are under **Settings**, **MeshCentral**, in the section **MeshCentral compatibility**, for accounts that may change server settings. The section shows:
 
 | Row | What it shows |
 |---|---|
@@ -26,9 +26,9 @@ Agents connect to the console's own address, at `/agent.ashx`, over HTTPS. The c
 2. Enter the **Name in the .msh file**, the name MeshAgent shows for the server, and click **Download MeshAgent .msh**. This file is for the group with the ID `default`. For another group, use **Download .msh file** in that group's row under **Mesh groups**.
 3. Open the file, `meshagents.msh`, in a text editor and check the `MeshServer=` line. It names the console's public address (`PANEL_PUBLIC_URL` or `PANEL_PUBLIC_HOST`), or the address you opened the console under when neither is set. It has to be `wss://`, the address under which agents reach the console over HTTPS (with the port if it isn't 443), and `/agent.ashx`, for example `MeshServer=wss://desk.example.com/agent.ashx`. Correct the line when it shows another address, such as `127.0.0.1`.
 4. Install the unmodified MeshAgent on the device together with the .msh file.
-5. The agent asks to join and waits under [Enrollment requests](/docs/console/enrollment), where **Came in via** says **Mesh agent**. Approve it. The agent comes in at its next connection and shows as online.
+5. The agent asks to join and waits under [Join requests](/docs/console/enrollment), where **Came in via** says **Mesh agent**. Approve it. The agent comes in at its next connection and shows as online.
 
-Every new agent waits for approval, whatever the enrollment mode. While 500 requests wait, the server takes no new ones from agents. A rejected, banned or deleted agent is refused, and so is an agent whose .msh file belongs to no group; the log then shows `[mesh] agent from <address> refused: unknown mesh id`.
+Every new agent waits for approval, whatever the join mode. While 500 requests wait, the server takes no new ones from agents. A rejected, banned or deleted agent is refused, and so is an agent whose .msh file belongs to no group; the log then shows `[mesh] agent from <address> refused: unknown mesh id`.
 
 ## Mesh groups
 

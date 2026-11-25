@@ -126,14 +126,14 @@ docker exec -u neodesk neodesk cat /opt/neodesk/data/id_ed25519.pub
 
 ## Die Clients wieder hereinlassen {#let-the-clients-back-in}
 
-Eine neue Installation startet im Registrierungsmodus **Verwaltet**. Für
+Eine neue Installation startet im Beitrittsmodus **Verwaltet**. Für
 NeoDesk sind deine RustDesk-Clients neue Geräte, also wartet jedes unter
-**Geräte**, **Registrierungsanfragen**, bis jemand es genehmigt. Bis dahin kann
+**Geräte**, **Beitrittsanfragen**, bis jemand es genehmigt. Bis dahin kann
 es niemand erreichen, und es kann keine Sitzung starten.
 
 Es gibt zwei Wege, die Clients hereinzulassen:
 
-- Genehmige jedes Gerät unter **Registrierungsanfragen**.
+- Genehmige jedes Gerät unter **Beitrittsanfragen**.
 - Stelle auf **Offen** um, solange die Clients zurückkommen, und danach wieder
   auf **Verwaltet**. Wartende Geräte verbinden sich beim nächsten Versuch, und
   ein Gerät, das der Server kennt, kann sich in jedem Modus neu registrieren.

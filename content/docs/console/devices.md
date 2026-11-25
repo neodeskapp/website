@@ -17,7 +17,7 @@ To get a client onto a new computer, click **Add a computer** above the list: it
 
 Type into **Search by ID, name, user or tag**. The search looks through the ID, the display name, the hostname, the user, the platform, the type, the tags, the note and the IP address. Every word you type has to appear somewhere, in any order. Case doesn't matter.
 
-You can also find a device from the top bar. **Search pages, devices and people** (Ctrl K) lists matching devices, and choosing one opens the device list filtered to that device, with its panel open.
+You can also find a device from the top bar. **Search pages, settings, devices and people** (Ctrl K) lists matching devices, and choosing one opens the device list filtered to that device, with its panel open.
 
 ## Status filters
 
@@ -77,7 +77,7 @@ Groups are a second way to organize devices, listed below the folders. A group i
 
 To put a device into a group by hand, drag its row onto the group, or use **Manage groups** in the row menu. A device can be in only one group you fill by hand. Dropping it on another group moves it there, and ticking two groups in **Manage groups** fails with "A device can belong to only one group". Dynamic groups don't take dropped devices: change the device's tags instead.
 
-The group menu has **Edit** and **Delete**, and **Commercialization** for accounts that manage billing, to give the group a support package.
+The group menu has **Edit** and **Delete**, and **Billing** for accounts that manage billing, to give the group a support package.
 
 ## Tags
 

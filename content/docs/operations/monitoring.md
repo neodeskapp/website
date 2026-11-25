@@ -45,7 +45,7 @@ scrape_configs:
 
 In Docker the port is 21121. On Linux and Windows the installers don't open 21114 in the firewall, so allow it from the Prometheus server only.
 
-For a look by hand from the server itself, send the server API key, which **Settings**, **Client setup** shows under **For scripts** after **Show whole key**, for Super admin and Administrator accounts. With the key in `NEODESK_API_KEY`:
+For a look by hand from the server itself, send the server API key, which **Devices**, **Add computers**, **Manual setup** shows under **For scripts** after **Show whole key**, for Super admin and Administrator accounts. With the key in `NEODESK_API_KEY`:
 
 ```bash
 curl -H "X-API-Key: $NEODESK_API_KEY" http://127.0.0.1:21114/metrics
@@ -81,7 +81,7 @@ The console and the server keep separate audit records, both in the database:
 - The console's audit log: what people did in the console, such as sign-ins, approvals and changes to devices, people and settings.
 - The server's events: sign-ins to the API, failed sign-ins, bans, blocked addresses, configuration changes and refused connections. Each one also goes to the log as a line with `[audit]`, with passwords, secrets, tokens and keys in its details hidden.
 
-Both show under **Activity**, **Security and audit**; see [Activity and audit log](/docs/console/activity#security-and-audit). Scripts read the server's events from `/api/audit/events` on the API port, with `limit`, `offset` and `action` in the query, as an account or API key that may view audit logs.
+Both show under **Activity**, **Audit log**; see [Activity and audit log](/docs/console/activity#audit-log). Scripts read the server's events from `/api/audit/events` on the API port, with `limit`, `offset` and `action` in the query, as an account or API key that may view audit logs.
 
 With `AUDIT_LOG_FILE`, the server also appends each of its events to that file, one JSON object per line with `timestamp`, `action`, `actor`, `target` and `details`. Only the server's own account may read the file. The server keeps the file open and never shortens it, so rotate it with a tool that truncates in place, such as logrotate's `copytruncate`.
 
@@ -97,7 +97,7 @@ Once an hour the server deletes what is older than these limits:
 | Connection sessions | 90 days |
 | Alert history, remote commands, app usage, data loss prevention events and network checks | 90 days |
 | Device metrics (CPU, memory, disk) | 7 days |
-| Enrollment requests nobody answered | 30 days |
-| Availability history, when it is on | 30 days, or what **Keep history for (days)** under **Settings**, **General**, **Availability history** says |
+| Join requests nobody answered | 30 days |
+| Availability history, when it is on | 30 days, or what **Keep history for (days)** under **Settings**, **Joining**, **Availability history** says |
 
 Only the availability history can be changed. The log and the `AUDIT_LOG_FILE` file are not pruned by the server.

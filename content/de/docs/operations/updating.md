@@ -161,14 +161,14 @@ Es läuft wie das Update unter Linux ab: ein Backup nach `C:\NeoDesk-Backups`, d
 
 ## Die Seite „Updates“ in der Konsole {#the-updates-page-in-the-console}
 
-**Einstellungen**, **Updates** fragt GitHub nach einem neueren Release und kann es installieren.
+**Server**, **Updates** fragt GitHub nach einem neueren Release und kann es installieren.
 
 Was die Seite tut:
 
 - **Jetzt prüfen** sucht das neueste Release des Update-Kanals in neodeskapp/neodesk oder in dem Repository, das `UPDATE_GITHUB_OWNER` und `UPDATE_GITHUB_REPO` nennen. Solange es kein stabiles Release gibt, nimmt Stabil das neueste Pre-Release, wie die Installer. Die Seitenspalte zeigt den Kanal und das Repository, das die Seite fragt.
 - **Install Update** lädt bei einer Installation unter Linux oder Windows das Binary dieses Releases für diesen Rechner in den Datenordner und prüft seine Größe, seinen SHA-256-Hash und die Release-Signatur. Dann startet es das Binary, um seine Version und seinen Commit mit dem Release zu vergleichen. Ist **Vor dem Update eine Sicherung erstellen** angehakt, speichert es das laufende Binary und ein vollständiges Backup der Daten. Danach setzt es das neue Binary ein und behält das alte als `neodesk-server.prev`, und der Dienst startet das neue. Wird das neue Binary innerhalb von drei Starts nicht bereit, legt der vierte Start das alte zurück, und die Seite zeigt das gescheiterte Update.
 - **Update-Kanal** wählt **Stabil** oder **Entwicklung**. Die Wahl wird als `UPDATE_GITHUB_BRANCH` in der env-Datei gespeichert.
-- **Sicherungen vor Updates** listet die Backups auf, die jede Installation angelegt hat, mit **Diese Dateien wiederherstellen**, um das jeweilige Binary zurückzulegen.
+- **Sicherungen vor Updates** unter **Server**, **Sicherungen** listet die Backups auf, die jede Installation angelegt hat, mit **Diese Dateien wiederherstellen**, um das jeweilige Binary zurückzulegen. **Update-Sicherungen behalten** auf derselben Seite legt fest, wie viele es behält.
 
 Release-Signaturen: Der Release-Schlüssel ist in den Server eingebaut. Ein Release ohne gültige Signatur wird abgelehnt. `UPDATE_MANIFEST_PUBLIC_KEY` fügt weitere Schlüssel hinzu, etwa für die eigenen Releases eines Forks.
 
@@ -182,7 +182,7 @@ Was die Seite nicht kann:
 
 ## Die Version prüfen {#check-the-version}
 
-- In der Konsole: **Einstellungen**, **Updates** zeigt **Installierte Version**, und **Einstellungen**, **Allgemein** zeigt **Serverversion** unter **Serverinformationen**.
+- In der Konsole: **Server**, **Updates** zeigt **Installierte Version**, und **Einstellungen**, **Allgemein** zeigt **Serverversion** unter **Serverinformationen**.
 - Das Binary gibt sie aus. Unter Docker:
 
   ```bash

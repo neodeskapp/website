@@ -170,4 +170,4 @@ sudo -u postgres pg_restore -d neodesk --clean --if-exists < neodesk-db.dump
 sudo systemctl start neodesk-server
 ```
 
-**Sicherung herunterladen** unter **Einstellungen**, **Sicherung** enthält auch unter PostgreSQL jede Tabelle, als Dump, den die Konsole wiederherstellen kann, zusammen mit den Schlüsseln und Dateien. Für die Datenbank selbst verlass dich auf `pg_dump`.
+**Sicherung herunterladen** unter **Server**, **Sicherungen** enthält auch unter PostgreSQL jede Tabelle, als Dump, den die Konsole wiederherstellen kann, zusammen mit den Schlüsseln und Dateien. Für die Datenbank selbst verlass dich auf `pg_dump`.

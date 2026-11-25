@@ -159,7 +159,7 @@ The [bridges README](https://github.com/neodeskapp/neodesk/blob/main/bridges/REA
 
 ## The flow builder
 
-The console's **Flow builder (SDK)** page, at `/cdap-studio`, is an editor for data flows. The sidebar shows it to the operator role and to super admins.
+The console's **Flow builder** page, at `/cdap-studio`, is an editor for data flows. The sidebar shows it under **Settings**, **Developer tools**, to the operator role and to super admins.
 
 - **Nodes**: you drag nodes from three groups onto the canvas and connect them. **Sources**: Modbus TCP, Modbus RTU, SNMP Poll, REST Poll, MQTT Subscribe, Webhook, Device Telemetry, Database Query, File Watch. **Processing**: Filter, Transform, Aggregate, Delay, Debounce, Switch, Merge, Script. **Outputs**: Widget Update, Alert, Command, Log, REST Call, MQTT Publish, Database Write, Email, Modbus Write. **Node settings** holds each node's settings.
 - **Saving**: **Save flow** stores the flow on the server. Each flow belongs to the account that made it; super admins see and change all of them. **Open flow** lists the saved ones.

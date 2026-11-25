@@ -426,14 +426,14 @@ The container has the restart policy `unless-stopped`: it comes back after a
 reboot of the host unless you stopped it.
 
 The first lines of the log show the version, the database and the relay address.
-On the first start they also show the enrollment mode.
+On the first start they also show the join mode.
 
-## Enrollment mode
+## Join mode {#enrollment-mode}
 
-On a new data volume the container starts in the **Managed** enrollment mode. A
-RustDesk client that connects for the first time waits under **Enrollment
+On a new data volume the container starts in the **Managed** join mode. A
+RustDesk client that connects for the first time waits under **Join
 requests** until someone approves it. You can change the mode in the console, see
-[Enrollment](/docs/console/enrollment). The mode you pick there stays after a
+[Join requests](/docs/console/enrollment). The mode you pick there stays after a
 restart.
 
 `ENROLLMENT_MODE=open`, `managed` or `locked` in `.env` only sets the mode the

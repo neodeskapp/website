@@ -1,23 +1,23 @@
 ---
 title: Activity and audit log
-description: The audit log, the server's own events, the security checks, reports and app usage, and who can see them.
+description: The audit log, the server's own events, the security checks, reports, app usage and billing, and who can see them.
 order: 8
 icon: history
 ---
 
-The **Activity** group in the sidebar holds what the console and the server recorded: who did what, what the server logged itself, reports you can generate and keep, and which apps are used on devices. **Security and audit** and **Reports** are listed first; **App usage** and **Billable sessions** usually sit under **More**.
+The **Activity** section in the sidebar holds what the console and the server recorded: who did what, what the server logged itself, which security checks the server passes, reports you can generate and keep, which apps are used on devices, and billing. **Audit log**, **Security checks** and **Reports** are listed first; **App usage** and **Billing** sit under **Show 2 more**.
 
 ## Who can see it
 
-**Security and audit**, **Reports** and **App usage** need permission to view the audit log. By default every console role has it: Super admin, Server admin, Global admin, Remote operator and Viewer. **Billable sessions** needs permission to view billing, which Super admin, Global admin and Remote operator accounts have by default. An administrator can change both, and can hide whole sections from an account; see [Users and roles](/docs/people/users-and-roles).
+**Audit log**, **Security checks**, **Reports** and **App usage** need permission to view the audit log. By default every console role has it: Super admin, Server admin, Global admin, Remote operator and Viewer. **Billing** needs permission to view billing, which Super admin, Global admin and Remote operator accounts have by default. An administrator can change both, and can hide whole sections from an account; see [Users and roles](/docs/people/users-and-roles).
 
-## Security and audit
+## Audit log {alias=security-and-audit,your-sessions}
 
-The page has five tabs: **Audit log**, **Server events**, **Security checks**, **Hardening** and **Your sessions**. Each tab loads when you first open it, and the refresh button in the top bar loads the open tab again.
+The page has two tabs: **Audit log** and **Server events**. Each tab loads when you first open it. The audit log loads again every 30 seconds while it is on screen, and **Refresh** on either tab loads it at once.
 
 ![The audit log with sign-ins and device group changes](shot:security-audit)
 
-### Audit log
+### Audit log tab
 
 Every action people took in this console: sign-ins, bans, approvals, and changes to devices, people and settings.
 
@@ -40,7 +40,7 @@ Type into **Search by person, action, device or details** to find entries, or na
 - **People and roles**
 - **Settings and server**
 
-The tab loads the newest 2,000 entries and shows 50 per page. The search and the filter go into the address bar, so you can share or bookmark a filtered view. **Refresh** loads the entries again.
+The tab loads the newest 2,000 entries and shows 50 per page. The search and the filter go into the address bar, so you can share or bookmark a filtered view.
 
 The console replaces passwords, secrets, tokens and keys in the details with three stars before it stores them. It deletes entries older than 90 days.
 
@@ -52,7 +52,13 @@ Events the server records itself, 25 per page. **Show** narrows them to one kind
 
 The server keeps these events in its database and deletes them after 90 days, so they stay across restarts. Above the table, a chart shows events per day for the last 14 days once the events reach back that far; until then one sentence says which range they cover.
 
-### Security checks
+Your own sign-ins to the console are on [Your account](/docs/people/your-account), under **Signed-in devices**.
+
+## Security checks
+
+The page has two tabs: **Security checks** and **Hardening**. Each loads when you first open it.
+
+### Security checks tab
 
 A list of checks, each **Passed** or **Failed**, with what to do about a failed one:
 
@@ -72,13 +78,9 @@ Under the checks are the numbers behind them and whether each server connection 
 The hardening settings this server runs with, read from its configuration, each marked **On** or **Off** with its severity and area. There are two:
 
 - **Panel Idle and Absolute Session Timeout** is always on. It says after how many minutes without a request, and how many minutes after sign-in, a console session ends (`SESSION_IDLE_TIMEOUT`, `SESSION_MAX_AGE`).
-- **Concurrent Panel Session Limit per Account** is on while `SESSION_MAX_PER_USER` is above 0, and names the current limit. A new sign-in then ends an account's least recently active sessions beyond it.
+- **Concurrent Panel Session Limit per Account** is on while there is a limit of sessions per account, and names it. The limit comes from `SESSION_MAX_PER_USER` when that is set, else from **One session per account** under **Settings**, **Sign-in**. A new sign-in then ends the account's least recently used sessions beyond it.
 
 See [Console, sessions and logs](/docs/operations/configuration#console-sessions-and-logs) to change them.
-
-### Your sessions
-
-Your own sign-ins to this console: whether each is active, the address, when it started, the last activity, when and why it ended, and the browser. By default each account can have one active session, and signing in again ends the previous one; `SESSION_MAX_PER_USER` changes the limit. A line above the table says after how many minutes without activity and how many hours at most a session ends.
 
 ## Reports
 
@@ -114,8 +116,10 @@ The side column adds the reports up: **Active and idle time** says how much of t
 
 The console deletes app usage data older than 90 days.
 
-## Billable sessions
+## Billing {alias=billable-sessions}
 
-**Billable sessions** lists the remote sessions counted against support packages: the sessions that still wait for a work report, how much included time each package assignment has used this month, and every session with filters for organization, status and device. It is part of the billing features and only shows for accounts that may view billing.
+**Billing** holds the billing features and shows only for accounts that may view billing. It has three tabs: **Packages**, **Sessions** and **Reports**.
+
+**Sessions** lists the remote sessions counted against support packages: the sessions that still wait for a work report, how much included time each package assignment has used this month, and every session with filters for organization, status and device. It loads again every 30 seconds while it is on screen.
 
 An ended session waits for a work report only when the server runs with `BILLING_REQUIRE_WORK_REPORT=Y`; without it, a session is closed when it ends. Each session is rounded up to whole blocks of minutes: `BILLING_ROUNDING_MINUTES` sets the block, 1 by default, and a package's contract can set its own.

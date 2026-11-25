@@ -45,7 +45,7 @@ With `PANEL_MDNS` set to on, the console also announces itself over mDNS (UDP po
 
 ### Updates
 
-When someone opens **Settings**, **Updates**, and when they click **Check for updates**, the console asks GitHub's API (api.github.com) for the releases of neodeskapp/neodesk, or of the repository that `UPDATE_GITHUB_OWNER` and `UPDATE_GITHUB_REPO` name. It keeps the answers for two minutes. **Install** downloads the release from github.com and GitHub's file hosts.
+When someone opens **Server**, **Updates**, and when they click **Check for updates**, the console asks GitHub's API (api.github.com) for the releases of neodeskapp/neodesk, or of the repository that `UPDATE_GITHUB_OWNER` and `UPDATE_GITHUB_REPO` name. It keeps the answers for two minutes. **Install** downloads the release from github.com and GitHub's file hosts.
 
 The requests carry the user agent `NeoDesk-Console/<version>` and no ID of your install. GitHub sees the server's IP address, as with any download. A token in `UPDATE_GITHUB_TOKEN` or `GITHUB_TOKEN` goes to api.github.com only. See [Updating](/docs/operations/updating#the-updates-page-in-the-console).
 
@@ -55,7 +55,7 @@ An invite link from **Add a computer** or **Quick support** opens a page with th
 
 ### Support agents
 
-**Import latest release** on the **Support agents** page downloads the newest signed release of the support agent from neodeskapp/neodesk-client on GitHub, or from the repository `NEODESK_SUPPORT_RELEASE_REPO` names. Nothing is fetched until someone clicks it.
+**Import latest release** on the **Support agents** tab of **Devices**, **Add computers** downloads the newest signed release of the support agent from neodeskapp/neodesk-client on GitHub, or from the repository `NEODESK_SUPPORT_RELEASE_REPO` names. Nothing is fetched until someone clicks it.
 
 ### Mail
 

@@ -62,7 +62,7 @@ The releases hold these three and `linux/amd64`.
 neodesk-server {{VERSION}} (built unknown)
 ```
 
-A plain build takes its version from `neodesk-server/internal/productversion/VERSION` and knows neither its build time nor its commit. The console's **Updates** page offers no update to a binary without a commit (see [Updating](/docs/operations/updating)). The release workflow sets all three; to do the same, run in `neodesk-server`:
+A plain build takes its version from `neodesk-server/internal/productversion/VERSION` and knows neither its build time nor its commit. The console's **Updates** page under **Server** offers no update to a binary without a commit (see [Updating](/docs/operations/updating)). The release workflow sets all three; to do the same, run in `neodesk-server`:
 
 ```bash
 CGO_ENABLED=0 go build -trimpath \

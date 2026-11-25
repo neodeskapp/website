@@ -98,7 +98,7 @@ und keine Servereinstellungen. Dann legst du fest, welche Geräte er sieht:
 1. Leg die Computer jedes Kunden in einen eigenen Ordner.
 2. Gib dem Techniker diesen Ordner unter **Gerätezugriff**, oder nimm mehrere
    Techniker in eine Benutzergruppe und lass die Gruppe im Ordner zu.
-3. Setze unter **Einstellungen**, **Allgemein** die
+3. Setze unter **Einstellungen**, **Beitritt** die
    **Standard-Sichtbarkeit von Geräten** auf **Eingeschränkt**, damit jeder nur
    die Geräte sieht, die ihm zugewiesen sind.
 
@@ -116,9 +116,9 @@ und an einem RustDesk-Gerät hat der Gast volle Kontrolle. Siehe
 
 ## Den Überblick behalten und abrechnen {#keep-track-and-bill-the-work}
 
-Das **Audit-Protokoll** unter **Aktivität**, **Sicherheit und Protokoll**
+Das **Audit-Protokoll** unter **Aktivität**
 hält fest, wer sich angemeldet, etwas genehmigt, gesperrt oder geändert hat,
-mit Zeit und Adresse. **Abrechenbare Sitzungen** listet die Remote-Sitzungen,
+mit Zeit und Adresse. Der Tab **Sitzungen** unter **Aktivität**, **Abrechnung** listet die Remote-Sitzungen,
 die auf das Supportpaket eines Kunden zählen, mit einem Filter pro
 Organisation, und, wenn du Arbeitsberichte verlangst, die Sitzungen, die noch
 auf einen warten. Siehe [Aktivität und Audit-Protokoll](/docs/console/activity).

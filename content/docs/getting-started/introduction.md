@@ -19,7 +19,7 @@ open-source server does this with two programs, hbbs and hbbr. NeoDesk does
 the same work and adds:
 
 - the API that the RustDesk client uses to sign in and to sync its address book
-- a web console with the device list, enrollment requests, users and roles, an
+- a web console with the device list, join requests, users and roles, an
   activity log and remote desktop in the browser
 - sign-in to the console with two-factor codes, LDAP or Active Directory, or OIDC
 

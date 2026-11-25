@@ -171,4 +171,4 @@ sudo -u postgres pg_restore -d neodesk --clean --if-exists < neodesk-db.dump
 sudo systemctl start neodesk-server
 ```
 
-The console's **Download backup** under **Settings**, **Backup** also holds every table on PostgreSQL, as a dump the console can restore, together with the keys and files. For the database itself, rely on `pg_dump`.
+The console's **Download backup** under **Server**, **Backups** also holds every table on PostgreSQL, as a dump the console can restore, together with the keys and files. For the database itself, rely on `pg_dump`.

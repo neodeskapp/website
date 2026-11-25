@@ -67,7 +67,7 @@ Ein normaler Client übernimmt diese Optionen aus der einfachen Antwort auf den 
 - `HttpProxyRequest` wird nur für einen Pfad unter `/api/` mit GET, POST, PUT, PATCH oder DELETE beantwortet, und nur von der eigenen API dieses Servers; der ID-Server schickt nichts an einen anderen Host weiter. Jede andere Anfrage bekommt eine `HttpProxyResponse` mit einem Fehler, ebenso eine Antwort, deren Inhalt größer als 60 KiB ist.
 - `IceCandidate` wird nur zwischen den beiden Enden eines Hole Punchings weitergereicht, das der Server gestartet hat.
 - Ein `FetchLocalAddr`, das von einem Client kommt, wird verworfen: Nur der Server schickt diese Nachricht.
-- Ein neues Gerät, das der Registrierungsmodus abweist, bekommt `RegisterPkResponse` mit `NOT_DEPLOYED`.
+- Ein neues Gerät, das der Beitrittsmodus abweist, bekommt `RegisterPkResponse` mit `NOT_DEPLOYED`.
 - Eine bekannte ID ist an die UUID und den Schlüssel gebunden, mit denen sie sich registriert hat. Ein `RegisterPk` mit einer anderen UUID bekommt `UUID_MISMATCH`, eins mit einem anderen Schlüssel `NOT_SUPPORT`.
 
 ### Wer eine Sitzung starten darf {#who-may-start-a-session}
@@ -80,9 +80,9 @@ Der ID-Server entscheidet bei jedem `PunchHoleRequest` und `RequestRelay`, welch
 4. Ein registriertes Gerät hat genau diese Adresse und diesen Port.
 5. Der `udp_port` in der Anfrage passt zu genau einem aktiven Gerät an dieser öffentlichen Adresse.
 6. Genau ein aktives Gerät hat diese öffentliche Adresse.
-7. `ALLOW_LEGACY_OUTBOUND` ist eingeschaltet und der Registrierungsmodus ist Offen: Eine App, die sich nie registriert hat, bekommt eine vorübergehende Identität und wird über das Relay geleitet.
+7. `ALLOW_LEGACY_OUTBOUND` ist eingeschaltet und der Beitrittsmodus ist Offen: Eine App, die sich nie registriert hat, bekommt eine vorübergehende Identität und wird über das Relay geleitet.
 
-Mehrere aktive Geräte an einer öffentlichen Adresse ohne bessere Übereinstimmung führen zur Ablehnung der Sitzung (`initiator_ambiguous_same_nat`), außer `ALLOW_SHARED_NAT_INITIATOR` ist eingeschaltet. Das trifft Büros, in denen sich mehrere Clients eine öffentliche Adresse teilen, auch wenn alle freigegeben sind: Ein Client schickt seine Anfrage oft über einen neuen TCP-Port, deshalb greifen die Quellen 4 und 5 nicht, und die Sitzung wird abgelehnt. `ALLOW_SHARED_NAT_INITIATOR` lässt solche Anfragen durch, ohne das fragende Gerät zu benennen. Ist **Nur angemeldete RustDesk-Apps können Sitzungen starten** eingeschaltet, zählen nur die Quellen 2 und 3. In den Modi Verwaltet und Gesperrt muss das Gerät außerdem freigegeben sein; ein Gerät, das noch auf Freigabe wartet, kann keine Sitzung starten. Schickt ein Client im Modus Verwaltet einen gültigen Anmelde-Token für ein Gerät, das der Server nicht kennt, landet der Client unter **Registrierungsanfragen**. So lassen sich auch Handys freigeben, die nur andere Geräte steuern.
+Mehrere aktive Geräte an einer öffentlichen Adresse ohne bessere Übereinstimmung führen zur Ablehnung der Sitzung (`initiator_ambiguous_same_nat`), außer `ALLOW_SHARED_NAT_INITIATOR` ist eingeschaltet. Das trifft Büros, in denen sich mehrere Clients eine öffentliche Adresse teilen, auch wenn alle freigegeben sind: Ein Client schickt seine Anfrage oft über einen neuen TCP-Port, deshalb greifen die Quellen 4 und 5 nicht, und die Sitzung wird abgelehnt. `ALLOW_SHARED_NAT_INITIATOR` lässt solche Anfragen durch, ohne das fragende Gerät zu benennen. Ist **Nur angemeldete RustDesk-Apps können Sitzungen starten** eingeschaltet, zählen nur die Quellen 2 und 3. In den Modi Verwaltet und Gesperrt muss das Gerät außerdem freigegeben sein; ein Gerät, das noch auf Freigabe wartet, kann keine Sitzung starten. Schickt ein Client im Modus Verwaltet einen gültigen Anmelde-Token für ein Gerät, das der Server nicht kennt, landet der Client unter **Beitrittsanfragen**. So lassen sich auch Handys freigeben, die nur andere Geräte steuern.
 
 Ein abgelehnter `PunchHoleRequest` bekommt eine `PunchHoleResponse` mit dem Fehler `ID_NOT_EXIST`, deshalb meldet der normale Client, die ID existiere nicht. Oft heißt das, dass der fragende Computer nicht zugelassen ist, und nicht, dass die entfernte ID fehlt. Das Log des Servers nennt den Grund. [Härtung](/docs/operations/security#limit-who-can-start-sessions) erklärt die Schalter für Betreiber.
 
@@ -97,7 +97,7 @@ Die eigenen Links der Konsole, die ein Gerät in einer App öffnen, nutzen `rust
 Ein normaler Client registriert sich, verbindet sich in beide Richtungen, führt die Remote-Sitzung selbst (Bildschirm, Eingabe, Dateiübertragung, Zwischenablage, Chat in der Sitzung, Audio, Terminal, TCP-Tunnel), meldet sich mit einem Konto der Konsole an und bekommt das Adressbuch. Die folgenden Funktionen brauchen den eigenen Client von NeoDesk, weil ein normaler Client nicht schickt, worauf sie aufbauen:
 
 - **Telemetrie und Hardware-Inventar**: Der NeoDesk-Client versiegelt sie in seinem Heartbeat; in einem einfachen Heartbeat ignoriert der Server sie.
-- **Logo und Farben** aus **Branding der Client-App**: Nur der NeoDesk-Client holt sie ab. Ein normaler Client bekommt nur die Option `display-name`.
+- **Logo und Farben** aus **Client-App** unter **Einstellungen**, **Branding**: Nur der NeoDesk-Client holt sie ab. Ein normaler Client bekommt nur die Option `display-name`.
 - **Computer hinzufügen, Schnellhilfe und Mit Code koppeln**: Sie installieren oder konfigurieren den NeoDesk-Client. Ein normaler Client wird von Hand eingerichtet; siehe [Computer hinzufügen](/docs/console/add-a-computer) und [Schnellhilfe](/docs/console/quick-support).
 - **Verbindungsmodus**: ein Gerät auf nur eingehende Verbindungen umstellen.
 - **Ein Geräte-Token**: Der Server gibt nur dann einen aus, wenn ein Gerät über einen der eigenen Wege von NeoDesk beitritt, und die Anmeldung eines Kontos beweist kein Gerät. Ohne ihn bleiben die Geräte-Routen geschlossen: Hilfeanfragen vom Gerät, Chat mit einem Operator außerhalb einer Sitzung, Remote-Befehle, Dateien aus der Konsole und Richtlinien zum Schutz vor Datenabfluss.
@@ -124,7 +124,7 @@ Arbeite sie ab, wenn die Upstream-Überwachung ein Issue öffnet oder wenn du se
 
 ### 1. Client-Einstellungen {#1-client-settings}
 
-- Der Konfigurations-String, der QR-Code und die vier Werte unter **Client-Einrichtung** in der Konsole geben dem neuen Client weiterhin seinen ID-Server, das Relay (`host:port`), den API-Server (`http://<server-address>:21121`) und den Schlüssel.
+- Der Konfigurations-String, der QR-Code und die vier Werte unter **Client-Einrichtung** auf der Übersicht der Konsole und auf dem Tab **Manuelle Einrichtung** von **Computer hinzufügen** geben dem neuen Client weiterhin seinen ID-Server, das Relay (`host:port`), den API-Server (`http://<server-address>:21121`) und den Schlüssel.
 - Auf Handys funktionieren die Einstellung `allow-deep-link-server-settings` oder der Import des Konfigurations-Strings weiterhin.
 - Ein Client mit falschen Einstellungen bleibt offline und weicht nicht auf die öffentlichen Server von RustDesk aus.
 - Prüfe, ob der Client ein `ConfigUpdate` aus dem NAT-Test noch übernimmt, und notiere es, wenn nicht.

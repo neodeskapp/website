@@ -68,8 +68,8 @@ arbeiten weiter.
   [Organisationen](/docs/people/organizations) teilen ein gemeinsames
   Adressbuch mit ihren Mitgliedern.
 - **Freigabe vor dem Zugriff.** Im Modus **Verwaltet** wartet ein neues Gerät
-  unter **Registrierungsanfragen**, bis es jemand genehmigt; siehe
-  [Registrierung](/docs/console/enrollment).
+  unter **Beitrittsanfragen**, bis es jemand genehmigt; siehe
+  [Beitrittsanfragen](/docs/console/enrollment).
 - **Eine Konsole.** Die [Geräteliste](/docs/console/devices), Benutzer und
   Rollen, ein [Audit-Protokoll](/docs/console/activity),
   [Remote Desktop im Browser](/docs/console/remote-in-browser) und
@@ -104,7 +104,7 @@ beschreibt jeden Schritt, unter Linux, Windows und in Docker. Kurz gesagt:
    Installation, in Docker danach in den Container.
 3. Betreibe NeoDesk unter der alten Adresse, oder lass den alten DNS-Namen
    auf den neuen Server zeigen.
-4. Lass die Clients herein: Genehmige sie unter **Registrierungsanfragen**,
+4. Lass die Clients herein: Genehmige sie unter **Beitrittsanfragen**,
    oder schalte auf **Offen**, solange sie zurückkommen.
 
 Die Clients behalten ihre Einstellungen und ihre IDs. Die Geräteliste beginnt

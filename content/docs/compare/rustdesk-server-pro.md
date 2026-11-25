@@ -74,8 +74,8 @@ and RDP or VNC hosts into the same device list.
   are all there. Directory and single sign-on accounts also sign in to the
   stock RustDesk client.
 - **Approval before access.** In the Managed mode a new device waits under
-  **Enrollment requests** until someone approves it; see
-  [Enrollment](/docs/console/enrollment).
+  **Join requests** until someone approves it; see
+  [Join requests](/docs/console/enrollment).
 - **Remote desktop in the browser** on every install, for desktop and tablet
   browsers; see [Remote desktop in the browser](/docs/console/remote-in-browser).
 - **Help without setup.** [Quick support](/docs/console/quick-support) makes a

@@ -44,7 +44,7 @@ scrape_configs:
 
 Unter Docker ist der Port 21121. Unter Linux und Windows öffnen die Installer 21114 nicht in der Firewall, gib den Port also nur für den Prometheus-Server frei.
 
-Für einen Blick von Hand auf dem Server selbst schickst du den API-Schlüssel des Servers mit. Du findest ihn unter **Einstellungen**, **Client-Einrichtung** bei **Für Skripte**, nachdem du auf **Ganzen Schlüssel zeigen** geklickt hast; das können Konten mit der Rolle Super-Admin oder Administrator. Mit dem Schlüssel in `NEODESK_API_KEY`:
+Für einen Blick von Hand auf dem Server selbst schickst du den API-Schlüssel des Servers mit. Du findest ihn unter **Geräte**, **Computer hinzufügen**, **Manuelle Einrichtung** bei **Für Skripte**, nachdem du auf **Ganzen Schlüssel zeigen** geklickt hast; das können Konten mit der Rolle Super-Admin oder Administrator. Mit dem Schlüssel in `NEODESK_API_KEY`:
 
 ```bash
 curl -H "X-API-Key: $NEODESK_API_KEY" http://127.0.0.1:21114/metrics
@@ -80,7 +80,7 @@ Konsole und Server führen getrennte Audit-Aufzeichnungen, beide in der Datenban
 - Das Audit-Protokoll der Konsole: was Menschen in der Konsole getan haben, etwa Anmeldungen, Freigaben und Änderungen an Geräten, Personen und Einstellungen.
 - Die Ereignisse des Servers: Anmeldungen an der API, fehlgeschlagene Anmeldungen, Sperren, blockierte Adressen, Konfigurationsänderungen und abgewiesene Verbindungen. Jedes davon geht außerdem als Zeile mit `[audit]` ins Log, wobei Passwörter, Geheimnisse, Token und Schlüssel in den Details verborgen sind.
 
-Beide erscheinen unter **Aktivität**, **Sicherheit und Protokoll**; siehe [Aktivität und Audit-Protokoll](/docs/console/activity#security-and-audit). Skripte lesen die Ereignisse des Servers von `/api/audit/events` auf dem API-Port, mit `limit`, `offset` und `action` in der Query. Das Konto oder der API-Schlüssel, mit dem sie das tun, braucht die Berechtigung, Audit-Protokolle zu sehen.
+Beide erscheinen unter **Aktivität**, **Audit-Protokoll**; siehe [Aktivität und Audit-Protokoll](/docs/console/activity#audit-log). Skripte lesen die Ereignisse des Servers von `/api/audit/events` auf dem API-Port, mit `limit`, `offset` und `action` in der Query. Das Konto oder der API-Schlüssel, mit dem sie das tun, braucht die Berechtigung, Audit-Protokolle zu sehen.
 
 Mit `AUDIT_LOG_FILE` hängt der Server außerdem jedes seiner Ereignisse an diese Datei an, ein JSON-Objekt pro Zeile mit `timestamp`, `action`, `actor`, `target` und `details`. Nur das Konto, unter dem der Server läuft, darf die Datei lesen. Der Server hält die Datei offen und kürzt sie nie. Rotiere sie deshalb mit einem Werkzeug, das die Datei an Ort und Stelle kürzt, etwa mit `copytruncate` von logrotate.
 
@@ -96,7 +96,7 @@ Einmal pro Stunde löscht der Server, was älter ist als diese Grenzen:
 | Verbindungssitzungen | 90 Tage |
 | Warnungsverlauf, Fernbefehle, App-Nutzung, Ereignisse der Data Loss Prevention und Netzwerkprüfungen | 90 Tage |
 | Gerätemetriken (CPU, Arbeitsspeicher, Datenträger) | 7 Tage |
-| Registrierungsanfragen, die niemand beantwortet hat | 30 Tage |
-| Verfügbarkeitsverlauf, wenn er eingeschaltet ist | 30 Tage, oder was **Verlauf aufbewahren (Tage)** unter **Einstellungen**, **Allgemein**, **Verfügbarkeitsverlauf** sagt |
+| Beitrittsanfragen, die niemand beantwortet hat | 30 Tage |
+| Verfügbarkeitsverlauf, wenn er eingeschaltet ist | 30 Tage, oder was **Verlauf aufbewahren (Tage)** unter **Einstellungen**, **Beitritt**, **Verfügbarkeitsverlauf** sagt |
 
 Nur die Aufbewahrung des Verfügbarkeitsverlaufs lässt sich ändern. Das Log und die Datei aus `AUDIT_LOG_FILE` räumt der Server nicht auf.

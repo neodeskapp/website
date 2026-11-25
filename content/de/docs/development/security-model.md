@@ -26,7 +26,7 @@ Beim ersten Start erzeugt der Server ein Ed25519-Schlüsselpaar: `id_ed25519` en
 
 - Bittet ein Client um eine Verbindung zu einem Gerät, signiert der Server das Paar aus ID und öffentlichem Schlüssel dieses Geräts (die Nachricht `IdPk`) mit seinem Schlüssel. Der Client prüft die Signatur mit dem öffentlichen Schlüssel des Servers und weiß so, dass der Schlüssel des Geräts von diesem Server kommt.
 - Eine Geräte-ID ist an die UUID und den öffentlichen Schlüssel gebunden, mit denen sie sich zuerst registriert hat, im Speicher und in der Datenbank. Eine Registrierung mit einer anderen UUID wird mit `UUID_MISMATCH` abgelehnt, eine mit einem anderen Schlüssel mit `NOT_SUPPORT`. So kann keine andere Installation eine ID übernehmen.
-- Der Registrierungsmodus entscheidet, ob eine neue ID überhaupt aufgenommen wird; siehe [Registrierungsanfragen](/docs/console/enrollment#enrollment-modes). Ein gesperrtes oder gelöschtes Gerät kann sich nicht registrieren, und weder diese Geräte noch ein Gerät, das auf Freigabe wartet, können eine Sitzung starten.
+- Der Beitrittsmodus entscheidet, ob eine neue ID überhaupt aufgenommen wird; siehe [Beitrittsanfragen](/docs/console/enrollment#enrollment-modes). Ein gesperrtes oder gelöschtes Gerät kann sich nicht registrieren, und weder diese Geräte noch ein Gerät, das auf Freigabe wartet, können eine Sitzung starten.
 
 ## Die Verbindung zum ID-Server {#the-id-server-connection}
 
@@ -94,7 +94,7 @@ Das Sitzungsgeheimnis ist `SESSION_SECRET`, sonst die Datei `.session_secret` im
 
 - Ein Code besteht aus 8 Zeichen eines Alphabets ohne 0, 1, I, L, O und U, das sind etwa 39 Bit. Der Server hält nur seinen SHA-256-Hash, in `server_config`, mit Art, Ablaufzeit und verbleibenden Nutzungen.
 - Jede Route, die einen Code annimmt (die Seitendaten, der Download des Pakets, die Linux-Skripte und das Einlösen), zählt gegen ein gemeinsames Limit von 20 Anfragen pro Minute und Adresse. Falsche, abgelaufene, benutzte und widerrufene Codes bekommen alle dieselbe Antwort.
-- Ein Beitrittscode gilt 7 Tage, sofern sein Ersteller keine andere Laufzeit gewählt hat (höchstens 30 Tage), und so oft, wie beim Erstellen festgelegt. Sein Einlösen gibt das Gerät frei, egal welcher Registrierungsmodus gilt, und gibt dem Client die Adressen des Servers, seinen Schlüssel und einen Geräte-Token.
+- Ein Beitrittscode gilt 7 Tage, sofern sein Ersteller keine andere Laufzeit gewählt hat (höchstens 30 Tage), und so oft, wie beim Erstellen festgelegt. Sein Einlösen gibt das Gerät frei, egal welcher Beitrittsmodus gilt, und gibt dem Client die Adressen des Servers, seinen Schlüssel und einen Geräte-Token.
 - Ein Support-Code gilt eine Stunde lang und einmal. Sein Einlösen gibt der Schnellhilfe-App einen Sitzungs-Token, als Hash gespeichert, der nur die Routen dieser Sitzung öffnet. Die Person am Computer muss die Sitzung auf ihrem Bildschirm erlauben. Die App übergibt dann ihr Sitzungspasswort an den Server, der es nur im Speicher hält und einmal an das Konto weitergibt, das die Sitzung angelegt hat. Die Sitzung endet, wenn die App geschlossen wird, der Supporter sie beendet oder die App sich 3 Minuten lang nicht meldet.
 - Die Seiten und der Client warnen, wenn die Konsole über einfaches HTTP läuft.
 

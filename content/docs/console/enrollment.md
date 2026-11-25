@@ -1,35 +1,35 @@
 ---
-title: Enrollment requests
+title: Join requests
 description: Decide which new devices may join the server, and approve or reject the ones that ask.
 order: 5
 icon: how_to_reg
 ---
 
-The enrollment mode decides whether a new device can join the server by itself or has to wait for someone to approve it. Devices that wait show up under **Devices**, **Enrollment requests**, where you approve or reject them. The number next to **Enrollment requests** in the sidebar is how many are waiting.
+The join mode decides whether a new device can join the server by itself or has to wait for someone to approve it. Devices that wait show up under **Devices**, **Join requests**, where you approve or reject them. The number next to **Join requests** in the sidebar is how many are waiting.
 
-![Enrollment requests with ten devices waiting and the enrollment mode on the right](shot:registrations)
+![Join requests with ten devices waiting and the join mode on the right](shot:registrations)
 
-## Enrollment modes
+## Join modes {#enrollment-modes}
 
 | Mode | What happens when a new RustDesk client registers |
 |---|---|
 | **Open** | Any device can join. Nobody has to approve it. |
-| **Managed** | A new device needs a token, or it waits under **Enrollment requests** until someone approves it. |
+| **Managed** | A new device needs a token, or it waits under **Join requests** until someone approves it. |
 | **Locked** | Only devices with a valid token can join. Others are turned away and don't show up as requests. |
 
-The side column of **Enrollment requests** shows which mode is on. A mode saved in the console stays across restarts. While none is saved, the server takes the `ENROLLMENT_MODE` environment variable at its start and saves it as the mode, or uses **Open** when the variable isn't set. The installers and the Docker container set `managed` for a new install.
+The side column of **Join requests** shows which mode is on. A mode saved in the console stays across restarts. While none is saved, the server takes the `ENROLLMENT_MODE` environment variable at its start and saves it as the mode, or uses **Open** when the variable isn't set. The installers and the Docker container set `managed` for a new install.
 
-The mode only decides about new devices. A device the server already knows can always register again, in every mode. Tokens are created under **Settings**, **Device tokens**. A device that sends a valid token when it registers joins in **Managed** and **Locked** mode without waiting. Tokens are for NeoDesk clients: the stock RustDesk client has no way to send one.
+The mode only decides about new devices. A device the server already knows can always register again, in every mode. Tokens are created under **Devices**, **Add computers**, on the **Device tokens** tab. A device that sends a valid token when it registers joins in **Managed** and **Locked** mode without waiting. Tokens are for NeoDesk clients: the stock RustDesk client has no way to send one.
 
 The mode applies to RustDesk clients. New mesh agents wait for approval in the same list, whatever the mode; see [MeshAgent devices](/docs/console/meshagent#install-the-agent-on-a-device).
 
 ### Changing the mode
 
-Change it under **Settings**, **Device tokens**, in the side column. The mode is saved as soon as you pick it. This page needs permission to manage enrollment: Super admin, Server admin and Global admin accounts have it by default.
+Change it under **Devices**, **Add computers**, on the **Device tokens** tab, under **Join mode**. The mode is saved as soon as you pick it. The tab needs permission to manage enrollment: Super admin, Server admin and Global admin accounts have it by default.
 
 The change applies right away to devices that join from then on. Devices already on the server keep working.
 
-For accounts with that permission, **Enrollment requests** has **Change the enrollment mode** under the current mode, and **Settings**, **Sign-in**, section **For everyone**, **Device enrollment (RustDesk)** shows the current mode with **Change it on Device tokens**. Both links open **Device tokens**. Other accounts that open **Enrollment requests** see "An administrator can change this on Device tokens." in the side column while RustDesk clients wait in the **Open** or **Locked** mode.
+For accounts with that permission, **Join requests** has **Change the join mode** under the current mode. For accounts that may change server settings, **Settings**, **Joining** shows the current mode under **Join mode** with **Change it on Device tokens**. Both links open the **Device tokens** tab. Other accounts that open **Join requests** see "An administrator can change this on Device tokens." in the side column while RustDesk clients wait in the **Open** or **Locked** mode.
 
 ::: note
 `ENROLLMENT_MODE_ENV_OVERRIDE=Y` in the server's environment makes the server apply `ENROLLMENT_MODE` at every start, over the mode saved in the console. A change made in the console then lasts only until the next restart. See [Configuration](/docs/operations/configuration#security).
@@ -62,7 +62,7 @@ Click **Approve** on a waiting request. A side sheet opens with the request's de
 
 - **Device name**: filled in with the name the device sent. It is shown in the device list.
 - **Folder**: where the device goes, or **No folder**.
-- **Tags**: tick tags that other devices use, or type a new one and click **Add**. When **Pick tags from existing device tags** is off in **Settings**, **Sign-in**, this is one text field with the tags separated by commas.
+- **Tags**: tick tags that other devices use, or type a new one and click **Add**. When **Pick tags from existing device tags** is off in **Settings**, **Joining**, this is one text field with the tags separated by commas.
 - **Device groups**: tick the groups the device should be in. A group decides who can see the device and which access rules apply to it. Only groups you fill by hand are listed; dynamic groups follow the device's tags.
 - **Status reports**: how often the device reports usage, disks and installed software: **Standard**, **Light** or **Frequent**. This field is missing for **Local network** requests, and it only matters for clients that send these reports.
 
@@ -88,4 +88,4 @@ In **Managed** mode, a device that waits for approval can't be reached by anyone
 
 ## Who can approve
 
-Approving and rejecting needs permission to approve devices. By default Super admin and Global admin accounts have it; Remote operator, Viewer and Server admin accounts don't. Accounts without it don't see **Enrollment requests** in the sidebar. An administrator can change the defaults, see [Users and roles](/docs/people/users-and-roles).
+Approving and rejecting needs permission to approve devices. By default Super admin and Global admin accounts have it; Remote operator, Viewer and Server admin accounts don't. Accounts without it don't see **Join requests** in the sidebar. An administrator can change the defaults, see [Users and roles](/docs/people/users-and-roles).

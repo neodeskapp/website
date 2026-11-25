@@ -22,8 +22,9 @@ The console makes the link at once. It works once, for one hour.
 
 ![The Quick support dialog with the session link and the QR code, waiting for the person](shot:quick-support)
 
-Send the **Session link** with **Copy**, the QR code, or **Send by email** when
-email is set up under **Settings**, **Email**. As for invites, the link uses
+The link comes first: send it with **Copy**, or with **Send by email** when
+email is set up under **Settings**, **Email**. The QR code with its caption
+sits beside it, for a phone. As for invites, the link uses
 the console's public address and warns when that is plain HTTP; see
 [Add a computer](/docs/console/add-a-computer#send-the-link).
 
@@ -41,7 +42,8 @@ The dialog shows where things stand:
 - They declined, the session ended, or the link expired. **Make a new link**
   starts again.
 
-**Cancel the link** ends an unused link. **End session** ends a running one.
+**Cancel the link**, next to the line that says the link is waiting, ends an
+unused link. **End session** ends a running one.
 You can close the dialog at any time: the session stays open, and
 **Your quick support sessions** on the **Help requests** page lists it with
 **Open** to come back to it.

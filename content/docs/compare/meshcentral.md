@@ -67,8 +67,8 @@ MeshAgent devices and RDP or VNC hosts in one device list.
   and [RDP and VNC hosts](/docs/console/remote-targets) sit side by side under
   **Devices**.
 - **Approval for every agent.** A new MeshAgent always waits under
-  **Enrollment requests** until someone approves it, whatever the
-  [enrollment mode](/docs/console/enrollment).
+  **Join requests** until someone approves it, whatever the
+  [join mode](/docs/console/enrollment).
 - **Help for a computer that isn't set up.** [Quick support](/docs/console/quick-support)
   makes a link that works once for one hour. The person downloads a small app,
   clicks **Allow**, and nothing gets installed.
@@ -90,11 +90,11 @@ NeoDesk. [MeshAgent devices](/docs/console/meshagent) has the steps:
 1. Make the console reachable over HTTPS, at the address the agents will use,
    behind a [reverse proxy with TLS](/docs/operations/reverse-proxy-tls) or with
    the console's own HTTPS.
-2. Under **Settings**, **General**, **MeshCentral compatibility**, open
+2. Under **Settings**, **MeshCentral**, **MeshCentral compatibility**, open
    **Install MeshAgent on a device** and download the .msh file. Check its
    `MeshServer=` line.
 3. Install MeshAgent on each device with that .msh file.
-4. Approve each agent under **Enrollment requests**.
+4. Approve each agent under **Join requests**.
 
 NeoDesk imports nothing from MeshCentral: set up users, groups and sign-in
 again in the console. Recordings and events stay with MeshCentral.

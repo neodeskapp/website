@@ -23,9 +23,10 @@ Die Konsole erstellt den Link sofort. Er gilt einmal, für eine Stunde.
 
 ![Der Dialog Schnellhilfe mit Sitzungslink und QR-Code, der auf die Person wartet](shot:quick-support)
 
-Schicke den **Sitzungslink** mit **Kopieren**, über den QR-Code oder mit
+Der Link steht oben: Schick ihn mit **Kopieren** oder mit
 **Per E-Mail senden**, wenn E-Mail unter **Einstellungen**, **E-Mail**
-eingerichtet ist. Wie bei Einladungen nutzt der Link die öffentliche Adresse
+eingerichtet ist. Der QR-Code mit seiner Beschriftung steht daneben, für ein
+Handy. Wie bei Einladungen nutzt der Link die öffentliche Adresse
 der Konsole und warnt, wenn sie reines HTTP ist; siehe
 [Computer hinzufügen](/docs/console/add-a-computer#send-the-link).
 
@@ -45,7 +46,8 @@ Der Dialog zeigt den aktuellen Stand:
 - Die Person hat abgelehnt, die Sitzung ist beendet oder der Link ist
   abgelaufen. **Neuen Link erstellen** fängt von vorn an.
 
-**Link zurückziehen** beendet einen unbenutzten Link. **Sitzung beenden**
+**Link zurückziehen**, neben der Zeile, die sagt, dass der Link wartet,
+beendet einen unbenutzten Link. **Sitzung beenden**
 beendet eine laufende Sitzung. Du kannst den Dialog jederzeit schließen: Die
 Sitzung bleibt offen, und **Ihre Schnellhilfe-Sitzungen** auf der Seite
 **Hilfeanfragen** listet sie mit **Öffnen** auf, damit du zu ihr zurückkommst.

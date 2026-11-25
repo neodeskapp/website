@@ -16,7 +16,7 @@ Um einen Client auf einen neuen Computer zu bringen, klicke über der Liste auf 
 
 Tippe in **ID, Name, Benutzer oder Tag suchen**. Die Suche durchsucht die ID, den Anzeigenamen, den Hostnamen, den Benutzer, die Plattform, den Typ, die Tags, die Notiz und die IP-Adresse. Jedes Wort, das du eingibst, muss irgendwo vorkommen, in beliebiger Reihenfolge. Groß- und Kleinschreibung spielt keine Rolle.
 
-Du kannst ein Gerät auch über die obere Leiste finden. **Seiten, Geräte und Personen durchsuchen** (Strg+K) listet passende Geräte auf. Wählst du eines, öffnet sich die Geräteliste, gefiltert auf dieses Gerät und mit geöffnetem Seitenbereich.
+Du kannst ein Gerät auch über die obere Leiste finden. **Seiten, Einstellungen, Geräte und Personen durchsuchen** (Strg+K) listet passende Geräte auf. Wählst du eines, öffnet sich die Geräteliste, gefiltert auf dieses Gerät und mit geöffnetem Seitenbereich.
 
 ## Statusfilter {#status-filters}
 
@@ -76,7 +76,7 @@ Gruppen sind ein zweiter Weg, Geräte zu ordnen. Sie stehen unter den Ordnern. E
 
 Um ein Gerät von Hand in eine Gruppe zu legen, ziehe seine Zeile auf die Gruppe oder nutze **Gruppen verwalten** im Zeilenmenü. Ein Gerät kann nur in einer Gruppe sein, die du von Hand füllst. Legst du es auf einer anderen Gruppe ab, wechselt es dorthin, und hakst du in **Gruppen verwalten** zwei Gruppen an, schlägt das mit „A device can belong to only one group“ fehl. Dynamische Gruppen nehmen keine abgelegten Geräte an: Ändere stattdessen die Tags des Geräts.
 
-Das Gruppenmenü hat **Bearbeiten** und **Löschen**, und für Konten, die die Abrechnung verwalten, **Commercialization**, um der Gruppe ein Supportpaket zuzuweisen.
+Das Gruppenmenü hat **Bearbeiten** und **Löschen**, und für Konten, die die Abrechnung verwalten, **Abrechnung**, um der Gruppe ein Supportpaket zuzuweisen.
 
 ## Tags {#tags}
 

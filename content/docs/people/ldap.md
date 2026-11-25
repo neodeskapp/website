@@ -9,7 +9,7 @@ With LDAP sign-in turned on, people from your directory sign in with their direc
 
 ## Where it is set
 
-Open **Settings**, **Sign-in** and go to **LDAP / Active Directory** under **For everyone**. The section is there for accounts with the **Server configuration** permission: Super admin, Administrator and Server admin by default.
+Open **Settings**, **Directory (LDAP)**. The tab is there for accounts with the **Server configuration** permission: Super admin, Administrator and Server admin by default.
 
 The settings are saved in the server's database. There are no environment variables for them, and saving applies them to the next sign-in without a restart. People who are already signed in stay signed in.
 

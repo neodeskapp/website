@@ -38,7 +38,7 @@ In dieser Reihenfolge:
 2. Er bricht ab, bevor irgendetwas lauscht, wenn zwei Listener denselben Port belegen würden.
 3. Er lädt das Schlüsselpaar (`id_ed25519` und `id_ed25519.pub`) oder erzeugt eins.
 4. Er öffnet die Datenbank und legt an, was darin fehlt.
-5. Er lädt den API-Schlüssel, setzt alle Geräte auf offline und legt den Registrierungsmodus fest: Der in der Konsole gespeicherte Modus gewinnt gegen `ENROLLMENT_MODE`, außer bei `ENROLLMENT_MODE_ENV_OVERRIDE=Y`.
+5. Er lädt den API-Schlüssel, setzt alle Geräte auf offline und legt den Beitrittsmodus fest: Der in der Konsole gespeicherte Modus gewinnt gegen `ENROLLMENT_MODE`, außer bei `ENROLLMENT_MODE_ENV_OVERRIDE=Y`.
 6. Er lädt das Geheimnis, mit dem API-Tokens signiert werden, und legt bei einer leeren Datenbank das erste Admin-Konto an.
 7. Er startet das Audit-Protokoll, die Metriken, das Neuladen bei `SIGHUP`, die Prüfung der Uhrzeit und den Abrechnungsdienst.
 8. Er startet den ID-Server, das Relay, den API-Server, das CDAP-Gateway, das MeshCentral-Gateway (eingeschaltet, außer bei `MESH_ENABLED=N`), die lokale Admin-Schnittstelle und die Web-Konsole. Das CDAP-Gateway läuft, außer **Gateway ausschalten** auf der Seite IoT-Geräte hat es ausgeschaltet; solange dort nichts gespeichert ist, schaltet `CDAP_ENABLED=N` es aus.

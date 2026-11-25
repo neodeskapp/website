@@ -20,7 +20,7 @@ dazu:
 
 - die API, über die sich der RustDesk-Client anmeldet und sein Adressbuch
   abgleicht
-- eine Web-Konsole mit der Geräteliste, den Registrierungsanfragen, Benutzern
+- eine Web-Konsole mit der Geräteliste, den Beitrittsanfragen, Benutzern
   und Rollen, einem Aktivitätsprotokoll und Remote Desktop im Browser
 - die Anmeldung an der Konsole mit Zwei-Faktor-Codes, LDAP oder Active
   Directory oder OIDC

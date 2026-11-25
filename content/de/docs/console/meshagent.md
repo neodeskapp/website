@@ -8,7 +8,7 @@ NeoDesk spricht das Protokoll von MeshAgent, dem Agenten von MeshCentral. Ein Co
 
 ## Die MeshCentral-Schicht {#the-meshcentral-layer}
 
-Die Schicht ist eingeschaltet, außer der Server startet mit `MESH_ENABLED=N`, siehe [Konfiguration](/docs/operations/configuration). Ihre Einstellungen liegen unter **Einstellungen**, **Allgemein**, im Abschnitt **MeshCentral-Kompatibilität**, für Konten, die Servereinstellungen ändern dürfen. Der Abschnitt zeigt:
+Die Schicht ist eingeschaltet, außer der Server startet mit `MESH_ENABLED=N`, siehe [Konfiguration](/docs/operations/configuration). Ihre Einstellungen liegen unter **Einstellungen**, **MeshCentral**, im Abschnitt **MeshCentral-Kompatibilität**, für Konten, die Servereinstellungen ändern dürfen. Der Abschnitt zeigt:
 
 | Zeile | Was sie zeigt |
 |---|---|
@@ -25,9 +25,9 @@ Agenten verbinden sich über HTTPS mit der eigenen Adresse der Konsole, unter `/
 2. Gib unter **Name in der .msh-Datei** den Namen ein, den MeshAgent für den Server anzeigt, und klicke auf **MeshAgent .msh herunterladen**. Diese Datei gilt für die Gruppe mit der ID `default`. Für eine andere Gruppe nimm **.msh-Datei herunterladen** in der Zeile dieser Gruppe unter **Mesh-Gruppen**.
 3. Öffne die Datei, `meshagents.msh`, in einem Texteditor und prüfe die Zeile `MeshServer=`. Sie nennt die öffentliche Adresse der Konsole (`PANEL_PUBLIC_URL` oder `PANEL_PUBLIC_HOST`) oder, wenn keine von beiden gesetzt ist, die Adresse, unter der du die Konsole geöffnet hast. Die Zeile muss aus `wss://`, der Adresse, unter der die Agenten die Konsole über HTTPS erreichen (mit dem Port, wenn er nicht 443 ist), und `/agent.ashx` bestehen, zum Beispiel `MeshServer=wss://desk.example.com/agent.ashx`. Korrigiere die Zeile, wenn sie eine andere Adresse zeigt, etwa `127.0.0.1`.
 4. Installiere den unveränderten MeshAgent zusammen mit der .msh-Datei auf dem Gerät.
-5. Der Agent bittet um Aufnahme und wartet unter [Registrierungsanfragen](/docs/console/enrollment), wo in **Eingegangen über** der Eintrag **Mesh-Agent** steht. Genehmige ihn. Der Agent kommt bei seiner nächsten Verbindung herein und erscheint als online.
+5. Der Agent bittet um Aufnahme und wartet unter [Beitrittsanfragen](/docs/console/enrollment), wo in **Eingegangen über** der Eintrag **Mesh-Agent** steht. Genehmige ihn. Der Agent kommt bei seiner nächsten Verbindung herein und erscheint als online.
 
-Jeder neue Agent wartet auf eine Genehmigung, unabhängig vom Registrierungsmodus. Solange 500 Anfragen warten, nimmt der Server keine neuen von Agenten an. Ein abgelehnter, gesperrter oder gelöschter Agent wird abgewiesen, ebenso ein Agent, dessen .msh-Datei zu keiner Gruppe gehört; das Log zeigt dann `[mesh] agent from <address> refused: unknown mesh id`.
+Jeder neue Agent wartet auf eine Genehmigung, unabhängig vom Beitrittsmodus. Solange 500 Anfragen warten, nimmt der Server keine neuen von Agenten an. Ein abgelehnter, gesperrter oder gelöschter Agent wird abgewiesen, ebenso ein Agent, dessen .msh-Datei zu keiner Gruppe gehört; das Log zeigt dann `[mesh] agent from <address> refused: unknown mesh id`.
 
 ## Mesh-Gruppen {#mesh-groups}
 

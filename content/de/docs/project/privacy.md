@@ -44,7 +44,7 @@ Ist `PANEL_MDNS` eingeschaltet, kündigt sich die Konsole außerdem per mDNS (UD
 
 ### Updates {#updates}
 
-Wenn jemand **Einstellungen**, **Updates** öffnet und wenn jemand auf **Jetzt prüfen** klickt, fragt die Konsole die API von GitHub (api.github.com) nach den Releases von neodeskapp/neodesk oder des Repositorys, das `UPDATE_GITHUB_OWNER` und `UPDATE_GITHUB_REPO` nennen. Sie behält die Antworten zwei Minuten lang. **Install Update** lädt das Release von github.com und den Datei-Hosts von GitHub herunter.
+Wenn jemand **Server**, **Updates** öffnet und wenn jemand auf **Jetzt prüfen** klickt, fragt die Konsole die API von GitHub (api.github.com) nach den Releases von neodeskapp/neodesk oder des Repositorys, das `UPDATE_GITHUB_OWNER` und `UPDATE_GITHUB_REPO` nennen. Sie behält die Antworten zwei Minuten lang. **Install Update** lädt das Release von github.com und den Datei-Hosts von GitHub herunter.
 
 Die Anfragen tragen den User-Agent `NeoDesk-Console/<version>` und keine Kennung deiner Installation. GitHub sieht die IP-Adresse des Servers, wie bei jedem Download. Ein Token in `UPDATE_GITHUB_TOKEN` oder `GITHUB_TOKEN` geht nur an api.github.com. Siehe [Aktualisieren](/docs/operations/updating#the-updates-page-in-the-console).
 
@@ -54,7 +54,7 @@ Ein Einladungslink aus **Computer hinzufügen** oder **Schnellhilfe** öffnet ei
 
 ### Support-Agenten {#support-agents}
 
-**Neueste Version importieren** auf der Seite **Support-Agenten** lädt das neueste signierte Release des Support-Agenten von neodeskapp/neodesk-client auf GitHub herunter, oder aus dem Repository, das `NEODESK_SUPPORT_RELEASE_REPO` nennt. Bis jemand darauf klickt, wird nichts geholt.
+**Neueste Version importieren** auf dem Tab **Support-Agenten** unter **Geräte**, **Computer hinzufügen** lädt das neueste signierte Release des Support-Agenten von neodeskapp/neodesk-client auf GitHub herunter, oder aus dem Repository, das `NEODESK_SUPPORT_RELEASE_REPO` nennt. Bis jemand darauf klickt, wird nichts geholt.
 
 ### E-Mail {#mail}
 

@@ -158,7 +158,7 @@ Die [README der Bridges](https://github.com/neodeskapp/neodesk/blob/main/bridges
 
 ## Der Ablauf-Editor {#the-flow-builder}
 
-Die Seite **Ablauf-Editor (SDK)** der Konsole, unter `/cdap-studio`, ist ein Editor für Datenflüsse. Die Seitenleiste zeigt sie der Rolle Remote-Operator und Super-Admins.
+Die Seite **Ablauf-Editor** der Konsole, unter `/cdap-studio`, ist ein Editor für Datenflüsse. Die Seitenleiste zeigt sie unter **Einstellungen**, **Entwicklerwerkzeuge**, der Rolle Remote-Operator und Super-Admins.
 
 - **Knoten**: Du ziehst Knoten aus drei Gruppen auf die Arbeitsfläche und verbindest sie. **Quellen**: Modbus TCP, Modbus RTU, SNMP-Abfrage, REST-Abfrage, MQTT abonnieren, Webhook, Gerätetelemetrie, Datenbankabfrage, Dateiüberwachung. **Verarbeitung**: Filter, Umwandeln, Zusammenfassen, Verzögerung, Entprellen, Verzweigung, Zusammenführen, Skript. **Ausgaben**: Widget aktualisieren, Alarm, Befehl, Protokoll, REST-Aufruf, MQTT veröffentlichen, In Datenbank schreiben, E-Mail, Modbus schreiben. Unter **Knoteneinstellungen** stehen die Einstellungen jedes Knotens.
 - **Speichern**: **Flow speichern** legt den Flow auf dem Server ab. Jeder Flow gehört dem Konto, das ihn angelegt hat; Super-Admins sehen und ändern alle. **Flow öffnen** listet die gespeicherten Flows auf.

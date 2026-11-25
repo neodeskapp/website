@@ -90,7 +90,7 @@ refuses a release without a valid one.
 - Creates a self-signed certificate in `C:\NeoDesk\ssl`, valid for ten years,
   and turns on HTTPS for the console with it. The client API on 21121 stays on
   plain HTTP, because RustDesk clients refuse a self-signed certificate.
-- Sets the enrollment mode of a new install to **Managed**, so new RustDesk
+- Sets the join mode of a new install to **Managed**, so new RustDesk
   clients wait for approval.
 - Registers `NeoDeskServer`. With NSSM it is a service that starts with
   Windows and runs under its own low-privilege account,
@@ -197,8 +197,8 @@ Get-ScheduledTask -TaskName NeoDeskServer
 Start-ScheduledTask -TaskName NeoDeskServer
 ```
 
-The env file sets **Managed** only as the first enrollment mode. A mode you pick in
-the console stays after a restart. See [Enrollment](/docs/console/enrollment) for
+The env file sets **Managed** only as the first join mode. A mode you pick in
+the console stays after a restart. See [Join requests](/docs/console/enrollment) for
 what the modes do.
 
 ## Later: update and uninstall

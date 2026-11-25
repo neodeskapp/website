@@ -15,19 +15,16 @@ each step.
 
 ## Sign in with the company's accounts
 
-Open **Settings**, **Sign-in**. Under **For everyone** you find two ways to
-connect your directory:
+**Settings** has two tabs to connect your directory:
 
-- **LDAP / Active Directory**: people sign in with their directory user name
+- **Directory (LDAP)**: people sign in with their directory user name
   and password. Their account is made at the first sign-in, and their role
   comes from their directory groups at every sign-in. See
   [LDAP and Active Directory](/docs/people/ldap).
-- **OIDC / OAuth2 (SSO)**: the sign-in page gets a button that sends people to
+- **Single sign-on**: the sign-in page gets a button that sends people to
   your identity provider, such as Keycloak, Okta, Azure AD or Google. Roles can
   come from the groups the provider sends. See
   [Single sign-on with OIDC](/docs/people/oidc).
-
-![The Sign-in settings page with the Password and Two-factor sign-in sections](shot:settings-auth)
 
 Both also work in the stock RustDesk client: people sign in there with the
 same account and get their address book.
@@ -67,16 +64,16 @@ usually do, for example through Intune. Then run the script from **Overview**,
 **Client setup**, **More**, **Windows install script (Intune)**: it gives
 RustDesk your server's four values, and can also set a permanent password for
 unattended access. For NeoDesk's own client, make one
-invite link under **Devices**, **Add a computer** that works several times.
+invite link under **Devices**, **Add computers**, **Add a computer** that works several times.
 See [Set up many computers at once](/docs/getting-started/connect-a-client/many-computers).
 
-New installs start in the **Managed** enrollment mode: a new RustDesk client
-waits under **Enrollment requests** until someone in IT approves it, so a
+New installs start in the **Managed** join mode: a new RustDesk client
+waits under **Join requests** until someone in IT approves it, so a
 computer can't join just because it knows the server's address.
 Computers that join through an invite link are approved at once. See
-[Enrollment](/docs/console/enrollment).
+[Join requests](/docs/console/enrollment).
 
-![Enrollment requests with ten devices waiting and the enrollment mode on the right](shot:registrations)
+![Join requests with ten devices waiting and the join mode on the right](shot:registrations)
 
 ## Help a colleague
 
@@ -91,7 +88,7 @@ for one hour, and nothing gets installed.
 
 ## See who did what
 
-**Activity**, **Security and audit** has the audit log: every sign-in, ban,
+**Activity**, **Audit log** has the audit log: every sign-in, ban,
 approval and change to devices, people and settings, with the account, the
 time and the address. Filter it by kind, or search it for a person or a
 device. The server keeps these entries for 90 days; to keep the server's own

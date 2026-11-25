@@ -230,11 +230,11 @@ sudo journalctl -u neodesk-server -f
 sudo systemctl restart neodesk-server
 ```
 
-Eine neue Installation startet im Registrierungsmodus **Verwaltet**: Ein neuer
-RustDesk-Client wartet unter **Registrierungsanfragen**, bis jemand ihn
+Eine neue Installation startet im Beitrittsmodus **Verwaltet**: Ein neuer
+RustDesk-Client wartet unter **Beitrittsanfragen**, bis jemand ihn
 genehmigt. Die env-Datei setzt das nur als ersten Modus; ein Modus, den du in
 der Konsole wählst, bleibt. Siehe
-[Registrierungsanfragen](/docs/console/enrollment).
+[Beitrittsanfragen](/docs/console/enrollment).
 
 ## Später: neodesk-setup {#later-the-neodesk-command}
 

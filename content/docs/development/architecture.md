@@ -39,7 +39,7 @@ In this order:
 2. It stops before anything listens when two listeners would take the same port.
 3. It loads the key pair (`id_ed25519` and `id_ed25519.pub`) or makes one.
 4. It opens the database and creates what is missing in it.
-5. It loads the API key, marks every device offline, and settles the enrollment mode: the mode saved in the console wins over `ENROLLMENT_MODE` unless `ENROLLMENT_MODE_ENV_OVERRIDE=Y`.
+5. It loads the API key, marks every device offline, and settles the join mode: the mode saved in the console wins over `ENROLLMENT_MODE` unless `ENROLLMENT_MODE_ENV_OVERRIDE=Y`.
 6. It loads the secret that signs API tokens and creates the first admin account on an empty database.
 7. It starts the audit log, the metrics, the reload on `SIGHUP`, the clock check and the billing service.
 8. It starts the ID server, the relay, the API server, the CDAP gateway, the MeshCentral gateway (on unless `MESH_ENABLED=N`), the local admin interface and the web console. The CDAP gateway is on unless **Disable gateway** on the IoT devices page turned it off; while nothing is saved there, `CDAP_ENABLED=N` turns it off.

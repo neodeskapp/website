@@ -119,14 +119,14 @@ docker exec -u neodesk neodesk cat /opt/neodesk/data/id_ed25519.pub
 
 ## Let the clients back in
 
-A new install starts in the **Managed** enrollment mode. To NeoDesk, your
+A new install starts in the **Managed** join mode. To NeoDesk, your
 RustDesk clients are new devices, so each one waits under **Devices**,
-**Enrollment requests** until someone approves it. Until then nobody can reach
+**Join requests** until someone approves it. Until then nobody can reach
 it, and it cannot start a session.
 
 There are two ways to let them in:
 
-- Approve each one under **Enrollment requests**.
+- Approve each one under **Join requests**.
 - Switch to **Open** while the clients come back, then switch back to
   **Managed**. Waiting devices connect the next time they try, and a device the
   server knows can register again in every mode. Do this when you have more

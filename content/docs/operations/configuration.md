@@ -12,7 +12,7 @@ The server and the web console run in one process, and both read their settings 
 - Environment variables: every setting on this page is one. On/off settings take `1` or `0`, `true` or `false`, `yes` or `no`, `y` or `n`, and `on` or `off`, in any letter case.
 - Command-line flags: some settings also have a flag, listed in the tables below, and `neodesk-server -h` prints them all. When a setting is given both ways, the environment variable wins.
 - An env file: when `NEODESK_ENV_FILE` names a file, the server reads it once at start. Each line is `KEY=value`, and lines starting with `#` are comments. Values may be quoted, and ` #` after a value starts a comment, as in other `.env` files. The file only fills variables the environment leaves empty, and the first line with a value for a key counts. At each start the server also adds the settings of its release that the file lacks, with their defaults.
-- Settings saved in the console: once you save them, some settings live in the database and win over the environment, which then only gives the first default. These are the connection strategy, the time sync settings, the RustDesk client session lengths and the enrollment mode. **Public client endpoints** are kept in `public-endpoints.env` in the data folder and win over `PUBLIC_SERVER_ID`, `PUBLIC_RELAY_SERVER` and `PUBLIC_API_URL`; an address saved empty lets its variable count again. Two switches make the environment win instead: `ENROLLMENT_MODE_ENV_OVERRIDE` for the enrollment mode and `PUBLIC_ENDPOINTS_ENV_OVERRIDE` for the public client endpoints.
+- Settings saved in the console: once you save them, some settings live in the database and win over the environment, which then only gives the first default. These are the connection strategy, the time sync settings, the RustDesk client session lengths and the join mode. **Public client endpoints** are kept in `public-endpoints.env` in the data folder and win over `PUBLIC_SERVER_ID`, `PUBLIC_RELAY_SERVER` and `PUBLIC_API_URL`; an address saved empty lets its variable count again. Two switches make the environment win instead: `ENROLLMENT_MODE_ENV_OVERRIDE` for the join mode and `PUBLIC_ENDPOINTS_ENV_OVERRIDE` for the public client endpoints.
 
 Restart the server after changing a variable. It reads its environment and the env file only at start.
 
@@ -106,7 +106,7 @@ The first six are the first defaults of **Connection strategy** under **Settings
 | `ALLOW_SHARED_NAT_INITIATOR` | off | `-allow-shared-nat-initiator` | Let devices that share a public IP address start sessions without signing in. See [Hardening](/docs/operations/security#limit-who-can-start-sessions). |
 | `LOGGED_IN_ONLY_INITIATOR` | off | `-logged-in-only-initiator` | Only signed-in RustDesk apps can start sessions. |
 | `OPERATOR_ONLY_OUTBOUND` | off | `-operator-only-outbound` | Only accounts that may connect to devices can start sessions. |
-| `ALLOW_LEGACY_OUTBOUND` | off | | Lets a RustDesk app that never registered as a device start sessions, always through the relay. Only in the `open` enrollment mode. |
+| `ALLOW_LEGACY_OUTBOUND` | off | | Lets a RustDesk app that never registered as a device start sessions, always through the relay. Only in the `open` join mode. |
 | `MASK` | | `-mask` | Your LAN's range, for example `192.168.0.0/16`, which tells the server when two devices are on the same network. Without it, addresses in the same /24 count as one network. |
 | `PANEL_SIGNAL_PROXY_CIDRS` | `127.0.0.0/8,::1/128` | | Addresses from which the console's bridge for remote desktop in the browser reaches the ID server. Change it only when `WS_HBBS_HOST` names another address of this machine. |
 
@@ -139,7 +139,7 @@ The first six are the first defaults of **Connection strategy** under **Settings
 
 | Variable | Default | Flag | What it does |
 |---|---|---|---|
-| `ENROLLMENT_MODE` | `open` | | `open`, `managed` or `locked`, the mode of the first start. The installers and a new Docker volume set `managed`. After that the mode chosen in the console wins, unless `ENROLLMENT_MODE_ENV_OVERRIDE` is on. See [Enrollment](/docs/console/enrollment). |
+| `ENROLLMENT_MODE` | `open` | | `open`, `managed` or `locked`, the mode of the first start. The installers and a new Docker volume set `managed`. After that the mode chosen in the console wins, unless `ENROLLMENT_MODE_ENV_OVERRIDE` is on. See [Join requests](/docs/console/enrollment). |
 | `TRUST_PROXY`, `TRUSTED_PROXIES` | off | `-trust-proxy`, `-trusted-proxies` | Trust a reverse proxy's forwarded headers. See [Reverse proxy and TLS](/docs/operations/reverse-proxy-tls#trusting-the-proxy). |
 | `HTTPS_ENABLED`, `HTTPS_PORT`, `SSL_CERT_PATH`, `SSL_KEY_PATH` | off, `5443` | | HTTPS served by the console itself. See [HTTPS without a proxy](/docs/operations/reverse-proxy-tls#https-without-a-proxy). |
 | `TLS_CERT`, `TLS_KEY`, `TLS_SIGNAL`, `TLS_RELAY`, `TLS_API` | off | `-tls-cert`, `-tls-key`, `-tls-signal`, `-tls-relay`, `-tls-api` | TLS on the server's own ports. Signal and relay then take plain and TLS connections on the same port, and their WebSocket ports TLS only; `TLS_API` makes the API port HTTPS only. |

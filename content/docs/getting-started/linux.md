@@ -224,10 +224,10 @@ sudo journalctl -u neodesk-server -f
 sudo systemctl restart neodesk-server
 ```
 
-A new install starts in the **Managed** enrollment mode: a new RustDesk client
-waits under **Enrollment requests** until someone approves it. The env file sets
+A new install starts in the **Managed** join mode: a new RustDesk client
+waits under **Join requests** until someone approves it. The env file sets
 this only as the first mode; a mode you pick in the console stays. See
-[Enrollment](/docs/console/enrollment).
+[Join requests](/docs/console/enrollment).
 
 ## Later: neodesk-setup {#later-the-neodesk-command}
 
