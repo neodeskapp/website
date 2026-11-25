@@ -69,6 +69,7 @@ export interface Strings {
 	notFoundTitle: string;
 	goToDocs: string;
 	footer: string;
+	madeInEu: string;
 	changelog: string;
 	security: string;
 	/** The footer's link to the brand page */
@@ -145,6 +146,7 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		notFoundDescription: 'There is no page at this address.',
 		goToDocs: 'Go to the documentation',
 		footer: 'NeoDesk works with RustDesk clients. Open source under AGPL-3.0.',
+		madeInEu: 'Made in the EU',
 		changelog: 'Changelog',
 		security: 'Security',
 		brand: 'Brand and logo',
@@ -206,6 +208,7 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		notFoundDescription: 'Unter dieser Adresse gibt es keine Seite.',
 		goToDocs: 'Zur Dokumentation',
 		footer: 'NeoDesk funktioniert mit RustDesk-Clients. Open Source unter der AGPL-3.0.',
+		madeInEu: 'Made in the EU',
 		changelog: 'Changelog',
 		security: 'Sicherheit',
 		brand: 'Logo und Marke',
