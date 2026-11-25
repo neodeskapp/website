@@ -2,6 +2,7 @@
 title: Translations
 description: Where the web console's texts live, how to improve a translation or add a language, how to add a new text, and the check every language file has to pass.
 order: 7
+icon: translate
 ---
 
 The web console's texts are JSON files, one per language, in `neodesk-server/console/static/files/lang`. There are 26 of them, from `ar.json` to `zh-TW.json`. They are built into the server binary, so a changed text reaches users with the next release.

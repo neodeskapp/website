@@ -2,6 +2,7 @@
 title: RustDesk compatibility
 description: How the server stays compatible with the stock RustDesk client, the checklist for a new RustDesk release, and what the upstream watch does.
 order: 9
+icon: compare_arrows
 ---
 
 NeoDesk works with the stock RustDesk client from RustDesk's own releases. Nothing in the client is changed: the server speaks the client's protocol and HTTP API. This page says what the server speaks, which choices in the code keep stock clients working, and how to check a new RustDesk release.

@@ -2,6 +2,7 @@
 title: Layout and dialogs
 description: The console's page frame and its sizes, spacing between things, and when to use a dialog or a side sheet.
 order: 4
+icon: view_quilt
 ---
 
 The console has a sidebar, a top bar and the page beside them. The sizes are

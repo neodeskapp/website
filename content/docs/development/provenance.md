@@ -2,6 +2,7 @@
 title: Clean-room provenance
 description: The policy for code and protocol schemas that talk to stock RustDesk clients, the clean-room workflow, and the release gate for clean-room claims.
 order: 10
+icon: verified
 ---
 
 NeoDesk talks to the stock RustDesk desktop client, so part of its code follows a protocol that NeoDesk did not design. This page is the provenance register for that part: how compatibility code and protocol schemas are written, and what has to be shown before a release describes them in any way that implies independent authorship. It applies to everyone who changes the repository.

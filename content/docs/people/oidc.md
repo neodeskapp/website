@@ -2,6 +2,7 @@
 title: Single sign-on with OIDC
 description: Let people sign in to the console through an OpenID Connect identity provider, and give them roles from the groups the provider sends.
 order: 5
+icon: verified_user
 ---
 
 With single sign-on turned on, the sign-in page gets a button that sends people to your OpenID Connect identity provider, such as Keycloak, Okta, Azure AD or Google. After they sign in there, they come back to the console signed in. The first sign-in makes their account.

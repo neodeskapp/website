@@ -2,6 +2,7 @@
 title: The overview page
 description: What the first page after sign-in shows, from the things that need someone to the values a RustDesk client needs.
 order: 1
+icon: dashboard
 ---
 
 **Overview** is the first page you see after you sign in. It shows what needs your attention, how your devices are doing, the last two weeks of remote sessions and help requests, and the values a RustDesk client needs to connect. To come back to it, open **Devices**, then **Overview**.

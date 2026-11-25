@@ -2,6 +2,7 @@
 title: Users and roles
 description: Add, change, disable and delete console accounts, choose a role for each, and decide which devices people who are not administrators see.
 order: 1
+icon: group
 ---
 
 Everyone who signs in to the web console has an account on the **Users** page, under **People** in the sidebar. The account's role decides what the person can do. Its device access decides which devices they see.

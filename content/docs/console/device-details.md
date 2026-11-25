@@ -2,6 +2,7 @@
 title: Device details and connecting
 description: The device panel tab by tab, how to edit a device, and the ways to connect to it.
 order: 4
+icon: info
 ---
 
 A click on a device in [the device list](/docs/console/devices) opens its panel at the side of the page. The panel shows everything the server knows about the device, lets you change it, and connects you to it.

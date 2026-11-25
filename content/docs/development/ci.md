@@ -2,6 +2,7 @@
 title: CI workflows
 description: The GitHub Actions workflows of the repository, when each one runs, what it checks or publishes, and what to do when one fails.
 order: 6
+icon: autorenew
 ---
 
 The workflows are in `.github/workflows`. Their names here are the ones GitHub Actions shows. The release workflows are described in [Branches, versions and releases](/docs/development/releasing#release-workflows); this page lists them only.

@@ -3,6 +3,7 @@ title: Backup and restore
 description: What to back up for each install type, what the console's Backup page covers, cold backups of the Docker volumes, restoring, and why the key file matters.
 order: 6
 related: /docs/operations/updating, /docs/operations/postgresql
+icon: backup
 ---
 
 A NeoDesk install keeps its state in a database and in a few files next to it. This page lists them for each install type, explains what the console's **Backup** page saves, and shows how to make and restore a full copy.

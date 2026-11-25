@@ -2,6 +2,7 @@
 title: Two-factor sign-in
 description: Turn on sign-in codes from an authenticator app, sign in with them, use and renew recovery codes, and make two-factor sign-in mandatory.
 order: 3
+icon: pin
 ---
 
 With two-factor sign-in, a password alone no longer opens your account: after the password you also type a six-digit code from an authenticator app on your phone, such as Google Authenticator, Microsoft Authenticator or Authy. Each person turns it on for their own account, and an administrator can make it mandatory for password accounts.

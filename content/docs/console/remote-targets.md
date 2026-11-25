@@ -2,6 +2,7 @@
 title: RDP and VNC targets
 description: Add computers that have no RustDesk client, set up the gateway the server reaches them through, and what a session can do.
 order: 9
+icon: lan
 ---
 
 An RDP or VNC target is a computer without a RustDesk or NeoDesk client, such as a Windows PC with Remote Desktop turned on or a Linux machine with a VNC server. The server connects to it, and people use it in a browser tab through the [web viewer](/docs/console/remote-in-browser). The browser talks only to the console. The server opens the connection to the computer and fills in a saved password itself, so that password never reaches the browser.

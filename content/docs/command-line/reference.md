@@ -4,6 +4,7 @@ description: Every command of the neodesk command line by group, the flags every
 order: 9
 fold: true
 quoted: true
+icon: menu_book
 ---
 
 The command line of NeoDesk: every action of the web console, on top of API tokens.

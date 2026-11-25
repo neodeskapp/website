@@ -2,6 +2,7 @@
 title: Privacy
 description: What NeoDesk keeps on your server, and every host the server, the console and the installers contact, and when.
 order: 2
+icon: privacy_tip
 ---
 
 NeoDesk runs on a machine you control. The project runs no service that receives your devices, accounts or sessions, and the code sends no analytics, crash reports or usage data to anyone. This page lists what the server keeps and every host it contacts. It describes the code of NeoDesk {{VERSION}} from [neodeskapp/neodesk](https://github.com/neodeskapp/neodesk); other builds may differ.

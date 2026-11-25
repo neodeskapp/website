@@ -4,6 +4,7 @@ description: Replace a RustDesk server (hbbs and hbbr) with NeoDesk and keep its
 order: 7
 seoTitle: Replace hbbs and hbbr with NeoDesk and keep the key
 related: /docs/getting-started/connect-a-client, /docs/operations/ports
+icon: move_up
 ---
 
 NeoDesk takes the place of hbbs and hbbr. A RustDesk client checks the server
