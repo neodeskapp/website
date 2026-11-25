@@ -29,7 +29,7 @@ The server works out three of these from the others: the NAT test port is one be
 
 The console on port 3375 speaks plain HTTP. Open it as `http://<server-address>:3375`, or put it behind a reverse proxy with TLS before people use it over the internet; see [Reverse proxy and TLS](/docs/operations/reverse-proxy-tls). The Linux and Windows installers turn on HTTPS with a self-signed certificate, so on those installs the console is on 5443 and the plain port redirects there; see [HTTPS without a proxy](/docs/operations/reverse-proxy-tls#https-without-a-proxy).
 
-The last column of the table says what the internet should reach once people use the console. The installers open the console's ports anyway, so you can sign in right after the install. [Firewall on Linux](#firewall-on-linux) says which ports each installer opens and when.
+The last column of the table says what the internet should reach once people use the console. The installers open the console's port anyway, so you can sign in right after the install: 3375, and 5443 only while HTTPS is on. With `TRUST_PROXY` on, or with `--domain` on Docker, they leave both closed. [Firewall on Linux](#firewall-on-linux) says which ports each installer opens and when.
 
 ### The console's port before 3.6.0-rc.5
 
@@ -87,7 +87,7 @@ sudo firewall-cmd --reload
 
 The Linux installer opens the ports itself when ufw or firewalld is active, and adds iptables rules only when neither of them is installed. A ufw or firewalld that is installed but switched off stays as it is, with no rules added. The ports it opens are 21115 to 21117 over TCP, 21116 over UDP, the client API port 21121, 21122 unless the env file sets `CDAP_ENABLED=N`, and the console's port (3375 on a new install) and, with HTTPS on, 5443. With `TRUST_PROXY` on it leaves the console's ports closed. It takes the ID server and relay ports from the env file, and at the end it prints the list for a firewall outside the machine, such as your cloud provider's.
 
-The one-line install for Docker opens its ports in ufw or firewalld only when one of them is active, and adds no iptables rules. It opens 21115 to 21119, 21121, 21122, and the console's 3375 and 5443 over TCP, and 21116 over UDP. With `--domain` it opens 80 and 443 in place of 3375 and 5443. It doesn't look at `TRUST_PROXY`; see [Install with the script](/docs/getting-started/docker#install-with-the-script).
+The one-line install for Docker opens its ports in ufw or firewalld only when one of them is active, and adds no iptables rules. It opens 21115 to 21119, 21121 and 21122 over TCP and 21116 over UDP. It opens the console's ports by the same rule as the Linux installer, read from the `.env` file: 3375, plus 5443 with `HTTPS_ENABLED=true`, and neither with `TRUST_PROXY` on or `NEODESK_CONSOLE_BIND=127.0.0.1`. With `--domain` it opens 80 and 443 instead. When `TRUST_PROXY` keeps the console's port closed, it prints the command to open it by hand; see [Install with the script](/docs/getting-started/docker#install-with-the-script).
 
 ::: note
 Docker publishes container ports through its own firewall rules, and ufw does not filter them. To keep the console off the network, publish it on the loopback address only: set `NEODESK_CONSOLE_BIND=127.0.0.1` in the `.env` file next to the compose file and recreate the container in that folder:
