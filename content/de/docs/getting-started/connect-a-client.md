@@ -128,13 +128,14 @@ neue Geräte genehmigen dürfen.
 ## Aus dem Paket-Repository installieren {#install-from-the-package-repository}
 
 ::: note
-Die Suite `stable` enthält noch keine Pakete, weil es vom Client noch kein
-fertiges Release gibt. Die Schritte unten nutzen `stable`, ihr letzter Schritt
-findet deshalb im Moment kein Paket `neodesk`. Die Suite `testing` enthält die
-Release Candidates, zurzeit 1.5.0-rc.7. Für einen Release Candidate unter
-Debian oder Ubuntu schreibst du in Schritt 3 `testing` statt `stable`. Oder du
-installierst den Client mit einer Einladung aus
-[Computer hinzufügen](/docs/console/add-a-computer).
+Im Moment hat nur die Suite `testing` Pakete: die Release Candidates, zurzeit
+1.5.0-rc.7. Die Suite `stable` bleibt leer, bis es vom Client ein fertiges
+Release gibt. Die Schritte unten nutzen `stable` und finden deshalb auf keinem
+der drei Systeme ein Paket `neodesk`. Bis dahin installierst du aus `testing`:
+Unter Debian und Ubuntu schreibst du in Schritt 3 `testing` statt `stable`,
+unter Fedora und openSUSE nimmst du die Befehle unter
+[Release Candidates](#release-candidates). Oder du installierst den Client mit
+einer Einladung aus [Computer hinzufügen](/docs/console/add-a-computer).
 :::
 
 Den NeoDesk-Client für Linux gibt es auch aus einem signierten
@@ -343,7 +344,7 @@ Konten mit Single Sign-on melden sich im Client über ihren Anbieter an, siehe
 Geh diese Punkte der Reihe nach durch:
 
 - **Ports.** Das Netzwerk des Clients muss den Server auf 21116 über TCP und
-  UDP, auf 21117 über TCP und auf dem Port aus dem Wert für den API-Server
+  UDP, auf 21115 und 21117 über TCP und auf dem Port aus dem Wert für den API-Server
   erreichen. Die Installation öffnet sie auf dem Server, wo sie kann. Ein
   Router oder eine Cloud-Firewall vor dem Server muss sie aber ebenfalls
   durchlassen. Siehe [Ports und Firewall](/docs/operations/ports).

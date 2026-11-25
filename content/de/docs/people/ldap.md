@@ -36,7 +36,7 @@ Setze den Haken bei **LDAP-Anmeldung einschalten**, damit die Felder erscheinen.
 | **Gruppenfilter** | Die Gruppensuche, mit `{{dn}}` für den DN des Benutzers und `{{username}}` für den Kontonamen. Standard `(member={{dn}})`. |
 | **Gruppennamen-Attribut** | Das Attribut, das die Gruppensuche abfragt. Standard `cn`. |
 | **Benutzer automatisch anlegen** | Standardmäßig an: Wen das Verzeichnis akzeptiert, bekommt bei der ersten Anmeldung ein Konto. Aus: Nur wer hier schon ein Verzeichniskonto hat, kann sich über das Verzeichnis anmelden. |
-| **Standardrolle** | Die Rolle für Personen, von deren Gruppen keine in der Zuordnung steht: **Betrachter**, **Operator** oder **Administrator**. |
+| **Standardrolle** | Die Rolle für Personen, von deren Gruppen keine in der Zuordnung steht: **Betrachter**, **Operator** oder **Administrator**. Das sind die Rollen Betrachter, Remote-Operator und Administrator aus der [Rollentabelle](/docs/people/users-and-roles#roles). |
 | **Zuordnung Gruppe zu Rolle** | Verzeichnisgruppen und die Rolle, die jede davon gibt (siehe unten). |
 
 Bei OpenLDAP und ähnlichen Servern setzt du **Benutzerfilter** etwa auf `(uid={{username}})` und **Benutzernamen-Attribut** auf `uid`.

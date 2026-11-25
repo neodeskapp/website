@@ -48,7 +48,7 @@ Tick **Turn on single sign-on** to show the fields. Turning it on fills **Redire
 | **Email claim** | Default `email`. Stored with the account at every sign-in and shown in the **Email** column of the Users page. Used for the account name, the part before the @, only when the provider sends no user name claim and says the address is verified. |
 | **Display name claim** | Default `name`. Stored with the account at every sign-in. |
 | **Groups claim** | The claim with the person's groups. Default `groups`. |
-| **Default role** | Under **Roles**: **Viewer**, **Operator** or **Admin**. |
+| **Default role** | Under **Roles**: **Viewer**, **Operator** or **Admin**. These are the roles Viewer, Remote operator and Administrator in the [roles table](/docs/people/users-and-roles#roles). |
 | **Group → Role Mapping** | Groups and the role each gives (see below). |
 
 To save with single sign-on on, the server needs a Client ID, a Redirect URL, and an Issuer URL or both the authorization and token endpoints.

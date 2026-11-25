@@ -97,9 +97,11 @@ einen Server, der nur dein lokales Netzwerk bedient:
 curl -fsSL https://neode.sk/install.sh | sudo bash -s -- --relay-mode local
 ```
 
-Dort heißen sie `--relay-servers`, `--relay-mode`, `--version`,
-`--admin-password`, `--domain`, `--letsencrypt-email` und
-`--letsencrypt-staging`.
+Die beiden Installer nennen drei dieser Optionen verschieden: `install.sh`
+nimmt `--relay-servers`, `--version` und `--letsencrypt-email`, wo
+`neodesk-docker.sh` `--relay`, `--tag` und `--email` nimmt, und gibt sie unter
+den Namen des Skripts weiter. Seine anderen Optionen hier sind `--relay-mode`,
+`--admin-password`, `--domain` und `--letsencrypt-staging`.
 
 ### Weitere Befehle des Skripts {#other-commands-of-the-script}
 
@@ -409,7 +411,7 @@ docker compose up -d
 
 | Volume | Eingehängt unter | Inhalt |
 |--------|------------------|--------|
-| `neodesk-data` | `/opt/neodesk/data` | Die Datenbank `db_v2.sqlite3`, das Schlüsselpaar `id_ed25519` und `id_ed25519.pub`, der API-Schlüssel `.api_key`, `.admin_credentials` und der Schlüssel für gespeicherte Passwörter von Remote-Zielen, `.remote_target_vault_key` |
+| `neodesk-data` | `/opt/neodesk/data` | Die Datenbank `db_v2.sqlite3`, das Schlüsselpaar `id_ed25519` und `id_ed25519.pub`, der API-Schlüssel `.api_key`, `.admin_credentials`, der Schlüssel für gespeicherte Passwörter von Remote-Zielen `.remote_target_vault_key`, der Schlüssel der gespeicherten Anmeldung und der Gerätepasswörter im Adressbuch `.device_vault_key` und das Agenten-Zertifikat `mesh_agent_server.pem` |
 | `neodesk-console-data` | `/app/data` | Die eigenen Dateien der Konsole, etwa hochgeladene Bilder, Schriften, Builds des Support-Agenten und die in der Konsole gespeicherten öffentlichen Client-Endpunkte |
 | `neodesk-postgres-data` | `/var/lib/postgresql/data` | Nur mit PostgreSQL |
 | `neodesk-traefik-letsencrypt` | `/letsencrypt` im Traefik-Container | Nur mit [HTTPS mit Let's Encrypt](#https-with-lets-encrypt): das Zertifikat und das Konto bei Let's Encrypt |

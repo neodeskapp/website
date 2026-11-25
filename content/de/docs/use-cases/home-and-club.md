@@ -69,7 +69,9 @@ cd /opt/neodesk/docker
 sudo bash neodesk-docker.sh --domain <domain> --email <email-address>
 ```
 
-Setze dieselben Werte für `<domain>` und `<email-address>` ein.
+Setze dieselben Werte für `<domain>` und `<email-address>` ein. Das Skript
+nennt die Option für die E-Mail-Adresse `--email`, die Installation mit einer
+Zeile `--letsencrypt-email`.
 
 Was sich ändert:
 

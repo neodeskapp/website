@@ -36,7 +36,7 @@ Tick **Turn on LDAP sign-in** to show the fields.
 | **Group filter** | The group search, with `{{dn}}` for the user's DN and `{{username}}` for the account name. Default `(member={{dn}})`. |
 | **Group name attribute** | The attribute the group search asks for. Default `cn`. |
 | **Auto-create users** | On by default: a person the directory accepts gets an account at their first sign-in. Off: only people who already have a directory account here can sign in through the directory. |
-| **Default role** | The role for people none of whose groups is in the map: **Viewer**, **Operator** or **Admin**. |
+| **Default role** | The role for people none of whose groups is in the map: **Viewer**, **Operator** or **Admin**. These are the roles Viewer, Remote operator and Administrator in the [roles table](/docs/people/users-and-roles#roles). |
 | **Group to role map** | Directory groups and the role each gives (see below). |
 
 For OpenLDAP and similar servers, set **User filter** to something like `(uid={{username}})` and **User name attribute** to `uid`.

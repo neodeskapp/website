@@ -48,7 +48,7 @@ Setze den Haken bei **Single Sign-on einschalten**, damit die Felder erscheinen.
 | **E-Mail-Claim** | Standard `email`. Wird bei jeder Anmeldung mit dem Konto gespeichert und in der Spalte **E-Mail** der Seite Benutzer angezeigt. Der Teil vor dem @ dient nur dann als Kontoname, wenn der Anbieter keinen Benutzername-Claim schickt und die Adresse als bestätigt meldet. |
 | **Anzeigename-Claim** | Standard `name`. Wird bei jeder Anmeldung mit dem Konto gespeichert. |
 | **Gruppen-Claim** | Der Claim mit den Gruppen der Person. Standard `groups`. |
-| **Standardrolle** | Unter **Rollen**: **Betrachter**, **Operator** oder **Administrator**. |
+| **Standardrolle** | Unter **Rollen**: **Betrachter**, **Operator** oder **Administrator**. Das sind die Rollen Betrachter, Remote-Operator und Administrator aus der [Rollentabelle](/docs/people/users-and-roles#roles). |
 | **Gruppen → Rollen-Zuordnung** | Gruppen und die Rolle, die jede davon gibt (siehe unten). |
 
 Damit du mit eingeschaltetem Single Sign-on speichern kannst, braucht der Server eine Client-ID, eine Weiterleitungs-URL und entweder eine Aussteller-URL oder sowohl den Autorisierungs- als auch den Token-Endpoint.

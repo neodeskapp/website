@@ -119,12 +119,13 @@ lists the codes that are still active and lets you revoke one. The
 ## Install from the package repository
 
 ::: note
-The `stable` suite holds no packages yet, because the client has no final
-release. The steps below use `stable`, so their last step finds no `neodesk`
-package for now. The `testing` suite holds the release candidates, 1.5.0-rc.7
-at the moment. To install a release candidate on Debian or Ubuntu, write
-`testing` in place of `stable` in step 3. Or install the client with an invite
-from [Add a computer](/docs/console/add-a-computer).
+Today only the `testing` suite has packages: the release candidates, 1.5.0-rc.7
+at the moment. The `stable` suite stays empty until the client has a final
+release, so the steps below, which use `stable`, find no `neodesk` package yet
+on any of the three systems. Until then, install from `testing`: on Debian and
+Ubuntu, write `testing` in place of `stable` in step 3; on Fedora and openSUSE,
+use the commands under [Release candidates](#release-candidates). Or install
+the client with an invite from [Add a computer](/docs/console/add-a-computer).
 :::
 
 The NeoDesk client for Linux also comes from a signed package repository at
@@ -323,7 +324,7 @@ see [Single sign-on with OIDC](/docs/people/oidc).
 Go through these in order:
 
 - **Ports.** The client's network must reach the server on 21116 over TCP and
-  UDP, 21117 over TCP, and the port in the API server value. The install opens
+  UDP, 21115 and 21117 over TCP, and the port in the API server value. The install opens
   them on the server where it can, but a router or a cloud firewall in front of
   the server needs them open too. See [Ports](/docs/operations/ports).
 - **Address.** The ID and relay server must be an address the device can reach

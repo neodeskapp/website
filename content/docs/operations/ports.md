@@ -18,7 +18,7 @@ RustDesk clients reach the server on a handful of ports, and people open the web
 | 21118 | TCP | RustDesk clients set to use WebSocket: the ID server | Only for such clients |
 | 21119 | TCP | RustDesk clients set to use WebSocket: the relay | Only for such clients |
 | 21121 | TCP (HTTP) | RustDesk clients: the client API, for system information, sign-in and the address book | Yes |
-| 21114 | TCP (HTTP) | Linux and Windows only: the server's own API, which answers the client API calls the console passes on from 21121 | No, only to a Prometheus server |
+| 21114 | TCP (HTTP) | Linux and Windows only: the server's own API, with `/metrics` for Prometheus. The console passes the client API calls from 21121 to it inside the server, so clients and browsers don't connect here | Only from a Prometheus server that reads `/metrics`. The installers don't open it |
 | 21122 | TCP | CDAP device agents | Only when you use them |
 | 3375 | TCP (HTTP) | Browsers: the web console, and remote desktop in the browser | Only through a reverse proxy with TLS |
 | 5443 | TCP (HTTPS) | Browsers: the console when it serves HTTPS itself | Only when no reverse proxy is in front |
@@ -27,6 +27,8 @@ RustDesk clients reach the server on a handful of ports, and people open the web
 The server works out three of these from the others: the NAT test port is one below the ID server port, and the two WebSocket ports are two above the ID server and relay ports.
 
 The console on port 3375 speaks plain HTTP. Open it as `http://<server-address>:3375`, or put it behind a reverse proxy with TLS before people use it over the internet; see [Reverse proxy and TLS](/docs/operations/reverse-proxy-tls). The Linux and Windows installers turn on HTTPS with a self-signed certificate, so on those installs the console is on 5443 and the plain port redirects there; see [HTTPS without a proxy](/docs/operations/reverse-proxy-tls#https-without-a-proxy).
+
+The last column of the table says what the internet should reach once people use the console. The installers open the console's ports anyway, so you can sign in right after the install. [Firewall on Linux](#firewall-on-linux) says which ports each installer opens and when.
 
 ### The console's port before 3.6.0-rc.5
 
@@ -84,7 +86,7 @@ sudo firewall-cmd --reload
 
 The Linux installer opens the ports itself when ufw or firewalld is active, and adds iptables rules only when neither of them is installed. A ufw or firewalld that is installed but switched off stays as it is, with no rules added. The ports it opens are 21115 to 21117 over TCP, 21116 over UDP, the client API port 21121, 21122 unless the env file sets `CDAP_ENABLED=N`, and the console's port (3375 on a new install) and, with HTTPS on, 5443. With `TRUST_PROXY` on it leaves the console's ports closed. It takes the ID server and relay ports from the env file, and at the end it prints the list for a firewall outside the machine, such as your cloud provider's.
 
-The one-line install for Docker opens its ports, 21122 included, in ufw or firewalld only when one of them is active, and adds no iptables rules; see [Install with the script](/docs/getting-started/docker#install-with-the-script).
+The one-line install for Docker opens its ports in ufw or firewalld only when one of them is active, and adds no iptables rules. It opens 21115 to 21119, 21121, 21122, and the console's 3375 and 5443 over TCP, and 21116 over UDP. With `--domain` it opens 80 and 443 in place of 3375 and 5443. It doesn't look at `TRUST_PROXY`; see [Install with the script](/docs/getting-started/docker#install-with-the-script).
 
 ::: note
 Docker publishes container ports through its own firewall rules, and ufw does not filter them. To keep the console off the network, publish it on the loopback address only: set `NEODESK_CONSOLE_BIND=127.0.0.1` in the `.env` file next to the compose file and recreate the container in that folder:

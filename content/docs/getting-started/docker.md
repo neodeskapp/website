@@ -93,9 +93,11 @@ only serves your local network:
 curl -fsSL https://neode.sk/install.sh | sudo bash -s -- --relay-mode local
 ```
 
-There they are called `--relay-servers`, `--relay-mode`, `--version`,
-`--admin-password`, `--domain`, `--letsencrypt-email` and
-`--letsencrypt-staging`.
+The two installers name three of these options differently: `install.sh` takes
+`--relay-servers`, `--version` and `--letsencrypt-email` where
+`neodesk-docker.sh` takes `--relay`, `--tag` and `--email`, and passes them on
+under the script's names. Its other options here are `--relay-mode`,
+`--admin-password`, `--domain` and `--letsencrypt-staging`.
 
 ### Other commands of the script
 
@@ -391,7 +393,7 @@ docker compose up -d
 
 | Volume | Mounted at | What it holds |
 |--------|------------|---------------|
-| `neodesk-data` | `/opt/neodesk/data` | The database `db_v2.sqlite3`, the key pair `id_ed25519` and `id_ed25519.pub`, the API key `.api_key`, `.admin_credentials` and the key for stored remote target passwords, `.remote_target_vault_key` |
+| `neodesk-data` | `/opt/neodesk/data` | The database `db_v2.sqlite3`, the key pair `id_ed25519` and `id_ed25519.pub`, the API key `.api_key`, `.admin_credentials`, the key for stored remote target passwords `.remote_target_vault_key`, the key of saved sign-in and the address book's device passwords `.device_vault_key`, and the mesh agent certificate `mesh_agent_server.pem` |
 | `neodesk-console-data` | `/app/data` | The console's own files, such as uploaded pictures, fonts, support agent builds and the public client endpoints saved in the console |
 | `neodesk-postgres-data` | `/var/lib/postgresql/data` | Only with PostgreSQL |
 | `neodesk-traefik-letsencrypt` | `/letsencrypt` in the Traefik container | Only with [HTTPS with Let's Encrypt](#https-with-lets-encrypt): the certificate and the Let's Encrypt account |

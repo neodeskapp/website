@@ -29,7 +29,7 @@ Docker keeps everything in named volumes:
 
 Up to 3.6.0-rc.4 the data volume was mounted at `/opt/rustdesk`. The update to 3.6.0-rc.5 moves the mount; the data stays in the same volume.
 
-Also keep the `.env` file next to the compose file, and `docker-compose.override.yml` if you made one. The compose file names the volumes itself, so the names don't depend on the folder; `docker volume ls` lists them. Only `docker-compose.single.yml`, which builds the image from the repository, puts the folder name in front, for example `neodesk_neodesk-data`; see [Install with Docker](/docs/getting-started/docker#build-the-image-from-the-repository).
+Also keep the `.env` file next to the compose file, and `docker-compose.override.yml` if you made one. The compose file names the volumes itself, so the names don't depend on the folder; `docker volume ls` lists them. Only `docker-compose.single.yml`, which builds the image from the repository, puts the name of its folder, `install`, in front, so its data volume is `install_neodesk-data`; see [Install with Docker](/docs/getting-started/docker#build-the-image-from-the-repository).
 
 A Linux install, with the installer's default folders:
 

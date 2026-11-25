@@ -65,7 +65,7 @@ Die Konsole hat keinen Zugriffszeitplan und keine Liste erlaubter Operatoren pro
 
 Der Server kann ein Wake-on-LAN-Paket an einen Computer in seinem eigenen Netzwerk senden. Das Paket geht vom Server aus, deshalb erreicht es nur Computer im Netzwerk des Servers.
 
-1. Öffne **Support**, dann **Netzwerk-Tools**. Der Eintrag steht in der Seitenleiste unter **Mehr**.
+1. Öffne **Support**, dann **Netzwerk-Tools**.
 2. Öffne im Tab **Netzwerk** den Punkt **Wake-on-LAN**.
 3. Gib die **MAC-Adresse** des Computers ein, zum Beispiel `AA:BB:CC:DD:EE:FF`.
 4. Lass **Broadcast-Adresse** leer, um das Paket an `255.255.255.255` zu senden, oder gib die IPv4-Broadcast-Adresse des Netzwerks ein, in dem der Computer steht, etwa `192.168.1.255`.

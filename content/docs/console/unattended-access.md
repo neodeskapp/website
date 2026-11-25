@@ -66,7 +66,7 @@ The console has no access schedule or list of allowed operators per device: whet
 
 The server can send a Wake-on-LAN packet to a computer in its own network. The packet leaves from the server, so it only reaches computers in the server's network.
 
-1. Open **Support**, then **Network tools**. It is under **More** in the sidebar.
+1. Open **Support**, then **Network tools**.
 2. On the **Network** tab, open **Wake-on-LAN**.
 3. Enter the computer's **MAC address**, for example `AA:BB:CC:DD:EE:FF`.
 4. Leave **Broadcast address** empty to send the packet to `255.255.255.255`, or enter the IPv4 broadcast address of the computer's network, such as `192.168.1.255`.

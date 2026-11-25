@@ -28,7 +28,7 @@ Docker hält alles in benannten Volumes:
 
 Bis 3.6.0-rc.4 war das Daten-Volume unter `/opt/rustdesk` eingebunden. Das Update auf 3.6.0-rc.5 verlegt den Einhängepunkt; die Daten bleiben im selben Volume.
 
-Sichere außerdem die Datei `.env` neben der Compose-Datei und `docker-compose.override.yml`, falls du eine angelegt hast. Die Compose-Datei benennt die Volumes selbst, deshalb hängen die Namen nicht vom Ordner ab; `docker volume ls` listet sie auf. Nur `docker-compose.single.yml`, das das Image aus dem Repository baut, setzt den Ordnernamen davor, zum Beispiel `neodesk_neodesk-data`; siehe [Installation mit Docker](/docs/getting-started/docker#build-the-image-from-the-repository).
+Sichere außerdem die Datei `.env` neben der Compose-Datei und `docker-compose.override.yml`, falls du eine angelegt hast. Die Compose-Datei benennt die Volumes selbst, deshalb hängen die Namen nicht vom Ordner ab; `docker volume ls` listet sie auf. Nur `docker-compose.single.yml`, das das Image aus dem Repository baut, setzt den Namen seines Ordners, `install`, davor, sein Daten-Volume heißt also `install_neodesk-data`; siehe [Installation mit Docker](/docs/getting-started/docker#build-the-image-from-the-repository).
 
 Eine Linux-Installation mit den Standardordnern des Installers:
 

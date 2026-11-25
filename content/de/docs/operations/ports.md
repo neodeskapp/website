@@ -17,7 +17,7 @@ RustDesk-Clients erreichen den Server über eine Handvoll Ports, und die Web-Kon
 | 21118 | TCP | RustDesk-Clients, die auf WebSocket eingestellt sind: der ID-Server | Nur für solche Clients |
 | 21119 | TCP | RustDesk-Clients, die auf WebSocket eingestellt sind: das Relay | Nur für solche Clients |
 | 21121 | TCP (HTTP) | RustDesk-Clients: die Client-API, für Systeminformationen, Anmeldung und das Adressbuch | Ja |
-| 21114 | TCP (HTTP) | Nur Linux und Windows: die eigene API des Servers. Sie beantwortet die Aufrufe der Client-API, die die Konsole von 21121 weiterreicht | Nein, nur für einen Prometheus-Server |
+| 21114 | TCP (HTTP) | Nur Linux und Windows: die eigene API des Servers, mit `/metrics` für Prometheus. Die Konsole reicht die Aufrufe der Client-API von 21121 innerhalb des Servers an sie weiter, Clients und Browser verbinden sich hier also nicht | Nur von einem Prometheus-Server, der `/metrics` liest. Die Installer öffnen den Port nicht |
 | 21122 | TCP | CDAP-Geräte-Agents | Nur, wenn du sie nutzt |
 | 3375 | TCP (HTTP) | Browser: die Web-Konsole und Remote Desktop im Browser | Nur über einen Reverse Proxy mit TLS |
 | 5443 | TCP (HTTPS) | Browser: die Konsole, wenn sie HTTPS selbst ausliefert | Nur, wenn kein Reverse Proxy davor steht |
@@ -26,6 +26,8 @@ RustDesk-Clients erreichen den Server über eine Handvoll Ports, und die Web-Kon
 Drei davon leitet der Server aus den anderen ab: Der Port für den NAT-Test liegt eins unter dem Port des ID-Servers, und die beiden WebSocket-Ports liegen zwei über den Ports von ID-Server und Relay.
 
 Die Konsole auf Port 3375 spricht unverschlüsseltes HTTP. Öffne sie als `http://<server-address>:3375`, oder setze einen Reverse Proxy mit TLS davor, bevor Menschen sie über das Internet nutzen; siehe [Reverse Proxy und TLS](/docs/operations/reverse-proxy-tls). Die Installer für Linux und Windows schalten HTTPS mit einem selbst signierten Zertifikat ein. Bei diesen Installationen liegt die Konsole deshalb auf 5443, und der unverschlüsselte Port leitet dorthin weiter; siehe [HTTPS ohne Proxy](/docs/operations/reverse-proxy-tls#https-without-a-proxy).
+
+Die letzte Spalte der Tabelle sagt, was das Internet erreichen soll, sobald Menschen die Konsole nutzen. Die Installer öffnen die Ports der Konsole trotzdem, damit du dich gleich nach der Installation anmelden kannst. [Firewall unter Linux](#firewall-on-linux) sagt, welche Ports jeder Installer wann öffnet.
 
 ### Der Port der Konsole vor 3.6.0-rc.5 {#the-consoles-port-before-360-rc5}
 
@@ -83,7 +85,7 @@ sudo firewall-cmd --reload
 
 Der Linux-Installer öffnet die Ports selbst, wenn ufw oder firewalld aktiv ist, und legt iptables-Regeln nur an, wenn keins von beiden installiert ist. Ein ufw oder firewalld, das installiert, aber ausgeschaltet ist, bleibt, wie es ist, ohne neue Regeln. Er öffnet 21115 bis 21117 über TCP, 21116 über UDP, den Port 21121 der Client-API, 21122, außer die env-Datei setzt `CDAP_ENABLED=N`, sowie den Port der Konsole (3375 bei einer neuen Installation) und, mit eingeschaltetem HTTPS, 5443. Ist `TRUST_PROXY` eingeschaltet, lässt er die Ports der Konsole geschlossen. Die Ports von ID-Server und Relay nimmt er aus der env-Datei, und am Ende gibt er die Liste für eine Firewall außerhalb des Rechners aus, etwa die deines Cloud-Anbieters.
 
-Die Ein-Zeilen-Installation für Docker öffnet ihre Ports, 21122 eingeschlossen, in ufw oder firewalld nur, wenn eines davon aktiv ist, und legt keine iptables-Regeln an; siehe [Mit dem Skript installieren](/docs/getting-started/docker#install-with-the-script).
+Die Ein-Zeilen-Installation für Docker öffnet ihre Ports in ufw oder firewalld nur, wenn eines davon aktiv ist, und legt keine iptables-Regeln an. Sie öffnet 21115 bis 21119, 21121, 21122 und die Ports 3375 und 5443 der Konsole über TCP sowie 21116 über UDP. Mit `--domain` öffnet sie 80 und 443 statt 3375 und 5443. `TRUST_PROXY` beachtet sie nicht; siehe [Mit dem Skript installieren](/docs/getting-started/docker#install-with-the-script).
 
 ::: note
 Docker veröffentlicht Container-Ports über eigene Firewall-Regeln, und ufw filtert sie nicht. Um die Konsole vom Netz fernzuhalten, veröffentliche sie nur auf der Loopback-Adresse: Setze `NEODESK_CONSOLE_BIND=127.0.0.1` in der Datei `.env` neben der Compose-Datei und erstelle den Container in diesem Ordner neu:
