@@ -2,6 +2,7 @@
 title: Components
 description: The console's building blocks in web-ui/src/lib/ui, and which one to use for buttons, forms, lists, status, messages and panels.
 order: 2
+icon: widgets
 ---
 
 Pages are built from the components in `web-ui/src/lib/ui/`. Each file starts

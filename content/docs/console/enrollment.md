@@ -2,6 +2,7 @@
 title: Enrollment requests
 description: Decide which new devices may join the server, and approve or reject the ones that ask.
 order: 5
+icon: how_to_reg
 ---
 
 The enrollment mode decides whether a new device can join the server by itself or has to wait for someone to approve it. Devices that wait show up under **Devices**, **Enrollment requests**, where you approve or reject them. The number next to **Enrollment requests** in the sidebar is how many are waiting.

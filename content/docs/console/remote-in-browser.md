@@ -2,6 +2,7 @@
 title: Remote desktop in the browser
 description: Control a device from a browser tab through the server, what that needs, and where it differs from the RustDesk app.
 order: 7
+icon: desktop_windows
 ---
 
 The console has its own remote desktop client, the web viewer. It runs in a browser tab and talks only to the server, so the computer you sit at needs nothing installed. This page covers how to open it, what it needs and what it can do.

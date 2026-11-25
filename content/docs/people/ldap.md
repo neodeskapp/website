@@ -2,6 +2,7 @@
 title: LDAP and Active Directory
 description: Let people sign in to the console with their directory user name and password, and give them roles from their directory groups.
 order: 4
+icon: account_tree
 ---
 
 With LDAP sign-in turned on, people from your directory sign in with their directory user name and password. Their account is made at the first sign-in, and their role comes from their directory groups at every sign-in. This works with Active Directory and other LDAP servers.

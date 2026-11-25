@@ -2,6 +2,7 @@
 title: Contributing
 description: How to propose a change to NeoDesk, what a pull request needs, how commit messages look, and the policy on copyright and provenance of contributions.
 order: 1
+icon: handshake
 ---
 
 NeoDesk is developed in the repository [neodeskapp/neodesk](https://github.com/neodeskapp/neodesk) on GitHub. Changes come in as pull requests against `main`, the repository's only branch. This page covers what a pull request needs; [Building from source](/docs/development/building) and [Tests and checks](/docs/development/tests-and-checks) cover the work before it.

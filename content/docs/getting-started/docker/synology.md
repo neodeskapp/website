@@ -2,6 +2,7 @@
 title: Docker on a Synology NAS
 description: Run the published NeoDesk image in Synology's Container Manager, with the settings a NAS usually needs.
 order: 1
+icon: hard_drive
 ---
 
 A Synology NAS runs NeoDesk with the same compose file as any other Docker

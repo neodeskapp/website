@@ -2,6 +2,7 @@
 title: The device list
 description: Find, filter, sort and organize devices, act on several at once, and add RDP or VNC computers.
 order: 2
+icon: devices
 ---
 
 Open **Devices**, then **All devices** to see every device your account may see. Folders and groups sit on the left, the search and the filters above the table. A click anywhere on a row opens the device in a side panel, described in [Device details and connecting](/docs/console/device-details).

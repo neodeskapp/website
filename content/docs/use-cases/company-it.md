@@ -3,6 +3,7 @@ title: Remote IT support for your own staff
 description: Help the people in your company from your own server: sign-in with Active Directory, LDAP or OIDC, roles for the IT team, and an audit log.
 order: 2
 og: use-case
+icon: apartment
 ---
 
 Your IT team helps the people in your own company: a laptop that won't print,

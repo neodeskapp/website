@@ -2,6 +2,7 @@
 title: Tests and checks
 description: The Go tests, the web app's tests, the contract suite, the local gate that runs everything before a commit, and the repository's own checks.
 order: 3
+icon: fact_check
 ---
 
 Before you open a pull request, build what you changed and run its tests. The full checks run on GitHub for every pull request, see [CI workflows](/docs/development/ci). The [local gate](#the-local-gate) runs most of them on your machine in one go.

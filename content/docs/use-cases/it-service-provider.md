@@ -3,6 +3,7 @@ title: Remote support for IT service providers
 description: Run your own remote support server for your customers: one organization per customer, quick support links, unattended access and billable sessions.
 order: 1
 og: use-case
+icon: business_center
 ---
 
 You look after the computers of several customers, say a practice, an office

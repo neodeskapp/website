@@ -2,6 +2,7 @@
 title: Branches, versions and releases
 description: The main branch, how the product version is bumped, what the release workflows publish, and the checklist before a stable release.
 order: 5
+icon: sell
 ---
 
 For maintainers. How a change becomes a development build and a tag becomes a release with binaries and Docker images. How installs pick a channel is in [Updating](/docs/operations/updating#release-channels).

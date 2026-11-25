@@ -2,6 +2,7 @@
 title: Troubleshooting
 description: Logs, health checks, and what to check when the console does not open, sign-in fails, clients cannot connect, the key does not match or the relay fails.
 order: 7
+icon: troubleshoot
 ---
 
 Start with the log and the health checks below. The sections after them go by symptom and name the log lines and settings that point to the cause.

@@ -2,6 +2,7 @@
 title: The installers
 description: For work on the install scripts: what each one does, where it gets the server from, the rules every installer keeps, and how they are tested.
 order: 8
+icon: install_desktop
 ---
 
 The repository has four install scripts, in its `install/` folder next to the three compose files. This page is for changing them. How to install with them is in [Install with Docker](/docs/getting-started/docker), [Install on Linux](/docs/getting-started/linux) and [Install on Windows](/docs/getting-started/windows).

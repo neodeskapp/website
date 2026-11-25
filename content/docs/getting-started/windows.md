@@ -5,6 +5,7 @@ order: 4
 seoTitle: Install NeoDesk on Windows: a RustDesk-compatible server
 related: /docs/getting-started/first-sign-in, /docs/operations/ports, /docs/operations/reverse-proxy-tls, /docs/operations/updating
 howto: requirements, install, admin-credentials, first-sign-in-address
+icon: window
 ---
 
 The `neodesk.ps1` script installs NeoDesk on a Windows machine. It runs the

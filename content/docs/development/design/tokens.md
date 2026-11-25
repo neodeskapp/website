@@ -2,6 +2,7 @@
 title: Design tokens
 description: The console's colours in light and dark, type sizes, the space scale, corners, shadows, motion, layers and the sizes of controls and rows.
 order: 1
+icon: tune
 ---
 
 Every value a component uses is a token in `web-ui/src/lib/styles/tokens.css`.

@@ -2,6 +2,7 @@
 title: Activity and audit log
 description: The audit log, the server's own events, the security checks, reports and app usage, and who can see them.
 order: 8
+icon: history
 ---
 
 The **Activity** group in the sidebar holds what the console and the server recorded: who did what, what the server logged itself, reports you can generate and keep, and which apps are used on devices. **Security and audit** and **Reports** are listed first; **App usage** and **Billable sessions** usually sit under **More**.

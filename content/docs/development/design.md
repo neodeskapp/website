@@ -3,6 +3,7 @@ title: Design
 description: How NeoDesk's interfaces look and read: the design tokens, the components, the icons, layout and dialogs, and the words.
 order: 15
 related: /docs/development/translations, /docs/development/architecture
+icon: palette
 ---
 
 These pages are for people who work on the web console or the desktop client.

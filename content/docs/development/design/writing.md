@@ -2,6 +2,7 @@
 title: Writing for the interface
 description: How labels, buttons and messages in the console and the client are written, and the glossary of the words to use and the ones not to.
 order: 5
+icon: edit_note
 ---
 
 The console and the client talk to people who want to get something done.
