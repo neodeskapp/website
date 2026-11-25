@@ -32,7 +32,8 @@ macOS und Linux, der sich über einen Einladungslink mit deinem Server
 verbindet. Seine Releases liegen auf
 [github.com/neodeskapp/neodesk-client](https://github.com/neodeskapp/neodesk-client/releases):
 `.exe` und `.msi` für Windows, `.dmg` für macOS sowie `.deb`, `.rpm` und ein
-portables Archiv für Linux.
+portables Archiv für Linux. Die [Download-Seite](/de/download/) empfiehlt die
+Datei für deinen Computer und nennt jede Datei mit ihrer Prüfsumme.
 
 ## Woraus es besteht {#what-it-is-made-of}
 

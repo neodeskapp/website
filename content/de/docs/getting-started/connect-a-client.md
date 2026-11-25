@@ -13,7 +13,9 @@ verbunden ist.
 
 Beim NeoDesk-Client musst du nichts davon eintippen: Ein Einladungslink aus
 **Computer hinzufügen** installiert ihn und verbindet den Computer mit deinem
-Server, siehe [Computer hinzufügen](/docs/console/add-a-computer).
+Server, siehe [Computer hinzufügen](/docs/console/add-a-computer). Ohne
+Einladung nimmst du die Datei für dein System von der
+[Download-Seite](/de/download/).
 
 Der NeoDesk-Client hat keinen eingebauten ID-Server. Bis eine Einladung, ein
 Kopplungscode oder seine Einstellungen ihm deinen Server nennen, verbindet er
@@ -140,7 +142,8 @@ einer Einladung aus [Computer hinzufügen](/docs/console/add-a-computer).
 
 Den NeoDesk-Client für Linux gibt es auch aus einem signierten
 Paket-Repository unter pkg.neode.sk, für amd64 (x86_64) und arm64 (aarch64).
-Dein System aktualisiert NeoDesk dann mit seinen normalen Updates. Der
+Dein System aktualisiert NeoDesk dann mit seinen normalen Updates. Dieselben
+Pakete gibt es als Dateien auf der [Download-Seite](/de/download/). Der
 Schlüssel des Repositorys hat den Fingerabdruck
 `D9D7 D06A FB85 0424 31C6 08AB 79E8 A31B 2625 AA7B` und gilt bis zum
 22. November 2029.

@@ -28,7 +28,8 @@ NeoDesk also has its own client for Windows, macOS and Linux, which joins
 your server from an invite link. Its releases are on
 [github.com/neodeskapp/neodesk-client](https://github.com/neodeskapp/neodesk-client/releases):
 `.exe` and `.msi` for Windows, `.dmg` for macOS, and `.deb`, `.rpm` and a
-portable archive for Linux.
+portable archive for Linux. The [download page](/download/) recommends the
+file for your computer and lists every file with its checksum.
 
 ## What it is made of
 

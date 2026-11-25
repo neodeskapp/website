@@ -14,7 +14,8 @@ and what happens after the client connects.
 
 The NeoDesk client needs none of this typed in: an invite link from
 **Add a computer** installs it and joins the computer, see
-[Add a computer](/docs/console/add-a-computer).
+[Add a computer](/docs/console/add-a-computer). To install it without an
+invite, take the file for your system from the [download page](/download/).
 
 The NeoDesk client has no ID server built in. Until an invite, a pairing code
 or its settings give it your server, it connects to no server, and it never
@@ -130,7 +131,8 @@ the client with an invite from [Add a computer](/docs/console/add-a-computer).
 
 The NeoDesk client for Linux also comes from a signed package repository at
 pkg.neode.sk, for amd64 (x86_64) and arm64 (aarch64). Your system then updates
-NeoDesk with its normal updates. The repository key has the fingerprint
+NeoDesk with its normal updates. The same packages are on the
+[download page](/download/) as files. The repository key has the fingerprint
 `D9D7 D06A FB85 0424 31C6 08AB 79E8 A31B 2625 AA7B` and is valid until
 22 November 2029.
 

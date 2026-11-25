@@ -15,6 +15,8 @@ export interface HomeStrings {
 	heroTitle: string;
 	heroLead: string;
 	install: string;
+	/** The link next to Install, to the download page */
+	downloadClient: string;
 	readDocs: string;
 	markLabel: string;
 	serverTitle: string;
@@ -59,6 +61,7 @@ export const HOME: Record<string, Partial<HomeStrings>> = {
 		heroTitle: 'Your <span class="blue">own</span> remote desktop server',
 		heroLead: 'A RustDesk-compatible server written in Go, with a web console for the devices you look after.',
 		install: 'Install',
+		downloadClient: 'Download the client',
 		readDocs: 'Read the docs',
 		markLabel: 'The NeoDesk mark: a square for your server and a circle for the RustDesk client, overlapping where they share the console',
 		serverTitle: 'One binary on <span class="blue">your server</span>',
@@ -98,6 +101,7 @@ export const HOME: Record<string, Partial<HomeStrings>> = {
 		heroTitle: 'Dein <span class="blue">eigener</span> Remote-Desktop-Server',
 		heroLead: 'Ein RustDesk-kompatibler Server in Go, mit einer Web-Konsole für die Geräte, die du betreust.',
 		install: 'Installieren',
+		downloadClient: 'Client herunterladen',
 		readDocs: 'Zur Doku',
 		markLabel: 'Das NeoDesk-Zeichen: ein Quadrat für deinen Server und ein Kreis für den RustDesk-Client. Wo sie sich überlappen, teilen sie sich die Konsole.',
 		serverTitle: 'Ein Binary auf <span class="blue">deinem Server</span>',

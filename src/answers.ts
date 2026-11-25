@@ -48,7 +48,7 @@ export const ANSWERS: Record<string, Answer[]> = {
 		},
 		{
 			q: 'Where do I download the NeoDesk client?',
-			a: 'The desktop client for Windows, macOS and Linux is on [its releases page](https://github.com/neodeskapp/neodesk-client/releases): `.exe` and `.msi` for Windows, `.dmg` for macOS, and `.deb`, `.rpm` and a portable archive for Linux. On Linux it also comes from the package repository at pkg.neode.sk: its `testing` suite has the release candidates, and its `stable` suite has no packages until the client has a final release. An invite from Add a computer downloads and installs it for you. See [Install from the package repository](/docs/getting-started/connect-a-client#install-from-the-package-repository).'
+			a: 'On [the download page](/download). It recommends the file for your computer and lists every file of the newest release with its SHA-256: `.exe` and `.msi` for Windows, `.dmg` for macOS, and `.deb`, `.rpm` and a portable archive for Linux. The files are also on [the client\'s releases page](https://github.com/neodeskapp/neodesk-client/releases). On Linux it also comes from the package repository at pkg.neode.sk: its `testing` suite has the release candidates, and its `stable` suite has no packages until the client has a final release. An invite from Add a computer downloads and installs it for you. See [Install from the package repository](/docs/getting-started/connect-a-client#install-from-the-package-repository).'
 		},
 		{
 			q: 'Which version is current, and is it final?',
@@ -94,7 +94,7 @@ export const ANSWERS: Record<string, Answer[]> = {
 		},
 		{
 			q: 'Wo lade ich den NeoDesk-Client herunter?',
-			a: 'Der Desktop-Client für Windows, macOS und Linux liegt auf [seiner Release-Seite](https://github.com/neodeskapp/neodesk-client/releases): `.exe` und `.msi` für Windows, `.dmg` für macOS sowie `.deb`, `.rpm` und ein portables Archiv für Linux. Unter Linux gibt es ihn auch im Paket-Repository auf pkg.neode.sk: Die Suite `testing` hat die Release Candidates, die Suite `stable` bleibt bis zum ersten finalen Release des Clients leer. Eine Einladung aus „Computer hinzufügen“ lädt ihn herunter und installiert ihn. Mehr unter [Aus dem Paket-Repository installieren](/docs/getting-started/connect-a-client#install-from-the-package-repository).'
+			a: 'Auf [der Download-Seite](/download). Sie empfiehlt die Datei für deinen Computer und nennt jede Datei des neuesten Releases mit ihrer SHA-256: `.exe` und `.msi` für Windows, `.dmg` für macOS sowie `.deb`, `.rpm` und ein portables Archiv für Linux. Die Dateien liegen auch auf [der Release-Seite des Clients](https://github.com/neodeskapp/neodesk-client/releases). Unter Linux gibt es ihn auch im Paket-Repository auf pkg.neode.sk: Die Suite `testing` hat die Release Candidates, die Suite `stable` bleibt bis zum ersten finalen Release des Clients leer. Eine Einladung aus „Computer hinzufügen“ lädt ihn herunter und installiert ihn. Mehr unter [Aus dem Paket-Repository installieren](/docs/getting-started/connect-a-client#install-from-the-package-repository).'
 		},
 		{
 			q: 'Welche Version ist aktuell, und ist sie final?',
