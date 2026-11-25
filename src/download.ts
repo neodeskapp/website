@@ -108,7 +108,7 @@ export const DOWNLOAD: Record<string, DownloadStrings> = {
 		arch: { x64: 'x64', arm64: 'ARM64' },
 		macArch: { x64: 'Intel', arm64: 'Apple silicon' },
 		windowsSteps: ['Open the file and click Install.', 'Windows asks if Windows Command Processor, by Microsoft Windows, may make changes. That is the NeoDesk setup installing itself: click Yes.'],
-		windowsGuess: 'This file is for Intel and AMD processors. If this PC has an ARM processor, such as a Snapdragon, take the <a href="#windows">ARM64 file</a>.',
+		windowsGuess: 'For Intel and AMD processors. On a PC with an ARM processor, such as a Snapdragon, take the <a href="#windows">ARM64 file</a>.',
 		macSteps: ['Open the file and drag NeoDesk into Applications.', 'If your Mac says it can\'t check the app, open System Settings, Privacy &amp; Security, and click Open Anyway.', 'When NeoDesk asks, allow Screen Recording and Accessibility.'],
 		macWhich: 'Which Mac is this? In the Apple menu, choose About This Mac. If it lists a chip, such as Apple M1, take Apple silicon. If it lists an Intel processor, take Intel.',
 		linuxAfter: 'In the folder with the file, install it with your package manager: {command}',
@@ -199,7 +199,7 @@ export const DOWNLOAD: Record<string, DownloadStrings> = {
 		arch: { x64: 'x64', arm64: 'ARM64' },
 		macArch: { x64: 'Intel', arm64: 'Apple-Chip' },
 		windowsSteps: ['Öffne die Datei und klick auf Installieren.', 'Windows fragt, ob der Windows-Befehlsprozessor von Microsoft Windows Änderungen vornehmen darf. Das ist die Einrichtung von NeoDesk, die sich installiert: Klick auf Ja.'],
-		windowsGuess: 'Diese Datei ist für Prozessoren von Intel und AMD. Hat dieser PC einen ARM-Prozessor, etwa einen Snapdragon, nimm die <a href="#windows">ARM64-Datei</a>.',
+		windowsGuess: 'Für Prozessoren von Intel und AMD. Auf einem PC mit ARM-Prozessor, etwa einem Snapdragon, nimm die <a href="#windows">ARM64-Datei</a>.',
 		macSteps: ['Öffne die Datei und zieh NeoDesk in „Programme“.', 'Meldet dein Mac, dass er die App nicht prüfen kann: Systemeinstellungen öffnen, Datenschutz &amp; Sicherheit, dort auf „Dennoch öffnen“ klicken.', 'Wenn NeoDesk fragt, erlaube Bildschirmaufnahme und Bedienungshilfen.'],
 		macWhich: 'Welcher Mac ist das? Wähl im Apple-Menü „Über diesen Mac“. Steht dort ein Chip, etwa Apple M1, nimm Apple-Chip. Steht dort ein Intel-Prozessor, nimm Intel.',
 		linuxAfter: 'Installiere sie im Ordner mit der Datei über deine Paketverwaltung: {command}',
@@ -476,10 +476,12 @@ ${after(esc(d.phoneHere))}
       <ul>
 ${d.scam.map((s) => `        <li>${esc(s)}</li>`).join('\n')}
       </ul>
-      <h3>${esc(d.scamAfterTitle)}</h3>
-      <ol>
-${d.scamAfter.map((s) => `        <li>${s}</li>`).join('\n')}
-      </ol>
+      <details class="dl-scam-after">
+        <summary>${esc(d.scamAfterTitle)}</summary>
+        <ol>
+${d.scamAfter.map((s) => `          <li>${s}</li>`).join('\n')}
+        </ol>
+      </details>
     </section>`;
 
 	/* ---- every file, by system, a row per kind with a link per processor ---- */

@@ -94,9 +94,10 @@
   text-decoration: none;
 }
 .dl-pick:hover { border-color: var(--blue); }
-.dl-release { margin: 20px 0 0; padding-top: 16px; border-top: 1px solid var(--rule); font-size: 15px; color: var(--muted); }
+.dl-release { margin: 14px 0 0; font-size: 14px; line-height: 1.6; color: var(--muted); }
 .dl-badge { margin-right: 4px; color: var(--warn); font-weight: 600; }
 .dl-release a { white-space: nowrap; }
+.dl-card .dl-after { font-size: 14px; }
 
 /* The scam notice: plain text under an amber rule, the warning sign beside its title */
 .dl-scam {
@@ -109,7 +110,10 @@
 }
 .dl-scam-icon { position: absolute; left: 0; top: 22px; color: var(--warn); }
 .dl-scam h2 { margin: 0 0 14px; font-size: 21px; font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; text-wrap: balance; }
-.dl-scam h3 { margin: 18px 0 8px; padding-top: 16px; border-top: 1px solid var(--rule); font-size: 15px; font-weight: 600; }
+.dl-scam > ul { color: var(--muted); }
+.dl-scam-after { margin-top: 16px; border-top: 1px solid var(--rule); }
+.dl-scam-after summary { padding: 13px 0; font-weight: 600; cursor: pointer; }
+.dl-scam-after ol { padding-bottom: 4px; }
 .dl-scam ul, .dl-scam ol { margin: 0; padding-left: 20px; }
 .dl-scam li { margin: 4px 0; }
 .dl-scam li::marker { color: var(--muted); }
