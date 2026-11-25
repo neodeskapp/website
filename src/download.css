@@ -6,17 +6,18 @@
 .dl a:not(.dl-btn):not(.dl-get):not(.dl-pick) { color: var(--teal); }
 .dl code { font-family: var(--mono); font-size: 0.875em; padding: 2px 5px; border-radius: 3px; background: var(--code-inline); overflow-wrap: anywhere; }
 
-/* First screen: the recommendation on the left, the scam notice on the right */
+/* First screen: the recommendation on the left, the mark on the right */
 .dl-hero {
   display: grid;
   grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
   gap: var(--dl-gap);
-  align-items: start;
-  padding: 12px 0 8px;
+  align-items: center;
+  padding: clamp(20px, 4vw, 56px) 0 clamp(40px, 6vw, 80px);
 }
+.dl-hero .dl-mark { justify-self: end; width: clamp(240px, 30vw, 440px); }
 .dl-start { min-width: 0; }
 .dl h1.display { margin: 0 0 18px; font-size: clamp(44px, 5.4vw, 84px); line-height: 0.92; letter-spacing: -0.048em; }
-.dl .lead { margin-bottom: 28px; max-width: 46ch; }
+.dl .lead { margin-bottom: 36px; max-width: 46ch; }
 
 .dl-rec { max-width: 640px; }
 .dl-wait .dl-card { visibility: hidden; }
@@ -99,31 +100,35 @@
 .dl-release a { white-space: nowrap; }
 .dl-card .dl-after { font-size: 14px; }
 
-/* The scam notice: plain text under an amber rule, the warning sign beside its title */
+/* The scam notice: one line under an amber rule, the warning sign beside it; its
+   details open on a click */
 .dl-scam {
-  position: relative;
-  margin-top: 14px;
-  padding: 22px 0 0 46px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 16px;
+  padding: 22px 0 18px;
   border-top: 2px solid var(--warn);
+  border-bottom: 1px solid var(--rule);
   font-size: 15px;
   line-height: 1.6;
 }
-.dl-scam-icon { position: absolute; left: 0; top: 22px; color: var(--warn); }
-.dl-scam h2 { margin: 0 0 14px; font-size: 21px; font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; text-wrap: balance; }
-.dl-scam > ul { color: var(--muted); }
-.dl-scam-after { margin-top: 16px; border-top: 1px solid var(--rule); }
-.dl-scam-after summary { padding: 13px 0; font-weight: 600; cursor: pointer; }
-.dl-scam-after ol { padding-bottom: 4px; }
-.dl-scam ul, .dl-scam ol { margin: 0; padding-left: 20px; }
+.dl-scam-icon { grid-row: 1 / span 2; margin-top: 1px; color: var(--warn); }
+.dl-scam h2 { margin: 0; font-size: clamp(19px, 1.7vw, 23px); font-weight: 600; line-height: 1.35; letter-spacing: -0.01em; }
+.dl-scam-more { grid-column: 2; }
+.dl-scam-more summary { padding: 8px 0 2px; color: var(--muted); cursor: pointer; }
+.dl-scam-more summary:hover { color: var(--text); }
+.dl-scam-more[open] summary { margin-bottom: 8px; }
+.dl-scam h3 { margin: 18px 0 8px; font-size: 15px; font-weight: 600; }
+.dl-scam ul, .dl-scam ol { margin: 0; padding-left: 20px; max-width: 72ch; }
 .dl-scam li { margin: 4px 0; }
 .dl-scam li::marker { color: var(--muted); }
 
 /* Every file */
-.dl-all { margin-top: clamp(64px, 8vw, 112px); }
+.dl-all { margin-top: clamp(56px, 7vw, 96px); }
 .dl > section > h2, .dl-all-head h2, .dl-info h2 { margin: 0 0 10px; font-size: clamp(26px, 2.6vw, 34px); font-weight: 600; letter-spacing: -0.015em; line-height: 1.2; }
 .dl-all-head h2, .dl-preview > h2 { margin-bottom: 16px; font-family: var(--display); font-weight: 700; font-size: clamp(38px, 4.4vw, 64px); line-height: 0.95; letter-spacing: -0.045em; }
-.dl-all-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 32px; align-items: end; padding-bottom: 20px; }
-.dl-mark { display: block; width: clamp(170px, 19vw, 280px); height: auto; overflow: visible; }
+.dl-all-head { padding-bottom: 20px; }
+.dl-mark { display: block; height: auto; overflow: visible; }
 .dl-mark .sq { fill: #58a6ff; }
 .dl-mark .ci { fill: #a3e635; }
 .dl-mark .ov { fill: #3fd0c4; }
@@ -215,6 +220,7 @@
 
 @media (max-width: 1023px) {
   .dl-hero { grid-template-columns: minmax(0, 1fr); }
+  .dl-hero .dl-mark { display: none; }
   .dl-os { grid-template-columns: minmax(0, 1fr); padding: 24px 0 32px; }
   .dl-os > *, .dl-os > h3 { grid-column: 1; grid-row: auto; }
   .dl-os > h3 { margin-bottom: 14px; }
@@ -222,13 +228,9 @@
   .dl-info { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 640px) {
-  .dl-scam { padding: 18px 0 0; }
-  .dl-scam-icon { position: static; display: block; margin-bottom: 8px; }
   .dl-row { grid-template-columns: minmax(0, 1fr); }
   .dl-row-get { justify-content: flex-start; }
   .dl-get { flex: 1 1 100%; }
-  .dl-all-head { grid-template-columns: minmax(0, 1fr); }
-  .dl-mark { display: none; }
   .dl-btn { padding: 12px 18px; }
 }
 .dl summary:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }

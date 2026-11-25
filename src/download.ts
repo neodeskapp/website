@@ -1,6 +1,6 @@
 // The download page, /download/ and /de/download/: the desktop client's file for the
-// visitor's computer, a warning about phone scams, every file of the release with its
-// checksum, and what the client needs. The release comes from src/client-release.ts at
+// visitor's computer beside the mark, a one-line warning about phone scams that opens
+// into its details, every file of the release with its checksum, and what the client needs. The release comes from src/client-release.ts at
 // build time; the recommendation from src/detect.ts, in the visitor's browser.
 //
 // The page is static. Every recommendation the script can make is in the HTML as a hidden
@@ -56,6 +56,8 @@ export interface DownloadStrings {
 	releaseNotes: string;
 	noRelease: string;
 	scamTitle: string;
+	/** What opens the notice's details */
+	scamMore: string;
 	scam: string[];
 	scamAfterTitle: string;
 	/** HTML: the last one holds the links to the reporting pages */
@@ -100,7 +102,7 @@ export const DOWNLOAD: Record<string, DownloadStrings> = {
 		title: 'Download NeoDesk',
 		pageTitle: 'Download the NeoDesk client for Windows, macOS and Linux',
 		description: 'The NeoDesk desktop client for Windows, macOS and Linux. The page picks the file for your computer and lists every file with its checksum.',
-		lead: 'The desktop client for Windows, macOS and Linux. It connects to a NeoDesk server: your own, or the one your IT team runs.',
+		lead: 'The desktop client for Windows, macOS and Linux.',
 		pick: 'Pick your system',
 		pickNote: 'Every file is listed below, for x64 (Intel and AMD) and ARM64 processors.',
 		forThis: 'For this computer',
@@ -128,6 +130,7 @@ export const DOWNLOAD: Record<string, DownloadStrings> = {
 		releaseNotes: 'Release notes',
 		noRelease: 'There is no published release of the client yet.',
 		scamTitle: 'Only install NeoDesk if you, or someone you know and trust, asked for it.',
+		scamMore: 'How phone scams work, and what to do if it happened',
 		scam: [
 			'Banks, Microsoft, the police, delivery firms and "refund departments" don\'t call and ask you to install a remote desktop app.',
 			'If a stranger on the phone tells you to install this right now, hang up.',
@@ -191,7 +194,7 @@ export const DOWNLOAD: Record<string, DownloadStrings> = {
 		title: 'NeoDesk herunterladen',
 		pageTitle: 'NeoDesk-Client für Windows, macOS und Linux herunterladen',
 		description: 'Der Desktop-Client von NeoDesk für Windows, macOS und Linux. Die Seite wählt die Datei für deinen Computer und nennt jede Datei mit Prüfsumme.',
-		lead: 'Der Desktop-Client für Windows, macOS und Linux. Er verbindet sich mit einem NeoDesk-Server: deinem eigenen oder dem deiner IT.',
+		lead: 'Der Desktop-Client für Windows, macOS und Linux.',
 		pick: 'Wähle dein System',
 		pickNote: 'Alle Dateien stehen weiter unten, für x64-Prozessoren (Intel und AMD) und ARM64.',
 		forThis: 'Für diesen Computer',
@@ -219,6 +222,7 @@ export const DOWNLOAD: Record<string, DownloadStrings> = {
 		releaseNotes: 'Release Notes',
 		noRelease: 'Vom Client gibt es noch kein veröffentlichtes Release.',
 		scamTitle: 'Installiere NeoDesk nur, wenn du oder jemand, den du kennst und dem du vertraust, darum gebeten hat.',
+		scamMore: 'Wie Telefonbetrug abläuft, und was du tust, wenn es passiert ist',
 		scam: [
 			'Banken, Microsoft, die Polizei, Paketdienste und „Rückerstattungsabteilungen“ rufen nicht an, damit du ein Fernwartungsprogramm installierst.',
 			'Sagt dir ein Fremder am Telefon, du sollst das jetzt sofort installieren: Leg auf.',
@@ -473,11 +477,12 @@ ${after(esc(d.phoneHere))}
 	const scam = `    <section class="dl-scam" aria-labelledby="scam-title">
       ${WARN_ICON}
       <h2 id="scam-title">${esc(d.scamTitle)}</h2>
-      <ul>
-${d.scam.map((s) => `        <li>${esc(s)}</li>`).join('\n')}
-      </ul>
-      <details class="dl-scam-after">
-        <summary>${esc(d.scamAfterTitle)}</summary>
+      <details class="dl-scam-more">
+        <summary>${esc(d.scamMore)}</summary>
+        <ul>
+${d.scam.map((s) => `          <li>${esc(s)}</li>`).join('\n')}
+        </ul>
+        <h3>${esc(d.scamAfterTitle)}</h3>
         <ol>
 ${d.scamAfter.map((s) => `          <li>${s}</li>`).join('\n')}
         </ol>
@@ -536,7 +541,6 @@ ${(['deb', 'rpm', 'suse'] as const).map((fam) => `        <details class="dl-cmd
           <p class="dl-lead">${esc(fill(d.allLead, { version: r.version }))}</p>
           <nav class="dl-jump" aria-label="${esc(d.jump)}">${(['windows', 'macos', 'linux'] as const).map((os) => `<a href="#${os}">${esc(d.os[os])}</a>`).join('')}<a href="#repository">${esc(d.repoTitle)}</a>${check ? `<a href="#check">${esc(d.checkTitle)}</a>` : ''}</nav>
         </div>
-        ${MARK}
       </div>
 ${fileList(r, '')}
 ${repo}
@@ -590,8 +594,9 @@ ${r ? `          <dialog class="dl-window" id="dl-window" aria-labelledby="dl-wi
         </div>
 ${r ? recommendScript() : ''}
       </div>
-${scam}
+      ${MARK}
     </div>
+${scam}
 ${all}
 ${preview}
 ${info}
