@@ -55,7 +55,8 @@ Einstellungen unter **Öffentliche Client-Endpunkte** fest, siehe
 [Die Adresse für die Clients festlegen](/docs/getting-started/first-sign-in#set-the-address-clients-use).
 
 **Geräte**, **Computer hinzufügen**, Tab **Manuelle Einrichtung** zeigt
-dieselben Werte auf einer eigenen Seite. Dazu kommen die **Konfigurationszeichenfolge**, die alle vier in
+dieselben Werte auf einer eigenen Seite; **Serverschlüssel und QR-Code** auf
+**Übersicht** öffnet sie. Dazu kommen die **Konfigurationszeichenfolge**, die alle vier in
 einer Zeile enthält, der QR-Code für Handys unter **Handy einrichten** und der
 Schlüssel als Datei `id_ed25519.pub` unter **Downloads**.
 

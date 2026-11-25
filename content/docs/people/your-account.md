@@ -2,6 +2,7 @@
 title: Your account
 description: Your password, two-factor sign-in, API tokens and preferences, the browsers you are signed in on, and the limit on sessions per account.
 order: 2.5
+icon: person
 related: /docs/people/two-factor, /docs/command-line/api-tokens, /docs/people/users-and-roles
 ---
 

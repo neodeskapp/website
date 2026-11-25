@@ -5,7 +5,7 @@ order: 13
 icon: settings_input_component
 ---
 
-CDAP is the server's own protocol for devices that are not RustDesk clients: sensors, controllers, cameras, SCADA systems, network devices and agents. A device connects to the server's CDAP gateway, says which values and controls it has, and the console shows them under **IoT devices (CDAP)**. This page is about running the gateway and using those devices. How to build a device or a bridge for CDAP is in [CDAP protocol](/docs/development/cdap-protocol) and [CDAP SDKs and bridges](/docs/development/cdap-sdks).
+CDAP is the server's own protocol for devices that are not RustDesk clients: sensors, controllers, cameras, SCADA systems, network devices and agents. A device connects to the server's CDAP gateway, says which values and controls it has, and the console shows them under **Devices**, **IoT devices**. This page is about running the gateway and using those devices. How to build a device or a bridge for CDAP is in [CDAP protocol](/docs/development/cdap-protocol) and [CDAP SDKs and bridges](/docs/development/cdap-sdks).
 
 ## The gateway
 
@@ -23,7 +23,7 @@ The device's software or bridge decides how it signs in to the gateway. There ar
 
 A device that signs in with an account or an API key joins the server under the ID it gives, so that account's or key's role needs the **Approve enrollment** permission. An ID that another account or key registered is refused, and so is a banned device.
 
-A device that has signed in shows on the **IoT devices (CDAP)** page while it is connected, and in [the device list](/docs/console/devices) with the name and type it gave.
+A device that has signed in shows on the **IoT devices** page while it is connected, and in [the device list](/docs/console/devices) with the name and type it gave.
 
 ## The IoT devices page
 

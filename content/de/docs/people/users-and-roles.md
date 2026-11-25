@@ -39,7 +39,7 @@ Willst du jemanden von der Anmeldung abhalten, das Konto aber behalten, wähle *
 
 Mit **Konto aktivieren** im selben Menü kann sich die Person wieder anmelden. Zum Deaktivieren brauchst du **Benutzer bearbeiten** und eine Rolle, die das Konto ändern darf (siehe [wer welche Rolle vergeben darf](#who-can-give-which-role)). Niemand kann sein eigenes Konto deaktivieren.
 
-Wer ein deaktiviertes Konto hat, sieht nach dem richtigen Passwort auf der Anmeldeseite „Dieses Konto ist deaktiviert. Wenden Sie sich an einen Administrator.“
+Wer ein deaktiviertes Konto hat, sieht nach dem richtigen Passwort auf der Anmeldeseite „Dieses Konto ist deaktiviert. Wende dich an einen Administrator.“
 
 ## Benutzer löschen {#delete-a-user}
 
@@ -124,7 +124,7 @@ Die [Client-Funktionen](/docs/people/permissions#client-features) der Person gel
 - Die Rolle Globaler Administrator darf Betrachter, Gastlink-Aussteller, Remote-Operator und Pro-Lizenz vergeben und Konten mit einer dieser Rollen ändern.
 - Alle anderen Rollen vergeben keine Rollen. Daran ändert sich nichts, wenn du die Berechtigungen einer Rolle änderst.
 - Niemand vergibt mehr, als er selbst hat. Eine Rolle lässt sich nur vergeben, wenn jede ihrer Berechtigungen, mit den Änderungen auf der Seite [Berechtigungen](/docs/people/permissions), auch die Rolle dessen hat, der sie vergibt. Gibt ein Super-Admin der Rolle Remote-Operator eine Berechtigung, die der Globale Administrator nicht hat, kann ein Globaler Administrator Remote-Operator nicht mehr vergeben und Remote-Operator-Konten nicht mehr ändern. Die Regel gilt in der Konsole, am API-Port und für die Rolle eines neuen API-Schlüssels.
-- Jede Person mit einem Passwortkonto darf ihr eigenes Passwort unter [Ihr Konto](/docs/people/your-account) ändern. Ein Super-Admin kann seinem eigenen Konto die Rolle Super-Admin nicht wegnehmen.
+- Jede Person mit einem Passwortkonto darf ihr eigenes Passwort unter [Dein Konto](/docs/people/your-account) ändern. Ein Super-Admin kann seinem eigenen Konto die Rolle Super-Admin nicht wegnehmen.
 - Ein Konto mit **Benutzer bearbeiten** darf auf der Seite Benutzer sein eigenes Passwort und seine E-Mail-Adresse ändern. Seine eigenen **Einzelne Geräte**, seinen **Ordnerzugriff** und seine **Benutzergruppen** kann nur ein Konto ändern, das seine eigene Rolle vergeben darf, also in der Praxis Super-Admin und Administrator. Alle anderen bekommen „You cannot change your own device access“.
 
 ## Welche Geräte ein Benutzer sieht {#which-devices-a-user-sees}
@@ -147,13 +147,13 @@ Wer sich mit ein paar Geräten verbinden und sonst nichts sehen soll, bekommt di
 2. Füge die Person auf der Seite Benutzer mit der Rolle **Remote-Operator** hinzu. Wähle unter **Gerätezugriff** den Ordner in **Ordnerzugriff**. Für ein Team legst du stattdessen eine Benutzergruppe an, wählst sie im Ordner unter **Zugelassene Benutzergruppen** aus und nimmst die Personen in die Gruppe auf.
 3. Setze unter **Einstellungen**, **Allgemein** die **Standard-Sichtbarkeit von Geräten** auf **Eingeschränkt**. Unter **Offen** würde die Person auch jedes Gerät sehen, das in keinem Ordner und keiner Gruppe mit Zugriffsliste liegt.
 
-Danach kann sich die Person über den [Web-Viewer](/docs/console/remote-in-browser) der Konsole oder die RustDesk-App verbinden und ihr eigenes Passwort unter **Ihr Konto** ändern. Der Gerätezugriff entscheidet nur, welche Geräte sie sieht: Beim Verbinden fragt das Gerät weiterhin nach seinem RustDesk-Passwort oder nach einer Bestätigung auf seinem Bildschirm. Willst du auch Teile der Konsole vor ihr verbergen, nutze den [Konsolenzugriff](/docs/people/permissions#panel-access).
+Danach kann sich die Person über den [Web-Viewer](/docs/console/remote-in-browser) der Konsole oder die RustDesk-App verbinden und ihr eigenes Passwort unter **Dein Konto** ändern. Der Gerätezugriff entscheidet nur, welche Geräte sie sieht: Beim Verbinden fragt das Gerät weiterhin nach seinem RustDesk-Passwort oder nach einer Bestätigung auf seinem Bildschirm. Willst du auch Teile der Konsole vor ihr verbergen, nutze den [Konsolenzugriff](/docs/people/permissions#panel-access).
 
 Für jemanden, der kurz ein Gerät braucht und kein Konto, reicht ein [Gastzugangslink](/docs/console/device-details#guest-access-links).
 
 ## Passwortregeln {#password-rules}
 
-Ein neues Passwort braucht 8 bis 128 Zeichen, sonst wird nichts daran geprüft. Dieselbe Regel gilt auf der Seite Benutzer, wenn Personen ihr eigenes Passwort unter **Ihr Konto**, **Passwort** ändern, für die Konten einer [Organisation](/docs/people/organizations) und für den Befehl zum Zurücksetzen weiter unten. Die Stärkeanzeige unter dem Passwortfeld ist nur ein Hinweis. Speicherst du ein neues eigenes Passwort, enden deine anderen Konsolensitzungen.
+Ein neues Passwort braucht 8 bis 128 Zeichen, sonst wird nichts daran geprüft. Dieselbe Regel gilt auf der Seite Benutzer, wenn Personen ihr eigenes Passwort unter **Dein Konto**, **Passwort** ändern, für die Konten einer [Organisation](/docs/people/organizations) und für den Befehl zum Zurücksetzen weiter unten. Die Stärkeanzeige unter dem Passwortfeld ist nur ein Hinweis. Speicherst du ein neues eigenes Passwort, enden deine anderen Konsolensitzungen.
 
 Kann sich niemand mehr als Admin anmelden, führe den Befehl zum Zurücksetzen auf dem Server aus. Nimm dafür den Benutzer und die Umgebung, mit denen der Dienst läuft, damit der Befehl dieselbe Datenbank öffnet. Er liest das neue Passwort von der Standardeingabe und legt ein Konto mit der Rolle Administrator und diesem Namen an, wenn es noch keines gibt:
 

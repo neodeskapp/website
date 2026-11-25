@@ -2,6 +2,7 @@
 title: Chat
 description: Answer the people at your computers in a shared support inbox, and write to colleagues directly or in groups.
 order: 7.5
+icon: chat
 ---
 
 The chat has two sections. **Support** holds one conversation per computer,
@@ -95,6 +96,10 @@ The chat window of the NeoDesk app comes with a client release after 1.5.0-rc.7.
 With 1.5.0-rc.7 or older, and with a RustDesk client, the person can only read
 and answer inside a remote session.
 
+The NeoDesk app reaches the chat, and sends and fetches its files, on the
+server's API port (21121 by default), where it sends its other calls too, or at
+the console's address. No other port has to be open.
+
 ### In a remote session
 
 The chat of a remote session in the browser viewer belongs to the computer's
@@ -149,7 +154,9 @@ The actions of a message show when you point at it or move the focus to it:
 
 Edits and deletions are also written to the audit log. Links show as they are
 and open in a new tab; the chat shows no previews of them. Under your newest
-message, **Seen** says that the other side has read it.
+message, **Seen** says that the other side has read it. In a support
+conversation that can also be a colleague who opened the conversation, so it
+doesn't prove that the person at the computer read it.
 
 ### Canned replies
 

@@ -10,11 +10,11 @@ Mit der Zwei-Faktor-Anmeldung öffnet ein Passwort allein dein Konto nicht mehr:
 
 ## Einschalten {#turn-it-on}
 
-1. Öffne das Kontomenü am Ende der oberen Leiste, wähle **Ihr Konto** und gehe zu **Zwei-Faktor-Anmeldung**. Siehe [Dein Konto](/docs/people/your-account).
+1. Öffne das Kontomenü am Ende der oberen Leiste, wähle **Dein Konto** und gehe zu **Zwei-Faktor-Anmeldung**. Siehe [Dein Konto](/docs/people/your-account).
 2. Klicke auf **Zwei-Faktor-Anmeldung einrichten**.
 3. Installiere eine Authenticator-App auf deinem Handy, falls du noch keine hast.
 4. Scanne den QR-Code mit der App. Klappt das Scannen nicht, tippe stattdessen den Wert unter **Manueller Schlüssel** in die App ein.
-5. Tippe den sechsstelligen Code, den die App zeigt, in das Feld **Bitte geben Sie einen 6-stelligen Code ein** und klicke auf **Prüfen und einschalten**.
+5. Tippe den sechsstelligen Code, den die App zeigt, in das Feld **Bitte gib einen 6-stelligen Code ein** und klicke auf **Prüfen und einschalten**.
 6. Die Seite zeigt acht **Wiederherstellungscodes**. Bewahre sie an einem sicheren Ort außerhalb des Handys auf, etwa in einem Passwortmanager, und klicke dann auf **Ich habe die Codes gespeichert**.
 
 Der Bereich zeigt jetzt **Zwei-Faktor-Anmeldung ist aktiv**. Admins sehen dasselbe in der Spalte **Zwei-Faktor-Anmeldung** auf der Seite **Benutzer**. Das Einschalten meldet die anderen Browser deines Kontos ab; der, den du benutzt hast, bleibt angemeldet.
@@ -30,7 +30,7 @@ Verlässt du die Seite vor Schritt 5, bleibt die Zwei-Faktor-Anmeldung aus. Das 
 
 Der Code wechselt alle 30 Sekunden, und der Server nimmt nur den Code der aktuellen 30 Sekunden an. Jeder Code funktioniert einmal. Werden richtige Codes abgelehnt, prüfe, ob die Uhr auf deinem Handy und auf dem Server stimmt.
 
-Nach dem Passwort hast du fünf Minuten Zeit für den Code. Nach fünf falschen Codes oder wenn die Zeit um ist, zeigt die Seite „Sitzung abgelaufen. Bitte melden Sie sich erneut an.“ Klicke auf **Zurück zur Anmeldung** und fang wieder mit dem Passwort an. Falsche Codes zählen auch als fehlgeschlagene Anmeldungen, viele davon sperren das Konto also eine Zeit lang (siehe [fehlgeschlagene Anmeldungen](/docs/people/users-and-roles#sessions-and-failed-sign-ins)).
+Nach dem Passwort hast du fünf Minuten Zeit für den Code. Nach fünf falschen Codes oder wenn die Zeit um ist, zeigt die Seite „Sitzung abgelaufen. Melde dich erneut an.“ Klicke auf **Zurück zur Anmeldung** und fang wieder mit dem Passwort an. Falsche Codes zählen auch als fehlgeschlagene Anmeldungen, viele davon sperren das Konto also eine Zeit lang (siehe [fehlgeschlagene Anmeldungen](/docs/people/users-and-roles#sessions-and-failed-sign-ins)).
 
 Auch der RustDesk-Client fragt nach dem Code, wenn du dich dort mit einem Konto anmeldest, bei dem die Zwei-Faktor-Anmeldung eingeschaltet ist.
 
@@ -40,7 +40,7 @@ Hast du dein Handy nicht zur Hand, klicke auf der Code-Seite auf **Stattdessen e
 
 Jeder Wiederherstellungscode funktioniert einmal. So bekommst du einen neuen Satz, etwa wenn die Codes knapp werden:
 
-1. Öffne **Ihr Konto** und klicke unter **Zwei-Faktor-Anmeldung** auf **Neue Wiederherstellungscodes**.
+1. Öffne **Dein Konto** und klicke unter **Zwei-Faktor-Anmeldung** auf **Neue Wiederherstellungscodes**.
 2. Tippe einen aktuellen Code aus deiner App in **Bestätigungscode** und klicke auf **Neue Wiederherstellungscodes**.
 3. Bewahre die acht neuen Codes auf. Die alten funktionieren dann nicht mehr.
 
@@ -48,7 +48,7 @@ Ein falscher Code zählt als fehlgeschlagene Anmeldung.
 
 ## Ausschalten {#turn-it-off}
 
-1. Öffne **Ihr Konto** im Kontomenü.
+1. Öffne **Dein Konto** im Kontomenü.
 2. Klicke unter **Zwei-Faktor-Anmeldung** auf **Zwei-Faktor-Anmeldung ausschalten**.
 3. Gib unter **Aktuelles Passwort** dein Passwort ein und klicke noch einmal auf **Zwei-Faktor-Anmeldung ausschalten**. Verzeichnis- und Single-Sign-on-Konten haben in dieser Konsole kein Passwort; sie tippen stattdessen einen aktuellen Code aus der App in **Bestätigungscode**.
 
@@ -61,7 +61,7 @@ Hat jemand sowohl das Handy als auch die Wiederherstellungscodes verloren, schal
 1. Öffne **Personen**, dann **Benutzer**.
 2. Wähle im Menü der Zeile der Person **Zwei-Faktor-Anmeldung ausschalten** und bestätige.
 
-Das löscht Schlüssel und Wiederherstellungscodes der Person und beendet ihre Konsolensitzungen und Anmeldungen im RustDesk-Client. Sie meldet sich nur mit dem Passwort an, bis sie die Zwei-Faktor-Anmeldung wieder einrichtet. Den Menüeintrag gibt es bei Konten mit eingeschalteter Zwei-Faktor-Anmeldung, und zwar für Personen mit **Benutzer bearbeiten**, deren Rolle das Konto ändern darf (siehe [wer welche Rolle vergeben darf](/docs/people/users-and-roles#who-can-give-which-role)). Deine eigene Zwei-Faktor-Anmeldung schaltest du unter **Ihr Konto** aus.
+Das löscht Schlüssel und Wiederherstellungscodes der Person und beendet ihre Konsolensitzungen und Anmeldungen im RustDesk-Client. Sie meldet sich nur mit dem Passwort an, bis sie die Zwei-Faktor-Anmeldung wieder einrichtet. Den Menüeintrag gibt es bei Konten mit eingeschalteter Zwei-Faktor-Anmeldung, und zwar für Personen mit **Benutzer bearbeiten**, deren Rolle das Konto ändern darf (siehe [wer welche Rolle vergeben darf](/docs/people/users-and-roles#who-can-give-which-role)). Deine eigene Zwei-Faktor-Anmeldung schaltest du unter **Dein Konto** aus.
 
 Der Befehl des Servers zum Zurücksetzen des Passworts lässt die Zwei-Faktor-Anmeldung, wie sie ist.
 

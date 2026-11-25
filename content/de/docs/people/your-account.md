@@ -5,7 +5,7 @@ order: 2.5
 related: /docs/people/two-factor, /docs/command-line/api-tokens, /docs/people/users-and-roles
 ---
 
-**Ihr Konto** ist eine Seite mit allem, was dein eigenes Konto betrifft. Jedes Konto hat sie. Öffne das Kontomenü, dein Bild oder deine Initialen am Ende der oberen Leiste, und wähle **Ihr Konto**.
+**Dein Konto** ist eine Seite mit allem, was dein eigenes Konto betrifft. Jedes Konto hat sie. Öffne das Kontomenü, dein Bild oder deine Initialen am Ende der oberen Leiste, und wähle **Dein Konto**.
 
 Die Seite hat diese Teile:
 
@@ -24,7 +24,7 @@ Die Suche in der oberen Leiste (Strg+K) findet auch die Felder dieser Seite, zum
 
 Ein Konto kann auf mehreren Browsern und Geräten gleichzeitig angemeldet sein. **Angemeldete Geräte** listet sie auf. Jeder Eintrag nennt Browser und System, etwa „Firefox unter Windows“, dazu **Adresse**, **Angemeldet** (wann er sich angemeldet hat) und **Zuletzt verwendet**. Der Browser, mit dem du gerade arbeitest, ist mit **Dieser Browser** markiert.
 
-- **Abmelden** neben einem Eintrag meldet diesen Browser ab, nachdem du bestätigt hast. Bei seiner nächsten Anfrage kommt er zur Anmeldeseite, die sagt: „Sie wurden von einem anderen Gerät aus abgemeldet. Bitte melden Sie sich erneut an.“
+- **Abmelden** neben einem Eintrag meldet diesen Browser ab, nachdem du bestätigt hast. Bei seiner nächsten Anfrage kommt er zur Anmeldeseite, die sagt: „Du wurdest von einem anderen Gerät aus abgemeldet. Bitte melde dich erneut an.“
 - **Überall sonst abmelden** meldet jeden Eintrag außer diesem Browser ab. Die Zeile daneben sagt, wie viele Sitzungen abgemeldet wurden.
 - Deinen eigenen Browser meldest du mit **Abmelden** im Kontomenü ab.
 
@@ -32,15 +32,15 @@ Unter der Liste steht, wie viele Sitzungen der Server pro Konto erlaubt. Das Aud
 
 ### Für Admins {#for-administrators}
 
-Ein Konto mit **Benutzer bearbeiten** findet **Angemeldete Geräte…** im Zeilenmenü einer Person auf der Seite **Benutzer**. Es öffnet dieselbe Liste für diese Person, mit **Abmelden** für jeden Eintrag und **Überall abmelden**. Die Anmeldeseite des betroffenen Browsers sagt dann: „Ein Administrator hat Sie abgemeldet. Bitte melden Sie sich erneut an.“ Den Eintrag gibt es nur für Konten, deren Rolle du ändern darfst (siehe [wer welche Rolle vergeben darf](/docs/people/users-and-roles#who-can-give-which-role)). Das Audit-Protokoll hält „Sitzung von einem Administrator beendet“ fest und nennt, wer welche Sitzung beendet hat.
+Ein Konto mit **Benutzer bearbeiten** findet **Angemeldete Geräte…** im Zeilenmenü einer Person auf der Seite **Benutzer**. Es öffnet dieselbe Liste für diese Person, mit **Abmelden** für jeden Eintrag und **Überall abmelden**. Die Anmeldeseite des betroffenen Browsers sagt dann: „Ein Administrator hat dich abgemeldet. Bitte melde dich erneut an.“ Den Eintrag gibt es nur für Konten, deren Rolle du ändern darfst (siehe [wer welche Rolle vergeben darf](/docs/people/users-and-roles#who-can-give-which-role)). Das Audit-Protokoll hält „Sitzung von einem Administrator beendet“ fest und nennt, wer welche Sitzung beendet hat.
 
 ## Wie viele Sitzungen ein Konto haben darf {#how-many-sessions-an-account-may-have}
 
-Standardmäßig kann ein Konto auf bis zu 10 Browsern und Geräten gleichzeitig angemeldet sein. Eine Anmeldung darüber hinaus meldet den am längsten nicht verwendeten ab, und dieser Browser erfährt: „Sie wurden abgemeldet, weil sich Ihr Konto in mehr Browsern angemeldet hat, als dieser Server erlaubt. Bitte melden Sie sich erneut an.“ Das Audit-Protokoll hält „Sitzung durch die Sitzungsgrenze beendet“ fest.
+Standardmäßig kann ein Konto auf bis zu 10 Browsern und Geräten gleichzeitig angemeldet sein. Eine Anmeldung darüber hinaus meldet den am längsten nicht verwendeten ab, und dieser Browser erfährt: „Du wurdest abgemeldet, weil sich dein Konto in mehr Browsern angemeldet hat, als dieser Server erlaubt. Bitte melde dich erneut an.“ Das Audit-Protokoll hält „Sitzung durch die Sitzungsgrenze beendet“ fest.
 
-Für eine Sitzung pro Konto öffne **Einstellungen**, **Anmeldung**, setze unter **Für alle** den Haken bei **Eine Sitzung pro Konto** und klicke auf **Speichern**. Eine neue Anmeldung meldet dann den anderen Browser des Kontos ab, und der erfährt: „Sie wurden abgemeldet, weil sich Ihr Konto in einem anderen Browser angemeldet hat. Dieser Server erlaubt eine Sitzung pro Konto.“ Der Schalter gilt ab der nächsten Anmeldung: Sitzungen, die gerade offen sind, bleiben, bis sich ihr Konto wieder anmeldet. Das Audit-Protokoll hält die Änderung als „Sitzungen pro Konto geändert“ fest.
+Für eine Sitzung pro Konto öffne **Einstellungen**, **Anmeldung**, setze unter **Für alle** den Haken bei **Eine Sitzung pro Konto** und klicke auf **Speichern**. Eine neue Anmeldung meldet dann den anderen Browser des Kontos ab, und der erfährt: „Du wurdest abgemeldet, weil sich dein Konto in einem anderen Browser angemeldet hat. Dieser Server erlaubt eine Sitzung pro Konto.“ Der Schalter gilt ab der nächsten Anmeldung: Sitzungen, die gerade offen sind, bleiben, bis sich ihr Konto wieder anmeldet. Das Audit-Protokoll hält die Änderung als „Sitzungen pro Konto geändert“ fest.
 
-Ist `SESSION_MAX_PER_USER` in der Umgebung des Servers gesetzt, entscheidet es statt des Schalters: die Zahl der Sitzungen pro Konto, von 1 bis 1000, oder `0` für keine Grenze. Der Schalter ist dann gesperrt, und die Seite sagt: „SESSION_MAX_PER_USER ist in der Umgebung des Servers auf … gesetzt und entscheidet statt dieses Schalters. Entfernen Sie es dort, um den Schalter zu verwenden.“ Ältere Env-Dateien der Installer enthielten `SESSION_MAX_PER_USER=1` mit dem Kommentar der Vorlage darüber. Findet der Server beim Start diese Zeilen genau so, wie die Vorlage sie geschrieben hat, leert er den Wert, damit der Schalter entscheidet. Einen Wert oder Kommentar, den du selbst geändert hast, lässt er stehen. Siehe [Konfiguration](/docs/operations/configuration#console-sessions-and-logs).
+Ist `SESSION_MAX_PER_USER` in der Umgebung des Servers gesetzt, entscheidet es statt des Schalters: die Zahl der Sitzungen pro Konto, von 1 bis 1000, oder `0` für keine Grenze. Der Schalter ist dann gesperrt, und die Seite sagt: „SESSION_MAX_PER_USER ist in der Umgebung des Servers auf … gesetzt und entscheidet statt dieses Schalters. Entferne es dort, um den Schalter zu verwenden.“ Ältere Env-Dateien der Installer enthielten `SESSION_MAX_PER_USER=1` mit dem Kommentar der Vorlage darüber. Findet der Server beim Start diese Zeilen genau so, wie die Vorlage sie geschrieben hat, leert er den Wert, damit der Schalter entscheidet. Einen Wert oder Kommentar, den du selbst geändert hast, lässt er stehen. Siehe [Konfiguration](/docs/operations/configuration#console-sessions-and-logs).
 
 Eine Sitzung endet weiterhin nach 30 Minuten ohne Aktivität und 24 Stunden nach der Anmeldung; siehe [Sitzungen und fehlgeschlagene Anmeldungen](/docs/people/users-and-roles#sessions-and-failed-sign-ins).
 
@@ -48,7 +48,7 @@ Eine Sitzung endet weiterhin nach 30 Minuten ohne Aktivität und 24 Stunden nach
 
 Diese Dinge beenden die Konsolensitzungen eines Kontos:
 
-- Änderst du dein eigenes Passwort oder schaltest du deine eigene Zwei-Faktor-Anmeldung ein oder aus, enden deine anderen Sitzungen. Der Browser, in dem du die Änderung machst, bleibt angemeldet. Die anderen Browser erfahren: „Sie wurden abgemeldet, weil sich Ihr Passwort, Ihre Zwei-Faktor-Anmeldung oder Ihr Zugriff geändert hat. Bitte melden Sie sich erneut an.“ Auch die Anmeldungen des Kontos im RustDesk-Client enden.
+- Änderst du dein eigenes Passwort oder schaltest du deine eigene Zwei-Faktor-Anmeldung ein oder aus, enden deine anderen Sitzungen. Der Browser, in dem du die Änderung machst, bleibt angemeldet. Die anderen Browser erfahren: „Du wurdest abgemeldet, weil sich dein Passwort, deine Zwei-Faktor-Anmeldung oder dein Zugriff geändert hat. Bitte melde dich erneut an.“ Auch die Anmeldungen des Kontos im RustDesk-Client enden.
 - Gibt ein Admin dem Konto ein neues Passwort, einen neuen Namen oder eine neue Rolle, schaltet seine Zwei-Faktor-Anmeldung aus, deaktiviert oder löscht es, enden alle seine Sitzungen. Ein neues Passwort für dein eigenes Konto lässt deine aktuelle Sitzung bestehen.
 - Der Befehl zum Zurücksetzen des Passworts auf dem Server, den [Fehlerbehebung](/docs/operations/troubleshooting#forgot-the-admin-password) beschreibt, beendet die Konsolensitzungen des Kontos.
 

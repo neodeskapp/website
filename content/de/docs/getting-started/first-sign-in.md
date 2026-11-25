@@ -45,7 +45,7 @@ nach 30 Minuten ohne Aktivität und spätestens 24 Stunden nach der Anmeldung.
 Die Konsole warnt dich eine Minute, bevor sie dich wegen Inaktivität abmeldet.
 Ein Konto kann in bis zu 10 Browsern gleichzeitig angemeldet sein;
 **Angemeldete Geräte** im Kontomenü listet sie auf.
-[Ihr Konto](/docs/people/your-account) erklärt die Liste und die Einstellung
+[Dein Konto](/docs/people/your-account) erklärt die Liste und die Einstellung
 **Eine Sitzung pro Konto**, und [Konfiguration](/docs/operations/configuration)
 erklärt, wie du die Grenzen änderst.
 
@@ -58,7 +58,7 @@ erklärt alle acht.
 ## Das Admin-Passwort ändern {#change-the-admin-password}
 
 1. Öffne das Kontomenü, deine Initialen ganz rechts in der oberen Leiste, und
-   wähle **Ihr Konto**.
+   wähle **Dein Konto**.
 2. Fülle unter **Passwort** die Felder **Aktuelles Passwort**,
    **Neues Passwort** und **Neues Passwort wiederholen** aus. Das neue Passwort
    braucht mindestens 8 Zeichen.
@@ -148,7 +148,7 @@ erscheint für alle. Siehe [Computer hinzufügen](/docs/console/add-a-computer).
 
 **Einstellungen** enthält nur die Einstellungen des Servers und der Konsole.
 Dein eigenes Passwort, die Zwei-Faktor-Anmeldung, die angemeldeten Geräte und
-die API-Tokens liegen auf [Ihr Konto](/docs/people/your-account).
+die API-Tokens liegen auf [Dein Konto](/docs/people/your-account).
 
 ### Die obere Leiste {#the-top-bar}
 
@@ -170,7 +170,7 @@ Von links nach rechts:
   **Dokumentation**, **Community auf Discord** und **GitHub-Repository**. Auf
   dem Handy steht Hilfe am Ende der Seitenleiste.
 - **Das Kontomenü**, deine Initialen ganz rechts. Es enthält **Mein Status**
-  für den Chat, **Ihr Konto**, **Angemeldete Geräte**, **API-Tokens** (für
+  für den Chat, **Dein Konto**, **Angemeldete Geräte**, **API-Tokens** (für
   Konten, die welche erstellen dürfen), **Design** mit
   **Standard der Konsole**, **Hell** und **Dunkel** für diesen Browser,
   **Sprache**, **Barrierefreiheit** und **Abmelden**.
@@ -198,7 +198,7 @@ Leiste, und tipp los. Die Suche findet:
   **Zum dunklen Design wechseln** (oder zum hellen) und **Abmelden**. Jede
   erscheint nur für Konten, die ihre Schaltfläche in der Konsole sehen.
 - **Einstellungen**: jede Einstellung auf den Tabs von Einstellungen, auf den
-  Seiten unter Server und auf Ihr Konto, mit dem Ort, an dem sie liegt. Wählst
+  Seiten unter Server und auf Dein Konto, mit dem Ort, an dem sie liegt. Wählst
   du eine, öffnet sich ihr Tab, die Seite scrollt zur Einstellung und hebt sie
   kurz hervor. Jedes Konto sieht nur die Einstellungen, die es öffnen darf.
 - **Geräte** und **Personen**, nach Name, ID oder Benutzername.
@@ -224,7 +224,7 @@ funktionieren also weiter.
 | Einstellungen, Erweitert | Server, Konfigurationsdateien |
 | Einstellungen, Serverstatus | Server, Serverstatus |
 | Einstellungen, Relay-Server | Server, Relay-Server |
-| Einstellungen, Anmeldung: dein Passwort und die Zwei-Faktor-Anmeldung | Ihr Konto |
+| Einstellungen, Anmeldung: dein Passwort und die Zwei-Faktor-Anmeldung | Dein Konto |
 | Einstellungen, Anmeldung: LDAP und OIDC | Einstellungen, Verzeichnis (LDAP) und Einstellungen, Single Sign-on |
 | Einstellungen, Allgemein: Sichtbarkeit von Geräten und Verfügbarkeitsverlauf | Einstellungen, Beitritt |
 | Einstellungen, Allgemein: MeshCentral-Kompatibilität | Einstellungen, MeshCentral |
@@ -234,8 +234,8 @@ funktionieren also weiter.
 | Registrierungsanfragen | Geräte, Beitrittsanfragen |
 | Sicherheit und Protokoll: Audit-Protokoll und Server-Ereignisse | Aktivität, Audit-Protokoll |
 | Sicherheit und Protokoll: Sicherheitsprüfungen und Härtung | Aktivität, Sicherheitsprüfungen |
-| Sicherheit und Protokoll: Ihre Sitzungen | Ihr Konto, Angemeldete Geräte |
-| API-Tokens | Ihr Konto, API-Tokens |
+| Sicherheit und Protokoll: Ihre Sitzungen | Dein Konto, Angemeldete Geräte |
+| API-Tokens | Dein Konto, API-Tokens |
 | Kommerzialisierung und Abrechenbare Sitzungen | Aktivität, Abrechnung |
 | Richtlinien, Warnungen und Automatisierung, USB- und Laufwerkszugriff, Schutz vor Datenabfluss, Geräteidentität | Regeln |
 | Plattform-Unterstützung | Hilfe in der oberen Leiste |

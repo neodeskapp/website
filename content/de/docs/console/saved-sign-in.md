@@ -72,7 +72,7 @@ das Tastaturlayout des Computers keine Rolle.
 
 Ob Windows das Passwort angenommen hat, sieht der Viewer nicht. Danach meldet
 er „Die gespeicherten Daten wurden eingegeben. Zeigt Windows einen Fehler,
-melden Sie sich von Hand an: In dieser Sitzung werden sie nicht noch einmal
+melde dich von Hand an: In dieser Sitzung werden sie nicht noch einmal
 versucht.“ Ein falsch gespeichertes Passwort kostet also höchstens eine
 fehlgeschlagene Anmeldung pro Sitzung und sperrt das Konto nicht durch
 Wiederholen.
@@ -91,7 +91,7 @@ während der Viewer es eingibt.
 Diese Clients melden nicht, ob der Computer gesperrt ist. Deshalb meldet sich
 der Viewer von selbst nur an, solange niemand am Computer angemeldet ist, etwa
 nach einem Neustart. Ist jemand angemeldet, sagt die Leiste „An diesem Computer
-ist jemand angemeldet. Verwenden Sie Anmelden nur, solange der Sperrbildschirm
+ist jemand angemeldet. Verwende Anmelden nur, solange der Sperrbildschirm
 zu sehen ist.“, und **Anmelden** fragt vorher nach, weil das Passwort auf einem
 offenen Desktop dort landen würde, wo gerade der Fokus liegt.
 
@@ -149,7 +149,7 @@ Gerätepasswörter, die das Adressbuch einer Organisation speichert, siehe
 - Eine Wiederherstellung auf demselben Server öffnet die Daten wieder. Ein
   Server mit einer anderen Schlüsseldatei kann es nicht: Der Viewer meldet „Die
   gespeicherten Daten lassen sich mit dem Schlüssel dieses Servers nicht lesen.
-  Speichern Sie sie neu.“
+  Speichere sie neu.“
 - Ziehst du mit dem Server um, kopier die Schlüsseldatei mit den Daten.
 - Pass auf die Datei so gut auf wie auf den Schlüssel des Servers: Datei und
   eine Kopie der Datenbank zusammen öffnen die Daten.

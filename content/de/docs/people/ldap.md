@@ -98,7 +98,7 @@ Personen melden sich dann mit ihrem `sAMAccountName` in Kleinbuchstaben an, etwa
 
 Eine Anmeldung über das Verzeichnis hat insgesamt 30 Sekunden, in der Konsole und im RustDesk-Client, egal was unter **Verbindungs-Timeout (s)** steht. Der Server hört 2 Sekunden vorher auf, auf das Verzeichnis zu warten, damit er noch antworten kann.
 
-Hat das Verzeichnis in dieser Zeit nicht geantwortet, zeigt die Anmeldeseite der Konsole „Der Verzeichnisserver hat zu lange für die Antwort gebraucht. Versuchen Sie es gleich noch einmal.“ Der Server legt dann kein Konto an und vermerkt keine Anmeldung. In der Konsole zählt der Versuch nicht für die Sperre des Kontos, weil das Passwort nicht falsch war. Das Audit-Log führt ihn als fehlgeschlagene Anmeldung.
+Hat das Verzeichnis in dieser Zeit nicht geantwortet, zeigt die Anmeldeseite der Konsole „Der Verzeichnisserver hat zu lange für die Antwort gebraucht. Versuche es gleich noch einmal.“ Der Server legt dann kein Konto an und vermerkt keine Anmeldung. In der Konsole zählt der Versuch nicht für die Sperre des Kontos, weil das Passwort nicht falsch war. Das Audit-Log führt ihn als fehlgeschlagene Anmeldung.
 
 ## Testen {#test-it}
 
@@ -107,4 +107,4 @@ Hat das Verzeichnis in dieser Zeit nicht geantwortet, zeigt die Anmeldeseite der
 3. Bleib angemeldet und melde dich in einem privaten Browserfenster mit einem Verzeichniskonto an.
 4. Auf der Seite **Benutzer** erscheint das Konto mit dem Tag **LDAP/AD** und seiner Rolle.
 
-Zeigt die Anmeldung „Ungültiger Benutzername oder Passwort.“, obwohl das Passwort stimmt, prüfe **Basis-DN** und **Benutzerfilter**. Zeigt sie „Der Verzeichnisserver hat zu lange für die Antwort gebraucht. Versuchen Sie es gleich noch einmal.“, hat das Verzeichnis länger als 30 Sekunden gebraucht; siehe [Wie lange eine Anmeldung wartet](#how-long-a-sign-in-waits). Ist die Rolle falsch, prüfe die Zuordnung. Ist die Zuordnung ausgefüllt und die Person in irgendeiner Gruppe, steht im Log des Servers eine Zeile, die mit `[LDAP] User` beginnt und die gefundenen Gruppen und die gewählte Rolle nennt. Wo das Log liegt, steht unter [Fehlersuche](/docs/operations/troubleshooting).
+Zeigt die Anmeldung „Ungültiger Benutzername oder Passwort.“, obwohl das Passwort stimmt, prüfe **Basis-DN** und **Benutzerfilter**. Zeigt sie „Der Verzeichnisserver hat zu lange für die Antwort gebraucht. Versuche es gleich noch einmal.“, hat das Verzeichnis länger als 30 Sekunden gebraucht; siehe [Wie lange eine Anmeldung wartet](#how-long-a-sign-in-waits). Ist die Rolle falsch, prüfe die Zuordnung. Ist die Zuordnung ausgefüllt und die Person in irgendeiner Gruppe, steht im Log des Servers eine Zeile, die mit `[LDAP] User` beginnt und die gefundenen Gruppen und die gewählte Rolle nennt. Wo das Log liegt, steht unter [Fehlersuche](/docs/operations/troubleshooting).

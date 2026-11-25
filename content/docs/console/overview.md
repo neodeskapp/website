@@ -58,7 +58,7 @@ The buttons under the values:
 - **Show QR** shows a QR code that the RustDesk app on a phone can scan to fill in the server settings.
 - **More** has **Copy deploy string** and **Windows install script (Intune)**.
 
-Below the buttons is a link to **Download RustDesk**, the official release page on GitHub. The server key, the QR code and the support agents are on [Add computers](/docs/console/add-a-computer), under **Devices**.
+Below the buttons are links to **Download RustDesk**, the official release page on GitHub, to **Support agents** for the admin roles, and to **Server key and QR code**. The last two open their tabs of [Add computers](/docs/console/add-a-computer), under **Devices**.
 
 How to put these values into a client is explained in [Connect a RustDesk client](/docs/getting-started/connect-a-client).
 

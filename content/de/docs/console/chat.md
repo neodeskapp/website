@@ -89,17 +89,22 @@ Unterhaltung ist dann mit dem Ticket verknüpft.
 
 Eine Zeile unter dem Kopf sagt, ob deine Nachrichten gerade jemanden erreichen:
 
-- „Die Person sieht Ihre Nachrichten jetzt in der NeoDesk-App.“ Die NeoDesk-App
+- „Die Person sieht deine Nachrichten jetzt in der NeoDesk-App.“ Die NeoDesk-App
   des Computers hält den Chat offen.
-- „Der Agent des Computers empfängt Ihre Nachrichten.“ Auf dem Computer läuft
+- „Der Agent des Computers empfängt deine Nachrichten.“ Auf dem Computer läuft
   ein Agent, der Chatnachrichten annimmt.
-- „Gerade nicht erreichbar. Die Person sieht Ihre Nachrichten, sobald der Chat
+- „Gerade nicht erreichbar. Die Person sieht deine Nachrichten, sobald der Chat
   der NeoDesk-App öffnet, oder in einer Fernsitzung.“ Der Server hebt auf, was du
   schreibst.
 
 Das Chatfenster der NeoDesk-App kommt mit einem Client-Release nach 1.5.0-rc.7.
 Mit 1.5.0-rc.7 oder älter und mit einem RustDesk-Client kann die Person nur in
 einer Fernsitzung lesen und antworten.
+
+Die NeoDesk-App erreicht den Chat und sendet und holt seine Dateien über den
+API-Port des Servers (standardmäßig 21121), über den sie auch alles andere
+schickt, oder über die Adresse der Konsole. Ein weiterer Port muss nicht offen
+sein.
 
 ### In einer Fernsitzung {#in-a-remote-session}
 
@@ -160,7 +165,9 @@ auf ihr liegt:
 Änderungen und Löschungen stehen auch im Audit-Protokoll. Links erscheinen so,
 wie sie sind, und öffnen sich in einem neuen Tab; der Chat zeigt keine Vorschau
 dazu. Unter deiner neuesten Nachricht sagt **Gesehen**, dass die andere Seite
-sie gelesen hat.
+sie gelesen hat. In einer Support-Unterhaltung kann das auch eine Kollegin oder
+ein Kollege sein, die die Unterhaltung geöffnet hat. Es heißt also nicht
+sicher, dass die Person am Computer sie gelesen hat.
 
 ### Textbausteine {#canned-replies}
 

@@ -4,7 +4,7 @@ description: Sensoren, Controller und Agenten über CDAP verbinden lassen, ihre 
 order: 13
 ---
 
-CDAP ist das eigene Protokoll des Servers für Geräte, die keine RustDesk-Clients sind: Sensoren, Controller, Kameras, SCADA-Systeme, Netzwerkgeräte und Agenten. Ein Gerät verbindet sich mit dem CDAP-Gateway des Servers und meldet, welche Werte und Steuerelemente es hat, und die Konsole zeigt sie unter **IoT-Geräte (CDAP)**. Diese Seite behandelt den Betrieb des Gateways und die Arbeit mit diesen Geräten. Wie du ein Gerät oder eine Bridge für CDAP baust, steht in [CDAP-Protokoll](/docs/development/cdap-protocol) und [CDAP-SDKs und Bridges](/docs/development/cdap-sdks).
+CDAP ist das eigene Protokoll des Servers für Geräte, die keine RustDesk-Clients sind: Sensoren, Controller, Kameras, SCADA-Systeme, Netzwerkgeräte und Agenten. Ein Gerät verbindet sich mit dem CDAP-Gateway des Servers und meldet, welche Werte und Steuerelemente es hat, und die Konsole zeigt sie unter **Geräte**, **IoT-Geräte**. Diese Seite behandelt den Betrieb des Gateways und die Arbeit mit diesen Geräten. Wie du ein Gerät oder eine Bridge für CDAP baust, steht in [CDAP-Protokoll](/docs/development/cdap-protocol) und [CDAP-SDKs und Bridges](/docs/development/cdap-sdks).
 
 ## Das Gateway {#the-gateway}
 
@@ -22,7 +22,7 @@ Die Software oder Bridge des Geräts entscheidet, wie es sich beim Gateway anmel
 
 Ein Gerät, das sich mit einem Konto oder einem API-Schlüssel anmeldet, tritt dem Server unter der ID bei, die es angibt; die Rolle dieses Kontos oder Schlüssels braucht deshalb die Berechtigung **Registrierungen genehmigen**. Eine ID, die ein anderes Konto oder ein anderer Schlüssel registriert hat, wird abgelehnt, ebenso ein gesperrtes Gerät.
 
-Ein angemeldetes Gerät erscheint auf der Seite **IoT-Geräte (CDAP)**, solange es verbunden ist, und in [der Geräteliste](/docs/console/devices) mit dem Namen und dem Typ, die es angegeben hat.
+Ein angemeldetes Gerät erscheint auf der Seite **IoT-Geräte**, solange es verbunden ist, und in [der Geräteliste](/docs/console/devices) mit dem Namen und dem Typ, die es angegeben hat.
 
 ## Die Seite IoT-Geräte {#the-iot-devices-page}
 

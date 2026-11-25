@@ -64,7 +64,7 @@ Mit einer Einladung wählt die Person Benutzername und Passwort selbst:
 3. Klicke auf **Einladung erstellen** und kopiere den **Einladungslink**. Er wird nur jetzt angezeigt und funktioniert einmal.
 4. Schicke den Link an die Person. NeoDesk verschickt selbst keine E-Mail.
 
-Der Link öffnet eine Seite der Konsole. Dort gibt die Person unter **Benutzername** einen Namen aus 3 bis 64 Buchstaben, Ziffern und `.`, `_`, `@` oder `-` ein, unter **Passwort** und **Passwort wiederholen** ein Passwort mit mindestens 8 Zeichen, und klickt auf **Anmeldung erstellen**. Danach sagt ihr die Seite, dass sie sich im NeoDesk-Client bei der Organisation anmelden soll. Einen Benutzernamen, den es in der Organisation schon gibt, lehnt die Seite mit „Diese Organisation hat diesen Benutzernamen schon. Wählen Sie einen anderen.“ ab.
+Der Link öffnet eine Seite der Konsole. Dort gibt die Person unter **Benutzername** einen Namen aus 3 bis 64 Buchstaben, Ziffern und `.`, `_`, `@` oder `-` ein, unter **Passwort** und **Passwort wiederholen** ein Passwort mit mindestens 8 Zeichen, und klickt auf **Anmeldung erstellen**. Danach sagt ihr die Seite, dass sie sich im NeoDesk-Client bei der Organisation anmelden soll. Einen Benutzernamen, den es in der Organisation schon gibt, lehnt die Seite mit „Diese Organisation hat diesen Benutzernamen schon. Wähle einen anderen.“ ab.
 
 Die Liste unter **Einladungen** zeigt für jede Einladung die E-Mail-Adresse, wann sie abläuft und wann sie benutzt wurde. **Widerrufen** macht eine unbenutzte Einladung ungültig.
 

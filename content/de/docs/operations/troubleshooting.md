@@ -88,7 +88,7 @@ Unter Windows startest du `C:\NeoDesk\neodesk.ps1` als Administrator und wählst
 
 ## Anmeldung meldet „Zu viele Versuche“ {#sign-in-says-too-many-attempts}
 
-Die Konsole lehnt eine Anmeldung mit „Zu viele Versuche. Bitte versuchen Sie es später erneut.“ ab, wenn eines dieser Limits erreicht ist:
+Die Konsole lehnt eine Anmeldung mit „Zu viele Versuche. Bitte versuche es später erneut.“ ab, wenn eines dieser Limits erreicht ist:
 
 - 5 Anmeldeversuche von einer Adresse innerhalb einer Minute,
 - 10 fehlgeschlagene Anmeldungen eines Kontos von einer Adresse innerhalb von 15 Minuten. Sie sperren dieses Konto für diese Adresse bis 15 Minuten nach der letzten,

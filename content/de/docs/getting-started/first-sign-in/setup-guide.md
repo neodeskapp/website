@@ -33,8 +33,8 @@ eventuell weniger als acht.
 
 | Schritt | Wohin er führt | Hakt sich ab, wenn |
 |---|---|---|
-| **Erstes Passwort ändern** | **Ihr Konto**, **Passwort** | Das Passwort des ersten Admins nicht mehr das ist, das die Installation erzeugt hat |
-| **Zwei-Faktor-Anmeldung einschalten** | **Ihr Konto**, **Zwei-Faktor-Anmeldung** | Dein Konto die Zwei-Faktor-Anmeldung eingeschaltet hat |
+| **Erstes Passwort ändern** | **Dein Konto**, **Passwort** | Das Passwort des ersten Admins nicht mehr das ist, das die Installation erzeugt hat |
+| **Zwei-Faktor-Anmeldung einschalten** | **Dein Konto**, **Zwei-Faktor-Anmeldung** | Dein Konto die Zwei-Faktor-Anmeldung eingeschaltet hat |
 | **Adresse für Clients festlegen** | **Einstellungen**, **Allgemein**, **Öffentliche Client-Endpunkte** | Die Adresse, die Clients bekommen, für andere Computer erreichbar ist |
 | **HTTPS vor die Konsole setzen** | [Reverse Proxy und TLS](/docs/operations/reverse-proxy-tls), in einem neuen Tab | Du die Konsole über HTTPS geöffnet hast oder die Konsole selbst HTTPS anbietet |
 | **Ersten Computer hinzufügen** | **Computer hinzufügen**, direkt auf der Übersicht | Der Server ein Gerät hat |
@@ -45,7 +45,7 @@ eventuell weniger als acht.
 Die Fortschrittszeile über der Liste zählt die Schritte, zum Beispiel „3 von 8
 erledigt. Ein Schritt hakt sich selbst ab, sobald der Server ihn erledigt
 sieht.“ Sind alle Schritte erledigt, steht dort „Alle Schritte sind erledigt.
-Sie können die Anleitung jetzt ausblenden.“
+Du kannst die Anleitung jetzt ausblenden.“
 
 ### Welche Schritte ein Konto bekommt {#which-steps-an-account-gets}
 
@@ -102,7 +102,7 @@ und wenn **Computer hinzufügen** sich schließt.
 
 **Anleitung ausblenden**, oben rechts in der Anleitung, blendet sie für dein
 Konto aus. Die Konsole meldet dann „Die Einrichtungsanleitung ist
-ausgeblendet. Unter Hilfe und in den Einstellungen holen Sie sie zurück.“ Was
+ausgeblendet. Unter Hilfe und in den Einstellungen holst du sie zurück.“ Was
 die Anleitung schon erledigt gesehen hat, bleibt erhalten.
 
 Um sie wieder anzuzeigen, wähl an einer von zwei Stellen

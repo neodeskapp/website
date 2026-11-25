@@ -62,7 +62,7 @@ Unter jeder Zeile zeigt das Fenster, was gerade gilt und woher es kommt, zum Bei
 
 Bereichseinstellungen gelten nicht für Konten mit den Rollen Super-Admin und Administrator: Sie haben überall immer vollen Zugriff und können so den Zugriff jeder Person reparieren.
 
-Der Server lehnt das Speichern ab, wenn es dir selbst den Schreibzugriff auf **Benutzer** nehmen würde, für dein Konto oder über eine deiner Benutzergruppen. Die Meldung lautet „Sie können sich nicht selbst den Schreibzugriff auf Benutzer nehmen: Sie könnten den Konsolenzugriff dann nicht mehr ändern.“
+Der Server lehnt das Speichern ab, wenn es dir selbst den Schreibzugriff auf **Benutzer** nehmen würde, für dein Konto oder über eine deiner Benutzergruppen. Die Meldung lautet „Du kannst dir nicht selbst den Schreibzugriff auf Benutzer nehmen: Du könntest den Konsolenzugriff dann nicht mehr ändern.“
 
 ## Client-Funktionen {#client-features}
 

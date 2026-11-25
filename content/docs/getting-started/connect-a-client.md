@@ -53,7 +53,7 @@ To set the address for every client, use **Public client endpoints** in the
 settings, see [Set the address clients use](/docs/getting-started/first-sign-in#set-the-address-clients-use).
 
 **Devices**, **Add computers**, tab **Manual setup** shows the same values
-on a page of their own. It
+on a page of their own; **Server key and QR code** on **Overview** opens it. It
 adds the **Config string**, which holds all four in one line, the QR code for
 phones under **Set up a phone**, and the key as the file `id_ed25519.pub` under
 **Downloads**.

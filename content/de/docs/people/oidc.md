@@ -25,7 +25,7 @@ Die Einstellungen liegen in der Datenbank des Servers und gelten ohne Neustart a
 3. Kopiere die Client-ID und das Client-Secret.
 4. Willst du Rollen aus Gruppen, lass den Anbieter die Gruppen der Person in einen Claim schreiben, standardmäßig `groups`.
 
-Öffne die Konsole zum Anmelden unter genau dieser Adresse. Der Browser trägt vom Beginn bis zum Ende der Anmeldung ein Cookie mit. Eine Anmeldung, die unter einer anderen Adresse beginnt, etwa unter der IP-Adresse des Servers, scheitert deshalb mit „Ungültiger OIDC-Rückruf. Bitte versuchen Sie es erneut.“ Hinter einem Reverse Proxy nimmst du die öffentliche Adresse (siehe [Reverse Proxy und TLS](/docs/operations/reverse-proxy-tls)).
+Öffne die Konsole zum Anmelden unter genau dieser Adresse. Der Browser trägt vom Beginn bis zum Ende der Anmeldung ein Cookie mit. Eine Anmeldung, die unter einer anderen Adresse beginnt, etwa unter der IP-Adresse des Servers, scheitert deshalb mit „Ungültiger OIDC-Rückruf. Bitte versuche es erneut.“ Hinter einem Reverse Proxy nimmst du die öffentliche Adresse (siehe [Reverse Proxy und TLS](/docs/operations/reverse-proxy-tls)).
 
 ## Einstellungen {#settings}
 
@@ -123,7 +123,7 @@ neodesk-operators=operator
 | Der Zugriff wurde vom Identitätsanbieter verweigert. | Der Anbieter hat abgelehnt, oder die Person hat abgebrochen. |
 | Ihr Konto wurde nicht gefunden und die automatische Registrierung ist deaktiviert. | **Benutzer automatisch erstellen** ist aus, und es gibt kein Single-Sign-on-Konto mit diesem Namen. |
 | OIDC-Authentifizierung fehlgeschlagen. Bitte versuchen Sie es erneut. | Der Server konnte die Anmeldung beim Anbieter nicht abschließen, zum Beispiel wegen eines falschen Client-Secrets, oder weil der Anbieter länger als 15 Sekunden für die Antwort auf die Token-Anfrage des Servers gebraucht hat. |
-| Ungültiger OIDC-Rückruf. Bitte versuchen Sie es erneut. | Der Callback gehört nicht zu einer Anmeldung, die dieser Browser begonnen hat, oder die Anmeldung beim Anbieter hat länger als 10 Minuten gedauert. |
+| Ungültiger OIDC-Rückruf. Bitte versuche es erneut. | Der Callback gehört nicht zu einer Anmeldung, die dieser Browser begonnen hat, oder die Anmeldung beim Anbieter hat länger als 10 Minuten gedauert. |
 | Beim SSO-Anmelden ist ein Fehler aufgetreten. | Der Server konnte die Anmeldung nicht beginnen oder nicht abschließen, zum Beispiel weil er den Anbieter nicht erreicht. |
 | Dieser Name gehört zu einem Konto, das sich mit einem Passwort oder über das Verzeichnis anmeldet, daher kann Single Sign-On Sie nicht anmelden. Wenden Sie sich an einen Administrator. | Es gibt schon ein Passwort- oder Verzeichniskonto mit demselben Namen. Single Sign-on übernimmt ein solches Konto nie. |
 | Dieses Konto ist deaktiviert. Wenden Sie sich an einen Administrator. | Das Konto ist auf der Seite Benutzer deaktiviert. |

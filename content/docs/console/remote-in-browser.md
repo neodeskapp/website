@@ -11,7 +11,7 @@ The console has its own remote desktop client, the web viewer. It runs inside th
 
 A session opens inside the console, in the main area of the page. The ways in:
 
-- From a device: click **Connect** in the [device panel](/docs/console/device-details#connecting), or **Web remote** in the row menu of the device list. A device that has a session open already goes back to it.
+- From a device: click **Connect** in the [device panel](/docs/console/device-details#connecting), or **Web remote** in the row menu of the device list. The device panel closes and the session opens in its place. A device that has a session open already goes back to it.
 - From the sidebar: **Devices**, then **Remote sessions**. Under **Open sessions** the page lists the sessions open in this console, each with its state, a link back to it and a button to close it. Below that, type a device's ID into **Device ID** and click **Connect**, or find the device in the list, which has folders, groups, tags, a search, the filters **All**, **Online** and **Offline**, and a **List** or **Grid** view. The list refreshes every 30 seconds.
 - From a quick support session: once the person has clicked **Allow**, **Connect** opens their computer in the viewer in a new browser tab, without a password. See [Quick support](/docs/console/quick-support).
 - By address: `/remote/session/` followed by the device's ID opens its session in the console, so you can bookmark it. `/remote/` followed by the ID leads there too.

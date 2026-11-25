@@ -57,7 +57,7 @@ Die Schaltflächen unter den Werten:
 - **QR anzeigen** zeigt einen QR-Code, den die RustDesk-App auf einem Handy scannen kann, um die Servereinstellungen auszufüllen.
 - **Mehr** enthält **Deploy-String kopieren** und **Windows-Installationsskript (Intune)**.
 
-Unter den Schaltflächen steht ein Link zu **RustDesk herunterladen**, der offiziellen Release-Seite auf GitHub. Serverschlüssel, QR-Code und Support-Agenten findest du unter **Geräte** auf [Computer hinzufügen](/docs/console/add-a-computer).
+Unter den Schaltflächen stehen Links zu **RustDesk herunterladen**, der offiziellen Release-Seite auf GitHub, zu **Support-Agenten** für die Admin-Rollen und zu **Serverschlüssel und QR-Code**. Die letzten beiden öffnen ihre Tabs von [Computer hinzufügen](/docs/console/add-a-computer) unter **Geräte**.
 
 Wie du diese Werte in einen Client einträgst, steht in [Einen RustDesk-Client verbinden](/docs/getting-started/connect-a-client).
 

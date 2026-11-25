@@ -80,7 +80,7 @@ Computer beim Beitritt einzurichten, oder schließe ihn mit **Fertig**.
 
 Mit **Senden an** oder **Per E-Mail senden** verschickt der Server den Link per
 Mail. Die Mail sagt, wer die Person zu welchem Server eingeladen hat, etwa „Sam
-hat Sie zu Acme IT eingeladen“, und enthält:
+hat dich zu Acme IT eingeladen“, und enthält:
 
 - Oben das Logo des Servers, in der Akzentfarbe des Servers. Das Logo erscheint,
   wenn unter **Einstellungen**, **Branding** ein Bild-Logo als PNG, JPEG oder
@@ -143,7 +143,7 @@ beigetreten“ mit vier kurzen Schritten:
 1. **Name**: der Name, den er unter Geräte und im Viewer zeigt.
 2. **Ordner**: Wer den Computer sehen und erreichen kann, richtet sich nach
    seinem Ordner.
-3. **So erreichen Sie ihn**: die zwei Wege, sich zu verbinden. Ohne Passwort
+3. **So erreichst du ihn**: die zwei Wege, sich zu verbinden. Ohne Passwort
    sieht die Person am Computer, wer sich verbinden möchte, und klickt auf
    Annehmen. Mit seinem Passwort legt jemand am Computer in NeoDesk unter
    Einstellungen, Sicherheit ein dauerhaftes Passwort fest, und du gibst es

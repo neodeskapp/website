@@ -58,7 +58,7 @@ Fehlen die Werte, sagen beide Abschnitte, warum:
 - „Der Client dieses Geräts sendet keine Auslastungsdaten. Der normale RustDesk-Client tut das nicht, der NeoDesk-Client schon.“
 - „Der Client auf diesem Gerät sendet keine Auslastungsdaten: Sie sind dort ausgeschaltet, oder das System erlaubt es nicht.“
 
-Der NeoDesk-Client 1.5.0-rc.7 und ältere messen die CPU-Last nicht: Sie senden unter Windows 100 % und unter Linux 0 %, und keinen Netzwerkverkehr. Der Server behält ihren CPU-Wert als unbekannt. Das Panel zeigt dann Arbeitsspeicher und Festplatte, keine Zeile **Netzwerk** und kein Netzwerkdiagramm und sagt „Diese Client-Version misst die CPU-Last nicht. Aktualisieren Sie den NeoDesk-Client, um sie zu sehen.“ NeoDesk-Clients nach 1.5.0-rc.7 messen CPU und Netzwerk über die Zeit seit ihrem letzten Heartbeat, und das Panel zeigt alle vier Werte.
+Der NeoDesk-Client 1.5.0-rc.7 und ältere messen die CPU-Last nicht: Sie senden unter Windows 100 % und unter Linux 0 %, und keinen Netzwerkverkehr. Der Server behält ihren CPU-Wert als unbekannt. Das Panel zeigt dann Arbeitsspeicher und Festplatte, keine Zeile **Netzwerk** und kein Netzwerkdiagramm und sagt „Diese Client-Version misst die CPU-Last nicht. Aktualisiere den NeoDesk-Client, um sie zu sehen.“ NeoDesk-Clients nach 1.5.0-rc.7 messen CPU und Netzwerk über die Zeit seit ihrem letzten Heartbeat, und das Panel zeigt alle vier Werte.
 
 ### Live-Daten {#live-data}
 

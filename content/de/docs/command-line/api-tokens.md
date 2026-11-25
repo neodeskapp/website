@@ -11,7 +11,7 @@ dafür ausgewählt hast, und nie mehr als dein Konto.
 ## Wer Tokens erstellen kann {#who-can-make-tokens}
 
 Konten mit der Rolle Super-Admin, Administrator, Globaler Administrator oder
-Serveradministrator finden **API-Tokens** auf der Seite [Ihr Konto](/docs/people/your-account),
+Serveradministrator finden **API-Tokens** auf der Seite [Dein Konto](/docs/people/your-account),
 die das Kontomenü am Ende der oberen Leiste öffnet. Das Kontomenü hat auch einen
 Eintrag **API-Tokens**, der dorthin führt. Andere Konten haben diesen Teil nicht.
 
@@ -22,7 +22,7 @@ haben.
 ## Ein Token erstellen {#make-a-token}
 
 1. Öffne das Kontomenü am Ende der oberen Leiste und wähle **API-Tokens**.
-   Das öffnet **Ihr Konto** beim Teil **API-Tokens**.
+   Das öffnet **Dein Konto** beim Teil **API-Tokens**.
 2. Wähle **Neues Token**.
 3. Schreib unter **Name**, wofür das Token ist, zum Beispiel „Backup-Skript“.
    Der Name darf 80 Zeichen lang sein.
@@ -40,7 +40,7 @@ haben.
    Die Liste nimmt 32 Einträge.
 8. Wähle **Token erstellen**.
 
-**Token erstellt** zeigt das Token einmal, mit dem Hinweis „Kopieren Sie das
+**Token erstellt** zeigt das Token einmal, mit dem Hinweis „Kopiere das
 Token jetzt. Es wird nicht noch einmal angezeigt.“ Kopier es dort. Darunter
 zeigt die Konsole den Befehl, der die Kommandozeile mit dem Token anmeldet,
 schon mit der Adresse dieser Konsole.
@@ -238,7 +238,7 @@ Proxys und lässt `--cacert` weg.
 
 ## Tokens ansehen und widerrufen {#see-and-revoke-tokens}
 
-**API-Tokens** zeigt **Ihre Tokens**: den Namen jedes Tokens mit seinem
+**API-Tokens** zeigt **Deine Tokens**: den Namen jedes Tokens mit seinem
 Anfang, `ndt_` und der ID, den Zugriff und die erlaubten Adressen, wie viele
 Berechtigungen es hat, wann es abläuft, wann und von wo es zuletzt benutzt
 wurde, und seinen Status: **Aktiv**, **Abgelaufen** oder **Widerrufen**. Die

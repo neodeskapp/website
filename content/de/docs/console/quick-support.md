@@ -49,7 +49,7 @@ Der Dialog zeigt den aktuellen Stand:
 **Link zurückziehen**, neben der Zeile, die sagt, dass der Link wartet,
 beendet einen unbenutzten Link. **Sitzung beenden**
 beendet eine laufende Sitzung. Du kannst den Dialog jederzeit schließen: Die
-Sitzung bleibt offen, und **Ihre Schnellhilfe-Sitzungen** auf der Seite
+Sitzung bleibt offen, und **Deine Schnellhilfe-Sitzungen** auf der Seite
 **Hilfeanfragen** listet sie mit **Öffnen** auf, damit du zu ihr zurückkommst.
 
 ## Was eine Sitzung dir gibt {#what-a-session-gives-you}

@@ -9,7 +9,7 @@ Texte folgen denselben Regeln wie die Doku, dazu ein paar für die Oberfläche.
 Die Texte selbst stehen in den Sprachdateien; siehe
 [Übersetzungen](/docs/development/translations).
 
-Die Oberfläche der Konsole spricht auf Deutsch mit „Sie“, die Doku mit „du“.
+Die Oberfläche der Konsole, die Mails des Servers und die Doku sprechen auf Deutsch mit „du“.
 
 ## Regeln {#rules}
 
