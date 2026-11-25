@@ -1,4 +1,6 @@
 // The HTML around the docs: one frame, and the kinds of page inside it.
+import { SITE_PAGES, sitePageTitles } from './pages.ts';
+import type { SitePageSlug } from './pages.ts';
 import type { Page, Pager, Section, Shared } from './types.ts';
 import { DEFAULT_LOCALE, fill } from './i18n.ts';
 import { siteHeader, siteFooter } from './chrome.ts';
@@ -137,6 +139,7 @@ function frame(o: FrameOptions) {
 		docs: docsHome,
 		brand: inLocale(o, '/brand/'),
 		download: inLocale(o, '/download/'),
+		pages: Object.fromEntries(SITE_PAGES.map((slug) => [slug, { href: inLocale(o, `/${slug}/`), title: sitePageTitles(locale.code)[slug] }])) as Record<SitePageSlug, { href: string; title: string }>,
 		languages: noindex ? [] : o.versions(o.path).filter((l) => l.code !== locale.code).map((l) => ({ locale: l, href: o.urls.url(`${l.prefix}${o.path}`) })),
 		tools
 	};
@@ -486,6 +489,11 @@ export function notFoundPage(shared: Shared, path = '/404.html') {
 /** The brand page: logo files, colours, fonts, the name and the voice (src/brand.ts). */
 export function brandPage(shared: Shared & { main: string; title: string; fullTitle: string; description: string }) {
 	return frame({ ...shared, path: '/brand/', current: '', plain: true, display: true });
+}
+
+/** One of the site's small pages, such as Support or the imprint (src/pages.ts). */
+export function sitePage(shared: Shared & { slug: string; main: string; title: string; fullTitle: string; description: string }) {
+	return frame({ ...shared, path: `/${shared.slug}/`, current: '', plain: true, display: true });
 }
 
 /** The download page: the client's file for this computer, the scam notice and every file (src/download.ts). */

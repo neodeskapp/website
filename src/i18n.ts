@@ -72,7 +72,9 @@ export interface Strings {
 	madeInEu: string;
 	/** The footer's groups of links: the product's pages, the project's places */
 	footProduct: string;
+	footHelp: string;
 	footProject: string;
+	footLegal: string;
 	changelog: string;
 	security: string;
 	/** The footer's link to the brand page */
@@ -151,7 +153,9 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		footer: 'NeoDesk works with RustDesk clients. Open source under AGPL-3.0.',
 		madeInEu: 'Made in the EU',
 		footProduct: 'Product',
+		footHelp: 'Help',
 		footProject: 'Project',
+		footLegal: 'Legal',
 		changelog: 'Changelog',
 		security: 'Security',
 		brand: 'Brand and logo',
@@ -215,7 +219,9 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		footer: 'NeoDesk funktioniert mit RustDesk-Clients. Open Source unter der AGPL-3.0.',
 		madeInEu: 'Made in the EU',
 		footProduct: 'Produkt',
+		footHelp: 'Hilfe',
 		footProject: 'Projekt',
+		footLegal: 'Rechtliches',
 		changelog: 'Changelog',
 		security: 'Sicherheit',
 		brand: 'Logo und Marke',

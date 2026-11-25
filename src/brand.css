@@ -10,6 +10,10 @@
 .plain .article td code { font-family: var(--mono); font-size: 0.875em; white-space: nowrap; }
 .plain .article p code { font-family: var(--mono); font-size: 0.875em; padding: 2px 5px; border-radius: 3px; background: var(--code-inline); }
 .plain .mono { font-family: var(--mono); }
+.plain .article > ul:not(.rows) { margin: 0 0 16px; padding-left: 22px; max-width: 68ch; }
+.plain .article > ul:not(.rows) li { margin: 6px 0; }
+.plain .article > .rows:has(+ h2) { border-bottom: 0; }
+.page-address { margin: 0 0 16px; font-style: normal; line-height: 1.7; }
 
 /* Brand page */
 .brand-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 24px; margin: 0 0 8px; }

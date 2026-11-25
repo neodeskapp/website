@@ -11,11 +11,13 @@ import type { StateBlock, StateCore, Token, RendererRule } from 'markdown-it';
 import hljs from 'highlight.js';
 import sharp from 'sharp';
 import config from './site.config.ts';
-import { docsIndexPage, allPagesPage, brandPage, downloadPage, docPage, sectionPage, notFoundPage, contactSheetPage, hreflangLinks, socialTags, esc } from './src/layout.ts';
+import { docsIndexPage, allPagesPage, brandPage, downloadPage, sitePage, docPage, sectionPage, notFoundPage, contactSheetPage, hreflangLinks, socialTags, esc } from './src/layout.ts';
 import { siteHeader, siteFooter } from './src/chrome.ts';
 import { makeUrls } from './src/urls.ts';
 import { BRAND, brandMain } from './src/brand.ts';
 import { DOWNLOAD, downloadMain, clientSoftware, repoCommands } from './src/download.ts';
+import { SITE_PAGES, hasSitePages, sitePages, sitePageTitles } from './src/pages.ts';
+import type { SitePageSlug } from './src/pages.ts';
 import { pickRelease, parseSums, toClientRelease } from './src/client-release.ts';
 import type { ClientOffer, GitHubRelease } from './src/client-release.ts';
 import { zipFolder } from './src/zip.ts';
@@ -673,10 +675,25 @@ async function build() {
 		offer('/docs/all/', site.locale);
 		if (BRAND[site.locale.code]) offer('/brand/', site.locale);
 		if (DOWNLOAD[site.locale.code]) offer('/download/', site.locale);
+		if (hasSitePages(site.locale.code)) for (const slug of SITE_PAGES) offer(`/${slug}/`, site.locale);
 		for (const s of site.sections) offer(`/docs/${s.slug}/`, site.locale);
 		for (const p of site.pages) offer(`/docs/${p.slug}/`, site.locale);
 	}
 	const versions = (p: string) => available.get(p) ?? [];
+	// What the site's small pages (src/pages.ts) link to and show, in one language
+	const pageContext = (locale: Locale) => ({
+		docs: (p: string) => {
+			const [page, hash] = p.split('#');
+			return `${url(linkIn(locale)(page))}${hash ? `#${hash}` : ''}`;
+		},
+		page: (slug: SitePageSlug | 'download') => url(`${locale.prefix}/${slug}/`),
+		repo: config.repo,
+		clientRepo: config.clientRepo,
+		discord: config.discord,
+		version,
+		client,
+		dateLocale: locale.dateLocale
+	});
 	// A docs link from a page: to the page in the same language when there is one, else to the default language's
 	const linkIn = (locale: Locale) => (href: string) => {
 		const clean = docHref(href);
@@ -734,7 +751,7 @@ async function build() {
 				}
 				const target = p.replace(/\/$/, '');
 				// Pages of the www host that are not docs, such as the brand page
-				if (/^(\/[a-z]{2})?\/(brand|download)$/.test(target)) continue;
+				if (new RegExp(`^(/[a-z]{2})?/(brand|download|${SITE_PAGES.join('|')})$`).test(target)) continue;
 				if (target === '' || target === '/docs' || main.sections.some((s) => `/docs/${s.slug}` === target)) continue;
 				if (p.endsWith('.md')) problems.push(`${page.rel}: link "${href}" should not end in .md`);
 				const to = own.get(target) ?? known.get(target);
@@ -775,6 +792,7 @@ async function build() {
 		preview(`${locale.prefix}/docs/all/`, t.allPages, { template: 'landing', title: t.allPages });
 		if (BRAND[locale.code]) preview(`${locale.prefix}/brand/`, BRAND[locale.code].title, { template: 'landing', title: BRAND[locale.code].title });
 		if (DOWNLOAD[locale.code]) preview(`${locale.prefix}/download/`, DOWNLOAD[locale.code].title, { template: 'landing', title: DOWNLOAD[locale.code].title });
+		if (hasSitePages(locale.code)) for (const x of sitePages(locale.code, pageContext(locale))) preview(`${locale.prefix}/${x.slug}/`, x.previewTitle, { template: 'landing', title: x.previewTitle });
 		for (const s of site.sections) preview(`${locale.prefix}/docs/${s.slug}/`, s.label, { template: 'landing', title: s.label });
 		for (const page of site.pages) {
 			const template = (page.og ?? 'docs') as OgTemplate;
@@ -860,6 +878,9 @@ async function build() {
 			const pageUrl = url(`${locale.prefix}/download/`);
 			write(out('download/index.html'), downloadPage({ ...shared, title: dl.title, fullTitle: dl.pageTitle, description: dl.description, main, jsonLd: clientSoftware(locale.code, client, pageUrl, SITE_URL) }));
 		}
+		// Support, releases, security, the imprint and the website's privacy page
+		if (!hasSitePages(locale.code)) problems.push(`src/pages.ts: no pages for ${locale.label}`);
+		else for (const x of sitePages(locale.code, pageContext(locale))) write(out(`${x.slug}/index.html`), sitePage({ ...shared, slug: x.slug, title: x.title, fullTitle: x.pageTitle, description: x.description, main: x.main }));
 		// The web server sends 404.html for an address that does not exist, on each host;
 		// another language's 404 page needs a rule of its own there, such as one for /de/
 		write(out('404.html'), notFoundPage(shared));
@@ -1000,6 +1021,7 @@ async function build() {
 			docs: url(`${locale.prefix}/docs/`),
 			brand: `${locale.prefix}/brand/`,
 			download: `${locale.prefix}/download/`,
+			pages: Object.fromEntries(SITE_PAGES.map((slug) => [slug, { href: `${locale.prefix}/${slug}/`, title: sitePageTitles(locale.code)[slug] }])) as Record<SitePageSlug, { href: string; title: string }>,
 			languages: versions('/').filter((l) => l.code !== locale.code).map((l) => ({ locale: l, href: `${l.prefix}/` }))
 		};
 		const page = homeTemplate
@@ -1082,6 +1104,7 @@ async function build() {
 			[`${site.locale.prefix}/docs/all/`, newest(site.pages.map((p) => p.updated))],
 			[`${site.locale.prefix}/brand/`, newest([updatedOf(at('src/brand.ts')), updatedOf(at('public/brand/files'))])],
 			[`${site.locale.prefix}/download/`, newest([updatedOf(at('src/download.ts')), ...(client.main ? [client.main.published] : [])])],
+			...SITE_PAGES.map((slug): [string, string] => [`${site.locale.prefix}/${slug}/`, slug === 'releases' ? newest([updatedOf(at('src/pages.ts')), ...(client.main ? [client.main.published] : [])]) : updatedOf(at('src/pages.ts'))]),
 			...site.sections.map((s): [string, string] => [`${site.locale.prefix}/docs/${s.slug}/`, newest(s.items.map((p) => p.updated))]),
 			...site.reading.map((p): [string, string] => [`${site.locale.prefix}/docs/${p.slug}/`, p.updated])
 		])
