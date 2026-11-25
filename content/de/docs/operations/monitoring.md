@@ -10,7 +10,7 @@ Diese Seite listet auf, was ein externes Monitoring den Server fragen kann, wer 
 
 | Adresse | Port | Wer sie lesen darf | Antwort |
 |---|---|---|---|
-| `/health` | Der Port der Konsole: 5000, oder 5443, wenn sie HTTPS ausliefert | Alle | `{"status":"ok","timestamp":"..."}` |
+| `/health` | Der Port der Konsole: 3375 (5000 bei Installationen von vor 3.6.0-rc.5), oder 5443, wenn sie HTTPS ausliefert | Alle | `{"status":"ok","timestamp":"..."}` |
 | `/api/health` | 21121 bei jeder Installationsart, außerdem die API des Servers auf 21114 unter Linux und Windows | Alle | `{"status":"ok","version":"..."}` |
 | `/api/health/detail` | Die API des Servers: 21121 unter Docker, 21114 unter Linux und Windows | Wie bei den Metriken unten | Geräte (registriert und online), Relay-Sitzungen, Laufzeit, ob die Uhr synchronisiert ist, und die Verbindungsstrategie |
 | `/api/server/stats` | Die API des Servers | Wie bei den Metriken unten | Version, Arbeitsspeicher, Laufzeit und Gerätezahlen |

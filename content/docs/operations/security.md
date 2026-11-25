@@ -8,7 +8,7 @@ This page goes through the settings that make a server on the internet safer and
 
 ## Keep the console behind TLS
 
-The console speaks plain HTTP on port 5000. Put a reverse proxy with a certificate in front of it and let only the proxy reach the port; see [Keep the console local](/docs/operations/reverse-proxy-tls#keep-the-console-local).
+The console speaks plain HTTP on port 3375 (5000 on Linux and Windows installs from before 3.6.0-rc.5). Put a reverse proxy with a certificate in front of it and let only the proxy reach the port; see [Keep the console local](/docs/operations/reverse-proxy-tls#keep-the-console-local).
 
 Set `TRUST_PROXY` only when nobody but the proxy can reach the console. With it on, whoever reaches the console directly can claim any client address, and the sign-in limits count that address. The server's API is stricter and believes only the addresses in `TRUSTED_PROXIES`. See [Trusting the proxy](/docs/operations/reverse-proxy-tls#trusting-the-proxy).
 
@@ -60,7 +60,7 @@ For CDAP device agents, `CDAP_TLS_REQUIRED=Y` with `TLS_CERT` and `TLS_KEY` turn
 
 ## Block addresses and devices
 
-Bans and blocks you make in the console are kept in the database. For a list you keep yourself, the server reads a file with one entry per line: an IP address, a range, or `id:` and a device ID, each with an optional reason after a comma. It is `blocklist.txt` next to the server's key file (`/opt/rustdesk/blocklist.txt` in Docker), or the file `BLOCKLIST_FILE` names. **Settings**, **Advanced** edits that same file as **Server blocklist (blocklist.txt)**.
+Bans and blocks you make in the console are kept in the database. For a list you keep yourself, the server reads a file with one entry per line: an IP address, a range, or `id:` and a device ID, each with an optional reason after a comma. It is `blocklist.txt` next to the server's key file (`/opt/neodesk/data/blocklist.txt` in Docker), or the file `BLOCKLIST_FILE` names. **Settings**, **Advanced** edits that same file as **Server blocklist (blocklist.txt)**.
 
 ```text
 # Lines starting with # are comments

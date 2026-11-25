@@ -18,13 +18,23 @@ RustDesk clients reach the server on a handful of ports, and people open the web
 | 21121 | TCP (HTTP) | RustDesk clients: the client API, for system information, sign-in and the address book | Yes |
 | 21114 | TCP (HTTP) | Linux and Windows only: the server's own API, which answers the client API calls the console passes on from 21121 | No, only to a Prometheus server |
 | 21122 | TCP | CDAP device agents | Only when you use them |
-| 5000 | TCP (HTTP) | Browsers: the web console, and remote desktop in the browser | Only through a reverse proxy with TLS |
+| 3375 | TCP (HTTP) | Browsers: the web console, and remote desktop in the browser | Only through a reverse proxy with TLS |
 | 5443 | TCP (HTTPS) | Browsers: the console when it serves HTTPS itself | Only when no reverse proxy is in front |
 | 80, 443 | TCP (HTTP, HTTPS) | Browsers and Let's Encrypt: Traefik in front of the console, on Docker with [HTTPS with Let's Encrypt](/docs/getting-started/docker#https-with-lets-encrypt) | Yes, when you use it |
 
 The server works out three of these from the others: the NAT test port is one below the ID server port, and the two WebSocket ports are two above the ID server and relay ports.
 
-The console on port 5000 speaks plain HTTP. Open it as `http://<server-address>:5000`, or put it behind a reverse proxy with TLS before people use it over the internet; see [Reverse proxy and TLS](/docs/operations/reverse-proxy-tls). The Linux and Windows installers turn on HTTPS with a self-signed certificate, so on those installs the console is on 5443 and port 5000 redirects there; see [HTTPS without a proxy](/docs/operations/reverse-proxy-tls#https-without-a-proxy).
+The console on port 3375 speaks plain HTTP. Open it as `http://<server-address>:3375`, or put it behind a reverse proxy with TLS before people use it over the internet; see [Reverse proxy and TLS](/docs/operations/reverse-proxy-tls). The Linux and Windows installers turn on HTTPS with a self-signed certificate, so on those installs the console is on 5443 and the plain port redirects there; see [HTTPS without a proxy](/docs/operations/reverse-proxy-tls#https-without-a-proxy).
+
+### The console's port before 3.6.0-rc.5
+
+Up to 3.6.0-rc.4 the console's default port was 5000. Which installs moved:
+
+- New installs of any kind use 3375.
+- Linux and Windows installs made before 3.6.0-rc.5 keep 5000, because the installers wrote the port into their env file, and an install whose settings name a port keeps it.
+- Docker installs with the default compose file move to 3375 at their next update with the script, which says so. With `NEODESK_CONSOLE_PORT=5000` in `/opt/neodesk/docker/.env` they keep 5000. A reverse proxy in front of a Docker install has to forward to 3375 after the update unless you keep 5000.
+
+`CONSOLE_PORT` or `PORT` in the env file (`NEODESK_CONSOLE_PORT` in Docker's `.env`) shows the port an install uses.
 
 ### The API port on Linux and Windows
 
@@ -43,7 +53,7 @@ The installers' self-signed certificate is not used on 21121: they set `RUSTDESK
 
 ## Remote desktop in the browser
 
-The browser opens two WebSockets on the console's own address, `/ws/rendezvous` and `/ws/relay`, and the console passes them to the ID server and the relay inside the server. The browser therefore needs only the console's address, port 5000 or your reverse proxy. The device you connect to reaches the server on 21116 and 21117 like any RustDesk client.
+The browser opens two WebSockets on the console's own address, `/ws/rendezvous` and `/ws/relay`, and the console passes them to the ID server and the relay inside the server. The browser therefore needs only the console's address, port 3375 or your reverse proxy. The device you connect to reaches the server on 21116 and 21117 like any RustDesk client.
 
 Behind a reverse proxy, the proxy has to pass WebSocket upgrades for those paths. See [Remote desktop in the browser](/docs/console/remote-in-browser) for using it.
 
@@ -70,7 +80,7 @@ sudo firewall-cmd --permanent --add-port=21121/tcp
 sudo firewall-cmd --reload
 ```
 
-The Linux installer opens the ports itself when ufw or firewalld is active, and adds iptables rules only when neither of them is installed. A ufw or firewalld that is installed but switched off stays as it is, with no rules added. The ports it opens are 21115 to 21117 over TCP, 21116 over UDP, the client API port 21121, 21122 unless the env file sets `CDAP_ENABLED=N`, and the console's port 5000 and, with HTTPS on, 5443. With `TRUST_PROXY` on it leaves the console's ports closed. It takes the ID server and relay ports from the env file, and at the end it prints the list for a firewall outside the machine, such as your cloud provider's.
+The Linux installer opens the ports itself when ufw or firewalld is active, and adds iptables rules only when neither of them is installed. A ufw or firewalld that is installed but switched off stays as it is, with no rules added. The ports it opens are 21115 to 21117 over TCP, 21116 over UDP, the client API port 21121, 21122 unless the env file sets `CDAP_ENABLED=N`, and the console's port (3375 on a new install) and, with HTTPS on, 5443. With `TRUST_PROXY` on it leaves the console's ports closed. It takes the ID server and relay ports from the env file, and at the end it prints the list for a firewall outside the machine, such as your cloud provider's.
 
 The one-line install for Docker opens its ports, 21122 included, in ufw or firewalld only when one of them is active, and adds no iptables rules; see [Install with the script](/docs/getting-started/docker#install-with-the-script).
 
@@ -110,7 +120,7 @@ The API answers `{"status":"ok","version":"..."}`. UDP has no handshake, so `nc`
 
 The console's port:
 
-- Docker: set `NEODESK_CONSOLE_PORT=8080` in the `.env` file next to the compose file, and `NEODESK_CONSOLE_HTTPS_PORT` for 5443, then recreate the container in that folder. Inside the container the console stays on 5000 and 5443.
+- Docker: set `NEODESK_CONSOLE_PORT=8080` in the `.env` file next to the compose file, and `NEODESK_CONSOLE_HTTPS_PORT` for 5443, then recreate the container in that folder. Inside the container the console stays on 3375 and 5443.
 
   ```bash
   docker compose up -d

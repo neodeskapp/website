@@ -28,10 +28,10 @@ The server and the console write one log.
 
 ## Health checks
 
-The console answers `/health` and the API answers `/api/health`, both without signing in:
+The console answers `/health` and the API answers `/api/health`, both without signing in. On a Linux or Windows install made before 3.6.0-rc.5, put the console's port 5000 in place of 3375:
 
 ```bash
-curl http://localhost:5000/health
+curl http://localhost:3375/health
 curl http://localhost:21121/api/health
 ```
 
@@ -58,11 +58,12 @@ sudo /opt/neodesk/neodesk-server check --api http://127.0.0.1:21114/api/health -
 
 ## The console does not open
 
-- Use `http://`, not `https://`, unless you set up HTTPS. Port 5000 speaks plain HTTP.
+- Use `http://`, not `https://`, unless you set up HTTPS. The console's port speaks plain HTTP: 3375, or 5000 on a Linux or Windows install made before 3.6.0-rc.5.
+- A Docker install that answered on 5000 moves to 3375 at its first update to 3.6.0-rc.5 or later, unless `NEODESK_CONSOLE_PORT` in its `.env` names a port. See [The console's port after the update](/docs/operations/updating#the-consoles-port-after-the-update).
 - With `CONSOLE_PORT=0` the console is off. A minimal install (`--minimal`) sets that.
 - With `HOST=127.0.0.1` the console answers only on the machine itself, which is what you want behind a reverse proxy on the same machine.
-- `[console] ERROR: HTTP port 5000 is already in use` in the log means another program holds the port. When `CONSOLE_PORT` is not set at all, the server keeps running without its console and logs `the server runs without its console`; set `CONSOLE_PORT` to a free port. In Docker, Compose refuses to start the container when the host port is taken.
-- With `HTTPS_ENABLED=true` and a certificate, the console is on port 5443 and port 5000 redirects there, or shows a page that asks you to set `PANEL_PUBLIC_HOST`.
+- `[console] ERROR: HTTP port 3375 is already in use` in the log means another program holds the port. When `CONSOLE_PORT` is not set at all, the server keeps running without its console and logs `the server runs without its console`; set `CONSOLE_PORT` to a free port. In Docker, Compose refuses to start the container when the host port is taken.
+- With `HTTPS_ENABLED=true` and a certificate, the console is on port 5443 and the plain port redirects there, or shows a page that asks you to set `PANEL_PUBLIC_HOST`.
 - The firewall. The Linux and Windows installers open the console's ports in the machine's own firewall; a firewall in front of the machine, such as a cloud provider's, is up to you. See [Ports and firewall](/docs/operations/ports).
 
 ## Forgot the admin password
@@ -74,7 +75,7 @@ read -rs NEWPASS
 printf '%s\n' "$NEWPASS" | docker compose exec -T -u neodesk neodesk neodesk-server reset-password admin
 ```
 
-On Linux, `sudo neodesk --reset-password` sets the password from `ADMIN_PASSWORD`, or a random one, and shows it once. In the menu of `sudo neodesk`, **Reset admin password** also lets you type one. The server's own command works too, run as the service account:
+On Linux, `sudo neodesk-setup --reset-password` sets the password from `ADMIN_PASSWORD`, or a random one, and shows it once. In the menu of `sudo neodesk-setup`, **Reset admin password** also lets you type one. The server's own command works too, run as the service account:
 
 ```bash
 read -rs NEWPASS
@@ -116,7 +117,7 @@ At every start the server logs its public key as `Server public key: <key>`. The
 - `Failed to initialize keypair: keys: failed to read private key ...`: the account the server runs as cannot read `id_ed25519`. On Linux, start the installer's menu and choose **Repair installation**, then **Repair permissions**:
 
   ```bash
-  sudo neodesk
+  sudo neodesk-setup
   ```
 
 - `Failed to initialize keypair: keys: invalid base64` or `invalid private key size`: `id_ed25519` is not a key file the server can read. Key files from `ssh-keygen` are of this kind. The server reads the files it makes itself and those of a RustDesk server.
@@ -149,12 +150,12 @@ So when **Public relay server** holds a wrong address, correct it there; `RELAY_
 Signed out right after signing in:
 
 - One account may have one session at a time (`SESSION_MAX_PER_USER=1`). Signing in with the same account in another browser ends the earlier session.
-- With `HTTPS_ENABLED=true` and a certificate, port 5000 only redirects to the console's own HTTPS port, and a proxy that sends requests to port 5000 gets no console. Behind a proxy, see [Secure cookies](/docs/operations/reverse-proxy-tls#secure-cookies).
+- With `HTTPS_ENABLED=true` and a certificate, the plain port only redirects to the console's own HTTPS port, and a proxy that sends requests to the plain port gets no console. Behind a proxy, see [Secure cookies](/docs/operations/reverse-proxy-tls#secure-cookies).
 - A new session secret signs everyone out. Without `SESSION_SECRET` the console keeps it in its data folder, so a lost `neodesk-console-data` volume makes a new one.
 
 Client setup, QR codes or install commands show the wrong address: without settings of its own, the console takes the host from `PANEL_PUBLIC_HOST`, from its API address, or from the address the browser used. Enter the addresses under **Public client endpoints** in **Settings**, **General**; see [Check the addresses clients get](/docs/operations/reverse-proxy-tls#check-the-addresses-clients-get).
 
 ## Docker: the container does not stay up
 
-- `ERROR: /opt/rustdesk is NOT writable by the neodesk user` appears with a bind mount whose folder belongs to another user. Set `PUID` and `PGID` in `.env` to the folder's owner, change the owner to 10001, or use the named volumes of the compose file.
+- `ERROR: /opt/neodesk/data is NOT writable by the neodesk user` appears with a bind mount whose folder belongs to another user. Set `PUID` and `PGID` in `.env` to the folder's owner, change the owner to 10001, or use the named volumes of the compose file.
 - `Failed to open database` with PostgreSQL: check `DATABASE_URL` and that the `postgres` container runs. Without `COMPOSE_PROFILES=postgres` in `.env`, start it with `--profile postgres`. See [PostgreSQL](/docs/operations/postgresql).

@@ -28,10 +28,10 @@ Server und Konsole schreiben ein gemeinsames Log.
 
 ## Health-Checks {#health-checks}
 
-Die Konsole beantwortet `/health` und die API `/api/health`, beide ohne Anmeldung:
+Die Konsole beantwortet `/health` und die API `/api/health`, beide ohne Anmeldung. Bei einer Installation unter Linux oder Windows, die vor 3.6.0-rc.5 entstanden ist, setze für 3375 den Port 5000 der Konsole ein:
 
 ```bash
-curl http://localhost:5000/health
+curl http://localhost:3375/health
 curl http://localhost:21121/api/health
 ```
 
@@ -58,11 +58,12 @@ sudo /opt/neodesk/neodesk-server check --api http://127.0.0.1:21114/api/health -
 
 ## Die Konsole öffnet nicht {#the-console-does-not-open}
 
-- Nutze `http://`, nicht `https://`, außer du hast HTTPS eingerichtet. Port 5000 spricht unverschlüsseltes HTTP.
+- Nutze `http://`, nicht `https://`, außer du hast HTTPS eingerichtet. Der Port der Konsole spricht unverschlüsseltes HTTP: 3375, oder 5000 bei einer Installation unter Linux oder Windows, die vor 3.6.0-rc.5 entstanden ist.
+- Eine Docker-Installation, die auf 5000 antwortete, wechselt beim ersten Update auf 3.6.0-rc.5 oder neuer auf 3375, außer `NEODESK_CONSOLE_PORT` in ihrer `.env` nennt einen Port. Siehe [Der Port der Konsole nach dem Update](/docs/operations/updating#the-consoles-port-after-the-update).
 - Mit `CONSOLE_PORT=0` ist die Konsole aus. Eine Minimalinstallation (`--minimal`) setzt das.
 - Mit `HOST=127.0.0.1` antwortet die Konsole nur auf dem Rechner selbst. Das willst du hinter einem Reverse Proxy auf demselben Rechner.
-- `[console] ERROR: HTTP port 5000 is already in use` im Log heißt, dass ein anderes Programm den Port belegt. Ist `CONSOLE_PORT` gar nicht gesetzt, läuft der Server ohne seine Konsole weiter und loggt `the server runs without its console`. Setze `CONSOLE_PORT` auf einen freien Port. Unter Docker startet Compose den Container nicht, wenn der Host-Port belegt ist.
-- Mit `HTTPS_ENABLED=true` und einem Zertifikat liegt die Konsole auf Port 5443, und Port 5000 leitet dorthin weiter oder zeigt eine Seite, die dich bittet, `PANEL_PUBLIC_HOST` zu setzen.
+- `[console] ERROR: HTTP port 3375 is already in use` im Log heißt, dass ein anderes Programm den Port belegt. Ist `CONSOLE_PORT` gar nicht gesetzt, läuft der Server ohne seine Konsole weiter und loggt `the server runs without its console`. Setze `CONSOLE_PORT` auf einen freien Port. Unter Docker startet Compose den Container nicht, wenn der Host-Port belegt ist.
+- Mit `HTTPS_ENABLED=true` und einem Zertifikat liegt die Konsole auf Port 5443, und der unverschlüsselte Port leitet dorthin weiter oder zeigt eine Seite, die dich bittet, `PANEL_PUBLIC_HOST` zu setzen.
 - Die Firewall. Die Installer für Linux und Windows öffnen die Ports der Konsole in der Firewall des Rechners; eine Firewall vor dem Rechner, etwa die eines Cloud-Anbieters, ist deine Sache. Siehe [Ports und Firewall](/docs/operations/ports).
 
 ## Admin-Passwort vergessen {#forgot-the-admin-password}
@@ -74,7 +75,7 @@ read -rs NEWPASS
 printf '%s\n' "$NEWPASS" | docker compose exec -T -u neodesk neodesk neodesk-server reset-password admin
 ```
 
-Unter Linux setzt `sudo neodesk --reset-password` das Passwort aus `ADMIN_PASSWORD` oder auf ein zufälliges und zeigt es einmal an. Im Menü von `sudo neodesk` kannst du unter **Reset admin password** auch selbst eines eintippen. Der eigene Befehl des Servers funktioniert ebenfalls, ausgeführt als Dienstkonto:
+Unter Linux setzt `sudo neodesk-setup --reset-password` das Passwort aus `ADMIN_PASSWORD` oder auf ein zufälliges und zeigt es einmal an. Im Menü von `sudo neodesk-setup` kannst du unter **Reset admin password** auch selbst eines eintippen. Der eigene Befehl des Servers funktioniert ebenfalls, ausgeführt als Dienstkonto:
 
 ```bash
 read -rs NEWPASS
@@ -116,7 +117,7 @@ Bei jedem Start loggt der Server seinen öffentlichen Schlüssel als `Server pub
 - `Failed to initialize keypair: keys: failed to read private key ...`: Das Konto, unter dem der Server läuft, kann `id_ed25519` nicht lesen. Unter Linux startest du das Menü des Installers und wählst **Repair installation**, dann **Repair permissions**:
 
   ```bash
-  sudo neodesk
+  sudo neodesk-setup
   ```
 
 - `Failed to initialize keypair: keys: invalid base64` oder `invalid private key size`: `id_ed25519` ist keine Schlüsseldatei, die der Server lesen kann. Schlüsseldateien von `ssh-keygen` gehören dazu. Der Server liest die Dateien, die er selbst erzeugt, und die eines RustDesk-Servers.
@@ -149,12 +150,12 @@ Steht in **Öffentlicher Relay-Server** also eine falsche Adresse, korrigiere si
 Direkt nach der Anmeldung wieder abgemeldet:
 
 - Ein Konto darf eine Sitzung zur selben Zeit haben (`SESSION_MAX_PER_USER=1`). Eine Anmeldung mit demselben Konto in einem anderen Browser beendet die frühere Sitzung.
-- Mit `HTTPS_ENABLED=true` und einem Zertifikat leitet Port 5000 nur auf den eigenen HTTPS-Port der Konsole weiter, und ein Proxy, der Anfragen an Port 5000 schickt, bekommt keine Konsole. Hinter einem Proxy siehe [Sichere Cookies](/docs/operations/reverse-proxy-tls#secure-cookies).
+- Mit `HTTPS_ENABLED=true` und einem Zertifikat leitet der unverschlüsselte Port nur auf den eigenen HTTPS-Port der Konsole weiter, und ein Proxy, der Anfragen an den unverschlüsselten Port schickt, bekommt keine Konsole. Hinter einem Proxy siehe [Sichere Cookies](/docs/operations/reverse-proxy-tls#secure-cookies).
 - Ein neues Sitzungsgeheimnis meldet alle ab. Ohne `SESSION_SECRET` hält die Konsole es in ihrem Datenordner, ein verlorenes Volume `neodesk-console-data` erzeugt also ein neues.
 
 Client-Einrichtung, QR-Codes oder Installationsbefehle zeigen die falsche Adresse: Ohne eigene Einstellungen nimmt die Konsole den Host aus `PANEL_PUBLIC_HOST`, aus ihrer API-Adresse oder aus der Adresse, die der Browser genutzt hat. Trage die Adressen unter **Öffentliche Client-Endpunkte** in **Einstellungen**, **Allgemein** ein; siehe [Die Adressen prüfen, die Clients bekommen](/docs/operations/reverse-proxy-tls#check-the-addresses-clients-get).
 
 ## Docker: Der Container bleibt nicht am Laufen {#docker-the-container-does-not-stay-up}
 
-- `ERROR: /opt/rustdesk is NOT writable by the neodesk user` erscheint bei einem Bind-Mount, dessen Ordner einem anderen Benutzer gehört. Setze `PUID` und `PGID` in `.env` auf den Besitzer des Ordners, ändere den Besitzer auf 10001 oder nutze die benannten Volumes der Compose-Datei.
+- `ERROR: /opt/neodesk/data is NOT writable by the neodesk user` erscheint bei einem Bind-Mount, dessen Ordner einem anderen Benutzer gehört. Setze `PUID` und `PGID` in `.env` auf den Besitzer des Ordners, ändere den Besitzer auf 10001 oder nutze die benannten Volumes der Compose-Datei.
 - `Failed to open database` mit PostgreSQL: Prüfe `DATABASE_URL` und ob der Container `postgres` läuft. Ohne `COMPOSE_PROFILES=postgres` in `.env` startest du ihn mit `--profile postgres`. Siehe [PostgreSQL](/docs/operations/postgresql).

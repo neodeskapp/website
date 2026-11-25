@@ -33,7 +33,7 @@ docker compose up -d
 
 [Settings in .env](/docs/getting-started/docker#settings-in-env) lists the settings of the compose file itself, such as the image tag.
 
-The `environment:` list in the compose file wins over `.env`. Most of its entries have the form `NAME=${NAME:-default}` and take their value from `.env` anyway, but some are fixed, among them `HOST=0.0.0.0`, `CONSOLE_PORT=5000`, `API_ENABLED=false`, `DATA_DIR=/app/data` and the paths inside the volumes. To publish the console on another host port, or on one address of the host only, set `NEODESK_CONSOLE_PORT`, `NEODESK_CONSOLE_HTTPS_PORT` and `NEODESK_CONSOLE_BIND` in `.env`; see [Changing a port](/docs/operations/ports#changing-a-port).
+The `environment:` list in the compose file wins over `.env`. Most of its entries have the form `NAME=${NAME:-default}` and take their value from `.env` anyway, but some are fixed, among them `HOST=0.0.0.0`, `CONSOLE_PORT=3375`, `API_ENABLED=false`, `DATA_DIR=/app/data` and the paths inside the volumes. To publish the console on another host port, or on one address of the host only, set `NEODESK_CONSOLE_PORT`, `NEODESK_CONSOLE_HTTPS_PORT` and `NEODESK_CONSOLE_BIND` in `.env`; see [Changing a port](/docs/operations/ports#changing-a-port).
 
 `ADMIN_USERNAME` and `ADMIN_PASSWORD` only count before the first start; the compose file passes them on as the first admin account.
 
@@ -53,7 +53,7 @@ sudo systemctl restart neodesk-server
 The installer can also change settings that its built-in template knows, and restarts the service afterwards:
 
 ```bash
-sudo neodesk --set-config TRUST_PROXY=Y --set-config LOG_LEVEL=info
+sudo neodesk-setup --set-config TRUST_PROXY=Y --set-config LOG_LEVEL=info
 ```
 
 ## Windows
@@ -74,7 +74,7 @@ Restart-Service NeoDeskServer
 | `RELAY_PORT` | `21117` | `-relay-port` | Relay port. The WebSocket relay is two above it. |
 | `GO_API_PORT` | `21114` | `-api-port` | Port of the server's API. Without it the server takes `API_PORT`, which the console's client API uses as well, so the start stops while that client API is on. Docker starts the server with `-api-port 21121`. |
 | `RELAY_SERVERS` | detected | `-relay-servers` | Relay address the server gives devices, as host or host:port, when no **Public relay server** is saved in the console. Without either, the server uses its detected public address, then its LAN address. In Docker the entrypoint looks up the public address at every start. |
-| `CONSOLE_PORT` | `5000` | | Port of the web console. `0` turns the console off. |
+| `CONSOLE_PORT` | `3375` | | Port of the web console (5000 up to 3.6.0-rc.4; installs made before keep it, see [Ports and firewall](/docs/operations/ports#the-consoles-port-before-360-rc5)). `0` turns the console off. |
 | `HOST` | `127.0.0.1` | | Address the console listens on. Docker and the installers set `0.0.0.0`. |
 | `API_ENABLED`, `API_PORT`, `API_HOST` | `true`, `21121`, `0.0.0.0` | | On Linux and Windows the console also answers the RustDesk client API on `API_PORT`, passes it to the server's API, and gives clients this port in their API server address. Docker sets `API_ENABLED=false`, because the server's API is on 21121 there. |
 | `RUSTDESK_API_TLS` | `auto` | | `false` keeps the client API port on plain HTTP. Otherwise it serves HTTPS when the console's certificate loads. The installers set `false` when they make their self-signed certificate. |

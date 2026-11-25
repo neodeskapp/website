@@ -8,7 +8,7 @@ Diese Seite geht die Einstellungen durch, die einen Server im Internet sicherer 
 
 ## Die Konsole hinter TLS halten {#keep-the-console-behind-tls}
 
-Die Konsole spricht auf Port 5000 unverschlüsseltes HTTP. Setze einen Reverse Proxy mit Zertifikat davor und lass nur den Proxy an den Port; siehe [Die Konsole lokal halten](/docs/operations/reverse-proxy-tls#keep-the-console-local).
+Die Konsole spricht auf Port 3375 unverschlüsseltes HTTP (5000 bei Installationen unter Linux und Windows von vor 3.6.0-rc.5). Setze einen Reverse Proxy mit Zertifikat davor und lass nur den Proxy an den Port; siehe [Die Konsole lokal halten](/docs/operations/reverse-proxy-tls#keep-the-console-local).
 
 Setze `TRUST_PROXY` nur, wenn niemand außer dem Proxy die Konsole erreicht. Ist es eingeschaltet, kann jeder, der die Konsole direkt erreicht, eine beliebige Client-Adresse vorgeben, und die Anmeldelimits zählen diese Adresse. Die API des Servers ist strenger und glaubt nur den Adressen in `TRUSTED_PROXIES`. Siehe [Dem Proxy vertrauen](/docs/operations/reverse-proxy-tls#trusting-the-proxy).
 
@@ -60,7 +60,7 @@ Für CDAP-Geräte-Agents schaltet `CDAP_TLS_REQUIRED=Y` mit `TLS_CERT` und `TLS_
 
 ## Adressen und Geräte sperren {#block-addresses-and-devices}
 
-Sperren und Blockaden, die du in der Konsole setzt, liegen in der Datenbank. Für eine Liste, die du selbst pflegst, liest der Server eine Datei mit einem Eintrag pro Zeile: eine IP-Adresse, ein Adressbereich oder `id:` und eine Geräte-ID, jeweils mit einem optionalen Grund nach einem Komma. Das ist `blocklist.txt` neben der Schlüsseldatei des Servers (`/opt/rustdesk/blocklist.txt` unter Docker) oder die Datei, die `BLOCKLIST_FILE` nennt. **Einstellungen**, **Erweitert** bearbeitet genau diese Datei als **Sperrliste des Servers (blocklist.txt)**.
+Sperren und Blockaden, die du in der Konsole setzt, liegen in der Datenbank. Für eine Liste, die du selbst pflegst, liest der Server eine Datei mit einem Eintrag pro Zeile: eine IP-Adresse, ein Adressbereich oder `id:` und eine Geräte-ID, jeweils mit einem optionalen Grund nach einem Komma. Das ist `blocklist.txt` neben der Schlüsseldatei des Servers (`/opt/neodesk/data/blocklist.txt` unter Docker) oder die Datei, die `BLOCKLIST_FILE` nennt. **Einstellungen**, **Erweitert** bearbeitet genau diese Datei als **Sperrliste des Servers (blocklist.txt)**.
 
 ```text
 # Lines starting with # are comments

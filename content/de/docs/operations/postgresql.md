@@ -62,7 +62,7 @@ Mit `COMPOSE_PROFILES=postgres` bezieht jeder Compose-Befehl den Datenbank-Conta
 - Der Datenbank-Container veröffentlicht keinen Port, deshalb erreichen ihn nur Container im Compose-Netz.
 - Das Log des Containers nennt die Datenbank ohne Benutzername und Passwort.
 
-Mit `docker-compose.single.yml`, der Datei, die das Image aus dem Repository baut, heißt die Passwort-Variable `PG_PASSWORD` statt `POSTGRES_PASSWORD`.
+Mit `install/docker-compose.single.yml`, der Datei, die das Image aus dem Repository baut, heißt die Passwort-Variable `PG_PASSWORD` statt `POSTGRES_PASSWORD`.
 
 ## Eine Linux- oder Windows-Installation mit PostgreSQL starten {#start-a-linux-or-windows-install-on-postgresql}
 
@@ -119,7 +119,7 @@ Im Ordner mit `docker-compose.yml`:
 3. Führe den Umzug mit dem Befehl `migrate` des Servers aus, als der Benutzer, unter dem der Container läuft (10001, oder deine Werte für `PUID` und `PGID`):
 
    ```bash
-   docker compose run --rm --no-deps -T --user 10001:10001 --entrypoint sh neodesk -c 'exec /usr/local/bin/neodesk-server migrate -mode sqlite2pg -src /opt/rustdesk/db_v2.sqlite3 -dst "$DATABASE_URL"'
+   docker compose run --rm --no-deps -T --user 10001:10001 --entrypoint sh neodesk -c 'exec /usr/local/bin/neodesk-server migrate -mode sqlite2pg -src /opt/neodesk/data/db_v2.sqlite3 -dst "$DATABASE_URL"'
    ```
 
 4. Starte NeoDesk, das jetzt PostgreSQL öffnet:

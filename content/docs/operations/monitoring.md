@@ -10,7 +10,7 @@ This page lists what an outside monitor can ask the server, who may read it, and
 
 | Address | Port | Who may read it | Answer |
 |---|---|---|---|
-| `/health` | The console's: 5000, or 5443 when it serves HTTPS | Anyone | `{"status":"ok","timestamp":"..."}` |
+| `/health` | The console's: 3375 (5000 on installs from before 3.6.0-rc.5), or 5443 when it serves HTTPS | Anyone | `{"status":"ok","timestamp":"..."}` |
 | `/api/health` | 21121 on every install type, and the server's API on 21114 on Linux and Windows | Anyone | `{"status":"ok","version":"..."}` |
 | `/api/health/detail` | The server's API: 21121 in Docker, 21114 on Linux and Windows | As for the metrics below | Devices registered and online, relay sessions, uptime, whether the clock is synced, and the connection strategy |
 | `/api/server/stats` | The server's API | As for the metrics below | Version, memory, uptime and device counts |

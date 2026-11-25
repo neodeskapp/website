@@ -12,6 +12,8 @@ Die Identität des Servers ist sein Ed25519-Schlüsselpaar, `id_ed25519` und `id
 
 Sichere die Schlüsseldateien deshalb zusammen mit der Datenbank, und stelle beide gemeinsam wieder her. Eine Datenbank ohne ihre Schlüssel gibt dir deine Geräte und Konten zurück, aber nicht deine Clients.
 
+`.device_vault_key` liegt im selben Ordner wie das Schlüsselpaar und enthält den Schlüssel der Angaben für die [gespeicherte Anmeldung](/docs/console/saved-sign-in) und der Gerätepasswörter, die Organisationen in ihrem Adressbuch speichern. Der Server legt die Datei beim ersten Start an. Weder die vollständige Sicherung der Konsole noch die Backups der Installer für Linux und Windows enthalten sie, damit ein Backup allein diese Passwörter nicht öffnet. Das Backup des Docker-Skripts enthält sie, weil es das ganze Daten-Volume kopiert. Ziehst du mit dem Server um, kopiere die Datei mit den Daten. Ein Server ohne sie erzeugt einen neuen Schlüssel, und die Angaben der gespeicherten Anmeldung und die Gerätepasswörter im Adressbuch müssen neu gespeichert werden. Bewahre die Datei so sicher auf wie das Schlüsselpaar: Die Datei und eine Kopie der Datenbank öffnen zusammen die Passwörter.
+
 `mesh_agent_server.pem` funktioniert für Mesh-Agents genauso. Ihre `.msh`-Dateien nennen den Server über eine ID, die aus dem Schlüssel dieser Datei entsteht. Fehlt die Datei beim Start, erzeugt der Server eine neue, und die ID ändert sich. Agents, die mit der alten `.msh`-Datei eingerichtet wurden, akzeptieren den Server dann nicht mehr und müssen mit einer neuen Datei neu installiert werden.
 
 ## Was du sichern musst {#what-to-back-up}
@@ -20,9 +22,11 @@ Docker hält alles in benannten Volumes:
 
 | Volume | Pfad im Container | Inhalt |
 |---|---|---|
-| `neodesk-data` | `/opt/rustdesk` | Die SQLite-Datenbank `db_v2.sqlite3`, das Schlüsselpaar, der API-Schlüssel `.api_key`, `mesh_agent_server.pem`, der Schlüssel für die gespeicherten RDP- und VNC-Passwörter `.remote_target_vault_key` und das erste Admin-Passwort `.admin_credentials`, bis der Admin es ändert |
+| `neodesk-data` | `/opt/neodesk/data` | Die SQLite-Datenbank `db_v2.sqlite3`, das Schlüsselpaar, der API-Schlüssel `.api_key`, `mesh_agent_server.pem`, der Schlüssel für die gespeicherten RDP- und VNC-Passwörter `.remote_target_vault_key`, der Schlüssel der gespeicherten Anmeldung und der Gerätepasswörter im Adressbuch `.device_vault_key` und das erste Admin-Passwort `.admin_credentials`, bis der Admin es ändert |
 | `neodesk-console-data` | `/app/data` | Das Sitzungsgeheimnis, hochgeladene Bilder und Schriften, die öffentlichen Client-Endpunkte, Chat-Dateien und Ticket-Anhänge, die eigenen Backups der Konsole |
 | `neodesk-postgres-data` | `/var/lib/postgresql/data` | Die Datenbank, wenn du PostgreSQL nutzt |
+
+Bis 3.6.0-rc.4 war das Daten-Volume unter `/opt/rustdesk` eingebunden. Das Update auf 3.6.0-rc.5 verlegt den Einhängepunkt; die Daten bleiben im selben Volume.
 
 Sichere außerdem die Datei `.env` neben der Compose-Datei und `docker-compose.override.yml`, falls du eine angelegt hast. Die Compose-Datei benennt die Volumes selbst, deshalb hängen die Namen nicht vom Ordner ab; `docker volume ls` listet sie auf. Nur `docker-compose.single.yml`, das das Image aus dem Repository baut, setzt den Ordnernamen davor, zum Beispiel `neodesk_neodesk-data`; siehe [Installation mit Docker](/docs/getting-started/docker#build-the-image-from-the-repository).
 
@@ -30,7 +34,7 @@ Eine Linux-Installation mit den Standardordnern des Installers:
 
 | Pfad | Inhalt |
 |---|---|
-| `/opt/neodesk` | Das Binary, die SQLite-Datenbank, das Schlüsselpaar, der API-Schlüssel, `ssl/` mit den Zertifikaten, `mesh_agent_server.pem` |
+| `/opt/neodesk` | Das Binary, die SQLite-Datenbank, das Schlüsselpaar, `.device_vault_key`, der API-Schlüssel, `ssl/` mit den Zertifikaten, `mesh_agent_server.pem` |
 | `/opt/NeoDeskConsole` | Die env-Datei `.env` und der Ordner `data/` der Konsole |
 | `/etc/systemd/system/neodesk-server.service` | Der Dienst mit seinen Argumenten |
 
@@ -53,7 +57,7 @@ Eine vollständige Sicherung enthält jedes Geheimnis des Servers. Deshalb dürf
 - der `.env` der Konsole, wenn ihr Ordner eine hat (eine Docker-Installation hat keine),
 - einer Übersicht über die Geräte, die Sperrliste und die letzten Audit-Ereignisse.
 
-Die Compose-Dateien und die systemd-Unit sind nicht darin, und unter Docker auch nicht `.remote_target_vault_key`. Bewahre von dieser Datei eine Kopie auf, sonst lassen sich die gespeicherten RDP- und VNC-Passwörter nach einer Wiederherstellung auf ein neues Volume nicht mehr lesen. Das Archiv enthält Geheimnisse: die Schlüssel, Passwort-Hashes und die Geheimnisse der Zwei-Faktor-Anmeldung. Bewahre es auf wie ein Passwort.
+Die Compose-Dateien, die systemd-Unit und `.device_vault_key` sind nicht darin, und unter Docker auch nicht `.remote_target_vault_key`. Bewahre von diesen Dateien eine Kopie auf, sonst lassen sich die Angaben der gespeicherten Anmeldung, die Gerätepasswörter im Adressbuch und die gespeicherten RDP- und VNC-Passwörter nach einer Wiederherstellung auf einem neuen Server oder Volume nicht mehr lesen. Das Archiv enthält Geheimnisse: die Schlüssel, Passwort-Hashes und die Geheimnisse der Zwei-Faktor-Anmeldung. Bewahre es auf wie ein Passwort.
 
 **Geplante vollständige Sicherung** erstellt dasselbe Archiv nach Zeitplan: jede Stunde, alle 6, 12 oder 24 Stunden oder jede Woche. Jedes Archiv wird nach dem Schreiben geprüft und bekommt seinen SHA-256-Hash in einer Datei daneben, und **Aufzubewahrende Archive** (7, solange du nichts änderst) entfernt die ältesten. Standardziel ist der Datenordner der Konsole, darin `scheduled-backups`. Unter Docker liegt das im Volume `neodesk-console-data` und schützt dich deshalb nicht davor, das Volume zu verlieren. Wähle **Benutzerdefinierter lokaler oder eingebundener Netzwerkpfad**, gib einen **Zielpfad** auf einer anderen Platte oder einer Netzwerkfreigabe ein und klicke auf **Ziel testen**. Der Pfad muss absolut sein und darf weder das Wurzelverzeichnis einer Platte noch der Ordner der Konsole selbst sein.
 
@@ -103,7 +107,7 @@ Unter Windows funktioniert auch ein UNC-Pfad wie `\\<nas-address>\backups`, wenn
 
 ## Kaltes Backup einer Docker-Installation {#cold-backup-of-a-docker-install}
 
-Stoppst du den Container vorher, bekommst du eine konsistente Kopie von allem. Bei einer Installation mit dem Skript erledigt das `sudo bash neodesk-docker.sh backup`. Es stoppt den Container, speichert beide Volumes als eine `.tar.gz` mit einer Kopie von `docker-compose.yml` und `.env` in `backups` im Installationsordner und startet den Container wieder. Mit PostgreSQL kommt ein Dump der Datenbank dazu. Es behält die letzten fünf Backups. Siehe [Installation mit Docker](/docs/getting-started/docker#other-commands-of-the-script).
+Stoppst du den Container vorher, bekommst du eine konsistente Kopie von allem. Bei einer Installation mit dem Skript erledigt das `sudo bash neodesk-docker.sh backup`. Es stoppt den Container, speichert beide Volumes als eine `.tar.gz` mit einer Kopie von `docker-compose.yml`, `docker-compose.override.yml` und `.env` in `backups` im Installationsordner und startet den Container wieder. Mit PostgreSQL kommt ein Dump der Datenbank dazu. Es behält die letzten fünf Backups. Siehe [Installation mit Docker](/docs/getting-started/docker#other-commands-of-the-script).
 
 Von Hand führst du das im Ordner mit der Compose-Datei aus:
 
@@ -125,7 +129,7 @@ sudo tar czf /root/neodesk-backup.tar.gz /opt/neodesk /opt/NeoDeskConsole /etc/s
 sudo systemctl start neodesk-server
 ```
 
-Der Menüpunkt **Backup** des Installers, den jedes Update als Erstes ausführt, funktioniert bei laufendem Server. Er schreibt `/opt/rustdesk-backups/neodesk_backup_<time>.tar.gz` mit demselben Archiv wie **Sicherung herunterladen** auf der Seite **Sicherung** der Konsole (unter SQLite wie unter PostgreSQL) und dazu eine Kopie des Schlüsselpaars, des API-Schlüssels und von `.admin_credentials`. Die systemd-Unit lässt er weg. Unter Windows schreibt derselbe Menüpunkt eine ZIP-Datei nach `C:\NeoDesk-Backups`.
+Der Menüpunkt **Backup** des Installers, den jedes Update als Erstes ausführt, funktioniert bei laufendem Server. Er schreibt `/opt/neodesk-backups/neodesk_backup_<time>.tar.gz` mit demselben Archiv wie **Sicherung herunterladen** auf der Seite **Sicherung** der Konsole (unter SQLite wie unter PostgreSQL) und dazu eine Kopie des Schlüsselpaars, des API-Schlüssels und von `.admin_credentials`. Die systemd-Unit und `.device_vault_key` lässt er weg. Bis 3.6.0-rc.4 landeten die Backups in `/opt/rustdesk-backups`; der erste Lauf des neuen Installers als root verschiebt sie nach `/opt/neodesk-backups`. Unter Windows schreibt derselbe Menüpunkt eine ZIP-Datei nach `C:\NeoDesk-Backups`.
 
 ## Wiederherstellen {#restore}
 
@@ -152,11 +156,11 @@ docker run --rm -v neodesk-console-data:/data -v "$PWD/backup":/backup alpine:3.
 docker compose start
 ```
 
-Ein Backup von `neodesk-docker.sh backup` enthält beide Volumes in einer Datei, in den Ordnern `rustdesk` und `console`. Führe Folgendes in `/opt/neodesk/docker` aus und setze für `neodesk-<time>.tar.gz` den Namen der Datei ein:
+Ein Backup von `neodesk-docker.sh backup` enthält beide Volumes in einer Datei, in den Ordnern `neodesk` und `console`. In einem Backup von 3.6.0-rc.4 oder älter heißt der erste Ordner `rustdesk`; der Befehl unten bindet das Daten-Volume unter beiden Namen ein und stellt deshalb beide wieder her. Führe Folgendes in `/opt/neodesk/docker` aus und setze für `neodesk-<time>.tar.gz` den Namen der Datei ein:
 
 ```bash
 docker compose stop
-docker run --rm -v neodesk-data:/restore/rustdesk -v neodesk-console-data:/restore/console -v "$PWD/backups":/in:ro alpine:3.22 sh -c 'find /restore/rustdesk /restore/console -mindepth 1 -delete && tar xzf /in/neodesk-<time>.tar.gz -C /restore'
+docker run --rm -v neodesk-data:/restore/neodesk -v neodesk-data:/restore/rustdesk -v neodesk-console-data:/restore/console -v "$PWD/backups":/in:ro alpine:3.22 sh -c 'find /restore/neodesk /restore/console -mindepth 1 -delete && tar xzf /in/neodesk-<time>.tar.gz -C /restore'
 docker compose start
 ```
 
@@ -173,4 +177,4 @@ sudo systemctl start neodesk-server
 
 ### Auf einem neuen Server {#on-a-new-machine}
 
-Installiere NeoDesk auf demselben Weg wie vorher ([Docker](/docs/getting-started/docker), [Linux](/docs/getting-started/linux) oder [Windows](/docs/getting-started/windows)), stoppe es, stelle die Dateien oder Volumes wie oben beschrieben wieder her und starte es. Lass die öffentliche Adresse des Servers auf den neuen Server zeigen oder gib den Clients die neue Adresse. Liegt die alte Schlüsseldatei an ihrem Platz, brauchen die Clients sonst nichts.
+Installiere NeoDesk auf demselben Weg wie vorher ([Docker](/docs/getting-started/docker), [Linux](/docs/getting-started/linux) oder [Windows](/docs/getting-started/windows)), stoppe es, stelle die Dateien oder Volumes wie oben beschrieben wieder her, lege `.device_vault_key` neben das Schlüsselpaar, falls dein Backup die Datei nicht enthält, und starte es. Lass die öffentliche Adresse des Servers auf den neuen Server zeigen oder gib den Clients die neue Adresse. Liegt die alte Schlüsseldatei an ihrem Platz, brauchen die Clients sonst nichts.

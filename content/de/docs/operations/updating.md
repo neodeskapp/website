@@ -4,11 +4,60 @@ description: Eine Installation mit Docker, Linux oder Windows aktualisieren, den
 order: 5
 ---
 
-Wie du aktualisierst, hängt davon ab, wie du installiert hast. Eine Docker-Installation zieht ein neueres Image. Die Installer für Linux und Windows ersetzen das Binary des Servers und behalten deine Daten und Einstellungen, und die Seite **Updates** der Konsole kann das Binary ebenfalls ersetzen. Alle beziehen ihre Releases von neodeskapp/neodesk auf GitHub.
+Wie du aktualisierst, hängt davon ab, wie du installiert hast. Eine Docker-Installation zieht ein neueres Image. Die Installer für Linux und Windows ersetzen das Binary des Servers und behalten deine Daten und Einstellungen, und die Seite **Updates** der Konsole kann das Binary ebenfalls ersetzen. Alle beziehen ihre Releases von neodeskapp/neodesk auf GitHub. Jedes Release bringt seine Installer und Compose-Dateien mit, und ein Update nimmt den neuen Installer aus dem Release, das es installiert.
 
 ## Die Releases bisher {#releases-so-far}
 
 NeoDesk hat noch kein stabiles Release. Das neueste Release, {{VERSION}}, ist ein Release Candidate, und ein fertiges 3.6.0 gibt es noch nicht. Bis es das gibt, installiert der Kanal Stabil den neuesten Release Candidate, und das Image `latest` unter Docker ebenso.
+
+## Eine Installation von 3.6.0-rc.4 aktualisieren {#update-a-360-rc4-install}
+
+Eine Installation von 3.6.0-rc.4 oder älter braucht einen Schritt von Hand. Ihr Update-Befehl holt den Installer aus dem Branch main des Repositorys, wo er nicht mehr liegt. Unter Linux und Windows aktualisiert er den Server trotzdem, behält aber den alten Installer. Unter Docker bricht er mit einem Downloadfehler ab, bevor er etwas ändert. Führe den neuen Installer einmal so aus wie unten. Danach funktionieren die Update-Befehle weiter unten wieder. Die Seite **Updates** der Konsole ersetzt nur das Binary des Servers, deshalb ist der Schritt in jedem Fall einmal nötig.
+
+Unter Linux:
+
+```bash
+curl -fsSL https://neode.sk/neodesk.sh | sudo bash -s -- --update
+```
+
+Er aktualisiert den Server, speichert den Installer als `neodesk-setup`, legt die Befehlszeile `neodesk` nach `/usr/local/bin` und verschiebt die Backups von `/opt/rustdesk-backups` nach `/opt/neodesk-backups`.
+
+Unter Docker:
+
+```bash
+curl -fsSL https://neode.sk/install.sh | sudo bash
+```
+
+Eine Installation, die auf eine Version festgelegt ist, bleibt mit diesem Befehl auf ihr, zum Beispiel eine, die mit `--version 3.6.0-rc.4` installiert wurde; die Zusammenfassung am Ende sagt dann „pinned“. So bringst du sie auf das neueste Release und lässt sie wieder neuen Releases folgen:
+
+```bash
+curl -fsSL https://neode.sk/install.sh | sudo bash -s -- --version latest
+```
+
+Unter Windows öffnest du PowerShell als Administrator, lädst den Installer herunter und startest sein Update:
+
+```powershell
+Invoke-WebRequest https://neode.sk/neodesk.ps1 -OutFile neodesk.ps1 -UseBasicParsing
+```
+
+```powershell
+.\neodesk.ps1 -Update
+```
+
+Er speichert sich als `C:\NeoDesk\neodesk.ps1` und legt `neodesk` in den `Path` des Rechners.
+
+## Der Port der Konsole nach dem Update {#the-consoles-port-after-the-update}
+
+Der Standardport der Konsole ist seit 3.6.0-rc.5 3375; vorher war es 5000. HTTPS bleibt auf 5443.
+
+- Installationen unter Linux und Windows behalten ihren Port. Die Installer haben den Port in die env-Datei jeder Installation geschrieben, und eine Installation, deren Einstellungen einen Port nennen, behält ihn.
+- Docker-Installationen mit der mitgelieferten Compose-Datei wechseln beim nächsten Update mit dem Skript auf 3375, und das Update endet mit „The console now answers on port 3375; it was 5000“. Um bei 5000 zu bleiben, füge diese Zeile vor dem Update in `/opt/neodesk/docker/.env` ein, oder danach und aktualisiere noch einmal:
+
+  ```ini
+  NEODESK_CONSOLE_PORT=5000
+  ```
+
+- Ein eigener Reverse Proxy vor einer Docker-Installation muss nach dem Update an 3375 weiterleiten, außer du bleibst bei 5000. Mit `--domain` (Traefik) ändert sich für dich nichts: Die Konsole bleibt auf 443.
 
 ## Vor dem Update {#before-you-update}
 
@@ -26,7 +75,7 @@ Stabil ist der Standard. Eine Installation unter Linux oder Windows speichert ih
 Hat das Repository noch gar kein Release, nimmt eine neue Installation unter Linux oder Windows ohne angegebenen Kanal den Entwicklungs-Build und bleibt auf diesem Kanal. Wechsle zu Stabil, sobald ein Release erschienen ist, zum Beispiel unter Linux:
 
 ```bash
-sudo neodesk --update --channel stable
+sudo neodesk-setup --update --channel stable
 ```
 
 Unter Docker ist der Image-Tag der Kanal: `latest` ist das neueste Release (das neueste Pre-Release, solange es kein stabiles Release gibt, wie bei Stabil oben), `dev` der Entwicklungs-Build, und die Versionsnummer eines Releases legt dich auf genau dieses Release fest.
@@ -50,38 +99,43 @@ docker compose ps
 Mit dem Skript führst du es erneut aus oder gibst ihm den Befehl `update`:
 
 ```bash
-sudo bash neodesk-docker.sh update
+sudo bash /opt/neodesk/docker/neodesk-docker.sh update
 ```
 
-Es zieht das Image, stoppt den Container, speichert die Datenvolumes als `.tar.gz` in `backups` im Installationsordner und startet das neue Image. Ist der neue Container nicht innerhalb von drei Minuten „healthy“, kehrt es zum vorherigen Image zurück. Startet auch das nicht, spielt es die Daten aus dem Backup zurück. Haben sich Image und Einstellungen nicht geändert, ändert es nichts.
+Es behält Kopien von `.env` und den Compose-Dateien, zieht das Image, stoppt den Container, speichert die Datenvolumes mit diesen Kopien als `.tar.gz` in `backups` im Installationsordner und startet das neue Image. Ist der neue Container nicht innerhalb von drei Minuten „healthy“, legt es die alten Einstellungen zurück und kehrt zum vorherigen Image zurück. Startet auch das nicht, spielt es die Daten aus dem Backup zurück. Haben sich Image und Einstellungen nicht geändert, ändert es nichts.
 
-Das Skript ersetzt außerdem `docker-compose.yml` durch die neueste Fassung. Eine Datei, die du von Hand geändert hast, bleibt, und die neue wird daneben als `docker-compose.yml.new` gespeichert. Halte deine eigenen Änderungen in `docker-compose.override.yml` im selben Ordner, das Docker Compose ebenfalls liest.
+Das Skript ersetzt außerdem `docker-compose.yml` durch die Fassung des Releases, das der Image-Tag nennt, und sich selbst durch das `neodesk-docker.sh` dieses Releases, beide gegen die `SHA256SUMS` des Releases geprüft. Eine Compose-Datei, die du von Hand geändert hast, bleibt, und die neue wird daneben als `docker-compose.yml.new` gespeichert. Halte deine eigenen Änderungen in `docker-compose.override.yml` im selben Ordner, das Docker Compose ebenfalls liest.
+
+Seit 3.6.0-rc.5 ist das Daten-Volume im Container unter `/opt/neodesk/data` eingebunden statt unter `/opt/rustdesk`. Das Update des Skripts ändert `/opt/rustdesk` in `.env`, in einer Compose-Datei, die du geändert hast, und in `docker-compose.override.yml` zu `/opt/neodesk/data`, und die alten Dateien bleiben in seinem Backup. Eine eigene Compose-Datei, die das Volume noch unter `/opt/rustdesk` einbindet, funktioniert weiter, und das Log des Containers sagt, dass du sie auf `/opt/neodesk/data` ändern sollst.
 
 `NEODESK_IMAGE_TAG` in `.env` entscheidet, welches Image du bekommst, `latest`, solange du keinen Tag setzt. Ist dort eine Version festgelegt, holt `docker compose pull` nichts Neueres. Ändere dann zuerst den Tag, oder gib dem Skript `--tag latest` mit.
 
 ### Aus dem Repository gebaut {#built-from-the-repository}
 
-Ein mit `docker-compose.single.yml` gebautes Image wird nicht gezogen. Hol den aktuellen Stand des Repositorys und baue im geklonten Ordner neu:
+Ein mit `install/docker-compose.single.yml` gebautes Image wird nicht gezogen. Hol den aktuellen Stand des Repositorys und baue im geklonten Ordner neu:
 
 ```bash
 git pull
-NEODESK_COMMIT_SHA=$(git rev-parse HEAD) docker compose -f docker-compose.single.yml up -d --build
+```
+
+```bash
+NEODESK_COMMIT_SHA=$(git rev-parse HEAD) docker compose -f install/docker-compose.single.yml up -d --build
 ```
 
 ## Linux {#linux}
 
 ```bash
-sudo neodesk --update
+sudo neodesk-setup --update
 ```
 
-`neodesk` ist der Installer, den die Installation als Befehl hinterlassen hat. `--update` läuft ohne Rückfragen. Im Menü (`sudo neodesk`) heißt dasselbe **Update**, dann **Update now**. Das Update:
+`neodesk-setup` ist der Installer, den die Installation als Befehl hinterlassen hat. `sudo neodesk --update` erreicht ihn ebenfalls. `--update` läuft ohne Rückfragen. Im Menü (`sudo neodesk-setup`) heißt dasselbe **Update**, dann **Update now**. Das Update:
 
-1. erstellt das Backup des Installers in `/opt/rustdesk-backups/neodesk_backup_<time>.tar.gz`, siehe [Backup und Wiederherstellung](/docs/operations/backup#cold-backup-of-a-linux-install),
+1. erstellt das Backup des Installers in `/opt/neodesk-backups/neodesk_backup_<time>.tar.gz`, siehe [Backup und Wiederherstellung](/docs/operations/backup#cold-backup-of-a-linux-install),
 2. holt das neue Binary und behält das alte als `neodesk-server.prev`,
 3. ergänzt die env-Datei um Einstellungen, die in dieser Version neu sind, und behält deine Werte,
 4. schreibt die systemd-Unit neu, startet den Dienst neu und prüft, ob API, Konsole, ID-Server und Relay antworten,
 5. legt das alte Binary zurück, wenn das neue nicht hochkommt,
-6. ersetzt den Befehl `neodesk` durch den neuesten Installer.
+6. ersetzt `neodesk-setup` durch den Installer des Releases, das es installiert hat, geprüft gegen die signierten `SHA256SUMS` des Releases, und die Befehlszeile `neodesk` durch eine Kopie des neuen Binarys.
 
 Ohne Optionen ist das neue Binary das neueste Release aus dem Kanal der Installation. Bevor es das alte ersetzt, wird es über seinen SHA-256-Hash und die Release-Signatur geprüft. Diese Optionen ändern, woher es kommt:
 
@@ -90,7 +144,7 @@ Ohne Optionen ist das neue Binary das neueste Release aus dem Kanal der Installa
 
   ```bash
   git pull
-  sudo ./neodesk.sh --update --from-source
+  sudo ./install/neodesk.sh --update --from-source
   ```
 
 - `--binary <file>` installiert ein Binary, das du selbst gebaut hast.
@@ -103,7 +157,7 @@ In PowerShell als Administrator:
 & 'C:\NeoDesk\neodesk.ps1' -Update
 ```
 
-Es läuft wie das Update unter Linux ab: ein Backup nach `C:\NeoDesk-Backups`, das neue Binary, wobei das alte als `.prev` bleibt, die env-Datei zusammengeführt, der Dienst `NeoDeskServer` neu geschrieben und neu gestartet, das alte Binary zurück, wenn das neue scheitert, und die Kopie des Skripts durch die neueste ersetzt. `-Channel`, `-FromSource` und `-Binary <path>` funktionieren wie unter Linux.
+Es läuft wie das Update unter Linux ab: ein Backup nach `C:\NeoDesk-Backups`, das neue Binary, wobei das alte als `.prev` bleibt, die env-Datei zusammengeführt, der Dienst `NeoDeskServer` neu geschrieben und neu gestartet, das alte Binary zurück, wenn das neue scheitert, und die Kopie des Skripts durch das `neodesk.ps1` des Releases ersetzt, das es installiert hat. `-Channel`, `-FromSource` und `-Binary <path>` funktionieren wie unter Linux.
 
 ## Die Seite „Updates“ in der Konsole {#the-updates-page-in-the-console}
 
@@ -124,6 +178,7 @@ Was die Seite nicht kann:
 - Ein Update für ein Binary anbieten, das ohne seinen Commit gebaut wurde. Die Prüfung meldet dann, dass der Commit unbekannt ist.
 - Ein Release installieren, das älter ist als die laufende Version.
 - Den Dienst oder die Installer-Skripte neu schreiben. Nur das Binary wird ersetzt. Beim ersten Start ergänzt das neue Binary die env-Datei um die Einstellungen, die in diesem Release neu sind, wie es auch das Update des Installers tut. Sagen die Release Notes, dass sich der Dienst geändert hat, führe zusätzlich das Update des Installers aus.
+- Die Befehlszeile einer Linux-Installation aktualisieren. `/usr/local/bin/neodesk` ist eine Kopie des Binarys, die nur root ersetzen darf, deshalb bleibt sie auf der älteren Version. Die Seite zeigt dann **Auch die Befehlszeile aktualisieren** mit `sudo neodesk-setup --update`, und `neodesk` meldet auf seiner Fehlerausgabe, dass es älter ist als der Server.
 
 ## Die Version prüfen {#check-the-version}
 

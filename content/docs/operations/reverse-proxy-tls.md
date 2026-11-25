@@ -4,7 +4,7 @@ description: Give the web console HTTPS with Let's Encrypt on Docker, with nginx
 order: 3
 ---
 
-The web console listens on plain HTTP on port 5000. Before people use it over the internet, give it HTTPS. Remote desktop in the browser needs it too: over plain HTTP the viewer shows only devices with a hardware H.264 encoder (see [HTTPS for every device](/docs/console/remote-in-browser#https-for-every-device)). There are three ways:
+The web console listens on plain HTTP on port 3375. Before people use it over the internet, give it HTTPS. Remote desktop in the browser needs it too: over plain HTTP the viewer shows only devices with a hardware H.264 encoder (see [HTTPS for every device](/docs/console/remote-in-browser#https-for-every-device)). There are three ways:
 
 - Docker with a DNS name for the server: the install script puts Traefik in front of the console, with a certificate from Let's Encrypt. See [HTTPS with Let's Encrypt on Docker](#https-with-lets-encrypt-on-docker).
 - A reverse proxy of your own, such as nginx or Caddy. Most of this page is about this way, from [What goes through the proxy](#what-goes-through-the-proxy) on, with complete examples, the settings NeoDesk needs behind a proxy, and what a proxy cannot carry.
@@ -20,13 +20,23 @@ For an install that runs already, run the script in `/opt/neodesk/docker`, with 
 sudo bash neodesk-docker.sh --domain <domain> --email <email-address>
 ```
 
-The one-line install takes the same as `--domain` and `--letsencrypt-email`. The script turns on the compose profile `traefik`, publishes the console's own ports 5000 and 5443 on `127.0.0.1` only, and sets `TRUST_PROXY=1` and `PANEL_PUBLIC_URL=https://<domain>`. `--letsencrypt-staging` gets a test certificate from Let's Encrypt's staging server, and `--no-traefik` takes it all out again, `TRUST_PROXY` included. [HTTPS with Let's Encrypt](/docs/getting-started/docker#https-with-lets-encrypt) on the Docker page has the details.
+The one-line install takes the same as `--domain` and `--letsencrypt-email`. The script turns on the compose profile `traefik`, publishes the console's own ports 3375 and 5443 on `127.0.0.1` only, and sets `TRUST_PROXY=1` and `PANEL_PUBLIC_URL=https://<domain>`. `--letsencrypt-staging` gets a test certificate from Let's Encrypt's staging server, and `--no-traefik` takes it all out again, `TRUST_PROXY` included. [HTTPS with Let's Encrypt](/docs/getting-started/docker#https-with-lets-encrypt) on the Docker page has the details.
 
 Use your own proxy instead when another web server already has ports 80 and 443 on the host, or when the server can't be reached from the internet on port 80, where Let's Encrypt checks the name.
 
+## Which port the proxy forwards to
+
+The console's default port is 3375 since 3.6.0-rc.5; it was 5000. The examples on this page use 3375.
+
+- New installs use 3375.
+- Linux and Windows installs made before 3.6.0-rc.5 keep 5000, because their env file names it. A proxy in front of them stays on 5000.
+- Docker installs with the default compose file move to 3375 at their next update with the script. After that update, a proxy in front of a Docker install has to forward to 3375, unless you keep 5000 with `NEODESK_CONSOLE_PORT=5000` in `/opt/neodesk/docker/.env`. Traefik, set up with `--domain`, follows by itself.
+
+`CONSOLE_PORT` or `PORT` in the env file, and `NEODESK_CONSOLE_PORT` in Docker's `.env`, name the port an install uses. See [Ports and firewall](/docs/operations/ports#the-consoles-port-before-360-rc5).
+
 ## What goes through the proxy
 
-- The console on port 5000: its pages, its API under `/api/`, and its WebSockets under `/ws/`, which carry remote desktop in the browser and live updates. The proxy has to pass WebSocket upgrades.
+- The console on port 3375: its pages, its API under `/api/`, and its WebSockets under `/ws/`, which carry remote desktop in the browser and live updates. The proxy has to pass WebSocket upgrades.
 - If you want clients to get an HTTPS API address, the API port as well, on a host name of its own. See [HTTPS for the client API](#https-for-the-client-api).
 
 The ID server (21116, TCP and UDP), the relay (21117) and the NAT test (21115) speak the RustDesk protocol, not HTTP. An HTTP proxy cannot carry them, so clients connect to those ports directly. See [Ports and firewall](/docs/operations/ports).
@@ -35,7 +45,7 @@ Send every path on the console's host name to the console. It uses `/ws/rendezvo
 
 ## Keep the console local
 
-With the proxy on the same machine, let only the proxy reach port 5000:
+With the proxy on the same machine, let only the proxy reach the console's port:
 
 - Docker: set `NEODESK_CONSOLE_BIND=127.0.0.1` in the `.env` file next to the compose file, then recreate the container in that folder. The console's ports are then published on the loopback address only. With `--domain` the install script sets this for you.
 
@@ -43,14 +53,14 @@ With the proxy on the same machine, let only the proxy reach port 5000:
   docker compose up -d
   ```
 
-- Linux and Windows: set `HOST=127.0.0.1` in the env file. The installers also turn on HTTPS with a self-signed certificate, and port 5000 then only redirects to 5443, so set `HTTPS_ENABLED=false` as well. Restart the service.
+- Linux and Windows: set `HOST=127.0.0.1` in the env file. The installers also turn on HTTPS with a self-signed certificate, and the plain port then only redirects to 5443, so set `HTTPS_ENABLED=false` as well. Restart the service.
 
-With the proxy on another machine, keep `HOST=0.0.0.0` and allow port 5000 only from the proxy's address in the firewall.
+With the proxy on another machine, keep `HOST=0.0.0.0` and allow the console's port only from the proxy's address in the firewall.
 
 On Linux, the installer can make these settings. Start it:
 
 ```bash
-sudo ./neodesk.sh
+sudo neodesk-setup
 ```
 
 Then choose **Configure SSL certificates**, then **External reverse proxy**. A new install offers the same at its end. It asks for the console's public host name, turns off the console's own HTTPS, and sets `HOST`, `TRUST_PROXY=Y`, `PANEL_PUBLIC_HOST`, `PANEL_PUBLIC_URL`, `PUBLIC_SERVER_ID`, `WS_ALLOWED_ORIGINS` and, for a proxy on the same machine, `TRUSTED_PROXIES`. It also takes TLS off the ID server and relay, and writes example configurations for Caddy or nginx to `/opt/neodesk/reverse-proxy/`.
@@ -84,7 +94,7 @@ server {
     client_max_body_size 200m;
 
     location / {
-        proxy_pass http://127.0.0.1:5000;
+        proxy_pass http://127.0.0.1:3375;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -113,7 +123,7 @@ Caddy gets and renews the certificate itself, passes WebSocket upgrades and sets
 
 ```caddy
 <server-address> {
-	reverse_proxy 127.0.0.1:5000
+	reverse_proxy 127.0.0.1:3375
 }
 ```
 
@@ -146,14 +156,14 @@ docker network inspect docker_neodesk-net
 ```
 
 ::: warning
-`TRUST_PROXY=Y` trusts whoever connects to the console. Make sure only the proxy can reach port 5000, or anyone can claim any address.
+`TRUST_PROXY=Y` trusts whoever connects to the console. Make sure only the proxy can reach the console's port, or anyone can claim any address.
 :::
 
 ## Secure cookies
 
 The console marks its session and form cookies Secure when the request came over HTTPS: on its own HTTPS port, or through a trusted proxy that sends `X-Forwarded-Proto: https`. Behind a proxy that ends TLS, set `TRUST_PROXY` and leave `HTTPS_ENABLED` off; nginx with the configuration above and Caddy both send that header.
 
-`HTTPS_ENABLED=true` belongs to a console that serves HTTPS itself. With a certificate in `SSL_CERT_PATH` and `SSL_KEY_PATH`, port 5000 then only redirects to its own HTTPS port, and a proxy that sends requests to port 5000 gets no console. The Linux and Windows installers turn it on, so set `HTTPS_ENABLED=false` there when a proxy sits in front, as in [Keep the console local](#keep-the-console-local).
+`HTTPS_ENABLED=true` belongs to a console that serves HTTPS itself. With a certificate in `SSL_CERT_PATH` and `SSL_KEY_PATH`, the plain port then only redirects to its own HTTPS port, and a proxy that sends requests to the plain port gets no console. The Linux and Windows installers turn it on, so set `HTTPS_ENABLED=false` there when a proxy sits in front, as in [Keep the console local](#keep-the-console-local).
 
 ## HTTPS for the client API
 
@@ -199,9 +209,9 @@ Mesh agents that reach the server through the proxy see the proxy's certificate.
 
 ## HTTPS without a proxy
 
-The console can serve HTTPS itself: set `HTTPS_ENABLED=true`, `SSL_CERT_PATH` and `SSL_KEY_PATH` (and `SSL_CA_PATH` for a chain in a separate file). It then listens with TLS on `HTTPS_PORT`, 5443 by default, and port 5000 redirects every request there, to the host `PANEL_PUBLIC_HOST` names or to the one address the console listens on. When the console listens on every address and `PANEL_PUBLIC_HOST` is unset, port 5000 shows a page that asks for it instead of redirecting. `HTTP_REDIRECT_HTTPS=false` turns the redirect off.
+The console can serve HTTPS itself: set `HTTPS_ENABLED=true`, `SSL_CERT_PATH` and `SSL_KEY_PATH` (and `SSL_CA_PATH` for a chain in a separate file). It then listens with TLS on `HTTPS_PORT`, 5443 by default, and the plain port (`CONSOLE_PORT`, 3375 by default) redirects every request there, to the host `PANEL_PUBLIC_HOST` names or to the one address the console listens on. When the console listens on every address and `PANEL_PUBLIC_HOST` is unset, the plain port shows a page that asks for it instead of redirecting. `HTTP_REDIRECT_HTTPS=false` turns the redirect off.
 
-The Linux and Windows installers set this up on a new install with a self-signed certificate, valid for ten years, and set `PANEL_PUBLIC_HOST` to the address clients use unless the env file has one. On Linux, the installer's **Configure SSL certificates** menu replaces the certificate with one from Let's Encrypt, your own, or a new self-signed one. A Let's Encrypt certificate is copied to `/opt/neodesk/ssl/`, where the service account can read it, and a certbot deploy hook copies it again and restarts the server after each renewal. The menu also offers port 443, with port 80 for the redirect, and gives the service the right to use ports below 1024. Without that right the console falls back to 5443 and 5000.
+The Linux and Windows installers set this up on a new install with a self-signed certificate, valid for ten years, and set `PANEL_PUBLIC_HOST` to the address clients use unless the env file has one. On Linux, the installer's **Configure SSL certificates** menu replaces the certificate with one from Let's Encrypt, your own, or a new self-signed one. A Let's Encrypt certificate is copied to `/opt/neodesk/ssl/`, where the service account can read it, and a certbot deploy hook copies it again and restarts the server after each renewal. The menu also offers port 443, with port 80 for the redirect, and gives the service the right to use ports below 1024. Without that right the console falls back to 5443 and its plain port.
 
 ## Check the addresses clients get
 
