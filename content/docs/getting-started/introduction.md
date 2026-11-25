@@ -3,6 +3,7 @@ title: Introduction
 description: What NeoDesk is, what it is made of, and what you need to run it.
 order: 1
 seoTitle: What NeoDesk is: a RustDesk-compatible server - NeoDesk
+icon: rocket_launch
 ---
 
 NeoDesk is a self-hosted server for the RustDesk remote desktop client, with a

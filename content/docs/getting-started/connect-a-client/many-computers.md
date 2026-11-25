@@ -2,6 +2,7 @@
 title: Set up many computers at once
 description: Join a batch of computers with one invite link, or hand the stock RustDesk client its server settings from an install script.
 order: 1
+icon: devices_other
 ---
 
 There are two ways to set up many computers. An invite from **Add a computer**

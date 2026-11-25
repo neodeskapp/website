@@ -2,6 +2,7 @@
 title: CDAP SDKs and bridges
 description: What the Python and Node.js SDKs and the three reference bridges do, how to start one against a server, and what the console's flow builder does.
 order: 14
+icon: extension
 ---
 
 The repository has two SDKs for writing a CDAP device or bridge, three bridges built on the Python SDK, and the console has a flow builder. This page says what each one does today and how to start it. The messages they exchange with the gateway are on [CDAP protocol](/docs/development/cdap-protocol); running the gateway and using the devices is on [CDAP devices](/docs/console/cdap).

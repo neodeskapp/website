@@ -2,6 +2,7 @@
 title: Quick support
 description: Help someone on a computer that is not set up, with a link that works once for one hour and needs no install.
 order: 6
+icon: support_agent
 ---
 
 Quick support lets you help a person whose computer is not on your server. You

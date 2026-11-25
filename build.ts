@@ -36,6 +36,7 @@ import { AGENT_TOOLS } from './src/agents.ts';
 import { INSTALLS, blocksOf, clientPorts, protocolsOf, PORTS_PAGE } from './src/install.ts';
 import { missingHomeStrings, homeStringsOf } from './src/home.ts';
 import type { HomeStrings } from './src/home.ts';
+import { hasIcon } from './src/icons.ts';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const at = (...p: string[]) => path.join(root, ...p);
@@ -275,6 +276,7 @@ function loadPages(dir: string, locale: Locale, version: string): Page[] {
 		const bodyLine = source.slice(0, source.length - body.trimStart().length).split('\n').length;
 		if (!data.title) problems.push(`${rel}: no title`);
 		if (!data.description) problems.push(`${rel}: no description`);
+		if (data.icon && !hasIcon(data.icon)) problems.push(`${rel}: icon ${data.icon} is not in src/icons`);
 		if (data.logo && !fs.existsSync(at('public/img/compare', data.logo))) problems.push(`${rel}: logo ${data.logo} is not in public/img/compare`);
 		if (/^# /m.test(body.replace(/```[\s\S]*?```/g, ''))) problems.push(`${rel}: the body has a "# " heading; the title is the h1`);
 		pages.push({
@@ -290,6 +292,7 @@ function loadPages(dir: string, locale: Locale, version: string): Page[] {
 			og: data.og,
 			product: data.product,
 			logo: data.logo,
+			icon: data.icon,
 			release: data.release,
 			seoTitle: data.seoTitle,
 			related: data.related ? data.related.split(',').map((s) => s.trim()).filter(Boolean) : undefined,
@@ -656,12 +659,13 @@ async function build() {
 		console.error(`No docs in ${DOCS}`);
 		return false;
 	}
-	// A translation takes "See also" and the HowTo steps from the English page
+	// A translation takes "See also", the HowTo steps and the icon from the English page
 	for (const site of sites.filter((s) => s !== main)) {
 		for (const page of site.pages) {
 			const en = main.pages.find((p) => p.slug === page.slug);
 			page.related ??= en?.related;
 			page.howto ??= en?.howto;
+			page.icon ??= en?.icon;
 		}
 	}
 	for (const page of main.pages) {

@@ -5,6 +5,7 @@ order: 3
 seoTitle: Install NeoDesk on Linux: a RustDesk-compatible server
 related: /docs/getting-started/first-sign-in, /docs/operations/ports, /docs/operations/reverse-proxy-tls, /docs/operations/updating
 howto: requirements, install, admin-credentials, first-sign-in-address
+icon: dns
 ---
 
 The `neodesk.sh` script installs NeoDesk on a Linux server as one systemd

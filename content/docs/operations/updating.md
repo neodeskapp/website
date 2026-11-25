@@ -4,6 +4,7 @@ description: Update a Docker, Linux or Windows install, choose the release chann
 order: 5
 related: /docs/operations/backup, /docs/operations/troubleshooting
 howto: before-you-update, docker, linux, windows, check-the-version
+icon: update
 ---
 
 How you update depends on how you installed. A Docker install pulls a newer image. The Linux and Windows installers replace the server binary and keep your data and settings, and the console's **Updates** page can replace the binary too. All of them take their releases from neodeskapp/neodesk on GitHub. Each release carries its installers and compose files, and an update takes the new installer from the release it installs.

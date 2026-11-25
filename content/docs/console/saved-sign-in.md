@@ -2,6 +2,7 @@
 title: Saved sign-in
 description: Keep a Windows account's name and password for a device, and let the browser viewer sign in with them at the computer's lock screen.
 order: 11
+icon: key
 ---
 
 Saved sign-in keeps the name and password of a Windows account for a device.

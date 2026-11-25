@@ -5,6 +5,7 @@ import type { Page, Pager, Section, Shared } from './types.ts';
 import { DEFAULT_LOCALE, fill } from './i18n.ts';
 import { siteHeader, siteFooter } from './chrome.ts';
 import { plain } from './search.ts';
+import { iconSvg } from './icons.ts';
 
 export const esc = (s: unknown) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -214,12 +215,20 @@ function pageHead(shared: Shared, title: string, markdownPath: string) {
     </div>`;
 }
 
+/** The logo or the icon in front of a row, and the classes that lay the row out around it */
+const rowClass = (p: Page) => {
+	const c = [p.parent && 'child', (p.logo || p.icon) && 'tile'].filter(Boolean);
+	return c.length ? ` class="${c.join(' ')}"` : '';
+};
+const rowTile = (p: Page) =>
+	p.logo ? `<img src="/img/compare/${esc(p.logo)}" alt="" width="40" height="40" loading="lazy">` : p.icon ? `<span class="row-icon">${iconSvg(p.icon)}</span>` : '';
+
 function rows(shared: Shared, items: Page[]) {
 	return `<ul class="rows">
 ${unfolded(items)
 	.map(
 		(p) =>
-			`      <li${p.parent ? ' class="child"' : p.logo ? ' class="logo"' : ''}>${p.logo ? `<img src="/img/compare/${esc(p.logo)}" alt="" width="40" height="40" loading="lazy">` : ''}<a href="${inLocale(shared, `/docs/${p.slug}/`)}">${esc(p.title)}</a>${p.description ? `<p>${esc(p.description)}</p>` : ''}</li>`
+			`      <li${rowClass(p)}>${rowTile(p)}<a href="${inLocale(shared, `/docs/${p.slug}/`)}">${esc(p.title)}</a>${p.description ? `<p>${esc(p.description)}</p>` : ''}</li>`
 	)
 	.join('\n')}
     </ul>`;
