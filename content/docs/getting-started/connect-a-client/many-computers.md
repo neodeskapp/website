@@ -13,7 +13,7 @@ page covers both, and what happens when many new devices join at once.
 
 ## With one invite
 
-1. Open **Devices** and choose **Add a computer**.
+1. Open **Devices**, then **All devices**, and choose **Add a computer**.
 2. Choose a **Folder** for the computers, and leave **Name** empty so that each
    one keeps its own name.
 3. Under **Can be used**, choose **5 times**, **25 times** or
@@ -23,8 +23,8 @@ page covers both, and what happens when many new devices join at once.
 
 Each computer that opens the link gets the NeoDesk client: a download on
 Windows and macOS, one command to paste on Linux. It joins approved, in the
-folder you chose, without a stop under **Enrollment requests**. **Open invites**
-in the same dialog shows how many uses are left, and **Revoke** ends an invite
+folder you chose, without a stop under **Join requests**. **Open invites**
+in the same sheet shows how many uses are left, and **Revoke** ends an invite
 early. [Add a computer](/docs/console/add-a-computer) explains the invite in
 detail.
 
@@ -49,8 +49,8 @@ line. Copy it from either place:
 
 - **Devices**, **Overview**: under **Client setup**, open **More** and choose
   **Copy deploy string**.
-- **Settings**, **Client setup**: the **Config string** field, with its **Copy**
-  button.
+- **Devices**, **Add computers**, **Manual setup**: the **Config string**
+  field, with its **Copy** button.
 
 Both give the same string. On a single computer, import it in the RustDesk
 network settings with Import server config. In an install script, hand it to
@@ -89,27 +89,27 @@ The console has an install script for Windows only. On other systems, pass the
 config string to RustDesk's `--config` option in your own script, or have
 people import it in the RustDesk network settings.
 
-For scripts that read the server's key from a file, **Settings**,
-**Client setup** has **Download key file** under **Downloads**. It saves the key
-as `id_ed25519.pub`.
+For scripts that read the server's key from a file, **Devices**,
+**Add computers**, **Manual setup** has **Download key file** under
+**Downloads**. It saves the key as `id_ed25519.pub`.
 
 ## When the new devices join
 
 Computers that join with an invite are approved already. A stock RustDesk
 client registers with the server once it runs with the new settings, and what
-happens then depends on the enrollment mode:
+happens then depends on the join mode:
 
 - **Open**: every computer joins at once and shows up under **Devices**, then
   **All devices**. While the mode is Open, any RustDesk client that reaches
   your server can join.
 - **Managed**: every computer waits under **Devices**, then
-  **Enrollment requests**, until someone approves it. Approving sets its name,
+  **Join requests**, until someone approves it. Approving sets its name,
   folder, tags and groups. At most 1000 RustDesk clients can wait at a time;
   while the list is that full, new ones don't get into it until there is room
   again.
 - **Locked**: new RustDesk clients are turned away. The stock RustDesk client
-  has no way to send a device token, so tokens from **Device tokens** don't
-  help here.
+  has no way to send a device token, so tokens from **Add computers**,
+  **Device tokens** don't help here.
 
 A new install starts in **Managed**. For a large rollout of stock clients you
 can switch to **Open** while the computers join and back to **Managed** when

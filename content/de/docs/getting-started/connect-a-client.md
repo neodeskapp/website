@@ -54,8 +54,9 @@ du in diesem Browser-Tab siehst. Die Adresse für alle Clients legst du in den
 Einstellungen unter **Öffentliche Client-Endpunkte** fest, siehe
 [Die Adresse für die Clients festlegen](/docs/getting-started/first-sign-in#set-the-address-clients-use).
 
-**Einstellungen**, dann **Client-Einrichtung** zeigt dieselben Werte auf einer
-eigenen Seite. Dazu kommen die **Konfigurationszeichenfolge**, die alle vier in
+**Geräte**, **Computer hinzufügen**, Tab **Manuelle Einrichtung** zeigt
+dieselben Werte auf einer eigenen Seite; **Serverschlüssel und QR-Code** auf
+**Übersicht** öffnet sie. Dazu kommen die **Konfigurationszeichenfolge**, die alle vier in
 einer Zeile enthält, der QR-Code für Handys unter **Handy einrichten** und der
 Schlüssel als Datei `id_ed25519.pub` unter **Downloads**.
 
@@ -119,11 +120,11 @@ vier Werte von oben.
 Die Konsole zeigt einen Code aus sechs Zeichen. Er wird nur einmal angezeigt,
 funktioniert einmal und gilt 10 Minuten. Gib auf dem Gerät die Serveradresse
 und den Code ein. Der Client bekommt dann dieselben Werte wie bei der
-Einrichtung von Hand, und das Gerät durchläuft trotzdem die Registrierung wie
-jedes andere.
+Einrichtung von Hand, und für das Gerät gilt der Beitrittsmodus wie für jedes
+andere.
 
-**Kopplungscodes** unter **Mehr** im Abschnitt **Einstellungen** der
-Seitenleiste listet die Codes, die noch aktiv sind, und lässt dich einen davon
+**Geräte**, **Computer hinzufügen**, Tab **Kopplungscodes** listet die Codes,
+die noch aktiv sind, und lässt dich einen davon
 widerrufen. Die Schaltfläche **Mit Code koppeln** erscheint nur bei Konten, die
 neue Geräte genehmigen dürfen.
 
@@ -307,12 +308,12 @@ Schnellhilfe, und du verbindest dich im Browser oder in deiner Desktop-App.
 
 ## Wenn der Client verbunden ist {#after-the-client-connects}
 
-Was dann passiert, hängt vom Registrierungsmodus des Servers ab:
+Was dann passiert, hängt vom Beitrittsmodus des Servers ab:
 
 - **Offen**: Das Gerät wird sofort aufgenommen und erscheint unter **Geräte**,
   dann **Alle Geräte**.
 - **Verwaltet**: Das Gerät wartet unter **Geräte**, dann
-  **Registrierungsanfragen**. Es kann sich nicht verbinden, bis jemand
+  **Beitrittsanfragen**. Es kann sich nicht verbinden, bis jemand
   **Genehmigen** wählt und ihm einen Namen gibt.
 - **Gesperrt**: Nur Geräte mit einem Gerätetoken werden aufgenommen, alle
   anderen abgewiesen. Der normale RustDesk-Client kann keinen Gerätetoken
@@ -323,7 +324,7 @@ Eine neue Installation startet im Modus **Verwaltet**, mit Docker, unter Linux
 und unter Windows. Ein Computer, der mit einer Einladung aus
 **Computer hinzufügen** beitritt, überspringt das Warten in jedem Modus: Er
 wird gleich genehmigt aufgenommen.
-[Registrierungsanfragen](/docs/console/enrollment) erklärt die Modi und wie du
+[Beitrittsanfragen](/docs/console/enrollment) erklärt die Modi und wie du
 sie änderst. Mehr zur Geräteliste steht unter
 [Die Geräteliste](/docs/console/devices).
 
@@ -367,7 +368,7 @@ Geh diese Punkte der Reihe nach durch:
   „Diese ID existiert nicht.“). Siehe
   [Fehlersuche](/docs/operations/troubleshooting#clients-show-not-ready-or-cannot-connect).
 - **Genehmigung.** Schau im Modus **Verwaltet** unter
-  **Registrierungsanfragen** nach. Das Gerät kann sich nicht verbinden, bis
+  **Beitrittsanfragen** nach. Das Gerät kann sich nicht verbinden, bis
   jemand es genehmigt.
 
 [Fehlersuche](/docs/operations/troubleshooting) hilft weiter.

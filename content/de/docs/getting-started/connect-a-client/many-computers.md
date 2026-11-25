@@ -13,7 +13,7 @@ beides und was passiert, wenn viele neue Geräte auf einmal beitreten.
 
 ## Mit einer Einladung {#with-one-invite}
 
-1. Öffne **Geräte** und wähle **Computer hinzufügen**.
+1. Öffne **Geräte**, dann **Alle Geräte**, und wähle **Computer hinzufügen**.
 2. Wähle einen **Ordner** für die Computer und lass **Name** leer, damit jeder
    Computer seinen eigenen Namen behält.
 3. Wähle unter **Kann benutzt werden** eine der Optionen **5-mal**, **25-mal**
@@ -25,7 +25,7 @@ beides und was passiert, wenn viele neue Geräte auf einmal beitreten.
 Jeder Computer, der den Link öffnet, bekommt den NeoDesk-Client: unter Windows
 und macOS als Download, unter Linux als ein Befehl zum Einfügen. Er wird
 genehmigt aufgenommen, in dem Ordner, den du gewählt hast, ohne Zwischenstopp
-unter **Registrierungsanfragen**. **Offene Einladungen** im selben Dialog
+unter **Beitrittsanfragen**. **Offene Einladungen** im selben Seitenbereich
 zeigt, wie viele Verwendungen noch übrig sind, und **Widerrufen** beendet eine
 Einladung vorzeitig. [Computer hinzufügen](/docs/console/add-a-computer)
 erklärt die Einladung im Detail.
@@ -52,7 +52,7 @@ Schlüssel in einer Zeile. Kopiere sie von einer der beiden Stellen:
 
 - **Geräte**, **Übersicht**: Öffne unter **Client-Einrichtung** das Menü
   **Mehr** und wähle **Deploy-String kopieren**.
-- **Einstellungen**, **Client-Einrichtung**: das Feld
+- **Geräte**, **Computer hinzufügen**, **Manuelle Einrichtung**: das Feld
   **Konfigurationszeichenfolge** mit seiner Schaltfläche **Kopieren**.
 
 Beide liefern dieselbe Zeichenfolge. Auf einem einzelnen Computer importierst
@@ -97,7 +97,8 @@ RustDesk-Option `--config`, oder die Leute importieren sie selbst in den
 Netzwerkeinstellungen von RustDesk.
 
 Für Skripte, die den Schlüssel des Servers aus einer Datei lesen, gibt es unter
-**Einstellungen**, **Client-Einrichtung** im Bereich **Downloads** die
+**Geräte**, **Computer hinzufügen**, **Manuelle Einrichtung** im Bereich
+**Downloads** die
 Schaltfläche **Schlüsseldatei herunterladen**. Sie speichert den Schlüssel als
 `id_ed25519.pub`.
 
@@ -105,19 +106,19 @@ Schaltfläche **Schlüsseldatei herunterladen**. Sie speichert den Schlüssel al
 
 Computer, die mit einer Einladung beitreten, sind schon genehmigt. Ein normaler
 RustDesk-Client registriert sich beim Server, sobald er mit den neuen
-Einstellungen läuft. Was dann passiert, hängt vom Registrierungsmodus ab:
+Einstellungen läuft. Was dann passiert, hängt vom Beitrittsmodus ab:
 
 - **Offen**: Jeder Computer wird sofort aufgenommen und erscheint unter
   **Geräte**, dann **Alle Geräte**. Solange der Modus Offen ist, kann jeder
   RustDesk-Client beitreten, der deinen Server erreicht.
 - **Verwaltet**: Jeder Computer wartet unter **Geräte**, dann
-  **Registrierungsanfragen**, bis jemand ihn genehmigt. Beim Genehmigen werden
+  **Beitrittsanfragen**, bis jemand ihn genehmigt. Beim Genehmigen werden
   Name, Ordner, Tags und Gruppen festgelegt. Höchstens 1000 RustDesk-Clients
   können gleichzeitig warten; solange die Liste so voll ist, kommen neue erst
   hinein, wenn wieder Platz ist.
 - **Gesperrt**: Neue RustDesk-Clients werden abgewiesen. Der normale
   RustDesk-Client kann keinen Gerätetoken senden, deshalb helfen Tokens aus
-  **Gerätetokens** hier nicht.
+  **Computer hinzufügen**, **Gerätetokens** hier nicht.
 
 Eine neue Installation startet im Modus **Verwaltet**. Für einen großen
 Rollout normaler Clients kannst du auf **Offen** umstellen, solange die

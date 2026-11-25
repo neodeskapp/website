@@ -52,10 +52,11 @@ and choose **Show values**. This changes only what you see in this browser tab.
 To set the address for every client, use **Public client endpoints** in the
 settings, see [Set the address clients use](/docs/getting-started/first-sign-in#set-the-address-clients-use).
 
-**Settings**, then **Client setup** shows the same values on a page of their
-own. It adds the **Config string**, which holds all four in one line, the QR
-code for phones under **Set up a phone**, and the key as the file
-`id_ed25519.pub` under **Downloads**.
+**Devices**, **Add computers**, tab **Manual setup** shows the same values
+on a page of their own; **Server key and QR code** on **Overview** opens it. It
+adds the **Config string**, which holds all four in one line, the QR code for
+phones under **Set up a phone**, and the key as the file `id_ed25519.pub` under
+**Downloads**.
 
 ## Enter the values in the client
 
@@ -111,11 +112,11 @@ has no field for a code, so use the four values above for it.
 
 The console shows a code of six characters. It is shown only once, works once,
 and is valid for 10 minutes. On the device, type the server address and the
-code. The client then gets the same values as a manual setup, and the device
-still goes through enrollment like any other.
+code. The client then gets the same values as a manual setup, and the join
+mode applies to the device as to any other.
 
-**Pairing codes**, under **More** in the **Settings** section of the sidebar,
-lists the codes that are still active and lets you revoke one. The
+**Devices**, **Add computers**, tab **Pairing codes** lists the codes that
+are still active and lets you revoke one. The
 **Pair with code** button only shows for accounts that may approve new devices.
 
 ## Install from the package repository
@@ -292,11 +293,11 @@ connect from the browser or your desktop app.
 
 ## After the client connects
 
-What happens next depends on the server's enrollment mode:
+What happens next depends on the server's join mode:
 
 - **Open**: the device joins right away and shows up under **Devices**, then
   **All devices**.
-- **Managed**: the device waits under **Devices**, then **Enrollment requests**.
+- **Managed**: the device waits under **Devices**, then **Join requests**.
   It can't connect until someone chooses **Approve** and gives it a name.
 - **Locked**: only devices with a device token can join. Others are turned away.
   The stock RustDesk client has no way to send a device token, so a new
@@ -305,8 +306,8 @@ What happens next depends on the server's enrollment mode:
 A new install starts in **Managed**, with Docker, on Linux and on Windows. A
 computer that joins with an invite from **Add a computer** skips the wait in
 every mode: it joins approved.
-[Enrollment](/docs/console/enrollment) explains the modes and how to change
-them, and [Devices](/docs/console/devices) covers the device list.
+[Join requests](/docs/console/enrollment) explains the modes and how to
+change them, and [Devices](/docs/console/devices) covers the device list.
 
 ## Sign in from the client
 
@@ -343,7 +344,7 @@ Go through these in order:
   server through the same public address, a session started from one of them
   can fail with "ID does not exist". See
   [Troubleshooting](/docs/operations/troubleshooting#clients-show-not-ready-or-cannot-connect).
-- **Approval.** In **Managed** mode, look under **Enrollment requests**. The
+- **Approval.** In **Managed** mode, look under **Join requests**. The
   device can't connect until someone approves it.
 
 [Troubleshooting](/docs/operations/troubleshooting) goes further.
