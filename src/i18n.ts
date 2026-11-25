@@ -83,6 +83,15 @@ export interface Strings {
 	/** "Nothing found for "{query}". ...", under the search field */
 	nothingFound: string;
 	searchFailed: string;
+	/** The groups of search results */
+	groupPages: string;
+	groupCommands: string;
+	groupSettings: string;
+	groupSections: string;
+	/** The page that lists every docs page, the search without scripts */
+	allPages: string;
+	allPagesLead: string;
+	allPagesDescription: string;
 	/** The lines at the top of a page's Markdown copy: "Source: <address>" and "Last updated: <date>" */
 	source: string;
 	lastUpdated: string;
@@ -100,7 +109,7 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		documentation: 'Documentation',
 		searchDocs: 'Search the docs',
 		searchKey: 'Ctrl K',
-		searchHint: 'Type to search every page and section.',
+		searchHint: 'Type to search pages, sections, commands and settings.',
 		results: 'Results',
 		site: 'Site',
 		more: 'More',
@@ -137,6 +146,13 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		resultsCount: '{count} results',
 		nothingFound: 'Nothing found for "{query}". Try fewer or other words.',
 		searchFailed: 'The search index could not be loaded.',
+		groupPages: 'Pages',
+		groupCommands: 'Commands',
+		groupSettings: 'Settings and flags',
+		groupSections: 'Sections',
+		allPages: 'All pages',
+		allPagesLead: 'Every page of the docs, by section, the command reference included.',
+		allPagesDescription: 'Every page of the NeoDesk docs in one list, by section, with the command reference.',
 		source: 'Source',
 		lastUpdated: 'Last updated'
 	},
@@ -149,7 +165,7 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		documentation: 'Dokumentation',
 		searchDocs: 'Doku durchsuchen',
 		searchKey: 'Strg K',
-		searchHint: 'Durchsucht alle Seiten und Abschnitte.',
+		searchHint: 'Durchsucht Seiten, Abschnitte, Befehle und Einstellungen.',
 		results: 'Ergebnisse',
 		site: 'Website',
 		more: 'Mehr',
@@ -186,6 +202,13 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		resultsCount: '{count} Ergebnisse',
 		nothingFound: 'Nichts gefunden für „{query}“. Versuch es mit weniger oder anderen Wörtern.',
 		searchFailed: 'Der Suchindex ließ sich nicht laden.',
+		groupPages: 'Seiten',
+		groupCommands: 'Befehle',
+		groupSettings: 'Einstellungen und Flags',
+		groupSections: 'Abschnitte',
+		allPages: 'Alle Seiten',
+		allPagesLead: 'Jede Seite der Doku, nach Abschnitten, mit der Befehlsreferenz.',
+		allPagesDescription: 'Jede Seite der NeoDesk-Doku in einer Liste, nach Abschnitten, mit der Befehlsreferenz.',
 		source: 'Quelle',
 		lastUpdated: 'Zuletzt geändert',
 		sections: {

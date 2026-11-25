@@ -97,14 +97,17 @@ export function checkOldNames({ dist, urls }: CheckInput) {
 		const raw = fs.readFileSync(path.join(dist, rel), 'utf8');
 		for (const m of raw.matchAll(OLD_IMAGE)) problems.push(`${rel}:${lineOf(raw, m.index)}: old image path "${m[0]}"`);
 		if (urls.withoutLocale(rel) === 'docs/search.json') {
-			for (const entry of JSON.parse(raw) as { u: string }[]) {
-				const file = urls.fileOfUrl(entry.u);
-				const page = file ? pageOfFile(urls, file) : null;
-				let fields = JSON.stringify(entry);
-				for (const a of OLD_NAME_ALLOW) if (a.page === page) fields = fields.replace(a.sentence, '');
+			// The index holds the words of each page, not its sentences: a page that may name
+			// the old project (its page is checked sentence by sentence) may have them in its rows
+			const index = JSON.parse(raw) as { p: [string, number, string, string, string][]; e: [number, number, string, string, string][] };
+			const allowed = new Set(OLD_NAME_ALLOW.map((x) => x.page));
+			index.p.forEach((row, n) => {
+				const page = pageOfFile(urls, `docs/${row[2]}index.html`);
+				if (page && allowed.has(page)) return;
+				const fields = JSON.stringify([row, index.e.filter((e) => e[0] === n)]);
 				const hit = fields.match(OLD_NAME);
-				if (hit) problems.push(`${rel}: "${hit[0]}" in the search entry for ${entry.u}`);
-			}
+				if (hit) problems.push(`${rel}: "${hit[0]}" in the search entries of ${row[2]}`);
+			});
 			continue;
 		}
 		// Blank out the allowed sentences where they are on their own page, keeping every other character where it was

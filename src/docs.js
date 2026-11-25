@@ -1,7 +1,7 @@
 /* The docs' behaviour in the browser: search, copy buttons, the "On this page"
-   marker and the menu on small screens. The pages read fine without it. Its words
-   come from the page, in the page's language: data-copied on a copy button,
-   data-close on the menu button, and the search dialog's data attributes. */
+   marker and the sidebar panel on small screens. The pages read fine without it.
+   Its words come from the page, in the page's language: data-copied on a copy
+   button and the search dialog's data attributes. */
 (function () {
   var doc = document;
   var $ = function (sel, el) { return (el || doc).querySelector(sel); };
@@ -115,7 +115,10 @@
     mark();
   }
 
-  /* ---- Search ---- */
+  /* ---- Search ----
+     The index (src/search.ts) is loaded the first time search opens, gzipped where the
+     browser can unpack it. Results come in groups: pages, sections, commands, settings.
+     Without scripts the search button is a link to the list of all pages. */
   var dialog = $('dialog.search');
   if (!dialog || !dialog.showModal) return;
   var input = $('#search-input');
@@ -123,38 +126,52 @@
   var status = $('.search-status');
   var hint = status.textContent;
   var said = function (name, fallback) { return dialog.getAttribute('data-' + name) || fallback; };
-  var index = null;
+  var base = said('base', '/');
+  var groupNames = said('groups', 'Pages|Sections|Commands|Settings').split('|');
+  var items = null;
   var pages = null;
+  var settingsOn = {};
+  var loading = null;
   var selected = -1;
   var isMac = /Mac|iPhone|iPad/.test(navigator.platform || '');
   if (isMac) $$('.search-button kbd').forEach(function (k) { k.textContent = '⌘K'; });
 
-  function load() {
-    if (index) return Promise.resolve();
-    return fetch(said('index', '/docs/search.json')).then(function (r) { return r.json(); }).then(function (entries) {
-      index = entries;
-      // Everything a page says, to require that all the words of a search occur on it
-      pages = {};
-      entries.forEach(function (e) {
-        var page = e.u.split('#')[0];
-        pages[page] = (pages[page] || '') + ' ' + [e.t, e.h || '', e.d || '', e.x].join(' ').toLowerCase();
-      });
+  // The same id the build gives a heading, for entries whose id the index leaves out
+  function slug(text) { return text.toLowerCase().trim().replace(/[^\p{L}\p{N}\s_-]/gu, '').replace(/\s/g, '-'); }
+
+  function prepare(data) {
+    pages = data.p.map(function (p) {
+      return { title: p[0], section: data.s[p[1]] || '', path: p[2], hay: (p[0] + ' ' + p[3] + ' ' + p[4]).toLowerCase() };
+    });
+    items = data.p.map(function (p, n) {
+      return { kind: 0, page: n, label: p[0], lower: p[0].toLowerCase(), text: p[3], textLower: p[3].toLowerCase(), href: base + p[2] };
+    });
+    settingsOn = {};
+    data.e.forEach(function (e) {
+      var page = pages[e[0]];
+      if (e[1] === 3) settingsOn[e[0]] = (settingsOn[e[0]] || 0) + 1;
+      page.hay += ' ' + (e[2] + ' ' + e[4]).toLowerCase();
+      items.push({ kind: e[1], page: e[0], label: e[2], lower: e[2].toLowerCase(), text: e[4], textLower: e[4].toLowerCase(), href: base + page.path + '#' + (e[3] || slug(e[2])) });
     });
   }
 
-  function words(text) { return (text.toLowerCase().match(/[\p{L}\p{N}_]+/gu) || []).filter(function (w) { return w.length > 1; }); }
-  function has(text, term) { return text.toLowerCase().indexOf(term) !== -1; }
-  function all(text, terms) { return terms.every(function (t) { return has(text, t); }); }
-  function any(text, terms) { return terms.some(function (t) { return has(text, t); }); }
-  function hits(text, terms) {
-    var lower = text.toLowerCase();
-    var n = 0;
-    terms.forEach(function (t) {
-      var i = 0;
-      while ((i = lower.indexOf(t, i)) !== -1) { n++; i += t.length; }
-    });
-    return n;
+  function fetchIndex() {
+    var src = said('index', 'search.json');
+    var plainJson = function () { return fetch(src).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }); };
+    if (!window.DecompressionStream || !window.Response) return plainJson();
+    return fetch(src + '.gz').then(function (r) {
+      if (!r.ok || !r.body) throw new Error(r.status);
+      return new Response(r.body.pipeThrough(new DecompressionStream('gzip'))).json();
+    }).catch(plainJson);
   }
+  function load() {
+    if (!loading) loading = fetchIndex().then(prepare).catch(function (err) { loading = null; throw err; });
+    return loading;
+  }
+
+  function words(text) { return (text.toLowerCase().match(/[\p{L}\p{N}_]+/gu) || []).filter(function (w) { return w.length > 1; }); }
+  function count(text, terms) { return terms.filter(function (t) { return text.indexOf(t) !== -1; }).length; }
+  function atStart(text, t) { var i = text.indexOf(t); return i === 0 || (i > 0 && /[^\p{L}\p{N}]/u.test(text[i - 1])); }
 
   function excerpt(text, terms) {
     var max = 150;
@@ -175,46 +192,61 @@
     return out;
   }
 
-  function search(query) {
-    var q = query.trim().toLowerCase();
-    var terms = words(q);
-    if (!terms.length) return [];
-    var results = [];
-    index.forEach(function (e) {
-      if (!all(pages[e.u.split('#')[0]], terms)) return;
-      var score = 0;
-      if (!e.h) {
-        if (all(e.t, terms)) score += 100;
-        else if (any(e.t, terms)) score += 40 * terms.filter(function (t) { return has(e.t, t); }).length;
-        if (has(e.t, q)) score += 50;
-        if (has(e.x, q)) score += 10;
-        if (all(e.d || '', terms)) score += 30;
-        else if (any(e.d || '', terms)) score += 10;
-        score += Math.min(hits(pages[e.u], terms), 20);
-        var fromDescription = all(e.d || '', terms) || !any(e.x, terms);
-        results.push({ e: e, score: score, text: fromDescription ? escapeHtml(e.d || e.x.slice(0, 150)) : excerpt(e.x, terms) });
-      } else {
-        var both = e.h + ' ' + e.x;
-        if (!any(both, terms)) return;
-        if (all(e.h, terms)) score += 60;
-        else if (any(e.h, terms)) score += 25;
-        if (has(e.h, q)) score += 30;
-        if (all(e.x, terms)) score += 15;
-        score += Math.min(hits(both, terms), 10);
-        if (score > 10) results.push({ e: e, score: score, text: excerpt(e.x, terms) });
-      }
-    });
-    results.sort(function (a, b) { return b.score - a.score; });
-    return results.slice(0, 12);
+  // A result's score: the words in its name count most, then in its text. A page found
+  // only through the words on it comes last.
+  function score(it, terms, phrase) {
+    var inLabel = count(it.lower, terms);
+    var inText = count(it.textLower, terms);
+    if (!inLabel && !inText && it.kind !== 0) return 0;
+    var s = inLabel === terms.length ? 100 : 20 * inLabel;
+    var bare = it.lower.replace(/^neodesk /, '');
+    if (it.lower === phrase || (it.kind === 2 && bare === phrase)) s += 120;
+    else if (atStart(it.lower, phrase) && phrase.length > 2) s += 50;
+    terms.forEach(function (t) { if (atStart(it.lower, t)) s += 10; });
+    s += inText === terms.length ? 20 : 5 * inText;
+    // The whole phrase in the text: a flag or a setting named exactly counts most
+    if (phrase.length > 3 && it.textLower.indexOf(phrase) !== -1) s += /^--|_/.test(phrase) ? 90 : 25;
+    // A setting on a page that lists many settings is on its reference page
+    if (it.kind === 3) s += Math.min(10, (settingsOn[it.page] || 0) / 5);
+    if (it.kind === 0) s += 30;
+    if (it.kind === 3 && /[_-]/.test(phrase)) s += 20;
+    if (it.kind === 2 && /^neodesk\b/.test(phrase)) s += 20;
+    s += Math.max(0, 20 - it.lower.length / 4);
+    return s;
   }
 
+  var PER_GROUP = 8;
+  function search(query) {
+    var phrase = query.trim().toLowerCase().replace(/\s+/g, ' ');
+    var terms = words(phrase);
+    if (!terms.length) return [];
+    var ok = pages.map(function (p) { return terms.every(function (t) { return p.hay.indexOf(t) !== -1; }); });
+    var found = [];
+    items.forEach(function (it) {
+      if (!ok[it.page]) return;
+      var s = score(it, terms, phrase);
+      if (s > 0) found.push({ it: it, s: s });
+    });
+    found.sort(function (a, b) { return b.s - a.s; });
+    // Groups in the order of their best result, each with its best few
+    var groups = [];
+    var byKind = {};
+    found.forEach(function (r) {
+      var k = r.it.kind;
+      if (!byKind[k]) { byKind[k] = []; groups.push(k); }
+      if (byKind[k].length < PER_GROUP) byKind[k].push(r);
+    });
+    return groups.map(function (k) { return { kind: k, results: byKind[k], terms: terms }; });
+  }
+
+  function options() { return $$('li[role="option"]', list); }
   function select(i) {
-    var items = $$('li', list);
-    selected = items.length ? (i + items.length) % items.length : -1;
-    items.forEach(function (li, n) { li.setAttribute('aria-selected', n === selected ? 'true' : 'false'); });
+    var all = options();
+    selected = all.length ? (i + all.length) % all.length : -1;
+    all.forEach(function (li, n) { li.setAttribute('aria-selected', n === selected ? 'true' : 'false'); });
     if (selected >= 0) {
-      items[selected].scrollIntoView({ block: 'nearest' });
-      input.setAttribute('aria-activedescendant', items[selected].id);
+      all[selected].scrollIntoView({ block: 'nearest' });
+      input.setAttribute('aria-activedescendant', all[selected].id);
     } else input.removeAttribute('aria-activedescendant');
   }
 
@@ -227,35 +259,54 @@
       selected = -1;
       return;
     }
-    var results = search(q);
-    list.innerHTML = results.map(function (r, i) {
-      var e = r.e;
-      return '<li role="option" id="result-' + i + '" aria-selected="false"><a href="' + escapeHtml(e.u) + '">' +
-        '<span class="result-title"><span>' + escapeHtml(e.t) + (e.h ? ' <span class="result-heading">/ ' + escapeHtml(e.h) + '</span>' : '') +
-        '</span><small>' + escapeHtml(e.s) + '</small></span>' +
-        '<p class="result-text">' + r.text + '</p></a></li>';
+    var groups = search(q);
+    var n = 0;
+    list.innerHTML = groups.map(function (g, gi) {
+      var head = '<li role="presentation" class="result-group" id="result-group-' + gi + '">' + escapeHtml(groupNames[g.kind] || '') + '</li>';
+      return head + g.results.map(function (r) {
+        var it = r.it;
+        var page = pages[it.page];
+        var code = it.kind === 2 || it.kind === 3;
+        var name = '<span class="result-name' + (code ? ' result-code' : '') + '">' + escapeHtml(it.label) + '</span>';
+        var where = it.kind === 0 ? page.section : page.title;
+        var text = it.kind === 0 && !count(it.textLower, g.terms) ? escapeHtml(it.text) : excerpt(it.text, g.terms);
+        return '<li role="option" id="result-' + (n++) + '" aria-selected="false" aria-describedby="result-group-' + gi + '"><a href="' + escapeHtml(it.href) + '">' +
+          '<span class="result-title">' + name + '<small>' + escapeHtml(where) + '</small></span>' +
+          (text ? '<p class="result-text">' + text + '</p>' : '') + '</a></li>';
+      }).join('');
     }).join('');
-    status.hidden = results.length > 0;
-    status.textContent = results.length
-      ? said('results', '{count} results').replace('{count}', results.length)
+    status.hidden = n > 0;
+    status.textContent = n
+      ? said('results', '{count} results').replace('{count}', n)
       : said('nothing', 'Nothing found for "{query}". Try fewer or other words.').replace('{query}', q.trim());
-    select(results.length ? 0 : -1);
+    select(n ? 0 : -1);
   }
 
   function open() {
     setMenu(false);
+    if (siteMenu) siteMenu.open = false;
     if (!dialog.open) dialog.showModal();
     input.select();
-    load().then(render, function () { status.textContent = said('failed', 'The search index could not be loaded.'); });
+    load().then(render, function () { status.hidden = false; status.textContent = said('failed', 'The search index could not be loaded.'); });
   }
 
-  $$('.search-button').forEach(function (b) { b.addEventListener('click', open); });
+  $$('.search-button').forEach(function (b) {
+    b.addEventListener('click', function (e) {
+      if (e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+      open();
+    });
+    // Start loading the index when the reader is about to search
+    ['pointerenter', 'focus'].forEach(function (ev) { b.addEventListener(ev, function () { load().catch(function () {}); }, { once: true }); });
+  });
   $('.search-close').addEventListener('click', function () { dialog.close(); });
   dialog.addEventListener('click', function (e) { if (e.target === dialog) dialog.close(); });
-  input.addEventListener('input', function () { if (index) render(); });
+  input.addEventListener('input', function () { if (items) render(); });
   input.addEventListener('keydown', function (e) {
     if (e.key === 'ArrowDown') { e.preventDefault(); select(selected + 1); }
     else if (e.key === 'ArrowUp') { e.preventDefault(); select(selected - 1); }
+    else if (e.key === 'Home' && e.ctrlKey) { e.preventDefault(); select(0); }
+    else if (e.key === 'End' && e.ctrlKey) { e.preventDefault(); select(-1); }
     else if (e.key === 'Enter') {
       var link = $('li[aria-selected="true"] a', list);
       if (link) { e.preventDefault(); link.click(); }

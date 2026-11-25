@@ -12,8 +12,12 @@ const CONTENTS_ICON =
 	'<svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 5h9M8 10h9M8 15h9M3.5 5h.01M3.5 10h.01M3.5 15h.01" stroke-width="2.2"/></svg>';
 
 /** The button that opens search. Its words are hidden on small screens, so it carries an aria-label. */
-const searchButton = (t: Shared['t'], wide = false) =>
-	`<button type="button" class="search-button${wide ? ' search-button-wide' : ''}" aria-haspopup="dialog" aria-label="${esc(t.searchDocs)}">${SEARCH_ICON}<span>${esc(t.searchDocs)}</span><kbd>${esc(t.searchKey)}</kbd></button>`;
+/**
+ * Search. It is a link to the list of all pages, which is the search without scripts;
+ * docs.js opens the search dialog on a click instead.
+ */
+const searchButton = (shared: Shared, wide = false) =>
+	`<a class="search-button${wide ? ' search-button-wide' : ''}" href="${inLocale(shared, '/docs/all/')}" aria-haspopup="dialog" aria-label="${esc(shared.t.searchDocs)}">${SEARCH_ICON}<span>${esc(shared.t.searchDocs)}</span><kbd>${esc(shared.t.searchKey)}</kbd></a>`;
 
 const formatDate =(iso: string, dateLocale: string) =>
 	new Date(iso).toLocaleDateString(dateLocale, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
@@ -114,8 +118,10 @@ function frame(o: FrameOptions) {
 	const own = logical(o, o.path);
 	const canonical = o.urls.url(own);
 	const docsHome = inLocale(o, '/docs/');
+	// The search dialog is on the docs host's pages; elsewhere search is the link to all pages
+	const docsHost = o.urls.isDocsFile(o.urls.distOf(own.slice(1)));
 	// The docs add the button that opens the sidebar on narrow screens, and search
-	const tools = `<button type="button" class="menu-button" aria-controls="sidebar" aria-expanded="false" aria-label="${esc(t.contents)}">${CONTENTS_ICON}</button>${searchButton(t)}`;
+	const tools = `<button type="button" class="menu-button" aria-controls="sidebar" aria-expanded="false" aria-label="${esc(t.contents)}">${CONTENTS_ICON}</button>${searchButton(o)}`;
 	const chrome = {
 		config,
 		t,
@@ -142,7 +148,7 @@ ${markdown ? `<link rel="alternate" type="text/markdown" href="${esc(markdown)}"
 ${o.display ? '<link rel="preload" href="/fonts/FunnelDisplay-latin.woff2" as="font" type="font/woff2" crossorigin>\n' : ''}<link rel="preload" href="/fonts/IBMPlexSans-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="${assets['site.css']}">
 <link rel="stylesheet" href="${assets['docs.css']}">
-<noscript><style>.copy, .search-button, .menu-button { display: none !important; } @media (max-width: 860px) { .layout { display: flex !important; flex-direction: column; } .sidebar { display: block; position: static; order: 2; border-top: 1px solid var(--rule); } }</style></noscript>
+<noscript><style>.copy, .menu-button, .search-button kbd { display: none !important; } @media (max-width: 860px) { .layout { display: flex !important; flex-direction: column; } .sidebar { display: block; position: static; order: 2; border-top: 1px solid var(--rule); } }</style></noscript>
 ${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, '\\u003c')}</script>` : ''}
 <script src="${assets['docs.js']}" defer></script>
 <script defer src="https://stats.neode.sk/script.js" data-website-id="dfeff665-7d84-4338-adc7-dbae4e24d1a3" data-domains="neode.sk" data-do-not-track="true" data-exclude-search="true" data-exclude-hash="true"></script>
@@ -164,7 +170,7 @@ ${main}
 
 ${siteFooter(chrome)}
 
-<dialog class="search" aria-label="${esc(t.searchDocs)}" data-index="${inLocale(o, '/docs/search.json')}" data-results="${esc(t.resultsCount)}" data-nothing="${esc(t.nothingFound)}" data-failed="${esc(t.searchFailed)}">
+${docsHost ? `<dialog class="search" aria-label="${esc(t.searchDocs)}" data-index="${inLocale(o, '/docs/search.json')}" data-base="${esc(o.urls.url('/docs/'))}" data-groups="${esc([t.groupPages, t.groupSections, t.groupCommands, t.groupSettings].join('|'))}" data-results="${esc(t.resultsCount)}" data-nothing="${esc(t.nothingFound)}" data-failed="${esc(t.searchFailed)}">
   <div class="search-field">
     ${SEARCH_ICON}
     <input type="search" id="search-input" placeholder="${esc(t.searchDocs)}" aria-label="${esc(t.searchDocs)}" autocomplete="off" spellcheck="false" aria-controls="search-results">
@@ -172,7 +178,7 @@ ${siteFooter(chrome)}
   </div>
   <ul id="search-results" role="listbox" aria-label="${esc(t.results)}"></ul>
   <p class="search-status" role="status" aria-live="polite">${esc(t.searchHint)}</p>
-</dialog>
+</dialog>` : ''}
 </body>
 </html>
 `;
@@ -212,7 +218,8 @@ export function docsIndexPage(shared: Shared) {
 	const main = `    <div class="docs-home">
       <h1 class="display">${esc(t.documentation)}</h1>
       <p class="lead">${esc(t.docsLead)} ${esc(fill(t.writtenFor, { version }))}</p>
-      <p>${searchButton(t, true)}</p>
+      <p>${searchButton(shared, true)}</p>
+      <p class="all-pages"><a href="${inLocale(shared, '/docs/all/')}">${esc(t.allPages)}</a></p>
     </div>
 ${sections
 	.map(
@@ -232,6 +239,40 @@ ${sections
 		path: '/docs/',
 		current: '',
 		main
+	});
+}
+
+/**
+ * Every page of the docs in one list, by section, folded pages included. It is what
+ * the search link opens without scripts, and a plain map of the docs.
+ */
+export function allPagesPage(shared: Shared) {
+	const { sections, t } = shared;
+	const main = `    <div class="crumb"><span><a href="${inLocale(shared, '/docs/')}">${esc(t.docs)}</a></span></div>
+    ${pageHead(shared, t.allPages, '/docs/all.md')}
+    <p class="lead">${esc(t.allPagesLead)}</p>
+${sections
+	.map(
+		(s) => `    <section class="docs-section">
+      <h2><a href="${inLocale(shared, `/docs/${s.slug}/`)}">${esc(s.label)}</a></h2>
+      <ul class="all-list">
+${s.items.map((p) => `        <li${p.parent ? ' class="child"' : ''}><a href="${inLocale(shared, `/docs/${p.slug}/`)}">${esc(p.title)}</a></li>`).join('\n')}
+      </ul>
+    </section>`
+	)
+	.join('\n')}`;
+	return frame({
+		...shared,
+		title: t.allPages,
+		description: t.allPagesDescription,
+		path: '/docs/all/',
+		current: '',
+		main,
+		markdown: inLocale(shared, '/docs/all.md'),
+		jsonLd: crumbList(shared, [
+			{ name: t.docs, path: '/docs/' },
+			{ name: t.allPages, path: '/docs/all/' }
+		])
 	});
 }
 
@@ -350,7 +391,7 @@ export function notFoundPage(shared: Shared, path = '/404.html') {
 	const { t } = shared;
 	const main = `    <h1>${esc(t.notFound)}</h1>
     <p class="lead">${esc(t.notFoundLead)}</p>
-    <p>${searchButton(t, true)}</p>
+    <p>${searchButton(shared, true)}</p>
     <ul class="rows">
       <li><a href="${inLocale(shared, '/docs/')}">${esc(t.documentation)}</a><p>${esc(t.everySection)}</p></li>
       <li><a href="${inLocale(shared, '/')}">${esc(t.home)}</a><p>${esc(t.whatItIs)}</p></li>

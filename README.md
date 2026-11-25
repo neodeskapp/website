@@ -45,6 +45,8 @@ shots.json           the console screenshots: page, steps to reach the state, an
 shots.ts             takes every screenshot in light and dark from a running console
 release-card.ts      draws the card at the top of a release's notes, from git
 cli-reference.ts     writes the command reference from the server's clidocs output
+search-test.ts       checks in a headless browser that search finds the expected pages
+src/search.ts        the search index and its check
 public/img/releases/ the images of the release notes, one folder per tag
 ```
 
@@ -229,8 +231,17 @@ where a page quotes a console message, it quotes it as the console words it.
   and one page per Markdown file, with the sidebar, the "On this page" list,
   breadcrumb, and previous and next links that follow the sidebar across
   sections.
-- Search over every page and every `##` section (`/` or Ctrl+K), from
-  `docs/search.json`, with no server behind it.
+- Search (`/` or Ctrl+K) over every page, every `##` and `###` heading, every
+  command of the command reference with its flags, and every setting or flag a
+  table names in its first column (`RELAY_SERVERS`, `--domain`). Results come
+  in groups: pages, sections, commands, settings and flags. `src/search.ts`
+  builds one index per language at build time, `search.json` and
+  `search.json.gz` on the docs host (`de/search.json` for German); `docs.js`
+  loads it the first time search opens, gzipped where the browser can unpack
+  it, and searches it in the browser. The build prints its size. Without
+  scripts the search button is a link to `/all/`, a list of every page.
+- `/all/` (`/de/all/`): every page of the docs by section, the command
+  reference included, with its Markdown copy at `/all.md`.
 - A Markdown copy of every page at the page's address plus `.md`, and files
   for AI tools: `/llms-full.txt` with every page, one file per section
   (`/llms-getting-started.txt` and so on), and `/llms.txt`, which lists all of
@@ -316,6 +327,16 @@ The build checks the pages as it reads them and the files it wrote to
   shell prompt (`$ `, `PS C:\>`), a command the text asks the reader to run is
   in a block of its own, and placeholders follow the rule under [Code](#code).
   The inline code of a page with `quoted: true` is NeoDesk's own and exempt.
+
+## Testing search
+
+The build stops when a page, or a command of the command reference, is not in
+its language's search index. `npm run test:search` types sample queries into
+the search of the built site in a headless Chromium and checks that the
+expected page comes first, in English and German. It answers every request from
+`dist/`, so it works on a build for any address; set `SITE_URL` and `DOCS_URL`
+as for that build. It needs Playwright, as `shots.ts` does. The queries are in
+`CASES` in `search-test.ts`.
 
 ## Writing a docs page
 

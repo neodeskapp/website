@@ -11,9 +11,10 @@ import type { StateBlock, StateCore, Token, RendererRule } from 'markdown-it';
 import hljs from 'highlight.js';
 import sharp from 'sharp';
 import config from './site.config.ts';
-import { docsIndexPage, docPage, sectionPage, notFoundPage, contactSheetPage, hreflangLinks, socialTags, esc } from './src/layout.ts';
+import { docsIndexPage, allPagesPage, docPage, sectionPage, notFoundPage, contactSheetPage, hreflangLinks, socialTags, esc } from './src/layout.ts';
 import { siteHeader, siteFooter } from './src/chrome.ts';
 import { makeUrls } from './src/urls.ts';
+import { HEADING_ATTRS_LINE, buildIndex, indexFiles, checkIndex } from './src/search.ts';
 import type { PreviewItem } from './src/layout.ts';
 import { render as renderPreview } from './src/og.ts';
 import type { OgData, OgTemplate } from './src/og.ts';
@@ -104,9 +105,6 @@ function slugify(text: string) {
 		.replace(/[^\p{L}\p{N}\s_-]/gu, '')
 		.replace(/\s/g, '-');
 }
-/** A heading line of Markdown that ends in an attribute block: "## Title {#id alias=old-id}". */
-const ATTR = String.raw`(?:#[a-z0-9][\w-]*|alias=[\w-]+(?:,[\w-]+)*)`;
-const HEADING_ATTRS_LINE = new RegExp(String.raw`^(#{2,6} .*?)\s*\{${ATTR}(?:\s+${ATTR})*\}\s*$`, 'gm');
 
 /** Takes the {#id alias=a,b} block off the end of a heading and returns what it says. */
 function headingAttrs(children: Token[]): { id?: string; aliases: string[]; bad?: string } {
@@ -412,50 +410,6 @@ function docHref(href: string) {
 	return `${clean}/${hash ? `#${hash}` : ''}`;
 }
 
-/* ---------- plain text for search ---------- */
-
-function plain(markdown: string) {
-	return markdown
-		.replace(HEADING_ATTRS_LINE, '$1')
-		.replace(/^:::.*$/gm, '')
-		.replace(/^```.*$/gm, '')
-		.replace(/!\[([^\]]*)\]\([^)]*\)/g, '')
-		.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-		.replace(/^#{1,6}\s+/gm, '')
-		.replace(/\*\*(.+?)\*\*/g, '$1')
-		.replace(/(^|\W)\*(\S.*?)\*(?=\W|$)/g, '$1$2')
-		.replace(/`([^`]+)`/g, '$1')
-		.replace(/^\s*[-*+]\s+/gm, '')
-		.replace(/^\s*\d+\.\s+/gm, '')
-		.replace(/^\|?[\s:|-]+\|?$/gm, '')
-		.replace(/\|/g, ' ')
-		.replace(/\s+/g, ' ')
-		.trim();
-}
-
-interface SearchEntry {
-	t: string;
-	s: string;
-	u: string;
-	d?: string;
-	h?: string;
-	x: string;
-}
-
-/** One entry for the page and one for each ## section, so a result can link to the heading. */
-function searchEntries(page: Page, sectionLabel: string, prefix: string): SearchEntry[] {
-	const lines = page.body.split('\n');
-	const h2 = page.headings.filter((h) => h.level === 2);
-	const entries: SearchEntry[] = [
-		{ t: page.title, s: sectionLabel, u: url(`${prefix}/docs/${page.slug}/`), d: page.description, x: plain(lines.slice(0, h2[0]?.line ?? lines.length).join('\n')) }
-	];
-	h2.forEach((h, i) => {
-		const body = lines.slice(h.line + 1, h2[i + 1]?.line ?? lines.length).join('\n');
-		entries.push({ t: page.title, s: sectionLabel, u: url(`${prefix}/docs/${page.slug}/#${h.id}`), h: h.text, x: plain(body) });
-	});
-	return entries;
-}
-
 /* ---------- Markdown copies for AI tools ---------- */
 
 const mdUrl = (slug: string, prefix = '') => url(`${prefix}/docs/${slug}.md`);
@@ -585,6 +539,7 @@ interface Site {
 async function build() {
 	const started = Date.now();
 	problems.length = 0;
+	const searchSizes: string[] = [];
 	const version = await currentVersion();
 
 	// Every language with docs files: the default from content/docs, the others from content/<code>/docs
@@ -621,6 +576,7 @@ async function build() {
 	for (const site of sites) {
 		offer('/', site.locale);
 		offer('/docs/', site.locale);
+		offer('/docs/all/', site.locale);
 		for (const s of site.sections) offer(`/docs/${s.slug}/`, site.locale);
 		for (const p of site.pages) offer(`/docs/${p.slug}/`, site.locale);
 	}
@@ -706,6 +662,7 @@ async function build() {
 		const h = homeStringsOf(locale.code);
 		preview(`${locale.prefix}/`, h.title, { template: 'landing', title: h.heroTitle.replace(/<[^>]+>/g, '') });
 		preview(`${locale.prefix}/docs/`, fill(t.docsTitle, { name: config.name }), { template: 'landing', title: t.documentation });
+		preview(`${locale.prefix}/docs/all/`, t.allPages, { template: 'landing', title: t.allPages });
 		for (const s of site.sections) preview(`${locale.prefix}/docs/${s.slug}/`, s.label, { template: 'landing', title: s.label });
 		for (const page of site.pages) {
 			const template = (page.og ?? 'docs') as OgTemplate;
@@ -747,7 +704,20 @@ async function build() {
 			);
 			write(out(`docs/${page.slug}.md`), pageMarkdown(page, locale, t, linkTo));
 		});
-		write(out('docs/search.json'), JSON.stringify(site.reading.flatMap((page) => searchEntries(page, labelOf(page.section), locale.prefix))));
+		// The search index: every page, heading, command and setting, plain and gzipped (src/search.ts)
+		const addressOf = (p: Page) => url(`${locale.prefix}/docs/${p.slug}/`).slice(DOCS_URL.length + 1);
+		const index = buildIndex(site.reading, site.sections.map((s) => s.label), (p) => site.sections.findIndex((s) => s.slug === p.section), addressOf);
+		const files = indexFiles(index);
+		write(out('docs/search.json'), files.json);
+		write(out('docs/search.json.gz'), files.gz);
+		searchSizes.push(`${locale.label} ${index.p.length} pages, ${index.e.length} entries, ${kb(files.json.length)} (${kb(files.gz.length)} gzipped)`);
+		problems.push(...checkIndex(index, site.reading, addressOf, `${out('docs/search.json')}`));
+		// Every page in one list: the search without scripts
+		write(out('docs/all/index.html'), allPagesPage(shared));
+		write(
+			out('docs/all.md'),
+			`# ${t.allPages}\n\n${t.source}: ${url(`${locale.prefix}/docs/all/`)}\n\n${site.sections.map((s) => `## ${s.label}\n\n${pageList(s.items, locale.prefix)}`).join('\n\n')}\n`
+		);
 		for (const section of site.sections) {
 			write(out(`docs/${section.slug}/index.html`), sectionPage({ ...shared, section }));
 			write(
@@ -923,6 +893,7 @@ async function build() {
 		...sites.flatMap((site): [string, string][] => [
 			[`${site.locale.prefix}/`, homeUpdated],
 			[`${site.locale.prefix}/docs/`, newest(site.pages.map((p) => p.updated))],
+			[`${site.locale.prefix}/docs/all/`, newest(site.pages.map((p) => p.updated))],
 			...site.sections.map((s): [string, string] => [`${site.locale.prefix}/docs/${s.slug}/`, newest(s.items.map((p) => p.updated))]),
 			...site.reading.map((p): [string, string] => [`${site.locale.prefix}/docs/${p.slug}/`, p.updated])
 		])
@@ -976,6 +947,7 @@ async function build() {
 		return false;
 	}
 	const languages = sites.length > 1 ? ` in ${sites.map((s) => s.locale.label).join(' and ')}` : '';
+	console.log(`Search index: ${searchSizes.join('; ')}`);
 	console.log(`Built ${reading.length} pages in ${sections.length} sections${languages} for ${SITE_URL} (NeoDesk ${version}), drew ${drawn} of ${previews.length} link preview images, in ${Date.now() - started} ms`);
 	return true;
 }
