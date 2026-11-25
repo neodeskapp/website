@@ -123,6 +123,33 @@ for (const c of CASES) {
 	await context.close();
 }
 
+// A click on the recommended download opens the window with the file's name and its steps
+{
+	const c = CASES[0];
+	const { context, page } = await open(browser, { userAgent: c.ua, viewport: { width: 1280, height: 800 } }, emulate(c.hints, c.touch));
+	await page.waitForTimeout(700);
+	const seen = await page.evaluate(() => {
+		// The test's server has no release files, so the click must not leave the page
+		document.addEventListener('click', (e) => e.preventDefault(), true);
+		const win = document.getElementById('dl-window') as HTMLDialogElement | null;
+		const before = !!win?.open;
+		const inPage = Array.from(document.querySelectorAll<HTMLElement>('#dl-rec [data-rec]:not([hidden]) .dl-steps')).some((el) => el.offsetParent !== null);
+		document.querySelector<HTMLAnchorElement>('#dl-rec [data-rec]:not([hidden]) .dl-btn')?.click();
+		return {
+			before,
+			inPage,
+			open: !!win?.open,
+			file: win?.querySelector('.dl-window-file')?.textContent ?? '',
+			steps: win?.querySelectorAll('.dl-window-steps li').length ?? 0,
+			again: win?.querySelector<HTMLAnchorElement>('.dl-window-again')?.href.split('/').pop() ?? ''
+		};
+	}, undefined);
+	report(!seen.before && seen.open, `${c.name}: a click on the download opens the window`, JSON.stringify(seen));
+	report(seen.file.includes(c.want[0]) && seen.again === c.want[0], `${c.name}: the window names ${c.want[0]} and offers it again`, JSON.stringify(seen));
+	report(seen.steps === 3 && !seen.inPage, `${c.name}: the window lists three steps, and they are not under the button too`, JSON.stringify(seen));
+	await context.close();
+}
+
 // Without scripts: "Pick your system", and a link to every file of the release
 for (const address of ['/download/', '/de/download/']) {
 	const { context, page } = await open(browser, { javaScriptEnabled: false, viewport: { width: 1280, height: 800 } }, undefined, address);

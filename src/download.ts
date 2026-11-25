@@ -5,7 +5,9 @@
 //
 // The page is static. Every recommendation the script can make is in the HTML as a hidden
 // block, and the script only shows one of them; without scripts the page shows "Pick
-// your system" and the full list, which links every file.
+// your system" and the full list, which links every file. A click on a recommended
+// download opens a window with the steps that follow; where the browser has no
+// <dialog>, the steps stay under the button.
 import type { ClientFile, ClientOffer, ClientRelease, ClientOs, ClientArch, FileKind } from './client-release.ts';
 import { detectSystem, recommendationOf, RECOMMENDATIONS } from './detect.ts';
 
@@ -26,14 +28,23 @@ export interface DownloadStrings {
 	/** x64 and ARM64 as buttons and labels say them; for a Mac, Apple silicon and Intel */
 	arch: Record<ClientArch, string>;
 	macArch: Record<ClientArch, string>;
-	windowsAfter: string;
+	/** What to do with the file, a step each; the join step follows */
+	windowsSteps: string[];
 	windowsGuess: string;
-	macAfter: string;
+	/** HTML */
+	macSteps: string[];
 	macWhich: string;
 	/** {command} is the install command */
 	linuxAfter: string;
 	linuxWhich: string;
 	join: string;
+	/** Above the steps where they stay on the page */
+	stepsTitle: string;
+	/** The window that opens after a click on a recommended download; {file} is the file's name */
+	windowTitle: string;
+	windowFile: string;
+	windowAgain: string;
+	windowClose: string;
 	phoneTitle: string;
 	phoneText: string;
 	phoneHere: string;
@@ -96,13 +107,18 @@ export const DOWNLOAD: Record<string, DownloadStrings> = {
 		downloadFor: { windows: 'Download for Windows', macos: 'Download for Mac', linux: 'Download for Linux' },
 		arch: { x64: 'x64', arm64: 'ARM64' },
 		macArch: { x64: 'Intel', arm64: 'Apple silicon' },
-		windowsAfter: 'Open the file and click Install. Windows asks if Windows Command Processor, by Microsoft Windows, may make changes. That is the NeoDesk setup installing itself: click Yes.',
+		windowsSteps: ['Open the file and click Install.', 'Windows asks if Windows Command Processor, by Microsoft Windows, may make changes. That is the NeoDesk setup installing itself: click Yes.'],
 		windowsGuess: 'This file is for Intel and AMD processors. If this PC has an ARM processor, such as a Snapdragon, take the <a href="#windows">ARM64 file</a>.',
-		macAfter: 'Open the file and drag NeoDesk into Applications. If your Mac says it can\'t check the app, open System Settings, Privacy &amp; Security, and click Open Anyway. When NeoDesk asks, allow Screen Recording and Accessibility.',
+		macSteps: ['Open the file and drag NeoDesk into Applications.', 'If your Mac says it can\'t check the app, open System Settings, Privacy &amp; Security, and click Open Anyway.', 'When NeoDesk asks, allow Screen Recording and Accessibility.'],
 		macWhich: 'Which Mac is this? In the Apple menu, choose About This Mac. If it lists a chip, such as Apple M1, take Apple silicon. If it lists an Intel processor, take Intel.',
 		linuxAfter: 'In the folder with the file, install it with your package manager: {command}',
 		linuxWhich: 'Take the .deb for Debian and Ubuntu, the .rpm for Fedora and RHEL. openSUSE has its own .rpm, <a href="#linux">listed below</a>.',
-		join: 'Then join the computer to your server with the code of an invite: in NeoDesk, Settings, Server, Join a server.',
+		join: 'Join the computer to your server with the code of an invite: in NeoDesk, Settings, Server, Join a server.',
+		stepsTitle: 'After the download',
+		windowTitle: 'Your download has started',
+		windowFile: '{file} is downloading. Then:',
+		windowAgain: 'Download again',
+		windowClose: 'Close',
 		phoneTitle: 'NeoDesk has no app for phones and tablets.',
 		phoneText: 'From a phone or tablet, use the RustDesk app with your NeoDesk server: <a href="{phones}">Phones and tablets</a> says how. On a tablet, <a href="{browser}">remote desktop in the browser</a> works too.',
 		phoneHere: 'To install NeoDesk on a computer, open this page there. Every file is listed below.',
@@ -182,13 +198,18 @@ export const DOWNLOAD: Record<string, DownloadStrings> = {
 		downloadFor: { windows: 'Für Windows herunterladen', macos: 'Für Mac herunterladen', linux: 'Für Linux herunterladen' },
 		arch: { x64: 'x64', arm64: 'ARM64' },
 		macArch: { x64: 'Intel', arm64: 'Apple-Chip' },
-		windowsAfter: 'Öffne die Datei und klick auf Installieren. Windows fragt, ob der Windows-Befehlsprozessor von Microsoft Windows Änderungen vornehmen darf. Das ist die Einrichtung von NeoDesk, die sich installiert: Klick auf Ja.',
+		windowsSteps: ['Öffne die Datei und klick auf Installieren.', 'Windows fragt, ob der Windows-Befehlsprozessor von Microsoft Windows Änderungen vornehmen darf. Das ist die Einrichtung von NeoDesk, die sich installiert: Klick auf Ja.'],
 		windowsGuess: 'Diese Datei ist für Prozessoren von Intel und AMD. Hat dieser PC einen ARM-Prozessor, etwa einen Snapdragon, nimm die <a href="#windows">ARM64-Datei</a>.',
-		macAfter: 'Öffne die Datei und zieh NeoDesk in „Programme“. Meldet dein Mac, dass er die App nicht prüfen kann: Systemeinstellungen öffnen, Datenschutz &amp; Sicherheit, dort auf „Dennoch öffnen“ klicken. Wenn NeoDesk fragt, erlaube Bildschirmaufnahme und Bedienungshilfen.',
+		macSteps: ['Öffne die Datei und zieh NeoDesk in „Programme“.', 'Meldet dein Mac, dass er die App nicht prüfen kann: Systemeinstellungen öffnen, Datenschutz &amp; Sicherheit, dort auf „Dennoch öffnen“ klicken.', 'Wenn NeoDesk fragt, erlaube Bildschirmaufnahme und Bedienungshilfen.'],
 		macWhich: 'Welcher Mac ist das? Wähl im Apple-Menü „Über diesen Mac“. Steht dort ein Chip, etwa Apple M1, nimm Apple-Chip. Steht dort ein Intel-Prozessor, nimm Intel.',
 		linuxAfter: 'Installiere sie im Ordner mit der Datei über deine Paketverwaltung: {command}',
 		linuxWhich: 'Nimm die .deb für Debian und Ubuntu, die .rpm für Fedora und RHEL. openSUSE hat eine eigene .rpm, sie steht <a href="#linux">weiter unten</a>.',
-		join: 'Danach lässt du den Computer mit dem Code einer Einladung deinem Server beitreten: in NeoDesk unter Einstellungen, Server, Server beitreten.',
+		join: 'Lass den Computer mit dem Code einer Einladung deinem Server beitreten: in NeoDesk unter Einstellungen, Server, Server beitreten.',
+		stepsTitle: 'Nach dem Download',
+		windowTitle: 'Dein Download hat begonnen',
+		windowFile: '{file} wird heruntergeladen. Danach:',
+		windowAgain: 'Erneut herunterladen',
+		windowClose: 'Schließen',
 		phoneTitle: 'Für Handys und Tablets gibt es keine NeoDesk-App.',
 		phoneText: 'Vom Handy oder Tablet aus nimmst du die RustDesk-App mit deinem NeoDesk-Server: <a href="{phones}">Handys und Tablets</a> erklärt, wie. Auf einem Tablet geht auch <a href="{browser}">Remote Desktop im Browser</a>.',
 		phoneHere: 'Um NeoDesk auf einem Computer zu installieren, öffne diese Seite dort. Alle Dateien stehen weiter unten.',
@@ -345,6 +366,27 @@ box.classList.add('dl-wait');
 ud.getHighEntropyValues(['architecture']).then(function (v) { seen.hints.architecture = v.architecture; show(); }, show);
 setTimeout(show, 600);
 } else show();
+var win = document.getElementById('dl-window');
+if (win && win.showModal) {
+box.classList.add('dl-has-window');
+box.addEventListener('click', function (e) {
+var a = e.target && e.target.closest ? e.target.closest('a.dl-btn') : null;
+if (!a) return;
+var card = a.closest('[data-rec]');
+var file = a.getAttribute('href').split('/').pop();
+var lists = card ? card.querySelectorAll('.dl-steps') : [];
+var steps = null;
+for (var i = 0; i < lists.length; i++) if (!steps || lists[i].getAttribute('data-for') === file) steps = lists[i];
+if (!steps) return;
+win.querySelector('.dl-window-steps').innerHTML = steps.querySelector('ol').innerHTML;
+var line = win.querySelector('.dl-window-file');
+line.textContent = line.getAttribute('data-text').replace('{file}', file);
+win.querySelector('.dl-window-again').href = a.href;
+win.showModal();
+});
+win.querySelector('.dl-window-close').addEventListener('click', function () { win.close(); });
+win.addEventListener('click', function (e) { if (e.target === win) win.close(); });
+}
 })();
 </script>`;
 }
@@ -367,6 +409,9 @@ export function downloadMain(code: string, dateLocale: string, offer: ClientOffe
 ${body}
         </div>`;
 	const after = (html: string) => `          <p class="dl-after">${html}</p>`;
+	/** What to do after downloading a file, a step each; the window shows the list of the file that was clicked */
+	const steps = (f: ClientFile, items: string[]) =>
+		`          <div class="dl-steps" data-for="${esc(f.name)}"><p class="dl-steps-title">${esc(d.stepsTitle)}</p><ol>${items.map((x) => `<li>${x}</li>`).join('')}</ol></div>`;
 	const blocks: string[] = [];
 	for (const key of RECOMMENDATIONS) {
 		if (key === 'other' || !r) continue;
@@ -384,19 +429,19 @@ ${after(esc(d.phoneHere))}
 			const f = find(r, 'windows', 'exe', arch);
 			if (!f) continue;
 			const what = rest[0] === 'guess' ? 'Windows' : `Windows, ${d.arch[arch]}`;
-			blocks.push(card(key, what, what, [`          ${button(f, d.downloadFor.windows)}`, ...(rest[0] === 'guess' ? [after(d.windowsGuess)] : []), after(esc(d.windowsAfter)), after(esc(d.join))].join('\n')));
+			blocks.push(card(key, what, what, [`          ${button(f, d.downloadFor.windows)}`, ...(rest[0] === 'guess' ? [after(d.windowsGuess)] : []), steps(f, [...d.windowsSteps.map(esc), esc(d.join)])].join('\n')));
 		} else if (os === 'macos') {
 			if (rest.length) {
 				const arch = rest[0] as ClientArch;
 				const f = find(r, 'macos', 'dmg', arch);
 				if (!f) continue;
 				const what = `macOS, ${d.macArch[arch]}`;
-				blocks.push(card(key, what, what, [`          ${button(f, d.downloadFor.macos)}`, after(d.macAfter), after(esc(d.join))].join('\n')));
+				blocks.push(card(key, what, what, [`          ${button(f, d.downloadFor.macos)}`, steps(f, [...d.macSteps, esc(d.join)])].join('\n')));
 			} else {
 				const arm = find(r, 'macos', 'dmg', 'arm64');
 				const intel = find(r, 'macos', 'dmg', 'x64');
 				if (!arm || !intel) continue;
-				blocks.push(card(key, 'macOS', 'macOS', [`          <div class="dl-pair">${button(arm, d.macArch.arm64, true)}${button(intel, d.macArch.x64, true)}</div>`, after(esc(d.macWhich)), after(d.macAfter), after(esc(d.join))].join('\n')));
+				blocks.push(card(key, 'macOS', 'macOS', [`          <div class="dl-pair">${button(arm, d.macArch.arm64, true)}${button(intel, d.macArch.x64, true)}</div>`, after(esc(d.macWhich)), steps(arm, [...d.macSteps, esc(d.join)])].join('\n')));
 			}
 		} else {
 			const arch = rest[rest.length - 1] as ClientArch;
@@ -405,13 +450,13 @@ ${after(esc(d.phoneHere))}
 				const f = find(r, 'linux', family, arch);
 				if (!f) continue;
 				const what = `Linux, ${d.kinds[family].title}, ${d.arch[arch]}`;
-				blocks.push(card(key, what, what, [`          ${button(f, `${d.downloadFor.linux} (${extOf(f)})`)}`, after(fill(esc(d.linuxAfter), { command: `<code>${esc(linuxInstall(f))}</code>` })), after(esc(d.join))].join('\n')));
+				blocks.push(card(key, what, what, [`          ${button(f, `${d.downloadFor.linux} (${extOf(f)})`)}`, steps(f, [fill(esc(d.linuxAfter), { command: `<code>${esc(linuxInstall(f))}</code>` }), esc(d.join)])].join('\n')));
 			} else {
 				const deb = find(r, 'linux', 'deb', arch);
 				const rpm = find(r, 'linux', 'rpm', arch);
 				if (!deb || !rpm) continue;
 				const what = `Linux, ${d.arch[arch]}`;
-				blocks.push(card(key, what, what, [`          <div class="dl-pair">${button(deb, `Debian, Ubuntu (.deb)`, true)}${button(rpm, `Fedora, RHEL (.rpm)`, true)}</div>`, after(d.linuxWhich), after(esc(d.join))].join('\n')));
+				blocks.push(card(key, what, what, [`          <div class="dl-pair">${button(deb, `Debian, Ubuntu (.deb)`, true)}${button(rpm, `Fedora, RHEL (.rpm)`, true)}</div>`, after(d.linuxWhich), ...[deb, rpm].map((f) => steps(f, [fill(esc(d.linuxAfter), { command: `<code>${esc(linuxInstall(f))}</code>` }), esc(d.join)]))].join('\n')));
 			}
 		}
 	}
@@ -534,6 +579,12 @@ ${neutral}
 ${blocks.join('\n')}
 ${releaseLine}
           <p class="dl-vh" role="status" id="dl-said"></p>
+${r ? `          <dialog class="dl-window" id="dl-window" aria-labelledby="dl-window-title">
+            <h2 id="dl-window-title">${esc(d.windowTitle)}</h2>
+            <p class="dl-window-file" data-text="${esc(d.windowFile)}"></p>
+            <ol class="dl-window-steps"></ol>
+            <div class="dl-window-end"><button type="button" class="dl-window-close">${esc(d.windowClose)}</button><a class="dl-window-again">${esc(d.windowAgain)}</a></div>
+          </dialog>` : ''}
         </div>
 ${r ? recommendScript() : ''}
       </div>

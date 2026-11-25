@@ -44,6 +44,43 @@
 .dl-btn-small .dl-btn-main { font-size: 18px; }
 .dl-after { margin: 14px 0 0; max-width: 62ch; font-size: 15px; line-height: 1.6; color: var(--muted); }
 .dl-after:first-of-type { margin-top: 16px; }
+/* The steps after a download: in a window, or under the button where there is no <dialog> */
+.dl-steps { margin-top: 16px; max-width: 62ch; font-size: 15px; line-height: 1.6; color: var(--muted); }
+.dl-has-window .dl-steps { display: none; }
+.dl-steps-title { margin: 0 0 6px; font-weight: 600; color: var(--text); }
+.dl-steps ol, .dl-window-steps { margin: 0; padding-left: 22px; }
+.dl-steps li { margin: 6px 0; }
+.dl-window {
+  width: min(580px, calc(100vw - 32px));
+  max-height: calc(100vh - 32px);
+  margin: auto;
+  padding: clamp(22px, 4vw, 34px);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--text);
+  overflow: auto;
+}
+.dl-window::backdrop { background: var(--backdrop); }
+.dl-window h2 { margin: 0 0 8px; font-family: var(--display); font-weight: 700; font-size: clamp(28px, 4vw, 38px); line-height: 1; letter-spacing: -0.04em; }
+.dl-window-file { margin: 0 0 18px; color: var(--muted); overflow-wrap: anywhere; }
+.dl-window-steps li { margin: 12px 0; padding-left: 4px; line-height: 1.55; }
+.dl-window-steps li::marker { font-weight: 600; color: var(--muted); }
+.dl-window-end { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: 26px; }
+.dl-window-close {
+  appearance: none;
+  min-height: 46px;
+  padding: 0 24px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--blue);
+  color: var(--on-blue);
+  font-weight: 600;
+  cursor: pointer;
+}
+.dl-window-close:hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.dl-window-close:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+.dl-window-again { font-weight: 500; }
 .dl-phone-title { margin: 0; font-size: 21px; font-weight: 600; line-height: 1.35; }
 .dl-picks { display: flex; flex-wrap: wrap; gap: 10px; }
 .dl-pick {
