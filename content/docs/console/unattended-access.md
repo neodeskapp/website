@@ -50,7 +50,13 @@ Remove the `#` at the start of the second line and put the password in place of 
 
 ## Share the password with your team
 
-People who sign in to the RustDesk client with their account can get a device's password from the server, so they don't have to type it. Add the device as a contact to an organization's shared address book and choose **Set password** on the contact. The password must match the one set on the device. [The shared address book](/docs/people/organizations#the-shared-address-book) explains who receives it. When the device is also assigned to that organization, the console's browser viewer fills the password in as well.
+People who sign in to the RustDesk client with their account can get a device's password from the server, so they don't have to type it. Add the device as a contact to an organization's shared address book and choose **Set password** on the contact. The password must match the one set on the device. [The shared address book](/docs/people/organizations#the-shared-address-book) explains who receives it.
+
+**Connect** in the console's browser viewer uses that password too, for members of the organization, also when the device isn't assigned to it. The server answers the device's password question itself, so the browser never gets the password. If the device refuses it, the viewer says so and asks for the password, once. The console, the command line and MCP don't show the stored password: its `devices connect-password` command says only whether one is stored. The server keeps these passwords encrypted with the key file described in [Saved sign-in](/docs/console/saved-sign-in#where-the-details-are-kept).
+
+## Sign in at the lock screen
+
+The device password gets you to the computer's screen, which may be a locked Windows desktop. [Saved sign-in](/docs/console/saved-sign-in) keeps a Windows account's name and password for a device, and the browser viewer signs in with them at the lock screen.
 
 The console has no access schedule or list of allowed operators per device: whether a connection needs the password or someone at the device to accept it is decided by the client on the device, NeoDesk or RustDesk. An access policy that was saved for a device stays stored, but nothing checks it when someone connects.
 

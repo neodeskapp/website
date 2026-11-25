@@ -7,7 +7,8 @@
 		"use-it-with-the-command-line",
 		"use-it-with-curl",
 		"see-and-revoke-tokens",
-		"a-self-signed-certificate"
+		"a-self-signed-certificate",
+		"what-ends-with-a-token"
 	],
 	"command-line/mcp": [
 		"before-you-start",
@@ -24,7 +25,8 @@
 		"first-commands",
 		"output",
 		"exit-codes",
-		"more-commands-of-the-command-line-itself"
+		"more-commands-of-the-command-line-itself",
+		"on-a-linux-server"
 	],
 	"command-line/reference": [
 		"api-tokens",
@@ -255,6 +257,10 @@
 		"neodesk-devices-restore",
 		"neodesk-devices-services",
 		"neodesk-devices-sessions",
+		"neodesk-devices-signin",
+		"neodesk-devices-signin-auto",
+		"neodesk-devices-signin-clear",
+		"neodesk-devices-signin-set",
 		"neodesk-devices-tags-set",
 		"neodesk-devices-telemetry-command",
 		"neodesk-devices-telemetry-refresh",
@@ -788,12 +794,25 @@
 		"in-the-viewer",
 		"who-can-do-what"
 	],
+	"console/saved-sign-in": [
+		"permissions",
+		"save-the-details",
+		"sign-in-from-the-viewer",
+		"what-works-with-which-client",
+		"the-client-150-rc7-and-older",
+		"clients-after-150-rc7",
+		"where-it-doesnt-work",
+		"where-the-details-are-kept",
+		"the-audit-log",
+		"on-the-command-line"
+	],
 	"console/unattended-access": [
 		"set-the-permanent-password",
 		"share-the-password-with-your-team",
 		"wake-on-lan",
 		"in-the-neodesk-client",
-		"in-stock-rustdesk"
+		"in-stock-rustdesk",
+		"sign-in-at-the-lock-screen"
 	],
 	"development/api": [
 		"where-it-listens",
@@ -1129,7 +1148,8 @@
 		"firewall-on-linux",
 		"firewall-on-windows",
 		"check-the-ports-from-outside",
-		"changing-a-port"
+		"changing-a-port",
+		"the-consoles-port-before-360-rc5"
 	],
 	"operations/postgresql": [
 		"when-to-use-it",
@@ -1153,7 +1173,8 @@
 		"mesh-agents-behind-a-proxy",
 		"https-without-a-proxy",
 		"check-the-addresses-clients-get",
-		"https-with-lets-encrypt-on-docker"
+		"https-with-lets-encrypt-on-docker",
+		"which-port-the-proxy-forwards-to"
 	],
 	"operations/security": [
 		"keep-the-console-behind-tls",
@@ -1187,7 +1208,9 @@
 		"the-updates-page-in-the-console",
 		"check-the-version",
 		"roll-back",
-		"releases-so-far"
+		"releases-so-far",
+		"update-a-360-rc4-install",
+		"the-consoles-port-after-the-update"
 	],
 	"people/ldap": [
 		"where-it-is-set",

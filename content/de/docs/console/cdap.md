@@ -1,7 +1,7 @@
 ---
 title: CDAP-Geräte
 description: Sensoren, Controller und Agenten über CDAP verbinden lassen, ihre Werte und Steuerelemente sehen und ihnen Befehle senden.
-order: 12
+order: 13
 ---
 
 CDAP ist das eigene Protokoll des Servers für Geräte, die keine RustDesk-Clients sind: Sensoren, Controller, Kameras, SCADA-Systeme, Netzwerkgeräte und Agenten. Ein Gerät verbindet sich mit dem CDAP-Gateway des Servers und meldet, welche Werte und Steuerelemente es hat, und die Konsole zeigt sie unter **IoT-Geräte (CDAP)**. Diese Seite behandelt den Betrieb des Gateways und die Arbeit mit diesen Geräten. Wie du ein Gerät oder eine Bridge für CDAP baust, steht in [CDAP-Protokoll](/docs/development/cdap-protocol) und [CDAP-SDKs und Bridges](/docs/development/cdap-sdks).

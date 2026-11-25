@@ -117,7 +117,7 @@ Ein Gerät, das sich über einen MeshAgent verbindet, bekommt außerdem die Mesh
 
 **Löschen** öffnet einen Dialog, dessen Schaltfläche **Löschen** erst nach drei Sekunden klickbar wird. Jedes Löschen trennt das Gerät. Standardmäßig wird das Gerät ausgeblendet, und seine ID bleibt reserviert: Der Server lehnt eine Registrierung unter dieser ID ab, bis du das Gerät wiederherstellst oder endgültig löschst. Zwei Optionen ändern das:
 
-- **Dauerhaft löschen (ID freigeben)** entfernt den Geräteeintrag und gibt die ID frei, sodass sich der Client erneut registrieren kann.
+- **Dauerhaft löschen (ID freigeben)** entfernt den Geräteeintrag und gibt die ID frei, sodass sich der Client erneut registrieren kann. Alles, was der Server zu der ID gespeichert hat, geht mit: ihr Schlüssel und Schlüsselanfragen, gespeicherte Gerätepasswörter und die gespeicherte Anmeldung, Freigaben, Gruppen, Ordner, Zugriffsregeln und Einstellungen. Eine neue Installation unter derselben ID erbt nichts davon. Audit-Protokoll und Verbindungsverlauf bleiben.
 - **Gerät widerrufen** sperrt zusätzlich die Geräte-ID, sodass sich das Gerät unter ihr nicht mehr verbinden kann. Die Sperre wird gespeichert und bleibt nach einem Neustart bestehen, auch zusammen mit **Dauerhaft löschen (ID freigeben)**.
 
 Hake **Gelöschte anzeigen** an, um ausgeblendete Geräte zu sehen. Sie erscheinen ausgegraut mit **Gelöscht** neben dem Namen, und ihr Menü bietet **Wiederherstellen** und **Gerät dauerhaft löschen**. Dieser Browser merkt sich, ob **Gelöschte anzeigen** an ist.

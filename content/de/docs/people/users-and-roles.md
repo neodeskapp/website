@@ -73,6 +73,8 @@ Das sind die Standardberechtigungen. Super-Admin und Administrator haben alle. D
 | Geräte sperren und entsperren | Nein | Ja | Nein | Nein |
 | Geräte-ID ändern | Nein | Ja | Nein | Nein |
 | Verbindungsmodus des Geräts ändern | Nein | Ja | Ja | Nein |
+| Gespeicherte Anmeldung verwenden | Nein | Nein | Nein | Nein |
+| Gespeicherte Anmeldung verwalten | Nein | Nein | Nein | Nein |
 | RDP- und VNC-Ziele ansehen | Ja | Ja | Ja | Ja |
 | Mit RDP- und VNC-Zielen verbinden | Nein | Ja | Ja | Nein |
 | RDP- und VNC-Ziele hinzufügen und bearbeiten | Nein | Ja | Nein | Nein |

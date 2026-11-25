@@ -117,7 +117,7 @@ A device that connects through a MeshAgent also gets the MeshAgent tools while i
 
 **Delete** opens a dialog whose **Delete** button unlocks after three seconds. Every delete disconnects the device. By default the device is hidden and its ID stays reserved: the server refuses a registration under that ID until you restore the device or delete it for good. Two options change this:
 
-- **Permanently delete (release ID)** removes the device record and frees the ID, so the client can register again.
+- **Permanently delete (release ID)** removes the device record and frees the ID, so the client can register again. Everything the server kept for the ID goes with it: its key and key requests, stored device passwords and saved sign-in, grants, groups, folders, access rules and settings. A new install under the same ID inherits none of it. The audit log and the connection history stay.
 - **Revoke device** also blocks the device ID, so the device can't connect again under it. The block is stored and stays after a restart, also together with **Permanently delete (release ID)**.
 
 Tick **Show deleted** to see hidden devices. They show greyed out with **Deleted** next to the name, and their menu offers **Restore** and **Permanently delete device**. This browser remembers whether **Show deleted** is on.

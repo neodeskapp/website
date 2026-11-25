@@ -39,8 +39,7 @@ Der Dialog zeigt den aktuellen Stand:
   **Erlauben** klickt.
 - Der Computer hat den Zugriff erlaubt. **Verbinden** öffnet die Sitzung
   [im Browser](/docs/console/remote-in-browser); **In der Desktop-App öffnen**
-  öffnet sie mit einem `rustdesk://`-Link, im normalen RustDesk oder, auf einem
-  Windows-Computer ohne normales RustDesk, im NeoDesk-Client (siehe
+  bietet NeoDesk und RustDesk an und öffnet sie in dem, das du wählst (siehe
   [Links, die die App öffnen](/docs/getting-started/connect-a-client#links-that-open-the-app)).
   Du brauchst kein Passwort: Die App übergibt es für dich an den Server.
 - Die Person hat abgelehnt, die Sitzung ist beendet oder der Link ist

@@ -60,6 +60,12 @@ person's system: an installer for Windows, a disk image for Mac, and a command
 to paste on Linux. The page lists the steps for that system and shows the code
 as well. On a phone it asks them to open the link on the computer instead.
 
+On Windows the steps say what Windows asks before the setup installs. For the
+installer (`.exe`), the prompt names Windows Command Processor, by Microsoft
+Windows, and the page says that this is the NeoDesk setup installing itself.
+For the MSI, the prompt names NeoDesk, and the page asks the person to check
+the publisher it names.
+
 The downloads are the official NeoDesk client releases. Your server fetches
 them from GitHub, checks their signature, and serves them itself. When it has
 no release yet, the page says there is no download right now.
@@ -94,6 +100,9 @@ key and refuses the join. The client shows the server's answer:
 ```text
 This computer's ID is already enrolled with another key. Ask your administrator to approve the new key or to delete the device in the console.
 ```
+
+Until its new key is approved, the device shows offline, also after the server
+restarts, and the server stores none of the system information it sends.
 
 A new invite doesn't help, and the refused attempt uses up nothing of the
 invite. The device's panel shows a **New key** notice on its **Overview** tab,

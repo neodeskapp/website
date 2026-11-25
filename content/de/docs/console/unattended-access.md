@@ -50,7 +50,13 @@ Entferne das `#` am Anfang der zweiten Zeile und setze für `YourPermanentPasswo
 
 ## Das Passwort mit deinem Team teilen {#share-the-password-with-your-team}
 
-Wer sich im RustDesk-Client mit seinem Konto anmeldet, kann das Passwort eines Geräts vom Server bekommen und muss es nicht eintippen. Füge das Gerät als Kontakt zum gemeinsamen Adressbuch einer Organisation hinzu und wähle beim Kontakt **Passwort setzen**. Das Passwort muss mit dem übereinstimmen, das auf dem Gerät gesetzt ist. [Das gemeinsame Adressbuch](/docs/people/organizations#the-shared-address-book) erklärt, wer es bekommt. Ist das Gerät auch dieser Organisation zugewiesen, trägt der Web-Viewer der Konsole das Passwort ebenfalls selbst ein.
+Wer sich im RustDesk-Client mit seinem Konto anmeldet, kann das Passwort eines Geräts vom Server bekommen und muss es nicht eintippen. Füge das Gerät als Kontakt zum gemeinsamen Adressbuch einer Organisation hinzu und wähle beim Kontakt **Passwort setzen**. Das Passwort muss mit dem übereinstimmen, das auf dem Gerät gesetzt ist. [Das gemeinsame Adressbuch](/docs/people/organizations#the-shared-address-book) erklärt, wer es bekommt.
+
+**Verbinden** im Browser-Viewer der Konsole nutzt dieses Passwort ebenfalls, für Mitglieder der Organisation, auch wenn das Gerät ihr nicht zugewiesen ist. Der Server beantwortet die Passwortfrage des Geräts selbst, sodass der Browser das Passwort nie bekommt. Lehnt das Gerät es ab, sagt der Viewer das und fragt einmal nach dem Passwort. Die Konsole, die Kommandozeile und MCP zeigen das gespeicherte Passwort nicht: ihr Befehl `devices connect-password` sagt nur, ob eines gespeichert ist. Der Server hält diese Passwörter verschlüsselt mit der Schlüsseldatei, die [Gespeicherte Anmeldung](/docs/console/saved-sign-in#where-the-details-are-kept) beschreibt.
+
+## Am Sperrbildschirm anmelden {#sign-in-at-the-lock-screen}
+
+Das Gerätepasswort bringt dich zum Bildschirm des Computers, und der kann ein gesperrter Windows-Desktop sein. Die [gespeicherte Anmeldung](/docs/console/saved-sign-in) hält Namen und Passwort eines Windows-Kontos für ein Gerät bereit, und der Browser-Viewer meldet sich damit am Sperrbildschirm an.
 
 Die Konsole hat keinen Zugriffszeitplan und keine Liste erlaubter Operatoren pro Gerät: Ob eine Verbindung das Passwort braucht oder jemanden am Gerät, der sie annimmt, entscheidet der Client auf dem Gerät, NeoDesk oder RustDesk. Eine Zugriffsrichtlinie, die für ein Gerät gespeichert wurde, bleibt gespeichert, aber beim Verbinden prüft sie niemand.
 

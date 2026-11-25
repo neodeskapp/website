@@ -1,7 +1,7 @@
 ---
 title: MeshAgent-Geräte
 description: Computer mit dem Agenten von MeshCentral an den Server anbinden, genehmigen und ihr Terminal, ihre Dateien, Port-Relays und Energiebefehle nutzen.
-order: 11
+order: 12
 ---
 
 NeoDesk spricht das Protokoll von MeshAgent, dem Agenten von MeshCentral. Ein Computer mit dem unveränderten MeshAgent verbindet sich mit dem Server und erscheint in [der Geräteliste](/docs/console/devices) als Mesh-Agent, neben den RustDesk-Clients. Du öffnest seinen Bildschirm im [Web-Viewer](/docs/console/remote-in-browser) und bekommst ein Terminal, einen Dateibrowser, Port-Relays und Energiebefehle. Der Filter **Mesh-Agenten** in der Geräteliste zeigt nur diese Geräte.

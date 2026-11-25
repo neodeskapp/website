@@ -18,7 +18,7 @@ The server reaches RDP and VNC computers through guacd, the daemon of Apache Gua
 
 - **Linux and Windows**: the installers set `GUACD_ADDRESS=127.0.0.1:4822` but don't install guacd. Install it yourself and have it listen on `127.0.0.1` port 4822 only. The repository's `remote-gateway` folder has an example systemd unit that does this.
 
-Passwords saved on the server are encrypted with the key in `REMOTE_TARGET_VAULT_KEY`. The Linux and Windows installers write one into the env file. The Docker image makes one at its first start and keeps it in the data volume as `/opt/rustdesk/.remote_target_vault_key`. Without the key the server can't read the saved passwords, so keep it in your [backups](/docs/operations/backup).
+Passwords saved on the server are encrypted with the key in `REMOTE_TARGET_VAULT_KEY`. The Linux and Windows installers write one into the env file. The Docker image makes one at its first start and keeps it in the data volume as `/opt/neodesk/data/.remote_target_vault_key`. Without the key the server can't read the saved passwords, so keep it in your [backups](/docs/operations/backup).
 
 The target form says what is missing. While guacd doesn't answer, it shows "Connections cannot start yet: guacd, the RDP and VNC gateway of this server, does not answer." While the key is missing and **Save on this server** is chosen, it says that the server cannot save passwords yet.
 

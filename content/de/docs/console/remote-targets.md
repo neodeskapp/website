@@ -18,7 +18,7 @@ Der Server erreicht RDP- und VNC-Computer über guacd, den Daemon von Apache Gua
 
 - **Linux und Windows**: Die Installer setzen `GUACD_ADDRESS=127.0.0.1:4822`, installieren guacd aber nicht. Installiere es selbst und lass es nur auf `127.0.0.1`, Port 4822 lauschen. Der Ordner `remote-gateway` im Repository enthält eine systemd-Unit als Beispiel, die genau das tut.
 
-Der Server verschlüsselt die Passwörter, die er speichert, mit dem Schlüssel in `REMOTE_TARGET_VAULT_KEY`. Die Installer für Linux und Windows schreiben einen Schlüssel in die env-Datei. Das Docker-Image erzeugt beim ersten Start einen und legt ihn im Daten-Volume als `/opt/rustdesk/.remote_target_vault_key` ab. Ohne den Schlüssel kann der Server die gespeicherten Passwörter nicht lesen, nimm ihn deshalb in deine [Backups](/docs/operations/backup) auf.
+Der Server verschlüsselt die Passwörter, die er speichert, mit dem Schlüssel in `REMOTE_TARGET_VAULT_KEY`. Die Installer für Linux und Windows schreiben einen Schlüssel in die env-Datei. Das Docker-Image erzeugt beim ersten Start einen und legt ihn im Daten-Volume als `/opt/neodesk/data/.remote_target_vault_key` ab. Ohne den Schlüssel kann der Server die gespeicherten Passwörter nicht lesen, nimm ihn deshalb in deine [Backups](/docs/operations/backup) auf.
 
 Das Formular für Ziele sagt, was fehlt. Solange guacd nicht antwortet, zeigt es „Verbindungen können noch nicht starten: guacd, das RDP- und VNC-Gateway dieses Servers, antwortet nicht.“ Solange der Schlüssel fehlt und **Auf diesem Server speichern** gewählt ist, sagt es, dass der Server noch keine Passwörter speichern kann.
 

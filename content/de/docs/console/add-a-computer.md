@@ -65,6 +65,12 @@ Disk-Image für den Mac und einen Befehl zum Einfügen unter Linux. Die Seite
 listet die Schritte für dieses System auf und zeigt auch den Code. Auf einem
 Handy bittet sie darum, den Link stattdessen auf dem Computer zu öffnen.
 
+Unter Windows sagen die Schritte, was Windows fragt, bevor sich die
+Einrichtung installiert. Beim Installationsprogramm (`.exe`) nennt die Abfrage
+den Windows-Befehlsprozessor von Microsoft Windows, und die Seite sagt, dass
+das die Einrichtung von NeoDesk ist. Beim MSI nennt die Abfrage NeoDesk, und
+die Seite bittet die Person, den genannten Herausgeber zu prüfen.
+
 Die Downloads sind die offiziellen Releases des NeoDesk-Clients. Dein Server
 holt sie von GitHub, prüft ihre Signatur und liefert sie selbst aus. Hat er
 noch kein Release, sagt die Seite, dass es gerade keinen Download gibt.
@@ -103,6 +109,10 @@ Client zeigt die Antwort des Servers:
 ```text
 This computer's ID is already enrolled with another key. Ask your administrator to approve the new key or to delete the device in the console.
 ```
+
+Bis sein neuer Schlüssel freigegeben ist, zeigt das Gerät offline, auch nach
+einem Neustart des Servers, und der Server speichert keine der
+Systeminformationen, die es schickt.
 
 Eine neue Einladung hilft nicht, und der abgelehnte Versuch verbraucht nichts
 von der Einladung. Der Seitenbereich des Geräts zeigt im Tab **Übersicht** einen

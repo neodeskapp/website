@@ -73,6 +73,8 @@ These are the default permissions. Super admin and Administrator have all of the
 | Ban and unban devices | No | Yes | No | No |
 | Change device ID | No | Yes | No | No |
 | Change device connection mode | No | Yes | Yes | No |
+| Use saved sign-in | No | No | No | No |
+| Manage saved sign-in | No | No | No | No |
 | View RDP and VNC targets | Yes | Yes | Yes | Yes |
 | Connect to RDP and VNC targets | No | Yes | Yes | No |
 | Add and edit RDP and VNC targets | No | Yes | No | No |
