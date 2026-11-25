@@ -4,6 +4,7 @@ description: Der freie Server von RustDesk besteht aus hbbs und hbbr. NeoDesk er
 order: 2
 og: comparison
 product: RustDesk Server OSS
+logo: rustdesk.svg
 ---
 
 RustDesk Server OSS ist der freie Server von RustDesk: zwei Programme, hbbs

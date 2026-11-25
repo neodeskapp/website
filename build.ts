@@ -275,6 +275,7 @@ function loadPages(dir: string, locale: Locale, version: string): Page[] {
 		const bodyLine = source.slice(0, source.length - body.trimStart().length).split('\n').length;
 		if (!data.title) problems.push(`${rel}: no title`);
 		if (!data.description) problems.push(`${rel}: no description`);
+		if (data.logo && !fs.existsSync(at('public/img/compare', data.logo))) problems.push(`${rel}: logo ${data.logo} is not in public/img/compare`);
 		if (/^# /m.test(body.replace(/```[\s\S]*?```/g, ''))) problems.push(`${rel}: the body has a "# " heading; the title is the h1`);
 		pages.push({
 			file,
@@ -288,6 +289,7 @@ function loadPages(dir: string, locale: Locale, version: string): Page[] {
 			order: Number(data.order ?? 99),
 			og: data.og,
 			product: data.product,
+			logo: data.logo,
 			release: data.release,
 			seoTitle: data.seoTitle,
 			related: data.related ? data.related.split(',').map((s) => s.trim()).filter(Boolean) : undefined,

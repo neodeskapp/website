@@ -219,7 +219,7 @@ function rows(shared: Shared, items: Page[]) {
 ${unfolded(items)
 	.map(
 		(p) =>
-			`      <li${p.parent ? ' class="child"' : ''}><a href="${inLocale(shared, `/docs/${p.slug}/`)}">${esc(p.title)}</a>${p.description ? `<p>${esc(p.description)}</p>` : ''}</li>`
+			`      <li${p.parent ? ' class="child"' : p.logo ? ' class="logo"' : ''}>${p.logo ? `<img src="/img/compare/${esc(p.logo)}" alt="" width="40" height="40" loading="lazy">` : ''}<a href="${inLocale(shared, `/docs/${p.slug}/`)}">${esc(p.title)}</a>${p.description ? `<p>${esc(p.description)}</p>` : ''}</li>`
 	)
 	.join('\n')}
     </ul>`;

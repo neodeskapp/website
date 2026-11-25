@@ -4,6 +4,7 @@ description: RustDesk's free server is hbbs and hbbr. NeoDesk does their job in 
 order: 2
 og: comparison
 product: RustDesk Server OSS
+logo: rustdesk.svg
 ---
 
 RustDesk Server OSS is RustDesk's free server: two programs, hbbs and hbbr.

@@ -62,6 +62,8 @@ export interface Page {
 	og?: string;
 	/** For the comparison template: the other product, from front matter `product` */
 	product?: string;
+	/** Front matter `logo`: a file in public/img/compare, shown before the page's row in section lists */
+	logo?: string;
 	/** For the release template: the version, from front matter `release` */
 	release?: string;
 	/** Front matter `seoTitle`: the whole <title>, when the page's title alone is not what people search for */
