@@ -3,7 +3,8 @@
 //
 // It reads the built site in dist/ (DIST_DIR for another folder) for the address it was
 // built for (SITE_URL and DOCS_URL, as for the build), and answers every request from
-// those files, so nothing goes to the network. It needs Playwright with Chromium, like
+// those files, so nothing goes to the network. With LIVE=1 it uses the site at that
+// address instead, such as https://docs.neode.sk after a deploy. It needs Playwright with Chromium, like
 // shots.ts: PLAYWRIGHT_MODULE, or the playwright package installed next to this file.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -61,7 +62,8 @@ const browser = await chromium.launch();
 let failed = 0;
 for (const [start, cases] of Object.entries(CASES)) {
 	const page = await browser.newPage();
-	await page.route('**/*', async (route) => {
+	// LIVE=1 searches the site where it is served instead of the files in dist/
+	if (!process.env.LIVE) await page.route('**/*', async (route) => {
 		const file = urls.fileOfUrl(route.request().url());
 		const full = file && path.join(DIST, file);
 		if (full && fs.existsSync(full) && fs.statSync(full).isFile()) await route.fulfill({ path: full, contentType: TYPES[path.extname(full)] ?? 'application/octet-stream' });

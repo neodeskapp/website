@@ -335,7 +335,8 @@ its language's search index. `npm run test:search` types sample queries into
 the search of the built site in a headless Chromium and checks that the
 expected page comes first, in English and German. It answers every request from
 `dist/`, so it works on a build for any address; set `SITE_URL` and `DOCS_URL`
-as for that build. It needs Playwright, as `shots.ts` does. The queries are in
+as for that build; with `LIVE=1` it searches the deployed site at that
+address instead. It needs Playwright, as `shots.ts` does. The queries are in
 `CASES` in `search-test.ts`.
 
 ## Writing a docs page
