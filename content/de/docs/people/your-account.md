@@ -1,6 +1,6 @@
 ---
 title: Dein Konto
-description: Dein Profil und Status, Passwort und Zwei-Faktor-Anmeldung, die Browser, in denen du angemeldet bist, deine API-Tokens und wie die Konsole für dich aussieht, dazu die Grenze für Sitzungen pro Konto.
+description: Dein Passwort, die Zwei-Faktor-Anmeldung, API-Tokens und Vorlieben, die Browser, in denen du angemeldet bist, und die Grenze für Sitzungen pro Konto.
 order: 2.5
 related: /docs/people/two-factor, /docs/command-line/api-tokens, /docs/people/users-and-roles
 ---
@@ -64,5 +64,7 @@ neodesk sessions end-all <user>        # ein Konto überall abmelden
 neodesk settings console-sessions      # der Schalter und was die Grenze bestimmt
 neodesk settings console-sessions-set --single-session=true
 ```
+
+`<user>` ist die ID des Kontos, die `neodesk users list` zeigt, und `<session>` die ID der Sitzung aus `neodesk sessions list-for`.
 
 Ein Token hat keine eigene Browsersitzung, darum markiert `sessions list` keinen Eintrag als den aktuellen. Ein Token kann die Sitzungen seines eigenen Kontos nicht abmelden: Nutze dafür **Angemeldete Geräte** im Browser. Die [Befehlsreferenz](/docs/command-line/reference) listet die Optionen.

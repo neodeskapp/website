@@ -1,6 +1,6 @@
 ---
 title: Your account
-description: Your own profile, status, password and two-factor sign-in, the browsers you are signed in on, your API tokens and how the console looks for you, and the limit on sessions per account.
+description: Your password, two-factor sign-in, API tokens and preferences, the browsers you are signed in on, and the limit on sessions per account.
 order: 2.5
 related: /docs/people/two-factor, /docs/command-line/api-tokens, /docs/people/users-and-roles
 ---
@@ -64,5 +64,7 @@ neodesk sessions end-all <user>        # sign an account out everywhere
 neodesk settings console-sessions      # the switch and what decides the limit
 neodesk settings console-sessions-set --single-session=true
 ```
+
+`<user>` is the account's ID, which `neodesk users list` shows, and `<session>` is the session's ID from `neodesk sessions list-for`.
 
 A token has no browser session of its own, so `sessions list` marks no entry as the current one. A token can't sign out its own account's sessions: use **Signed-in devices** in the browser for that. The [command reference](/docs/command-line/reference) lists the options.

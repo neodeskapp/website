@@ -1,6 +1,6 @@
 ---
 title: Computer hinzufügen
-description: Einen Einladungslink erstellen, der NeoDesk auf einem Computer installiert und ihn mit deinem Server verbindet, genehmigt und im gewählten Ordner, und den Computer beim Beitritt einrichten.
+description: Ein Einladungslink installiert NeoDesk auf einem Computer und verbindet ihn mit deinem Server, im gewählten Ordner. Beim Beitritt richtest du ihn ein.
 order: 3
 ---
 
