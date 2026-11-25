@@ -1,14 +1,26 @@
-// The brand page, /brand/ and /de/brand/: the logo files, how to place them, the
-// colours, the fonts, the name and the voice. Everything comes from
-// .ui-rework/brand/BRAND.md; what it does not say is not on the page. The logo files
-// in public/brand/files/ are the owner's artwork, copied unchanged; the wrong uses
-// are drawn with CSS on the real files, never by editing them.
+// The brand guide, /brand/ and its pages, in English and German. /brand/ has the
+// logo files, how to place them and what not to do; the pages under it have the
+// colours, the fonts, the console's interface elements, graphics for marketing,
+// and the voice. The rules come from .ui-rework/brand/BRAND.md, the console's
+// tokens and components (web-ui/src/lib) and its design guide; what they do not
+// say is not on these pages. The logo files in public/brand/files/ are the
+// owner's artwork, copied unchanged; the wrong uses are drawn with CSS on the
+// real files, never by editing them.
 
-const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+import { esc, brandNav, GUIDE, BRAND_SLUGS, brandPath } from './brand-shared.ts';
+import type { BrandPage, BrandSlug } from './brand-shared.ts';
+import { coloursPage } from './brand-colours.ts';
+import { fontsPage } from './brand-fonts.ts';
+import { elementsPage } from './brand-elements.ts';
+import { graphicsPage } from './brand-graphics.ts';
+import { voicePage, voiceProblems } from './brand-voice.ts';
+import { colourProblems } from './brand-colours.ts';
 
-export interface BrandStrings {
+export { BRAND_SLUGS, brandPath };
+export type { BrandPage, BrandSlug };
+
+interface LogoStrings {
 	title: string;
-	/** <title>, at most 60 characters */
 	pageTitle: string;
 	description: string;
 	lead: string;
@@ -28,37 +40,16 @@ export interface BrandStrings {
 	dontTitle: string;
 	dontLead: string;
 	dont: Record<'recolour' | 'stretch' | 'rotate' | 'shadow' | 'outline' | 'gradient' | 'pill' | 'small', string>;
-	colourTitle: string;
-	colourLead: string;
-	colourHead: [string, string, string, string];
-	colours: [string, string, string, string][];
-	textColourLead: string;
-	textColours: [string, string, string, string][];
-	oneColour: string;
-	surfaceLead: string;
-	surfaces: [string, string, string][];
-	fontTitle: string;
-	fonts: { name: string; use: string; licence: string; source: string; href: string }[];
-	nameTitle: string;
-	name: string[];
-	voiceTitle: string;
-	voiceLead: string;
-	voice: { rule: string; do: string; dont: string }[];
-	rustdeskTitle: string;
-	rustdesk: string[];
-	rustdeskDo: string;
-	rustdeskDont: string;
-	doLabel: string;
-	dontLabel: string;
-	download: string;
+	guideTitle: string;
+	guide: Record<Exclude<BrandSlug, ''>, string>;
 }
 
-export const BRAND: Record<string, BrandStrings> = {
+const LOGO: Record<string, LogoStrings> = {
 	en: {
 		title: 'Brand and logo',
 		pageTitle: 'NeoDesk brand and logo files',
-		description: 'The NeoDesk logo files to download, how to place them, the colours, the fonts, how to write the name, and the voice.',
-		lead: 'The NeoDesk logo, its colours and fonts, and how to write about NeoDesk. Use the files as they are.',
+		description: 'The NeoDesk logo files to download, how to place them, and the brand guide: colours, fonts, interface elements, graphics and voice.',
+		lead: 'The NeoDesk logo and the rules for everything that carries the name: the console, the website, the README and anything else people see. Use the files as they are.',
 		logoTitle: 'Logo files',
 		logoLead: 'The logo is a rounded square and a circle that overlap, and the word neodesk. The square is your desktop, the circle is the person on the other end, the overlap is what you share. Use the version for the background it sits on.',
 		fullLogo: 'Full logo',
@@ -84,83 +75,20 @@ export const BRAND: Record<string, BrandStrings> = {
 			pill: 'No pill or card behind it.',
 			small: 'Not the full logo below 24 px.'
 		},
-		colourTitle: 'Colours',
-		colourLead: 'The logo\'s colours, for a dark and a light background:',
-		colourHead: ['Part', 'On dark', 'On light', 'Stands for'],
-		colours: [
-			['Square', '#58a6ff', '#1f6feb', 'Your side: the server'],
-			['Circle', '#a3e635', '#4d8f06', 'Their side: the RustDesk client'],
-			['Overlap', '#3fd0c4', '#0f9e96', 'What both share: the console'],
-			['Wordmark', '#e4e7e7', '#1b1e1f', '']
-		],
-		textColourLead: 'For text in the logo colours, such as a key word on a web page, use these values; they reach 4.5:1 on their background. Body text stays neutral, and colour marks a key word, not a whole paragraph.',
-		textColours: [
-			['Blue', '#58a6ff', '#1f6feb', 'Your server, the primary button, Install'],
-			['Lime', '#a3e635', '#3d7a06', 'The RustDesk client, client ports'],
-			['Teal', '#3fd0c4', '#0b7a74', 'The console, links in text']
-		],
-		oneColour: 'In one colour, draw the square and the circle in the ink colour and the overlap in the background colour.',
-		surfaceLead: 'Surfaces and text around the logo:',
-		surfaces: [
-			['Background', '#141616', '#ffffff'],
-			['Text', '#e4e7e7', '#1b1e1f'],
-			['Muted text', '#a3abad', '#566064'],
-			['Rules', '#2c3131', '#dde1e2']
-		],
-		fontTitle: 'Fonts',
-		fonts: [
-			{
-				name: 'Funnel Display',
-				use: 'The wordmark, weight 700, letter-spacing -0.03em, lower case. In files the wordmark is converted to outlines. Large headlines on marketing material, such as the website\'s first heading, use it too.',
-				licence: 'SIL Open Font License 1.1',
-				source: 'github.com/google/fonts, folder ofl/funneldisplay',
-				href: 'https://github.com/google/fonts/tree/main/ofl/funneldisplay'
-			},
-			{
-				name: 'IBM Plex Sans',
-				use: 'Everything else: text, labels, the console\'s interface.',
-				licence: 'SIL Open Font License 1.1',
-				source: 'github.com/IBM/plex',
-				href: 'https://github.com/IBM/plex'
-			},
-			{
-				name: 'IBM Plex Mono',
-				use: 'Only for what people copy: commands, IDs, addresses.',
-				licence: 'SIL Open Font License 1.1',
-				source: 'github.com/IBM/plex',
-				href: 'https://github.com/IBM/plex'
-			}
-		],
-		nameTitle: 'The name',
-		name: [
-			'Write <b>NeoDesk</b>: one word, capital N and capital D. Not Neo Desk, not Neodesk.',
-			'The command is <code>neodesk</code>, in lower case, as people type it.',
-			'The lower-case <span class="mono">neodesk</span> of the wordmark belongs to the logo only. In text, write NeoDesk.'
-		],
-		voiceTitle: 'Voice',
-		voiceLead: 'NeoDesk writes plainly and says what is true today.',
-		voice: [
-			{ rule: 'Plain words, short sentences, active voice. Start with the point.', do: 'NeoDesk is a remote desktop server you run yourself.', dont: 'Unlock the next level of remote access.' },
-			{ rule: 'Facts, not marketing. No exclamation marks.', do: 'One Go binary does the work of hbbs and hbbr.', dont: 'The fastest, most powerful server ever!' },
-			{ rule: 'Sentence case everywhere: headings, buttons, labels.', do: 'Add a computer', dont: 'Add A Computer' },
-			{ rule: 'Write a sentence instead of stringing attributes together with dots.', do: 'NeoDesk is self-hosted, works with RustDesk clients and is open source under AGPL-3.0.', dont: 'A tagline of three attributes with middle dots between them.' }
-		],
-		rustdeskTitle: 'NeoDesk and RustDesk',
-		rustdesk: [
-			'RustDesk is made by Purslane Tech Pte. Ltd. NeoDesk is not affiliated with or endorsed by RustDesk or Purslane Tech. NeoDesk is an independent project that implements the RustDesk protocol for client compatibility, and its use of the name RustDesk is descriptive.',
-			'Use the name RustDesk only to say what NeoDesk works with: the RustDesk client, the RustDesk protocol.'
-		],
-		rustdeskDo: 'NeoDesk works with RustDesk clients. It is a RustDesk-compatible server.',
-		rustdeskDont: 'NeoDesk, the official RustDesk server.',
-		doLabel: 'Do',
-		dontLabel: 'Don\'t',
-		download: 'Download'
+		guideTitle: 'The rest of the guide',
+		guide: {
+			colours: 'The logo colours and what each one stands for, the colours for text, and the console\'s palette in dark and light.',
+			fonts: 'Funnel Display for the wordmark and large headlines, IBM Plex Sans for everything else, IBM Plex Mono for what people copy. With samples of each.',
+			elements: 'How the console\'s buttons, fields, tables, status words, notices and dialogs look, drawn in both themes, with the spacing and sizes behind them.',
+			graphics: 'The mark\'s shapes as large graphics, screenshots, link previews, and what NeoDesk material never uses.',
+			voice: 'How NeoDesk writes: plain words, facts that are true today, the words to leave out, text in the interface, and how to write the name and mention RustDesk.'
+		}
 	},
 	de: {
 		title: 'Logo und Marke',
 		pageTitle: 'NeoDesk: Logo-Dateien und Markenregeln',
-		description: 'Die Logo-Dateien von NeoDesk zum Herunterladen, wie du sie platzierst, die Farben, die Schriften, wie der Name geschrieben wird, und der Ton.',
-		lead: 'Das Logo von NeoDesk, seine Farben und Schriften, und wie man über NeoDesk schreibt. Nutze die Dateien so, wie sie sind.',
+		description: 'Die Logo-Dateien von NeoDesk zum Herunterladen, wie du sie platzierst, und der Leitfaden: Farben, Schriften, Bedienelemente, Grafiken und Ton.',
+		lead: 'Das Logo von NeoDesk und die Regeln für alles, was den Namen trägt: die Konsole, die Website, das README und alles andere, was Leute sehen. Nutze die Dateien so, wie sie sind.',
 		logoTitle: 'Logo-Dateien',
 		logoLead: 'Das Logo ist ein abgerundetes Quadrat und ein Kreis, die sich überlappen, und das Wort neodesk. Das Quadrat ist dein Desktop, der Kreis die Person am anderen Ende, die Überlappung das, was ihr teilt. Nimm die Fassung für den Hintergrund, auf dem es steht.',
 		fullLogo: 'Ganzes Logo',
@@ -186,98 +114,37 @@ export const BRAND: Record<string, BrandStrings> = {
 			pill: 'Keine Pille und keine Karte dahinter.',
 			small: 'Nicht das ganze Logo unter 24 px.'
 		},
-		colourTitle: 'Farben',
-		colourLead: 'Die Farben des Logos, für einen dunklen und einen hellen Hintergrund:',
-		colourHead: ['Teil', 'Auf dunkel', 'Auf hell', 'Steht für'],
-		colours: [
-			['Quadrat', '#58a6ff', '#1f6feb', 'Deine Seite: der Server'],
-			['Kreis', '#a3e635', '#4d8f06', 'Ihre Seite: der RustDesk-Client'],
-			['Überlappung', '#3fd0c4', '#0f9e96', 'Was beide teilen: die Konsole'],
-			['Wortmarke', '#e4e7e7', '#1b1e1f', '']
-		],
-		textColourLead: 'Für Text in den Logofarben, etwa ein Schlüsselwort auf einer Webseite, nimm diese Werte; sie erreichen 4,5:1 auf ihrem Hintergrund. Fließtext bleibt neutral, und Farbe hebt ein Schlüsselwort hervor, keinen ganzen Absatz.',
-		textColours: [
-			['Blau', '#58a6ff', '#1f6feb', 'Dein Server, die Hauptschaltfläche, Installieren'],
-			['Limette', '#a3e635', '#3d7a06', 'Der RustDesk-Client, Client-Ports'],
-			['Türkis', '#3fd0c4', '#0b7a74', 'Die Konsole, Links im Text']
-		],
-		oneColour: 'Einfarbig zeichnest du Quadrat und Kreis in der Druckfarbe und die Überlappung in der Hintergrundfarbe.',
-		surfaceLead: 'Flächen und Text rund um das Logo:',
-		surfaces: [
-			['Hintergrund', '#141616', '#ffffff'],
-			['Text', '#e4e7e7', '#1b1e1f'],
-			['Gedämpfter Text', '#a3abad', '#566064'],
-			['Linien', '#2c3131', '#dde1e2']
-		],
-		fontTitle: 'Schriften',
-		fonts: [
-			{
-				name: 'Funnel Display',
-				use: 'Die Wortmarke, Stärke 700, Laufweite -0,03em, klein geschrieben. In Dateien ist die Wortmarke in Pfade umgewandelt. Große Überschriften auf Werbematerial, etwa die erste Überschrift der Website, nutzen sie auch.',
-				licence: 'SIL Open Font License 1.1',
-				source: 'github.com/google/fonts, Ordner ofl/funneldisplay',
-				href: 'https://github.com/google/fonts/tree/main/ofl/funneldisplay'
-			},
-			{
-				name: 'IBM Plex Sans',
-				use: 'Alles andere: Text, Beschriftungen, die Oberfläche der Konsole.',
-				licence: 'SIL Open Font License 1.1',
-				source: 'github.com/IBM/plex',
-				href: 'https://github.com/IBM/plex'
-			},
-			{
-				name: 'IBM Plex Mono',
-				use: 'Nur für das, was man kopiert: Befehle, IDs, Adressen.',
-				licence: 'SIL Open Font License 1.1',
-				source: 'github.com/IBM/plex',
-				href: 'https://github.com/IBM/plex'
-			}
-		],
-		nameTitle: 'Der Name',
-		name: [
-			'Schreib <b>NeoDesk</b>: ein Wort, großes N und großes D. Nicht Neo Desk, nicht Neodesk.',
-			'Der Befehl heißt <code>neodesk</code>, klein geschrieben, so wie man ihn tippt.',
-			'Das kleine <span class="mono">neodesk</span> der Wortmarke gehört nur zum Logo. Im Text schreibst du NeoDesk.'
-		],
-		voiceTitle: 'Ton',
-		voiceLead: 'NeoDesk schreibt schlicht und sagt, was heute stimmt.',
-		voice: [
-			{ rule: 'Einfache Wörter, kurze Sätze, aktiv. Fang mit dem Wichtigsten an.', do: 'NeoDesk ist ein Remote-Desktop-Server, den du selbst betreibst.', dont: 'Erlebe Fernzugriff auf einem neuen Level.' },
-			{ rule: 'Fakten statt Werbung. Keine Ausrufezeichen.', do: 'Ein Go-Binary erledigt die Arbeit von hbbs und hbbr.', dont: 'Der schnellste und stärkste Server aller Zeiten!' },
-			{ rule: 'Satzanfang groß, sonst wie im Satz: Überschriften, Schaltflächen, Beschriftungen.', do: 'Computer hinzufügen', dont: 'Computer Hinzufügen' },
-			{ rule: 'Schreib einen Satz, statt Eigenschaften mit Punkten aneinanderzureihen.', do: 'NeoDesk läuft auf deinem Server, funktioniert mit RustDesk-Clients und ist Open Source unter der AGPL-3.0.', dont: 'Ein Slogan aus drei Eigenschaften mit Mittelpunkten dazwischen.' }
-		],
-		rustdeskTitle: 'NeoDesk und RustDesk',
-		rustdesk: [
-			'RustDesk stammt von der Purslane Tech Pte. Ltd. NeoDesk ist weder mit RustDesk noch mit Purslane Tech verbunden und wird von ihnen nicht unterstützt. NeoDesk ist ein unabhängiges Projekt, das das RustDesk-Protokoll für die Kompatibilität mit den Clients umsetzt, und nennt RustDesk nur beschreibend.',
-			'Nenne RustDesk nur, um zu sagen, womit NeoDesk funktioniert: dem RustDesk-Client, dem RustDesk-Protokoll.'
-		],
-		rustdeskDo: 'NeoDesk funktioniert mit RustDesk-Clients. Es ist ein RustDesk-kompatibler Server.',
-		rustdeskDont: 'NeoDesk, der offizielle RustDesk-Server.',
-		doLabel: 'So',
-		dontLabel: 'Nicht so',
-		download: 'Herunterladen'
+		guideTitle: 'Der Rest des Leitfadens',
+		guide: {
+			colours: 'Die Logofarben und wofür jede steht, die Farben für Text und die Palette der Konsole in dunkel und hell.',
+			fonts: 'Funnel Display für die Wortmarke und große Überschriften, IBM Plex Sans für alles andere, IBM Plex Mono für das, was man kopiert. Mit Proben von jeder.',
+			elements: 'Wie Schaltflächen, Felder, Tabellen, Statuswörter, Hinweise und Dialoge der Konsole aussehen, in beiden Themes gezeichnet, mit den Abständen und Größen dahinter.',
+			graphics: 'Die Formen des Zeichens als große Grafiken, Screenshots, Linkvorschauen und was NeoDesk nie verwendet.',
+			voice: 'Wie NeoDesk schreibt: einfache Wörter, Fakten, die heute stimmen, Wörter, die rausfliegen, Text in der Oberfläche, und wie man den Namen schreibt und RustDesk nennt.'
+		}
 	}
 };
 
 const F = '/brand/files';
-const swatch = (hex: string) => `<span class="swatch" style="background:${hex}"></span><code>${hex}</code>`;
 
-/** The brand page's main content in one language. */
-export function brandMain(code: string, zipBytes: number) {
-	const b = BRAND[code] ?? BRAND.en;
+function logoMain(code: string, prefix: string, zipBytes: number) {
+	const b = LOGO[code] ?? LOGO.en;
+	const g = GUIDE[code] ?? GUIDE.en;
 	const pngs = (stem: string, sizes: string[]) => sizes.map((s) => `<a href="${F}/png/${stem}-${s}.png" download>PNG ${s.replace('h', ' px high').replace(/^(\d+)$/, '$1 px')}</a>`).join(', ');
 	const tile = (theme: 'dark' | 'light', img: string, w: number, h: number, alt: string, links: string) => `
         <figure class="brand-tile">
           <div class="brand-bg brand-${theme}"><img src="${img}" width="${w}" height="${h}" alt="${esc(alt)}"></div>
           <figcaption><b>${theme === 'dark' ? b.onDark : b.onLight}</b> ${links}</figcaption>
         </figure>`;
-	const dont = (key: keyof BrandStrings['dont'], cls: string) => `
+	const dont = (key: keyof LogoStrings['dont']) => `
         <figure class="brand-dont">
-          <div class="brand-bg brand-light"><img class="dont-${cls}" src="${F}/svg/logo-on-light.svg" width="236" height="56" alt=""></div>
-          <figcaption><b>${b.dontLabel}:</b> ${b.dont[key]}</figcaption>
+          <div class="brand-bg brand-light"><img class="dont-${key}" src="${F}/svg/logo-on-light.svg" width="236" height="56" alt=""></div>
+          <figcaption><b>${g.dontLabel}:</b> ${b.dont[key]}</figcaption>
         </figure>`;
-	return `    <h1 class="display">${b.title}</h1>
+	// The ids of the sections that moved to their own pages stay, on the entries that link there
+	const oldIds: Partial<Record<BrandSlug, string>> = { colours: 'colours', fonts: 'fonts', voice: 'voice' };
+	return `${brandNav(code, prefix, '')}
+    <h1 class="display">${b.title}</h1>
     <p class="lead">${b.lead}</p>
 
     <h2 id="logo-files">${b.logoTitle}</h2>
@@ -306,50 +173,35 @@ export function brandMain(code: string, zipBytes: number) {
 
     <h2 id="what-not-to-do">${b.dontTitle}</h2>
     <p>${b.dontLead}</p>
-    <div class="brand-grid brand-donts">${dont('recolour', 'recolour')}${dont('stretch', 'stretch')}${dont('rotate', 'rotate')}${dont('shadow', 'shadow')}${dont('outline', 'outline')}${dont('gradient', 'gradient')}${dont('pill', 'pill')}${dont('small', 'small')}
+    <div class="brand-grid brand-donts">${dont('recolour')}${dont('stretch')}${dont('rotate')}${dont('shadow')}${dont('outline')}${dont('gradient')}${dont('pill')}${dont('small')}
     </div>
 
-    <h2 id="colours">${b.colourTitle}</h2>
-    <p>${b.colourLead}</p>
-    <div class="table-wrap" tabindex="0"><table>
-      <thead><tr>${b.colourHead.map((h) => `<th>${h}</th>`).join('')}</tr></thead>
-      <tbody>
-${b.colours.map(([part, dark, light, means]) => `        <tr><td>${part}</td><td>${swatch(dark)}</td><td>${swatch(light)}</td><td>${means}</td></tr>`).join('\n')}
-      </tbody>
-    </table></div>
-    <p>${b.oneColour}</p>
-    <p>${b.textColourLead}</p>
-    <div class="table-wrap" tabindex="0"><table>
-      <thead><tr>${b.colourHead.map((h) => `<th>${h}</th>`).join('')}</tr></thead>
-      <tbody>
-${b.textColours.map(([part, dark, light, means]) => `        <tr><td>${part}</td><td>${swatch(dark)}</td><td>${swatch(light)}</td><td>${means}</td></tr>`).join('\n')}
-      </tbody>
-    </table></div>
-    <p>${b.surfaceLead}</p>
-    <div class="table-wrap" tabindex="0"><table>
-      <thead><tr><th>${b.colourHead[0]}</th><th>${b.colourHead[1]}</th><th>${b.colourHead[2]}</th></tr></thead>
-      <tbody>
-${b.surfaces.map(([part, dark, light]) => `        <tr><td>${part}</td><td>${swatch(dark)}</td><td>${swatch(light)}</td></tr>`).join('\n')}
-      </tbody>
-    </table></div>
-
-    <h2 id="fonts">${b.fontTitle}</h2>
+    <h2 id="the-rest-of-the-guide">${b.guideTitle}</h2>
     <ul class="rows">
-${b.fonts.map((f) => `      <li><b>${f.name}</b><p>${f.use}</p><p>${f.licence}, <a href="${f.href}" rel="noopener">${f.source}</a></p></li>`).join('\n')}
-    </ul>
-
-    <h2 id="the-name">${b.nameTitle}</h2>
-${b.name.map((p) => `    <p>${p}</p>`).join('\n')}
-
-    <h2 id="voice">${b.voiceTitle}</h2>
-    <p>${b.voiceLead}</p>
-    <ul class="rows brand-voice">
-${b.voice.map((v) => `      <li><b>${v.rule}</b><p><span class="ok">${b.doLabel}:</span> ${esc(v.do)}</p><p><span class="no">${b.dontLabel}:</span> ${esc(v.dont)}</p></li>`).join('\n')}
-    </ul>
-
-    <h2 id="neodesk-and-rustdesk">${b.rustdeskTitle}</h2>
-${b.rustdesk.map((p) => `    <p>${esc(p)}</p>`).join('\n')}
-    <ul class="rows brand-voice">
-      <li><p><span class="ok">${b.doLabel}:</span> ${esc(b.rustdeskDo)}</p><p><span class="no">${b.dontLabel}:</span> ${esc(b.rustdeskDont)}</p></li>
+${BRAND_SLUGS.filter((s): s is Exclude<BrandSlug, ''> => s !== '')
+	.map((s) => `      <li${oldIds[s] ? ` id="${oldIds[s]}"` : ''}><a href="${prefix}${brandPath(s)}">${esc(g.pages[s])}</a><p>${b.guide[s]}</p></li>`)
+	.join('\n')}
     </ul>`;
+}
+
+/** Whether the guide has its text in a language. */
+export const hasBrand = (code: string) => code in LOGO;
+
+/** Every page of the guide in one language; prefix is the language's, such as /de. */
+export function brandPages(code: string, prefix: string, zipBytes: number): BrandPage[] {
+	const b = LOGO[code] ?? LOGO.en;
+	const shared = ['src/brand-shared.ts', 'src/brand.css'];
+	return [
+		{ slug: '', path: brandPath(''), title: b.title, pageTitle: b.pageTitle, description: b.description, main: logoMain(code, prefix, zipBytes), sources: [...shared, 'src/brand.ts', 'public/brand/files'] },
+		{ ...coloursPage(code, prefix), sources: [...shared, 'src/brand-colours.ts'] },
+		{ ...fontsPage(code, prefix), sources: [...shared, 'src/brand-fonts.ts'] },
+		{ ...elementsPage(code, prefix), sources: [...shared, 'src/brand-elements.ts'] },
+		{ ...graphicsPage(code, prefix), sources: [...shared, 'src/brand-graphics.ts'] },
+		{ ...voicePage(code, prefix), sources: [...shared, 'src/brand-voice.ts'] }
+	];
+}
+
+/** What is wrong with the guide's text or colours, for the build to stop on. */
+export function brandProblems() {
+	return [...colourProblems(), ...voiceProblems()];
 }

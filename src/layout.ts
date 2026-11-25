@@ -487,8 +487,8 @@ export function notFoundPage(shared: Shared, path = '/404.html') {
 }
 
 /** The brand page: logo files, colours, fonts, the name and the voice (src/brand.ts). */
-export function brandPage(shared: Shared & { main: string; title: string; fullTitle: string; description: string }) {
-	return frame({ ...shared, path: '/brand/', current: '', plain: true, display: true });
+export function brandPage(shared: Shared & { path: string; main: string; title: string; fullTitle: string; description: string }) {
+	return frame({ ...shared, current: '', plain: true, display: true });
 }
 
 /** One of the site's small pages, such as Support or the imprint (src/pages.ts). */

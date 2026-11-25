@@ -14,7 +14,7 @@ import config from './site.config.ts';
 import { docsIndexPage, allPagesPage, brandPage, downloadPage, sitePage, docPage, sectionPage, notFoundPage, contactSheetPage, hreflangLinks, socialTags, esc } from './src/layout.ts';
 import { siteHeader, siteFooter } from './src/chrome.ts';
 import { makeUrls } from './src/urls.ts';
-import { BRAND, brandMain } from './src/brand.ts';
+import { brandPages, hasBrand, brandProblems, BRAND_SLUGS, brandPath } from './src/brand.ts';
 import { DOWNLOAD, downloadMain, clientSoftware, repoCommands } from './src/download.ts';
 import { SITE_PAGES, hasSitePages, sitePages, sitePageTitles } from './src/pages.ts';
 import type { SitePageSlug } from './src/pages.ts';
@@ -56,6 +56,8 @@ const DOCS_URL = (process.env.DOCS_URL || (PRODUCTION ? config.docsUrl : `${SITE
 const urls = makeUrls(SITE_URL, DOCS_URL);
 const url = urls.url;
 const problems: string[] = [];
+// The brand guide's colours reach the contrast its pages promise, and its good examples follow its rules
+problems.push(...brandProblems());
 
 /* ---------- small helpers ---------- */
 
@@ -675,7 +677,7 @@ async function build() {
 		offer('/', site.locale);
 		offer('/docs/', site.locale);
 		offer('/docs/all/', site.locale);
-		if (BRAND[site.locale.code]) offer('/brand/', site.locale);
+		if (hasBrand(site.locale.code)) for (const slug of BRAND_SLUGS) offer(brandPath(slug), site.locale);
 		if (DOWNLOAD[site.locale.code]) offer('/download/', site.locale);
 		if (hasSitePages(site.locale.code)) for (const slug of SITE_PAGES) offer(`/${slug}/`, site.locale);
 		for (const s of site.sections) offer(`/docs/${s.slug}/`, site.locale);
@@ -753,7 +755,7 @@ async function build() {
 				}
 				const target = p.replace(/\/$/, '');
 				// Pages of the www host that are not docs, such as the brand page
-				if (new RegExp(`^(/[a-z]{2})?/(brand|download|${SITE_PAGES.join('|')})$`).test(target)) continue;
+				if (new RegExp(`^(/[a-z]{2})?/(brand(/[a-z-]+)?|download|${SITE_PAGES.join('|')})$`).test(target)) continue;
 				if (target === '' || target === '/docs' || main.sections.some((s) => `/docs/${s.slug}` === target)) continue;
 				if (p.endsWith('.md')) problems.push(`${page.rel}: link "${href}" should not end in .md`);
 				const to = own.get(target) ?? known.get(target);
@@ -792,7 +794,7 @@ async function build() {
 		preview(`${locale.prefix}/`, h.title, { template: 'landing', title: h.heroTitle.replace(/<[^>]+>/g, '') });
 		preview(`${locale.prefix}/docs/`, fill(t.docsTitle, { name: config.name }), { template: 'landing', title: t.documentation });
 		preview(`${locale.prefix}/docs/all/`, t.allPages, { template: 'landing', title: t.allPages });
-		if (BRAND[locale.code]) preview(`${locale.prefix}/brand/`, BRAND[locale.code].title, { template: 'landing', title: BRAND[locale.code].title });
+		if (hasBrand(locale.code)) for (const b of brandPages(locale.code, locale.prefix, 0)) preview(`${locale.prefix}${b.path}`, b.title, { template: 'landing', title: b.title });
 		if (DOWNLOAD[locale.code]) preview(`${locale.prefix}/download/`, DOWNLOAD[locale.code].title, { template: 'landing', title: DOWNLOAD[locale.code].title });
 		if (hasSitePages(locale.code)) for (const x of sitePages(locale.code, pageContext(locale))) preview(`${locale.prefix}/${x.slug}/`, x.previewTitle, { template: 'landing', title: x.previewTitle });
 		for (const s of site.sections) preview(`${locale.prefix}/docs/${s.slug}/`, s.label, { template: 'landing', title: s.label });
@@ -858,10 +860,9 @@ async function build() {
 			);
 		}
 		write(out('docs/index.html'), docsIndexPage(shared));
-		// The brand page, with the logo files of public/brand/files and their zip
-		const brand = BRAND[locale.code];
-		if (!brand) problems.push(`src/brand.ts: no brand page text for ${locale.label}`);
-		else write(out('brand/index.html'), brandPage({ ...shared, title: brand.title, fullTitle: brand.pageTitle, description: brand.description, main: brandMain(locale.code, brandZip.length) }));
+		// The brand guide: /brand/ with the logo files of public/brand/files and their zip, and its pages
+		if (!hasBrand(locale.code)) problems.push(`src/brand.ts: no brand guide text for ${locale.label}`);
+		else for (const b of brandPages(locale.code, locale.prefix, brandZip.length)) write(out(`${b.path.slice(1)}index.html`), brandPage({ ...shared, path: b.path, title: b.title, fullTitle: b.pageTitle, description: b.description, main: b.main }));
 		// The download page, with the client's release that clientOffer read
 		const dl = DOWNLOAD[locale.code];
 		if (!dl) problems.push(`src/download.ts: no download page text for ${locale.label}`);
@@ -1104,7 +1105,7 @@ async function build() {
 			[`${site.locale.prefix}/`, homeUpdated],
 			[`${site.locale.prefix}/docs/`, newest(site.pages.map((p) => p.updated))],
 			[`${site.locale.prefix}/docs/all/`, newest(site.pages.map((p) => p.updated))],
-			[`${site.locale.prefix}/brand/`, newest([updatedOf(at('src/brand.ts')), updatedOf(at('public/brand/files'))])],
+			...brandPages(site.locale.code, site.locale.prefix, 0).map((b): [string, string] => [`${site.locale.prefix}${b.path}`, newest(b.sources.map((f) => updatedOf(at(f))))]),
 			[`${site.locale.prefix}/download/`, newest([updatedOf(at('src/download.ts')), ...(client.main ? [client.main.published] : [])])],
 			...SITE_PAGES.map((slug): [string, string] => [`${site.locale.prefix}/${slug}/`, slug === 'releases' ? newest([updatedOf(at('src/pages.ts')), ...(client.main ? [client.main.published] : [])]) : updatedOf(at('src/pages.ts'))]),
 			...site.sections.map((s): [string, string] => [`${site.locale.prefix}/docs/${s.slug}/`, newest(s.items.map((p) => p.updated))]),
