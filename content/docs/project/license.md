@@ -26,7 +26,7 @@ Third-party contributions that were merged earlier under other terms have been w
 
 NeoDesk is free. There is no paid version, and every feature is in the release everyone gets.
 
-Help with questions and bugs is free in the [issues on GitHub](https://github.com/neodeskapp/neodesk/issues). Paid support and help with a setup are available on request: write to [support@neode.sk](mailto:support@neode.sk).
+Help with questions and bugs is free on the [NeoDesk Discord](https://discord.gg/nwERSawufr) and in the [discussions on GitHub](https://github.com/neodeskapp/neodesk/discussions). Paid support and help with a setup are available on request: write to [support@neode.sk](mailto:support@neode.sk).
 
 ## Trademark
 

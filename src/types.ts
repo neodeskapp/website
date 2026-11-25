@@ -14,6 +14,7 @@ export interface SiteConfig {
 	name: string;
 	url: string;
 	repo: string;
+	discord: string;
 	license: string;
 	downloadUrl: string;
 	versionUrl: string;

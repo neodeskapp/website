@@ -151,6 +151,7 @@ ${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd).replace(
   <a class="top-docs" href="${docsHome}">${esc(t.docs)}</a>
   ${searchButton(t)}
 ${noindex || !languageSwitch(o, o.path) ? '' : `  ${languageSwitch(o, o.path)}\n`}  <nav class="top-links" aria-label="${esc(t.site)}">
+    <a href="${esc(config.discord)}" rel="noopener">Discord</a>
     <a href="${esc(config.repo)}" rel="noopener">GitHub</a>
   </nav>
 </header>
@@ -172,6 +173,7 @@ ${main}
     <a href="/llms.txt">llms.txt</a>
     <a href="${esc(config.repo)}/blob/main/CHANGELOG.md" rel="noopener">${esc(t.changelog)}</a>
     <a href="${esc(config.repo)}/blob/main/SECURITY.md" rel="noopener">${esc(t.security)}</a>
+    <a href="${esc(config.discord)}" rel="noopener">Discord</a>
     <a href="${esc(config.repo)}" rel="noopener">GitHub</a>
   </nav>
 </footer>

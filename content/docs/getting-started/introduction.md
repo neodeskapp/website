@@ -113,3 +113,7 @@ there, such as a public IP address or a domain name.
 
 Before you open the console to the internet, put it behind a reverse proxy with
 TLS: see [Reverse proxy and TLS](/docs/operations/reverse-proxy-tls).
+
+## Getting help
+
+Ask questions and get help on the [NeoDesk Discord](https://discord.gg/nwERSawufr) or in the [discussions on GitHub](https://github.com/neodeskapp/neodesk/discussions). Report a security problem as [SECURITY.md](https://github.com/neodeskapp/neodesk/blob/main/SECURITY.md) describes, not in public.

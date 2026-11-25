@@ -6,6 +6,8 @@ const config: SiteConfig = {
 	// Where the site is served. SITE_URL overrides it for another host, such as the beta.
 	url: 'https://neode.sk',
 	repo: 'https://github.com/neodeskapp/neodesk',
+	// The community server: questions, help, announcements
+	discord: 'https://discord.gg/nwERSawufr',
 	// For the home page's structured data: the license text and where releases are
 	license: 'https://www.gnu.org/licenses/agpl-3.0.html',
 	downloadUrl: 'https://github.com/neodeskapp/neodesk/releases',

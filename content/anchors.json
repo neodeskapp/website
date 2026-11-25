@@ -1048,7 +1048,8 @@
 		"what-it-is-made-of",
 		"neodesk-and-rustdesk",
 		"what-you-need",
-		"where-to-go-next"
+		"where-to-go-next",
+		"getting-help"
 	],
 	"getting-started/linux": [
 		"requirements",
