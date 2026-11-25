@@ -110,8 +110,8 @@ und starte den Container neu. Führe diese Befehle in dem Ordner aus, in dem
 die alten Schlüsseldateien liegen:
 
 ```bash
-docker exec -i -u neodesk neodesk sh -c 'umask 077; cat > /opt/rustdesk/id_ed25519' < id_ed25519
-docker exec -i -u neodesk neodesk sh -c 'cat > /opt/rustdesk/id_ed25519.pub' < id_ed25519.pub
+docker exec -i -u neodesk neodesk sh -c 'umask 077; cat > /opt/neodesk/data/id_ed25519' < id_ed25519
+docker exec -i -u neodesk neodesk sh -c 'cat > /opt/neodesk/data/id_ed25519.pub' < id_ed25519.pub
 docker restart neodesk
 ```
 
@@ -120,7 +120,7 @@ Schreibe beide Dateien vor dem Neustart: Der Server startet nicht, wenn
 den alten öffentlichen Schlüssel hat:
 
 ```bash
-docker exec -u neodesk neodesk cat /opt/rustdesk/id_ed25519.pub
+docker exec -u neodesk neodesk cat /opt/neodesk/data/id_ed25519.pub
 ```
 
 ## Die Clients wieder hereinlassen {#let-the-clients-back-in}
@@ -156,13 +156,13 @@ Genehmigung neu und erscheint unter **Geräte**, bevor es sich verbindet.
 1. Starte den Installer. Unter Linux:
 
    ```bash
-   sudo ./neodesk.sh
+   sudo neodesk-setup
    ```
 
    Unter Windows:
 
    ```powershell
-   .\neodesk.ps1
+   & 'C:\NeoDesk\neodesk.ps1'
    ```
 
    Wähle **Database migration**, dann **Rust -> Go**.

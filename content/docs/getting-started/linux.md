@@ -7,8 +7,10 @@ order: 3
 The `neodesk.sh` script installs NeoDesk on a Linux server as one systemd
 service, `neodesk-server`. It downloads the newest release of
 `neodesk-server` from GitHub and checks it before it installs it. It also stays
-on the machine as the command `neodesk`, which you use later to update, repair,
-back up and uninstall. This page covers the first install.
+on the machine as the command `neodesk-setup`, which you use later to update,
+repair, back up and uninstall, and puts the command line
+[`neodesk`](/docs/command-line/neodesk) in `/usr/local/bin`. This page covers the
+first install.
 
 ## Requirements
 
@@ -28,7 +30,7 @@ back up and uninstall. This page covers the first install.
 ## Install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/neodesk.sh | sudo bash
+curl -fsSL https://neode.sk/neodesk.sh | sudo bash
 ```
 
 Piped into `bash` like this, the script has no terminal to ask questions on, so
@@ -38,7 +40,7 @@ address for the relay and P2P first.
 To answer the questions, download the script and run it:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/neodesk.sh -o neodesk.sh
+curl -fsSL https://neode.sk/neodesk.sh -o neodesk.sh
 sudo bash neodesk.sh
 ```
 
@@ -54,7 +56,7 @@ either and you gave no channel, it installs the development build, and later
 updates follow the development channel until you switch to stable:
 
 ```bash
-sudo neodesk --update --channel stable
+sudo neodesk-setup --update --channel stable
 ```
 
 Before it installs a download, the script checks its SHA-256 against the
@@ -103,14 +105,17 @@ signature itself.
 - Opens these ports in ufw or firewalld when one of them is active, or adds
   iptables rules when neither is installed: 21115, 21116 for TCP and UDP,
   21117, 21121, 21122 for CDAP device agents unless the env file sets
-  `CDAP_ENABLED=N`, and the console's 5000 and 5443. A ufw or firewalld that
+  `CDAP_ENABLED=N`, and the console's 3375 and 5443. A ufw or firewalld that
   is installed but switched off stays as it is, and the installer adds no rules
   at all then. When you then choose a reverse proxy
   on the same server at the TLS question, it closes the console's ports again.
   A proxy on another machine needs them: limit their rules to the proxy's
   address yourself. Firewalls outside the server, such as a cloud provider's,
   are up to you; the script prints the list.
-- Saves itself as `/usr/local/sbin/neodesk`.
+- Saves itself as `/usr/local/sbin/neodesk-setup`, and a copy of the server
+  binary as `/usr/local/bin/neodesk`, the command line, which every user on the
+  server can run. It needs an API token to do anything; see
+  [The neodesk command line](/docs/command-line/neodesk).
 
 ## Install without questions
 
@@ -135,7 +140,7 @@ what it does:
 The flags also work with the one-line install, after `bash -s --`:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/neodesk.sh | sudo bash -s -- --relay-mode local
+curl -fsSL https://neode.sk/neodesk.sh | sudo bash -s -- --relay-mode local
 ```
 
 The script also reads environment variables, such as `ADMIN_PASSWORD` for your
@@ -163,7 +168,7 @@ removes it from the env file when the server has started. If you lose it, this
 sets the password from `ADMIN_PASSWORD`, or a random one, and shows it once:
 
 ```bash
-sudo neodesk --reset-password
+sudo neodesk-setup --reset-password
 ```
 
 In the menu, **Reset admin password** also lets you type one, with at least 8
@@ -176,7 +181,7 @@ At the end the script prints what you need next:
 ```text
 NeoDesk is installed
 
-  Web console:   https://203.0.113.10:5443  (http://203.0.113.10:5000 leads there)
+  Web console:   https://203.0.113.10:5443  (http://203.0.113.10:3375 leads there)
                  The certificate is self-signed, so the browser warns once.
   First sign-in: user admin, with the password shown above (it is not shown again)
   RustDesk clients (Settings > Network > ID/Relay server):
@@ -186,8 +191,10 @@ NeoDesk is installed
     Key:           <the server's public key>
   Log:           sudo journalctl -u neodesk-server -f
   Settings:      /opt/NeoDeskConsole/.env (then: sudo systemctl restart neodesk-server)
-  Update:        sudo neodesk --update
-  Uninstall:     sudo neodesk --uninstall
+  Update:        sudo neodesk-setup --update
+  Uninstall:     sudo neodesk-setup --uninstall
+  Command line:  sudo neodesk --help
+  Help:          https://discord.gg/nwERSawufr
 ```
 
 The **Web console** line is the console's address. Your browser warns about the
@@ -200,11 +207,12 @@ Continue with [First sign-in](/docs/getting-started/first-sign-in).
 
 | Path | What it holds |
 |------|---------------|
-| `/opt/neodesk` | The binary `neodesk-server`, the database `db_v2.sqlite3`, the key pair `id_ed25519` and `id_ed25519.pub`, the API key `.api_key`, and `ssl/` |
+| `/opt/neodesk` | The binary `neodesk-server`, the database `db_v2.sqlite3`, the key pair `id_ed25519` and `id_ed25519.pub`, the API key `.api_key`, the key file of saved sign-in `.device_vault_key`, and `ssl/` |
 | `/opt/NeoDeskConsole` | The settings file `.env` and the console's `data/` folder |
 | `/etc/systemd/system/neodesk-server.service` | The service. It runs as the user `neodesk` and reads `/opt/NeoDeskConsole/.env`. |
-| `/opt/rustdesk-backups` | Backups the script makes, for example before an update |
-| `/usr/local/sbin/neodesk` | The script, as the command for later |
+| `/opt/neodesk-backups` | Backups the script makes, for example before an update. Up to 3.6.0-rc.4 they went to `/opt/rustdesk-backups`; the first run of the new script moves them here. |
+| `/usr/local/sbin/neodesk-setup` | The script, as the command for later. Up to 3.6.0-rc.4 it was `/usr/local/sbin/neodesk`. |
+| `/usr/local/bin/neodesk` | The command line, a copy of the server binary that every user can run |
 
 ```bash
 sudo systemctl status neodesk-server
@@ -217,19 +225,24 @@ waits under **Enrollment requests** until someone approves it. The env file sets
 this only as the first mode; a mode you pick in the console stays. See
 [Enrollment](/docs/console/enrollment).
 
-## Later: the neodesk command
+## Later: neodesk-setup {#later-the-neodesk-command}
 
-`sudo neodesk` opens the same menu as the script. Without the menu:
+`sudo neodesk-setup` opens the same menu as the script. Without the menu:
 
 ```bash
-sudo neodesk --update
-sudo neodesk --reset-password
-sudo neodesk --uninstall
+sudo neodesk-setup --update
+sudo neodesk-setup --reset-password
+sudo neodesk-setup --uninstall
 ```
+
+`neodesk` is the [command line](/docs/command-line/neodesk). It hands the
+script's options to `neodesk-setup`, so `sudo neodesk --update` works too, and a
+bare `sudo neodesk` on a terminal opens the menu.
 
 `--uninstall` makes a backup, then removes the service and keeps the data. It
 lists what is left on the machine. `--uninstall --purge` also deletes
-`/opt/neodesk`, `/opt/NeoDeskConsole` and the command.
+`/opt/neodesk`, `/opt/NeoDeskConsole` and the commands `neodesk-setup` and
+`neodesk`.
 
 ## Build from the repository
 
@@ -238,7 +251,7 @@ To run your own changes, build the server from a checkout:
 ```bash
 git clone https://github.com/neodeskapp/neodesk.git
 cd neodesk
-sudo ./neodesk.sh --from-source
+sudo ./install/neodesk.sh --from-source
 ```
 
 Choose **Fresh installation** in the menu, or add `--auto`. `--from-source` builds

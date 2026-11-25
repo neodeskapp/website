@@ -272,12 +272,12 @@ A link can start a client app on the computer it is clicked on:
   has them, and gives them back when it is removed. On Linux and macOS it never
   takes them.
 
-The console's links that open a device in an app use `rustdesk://`:
-**Connect via desktop client** in the device list, **Open in RustDesk app** on
-phones, and **Open in the desktop app** in
-[Quick support](/docs/console/quick-support). They start stock RustDesk. On a
-computer that has only the NeoDesk client, they start it on Windows and nothing
-on Linux and macOS.
+The console opens a device in the NeoDesk client with a `neodesk://` link:
+**Open in NeoDesk** in the device list, the **NeoDesk app** action on the
+device's page, and **NeoDesk** under **Open in the desktop app** in
+[Quick support](/docs/console/quick-support). **Open in RustDesk** and the
+other RustDesk choices next to them use `rustdesk://` for stock RustDesk.
+Phones have no NeoDesk app, so there the console offers the RustDesk app.
 
 These links open the session on your side. Quick support needs NeoDesk only on
 the computer you help, where the person runs NeoDesk Quick Support; you
@@ -330,8 +330,8 @@ Go through these in order:
 - **Key.** Paste the key again with **Copy**. If the server's key pair was
   deleted, the server made a new one and every client needs the new key.
 - **API server.** Empty, or starting with `http://` or `https://` and ending
-  with the port that **Overview** shows, 21121. The console's own port, 5000,
-  is the wrong one.
+  with the port that **Overview** shows, 21121. The console's own port, 3375
+  (5000 on older installs), is the wrong one.
 - **One public address.** When several computers in one office reach the
   server through the same public address, a session started from one of them
   can fail with "ID does not exist". See

@@ -17,20 +17,20 @@ names the files and settings NeoDesk needs, not every click. Read
   ```bash
   sudo docker compose version
   ```
-- A free port for the console: DSM's own web interface listens on port 5000 by
-  default, the same port the NeoDesk console uses. Give the console another
-  host port with `NEODESK_CONSOLE_PORT` in `.env`.
+- Free ports for the console, 3375 and 5443. DSM's own web interface listens on
+  5000 and 5001, so they don't collide. If another package on the NAS has 3375,
+  give the console another host port with `NEODESK_CONSOLE_PORT` in `.env`.
 
 ## Set it up
 
 1. Create a folder for NeoDesk on the NAS, for example
    `/volume1/docker/neodesk`.
-2. Put the compose file in it as `docker-compose.yml`:
-   [docker-compose.quick.single.yml](https://raw.githubusercontent.com/neodeskapp/neodesk/main/docker-compose.quick.single.yml).
+2. Put the compose file in it as `docker-compose.yml`. Download it from
+   `https://neode.sk/install/docker-compose.quick.single.yml`, which leads to
+   the copy of the newest release.
 3. Put a file called `.env` next to it:
 
    ```ini
-   NEODESK_CONSOLE_PORT=5080
    RELAY_SERVERS=<nas-address>
    ```
 
@@ -45,7 +45,7 @@ names the files and settings NeoDesk needs, not every click. Read
    sudo docker compose up -d
    ```
 
-The console is then at `http://<nas-address>:5080`. Print the admin password over SSH:
+The console is then at `http://<nas-address>:3375`. Print the admin password over SSH:
 
 ```bash
 sudo docker exec neodesk neodesk-show-admin-credentials
@@ -63,7 +63,7 @@ them. `id <user>` over SSH prints them as `uid` and `gid`; put them in place of
 
 ```yaml
     volumes:
-      - /volume1/docker/neodesk/data:/opt/rustdesk
+      - /volume1/docker/neodesk/data:/opt/neodesk/data
       - /volume1/docker/neodesk/console:/app/data
 ```
 
@@ -75,8 +75,8 @@ PGID=<gid>
 The container starts as root, gives its `neodesk` user these numbers, and runs
 the server as that user. Without `PUID` and `PGID` the user is 10001. Neither may
 be 0. Don't add `user:` to the compose file: the container has to start as root to
-do this. When the user can't write `/opt/rustdesk`, the log says
-`/opt/rustdesk is NOT writable by the neodesk user`.
+do this. When the user can't write `/opt/neodesk/data`, the log says
+`/opt/neodesk/data is NOT writable by the neodesk user`.
 
 ## Firewall and router
 
@@ -94,3 +94,9 @@ Pull the image again and recreate the container. Over SSH, in the folder:
 sudo docker compose pull
 sudo docker compose up -d
 ```
+
+A compose file from 3.6.0-rc.4 or older keeps working with the new image. To
+change to the new one, download it again as in [Set it up](#set-it-up), and
+change `/opt/rustdesk` to `/opt/neodesk/data` in a folder line you added. That
+file publishes the console on 3375 instead of 5000; a `NEODESK_CONSOLE_PORT` in
+`.env` keeps the port you set.

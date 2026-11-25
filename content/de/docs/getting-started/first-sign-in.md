@@ -15,9 +15,12 @@ Die Adresse hängt davon ab, wie du NeoDesk installiert hast:
 
 | Installation | Adresse der Konsole |
 |--------------|---------------------|
-| Docker | `http://<server-address>:5000` |
-| Linux-Skript | `https://<server-address>:5443`. `http://<server-address>:5000` leitet dorthin weiter. |
-| Windows-Skript | `https://<server-address>:5443`, in der Zeile **Web console**, die das Skript ausgegeben hat. `http://<server-address>:5000` leitet dorthin weiter. |
+| Docker | `http://<server-address>:3375` |
+| Linux-Skript | `https://<server-address>:5443`. `http://<server-address>:3375` leitet dorthin weiter. |
+| Windows-Skript | `https://<server-address>:5443`, in der Zeile **Web console**, die das Skript ausgegeben hat. `http://<server-address>:3375` leitet dorthin weiter. |
+
+Installationen unter Linux und Windows, die mit 3.6.0-rc.4 oder älter gemacht
+wurden, behalten Port 5000 statt 3375.
 
 Die Skripte für Linux und Windows nutzen für HTTPS ein selbstsigniertes
 Zertifikat, deshalb warnt der Browser beim ersten Mal. Bei einer neuen

@@ -18,7 +18,7 @@ Repository baust, steht am Ende.
   liest ihre Einstellungen aus einer `.env`-Datei, und das können ältere
   Versionen nicht.
 - Zugriff auf `ghcr.io`, wo das Image veröffentlicht ist.
-- Freie Ports auf dem Host: 5000 und 5443 für die Konsole, 21115 bis 21119,
+- Freie Ports auf dem Host: 3375 und 5443 für die Konsole, 21115 bis 21119,
   21121 und 21122 über TCP und 21116 über UDP. Der Container veröffentlicht sie
   alle. [HTTPS mit Let's Encrypt](#https-with-lets-encrypt) braucht zusätzlich
   80 und 443.
@@ -30,18 +30,18 @@ Compose älter als 2.24 ist.
 ## Mit dem Skript installieren {#install-with-the-script}
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/install.sh | sudo bash
+curl -fsSL https://neode.sk/install.sh | sudo bash
 ```
 
 Das speichert `neodesk-docker.sh` in `/opt/neodesk/docker` und führt es dort
-aus. Ist ufw oder firewalld aktiv, öffnet es danach 5000, 5443, 21115 bis
+aus. Ist ufw oder firewalld aktiv, öffnet es danach 3375, 5443, 21115 bis
 21119, 21121 und 21122 über TCP und 21116 über UDP. 21122, den Port des
 CDAP-Gateways, öffnet es, ob das Gateway an oder aus ist. Mit `--domain` öffnet
-es 80 und 443 statt 5000 und 5443. Willst du das Skript
+es 80 und 443 statt 3375 und 5443. Willst du das Skript
 lesen, bevor es läuft, lade es herunter und starte es selbst:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/neodesk-docker.sh -o neodesk-docker.sh
+curl -fsSL https://neode.sk/neodesk-docker.sh -o neodesk-docker.sh
 sudo bash neodesk-docker.sh
 ```
 
@@ -72,7 +72,7 @@ siehe [Aktualisieren](/docs/operations/updating).
 | `--relay <address>` | Gibt den Clients diese Adresse, eine öffentliche IP-Adresse oder einen DNS-Namen, statt sie zu ermitteln. |
 | `--relay-mode local` | Gibt den Clients die LAN-Adresse des Rechners, für einen Server, der nur dein lokales Netzwerk bedient. |
 | `--tag <tag>` | Startet diesen Image-Tag statt `latest`, zum Beispiel eine Versionsnummer. |
-| `--console-port <port>` | Veröffentlicht die Konsole auf diesem Host-Port statt auf 5000. |
+| `--console-port <port>` | Veröffentlicht die Konsole auf diesem Host-Port statt auf 3375. |
 | `--postgres` | Installiert mit PostgreSQL statt SQLite, in einem zweiten Container. |
 | `--dir <path>` | Installiert in diesen Ordner statt nach `/opt/neodesk/docker`. |
 | `--no-install-docker` | Bricht mit einem Fehler ab, wenn Docker fehlt, statt es zu installieren. |
@@ -93,7 +93,7 @@ Mit `install.sh` stehen die Optionen hinter `bash -s --`. Zum Beispiel für
 einen Server, der nur dein lokales Netzwerk bedient:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/install.sh | sudo bash -s -- --relay-mode local
+curl -fsSL https://neode.sk/install.sh | sudo bash -s -- --relay-mode local
 ```
 
 Dort heißen sie `--relay-servers`, `--relay-mode`, `--version`,
@@ -139,7 +139,7 @@ Lege einen Ordner für NeoDesk an und speichere die Compose-Datei darin:
 
 ```bash
 mkdir neodesk && cd neodesk
-curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/docker-compose.quick.single.yml -o docker-compose.yml
+curl -fsSL https://neode.sk/install/docker-compose.quick.single.yml -o docker-compose.yml
 docker compose up -d
 ```
 
@@ -170,7 +170,7 @@ docker compose up -d
 |-------------|---------------|
 | `RELAY_SERVERS` | Die Adresse, unter der Clients diesen Server erreichen. Ist sie leer, ermittelt der Container sie bei jedem Start; siehe [Die Relay-Adresse](#the-relay-address). |
 | `NEODESK_IMAGE_TAG` | Der Image-Tag. `latest`, der Standardwert, ist das neueste Release, oder das neueste Pre-Release, solange es kein stabiles Release gibt; eine Versionsnummer legt eine Version fest. |
-| `NEODESK_CONSOLE_PORT` | Der Host-Port der Konsole, standardmäßig 5000. |
+| `NEODESK_CONSOLE_PORT` | Der Host-Port der Konsole, standardmäßig 3375. Bis 3.6.0-rc.4 war es 5000. |
 | `NEODESK_CONSOLE_HTTPS_PORT` | Der Host-Port für HTTPS der Konsole, standardmäßig 5443. Die Installation prüft, ob er frei ist, auch solange HTTPS ausgeschaltet ist. |
 | `NEODESK_CONSOLE_BIND` | Die Host-Adresse, auf der die Konsole veröffentlicht wird, zum Beispiel `127.0.0.1` hinter einem Reverse Proxy auf demselben Rechner. |
 | `ADMIN_PASSWORD` | Das Passwort des Admins beim ersten Start. |
@@ -198,7 +198,7 @@ Timestamp: <first-start-time>
 Bei einer Installation mit dem Skript führst du den Befehl in
 `/opt/neodesk/docker` aus.
 
-Der Befehl liest `/opt/rustdesk/.admin_credentials` im Daten-Volume. Antwortet
+Der Befehl liest `/opt/neodesk/data/.admin_credentials` im Daten-Volume. Antwortet
 er mit „No readable admin credentials file found“, ist der erste Start noch
 nicht fertig. Warte einen Moment und versuch es noch einmal, oder verfolge den
 Start im Log:
@@ -242,7 +242,7 @@ und das Log warnt bei einem, das kürzer als 12 Zeichen ist.
 
 ## Anmelden {#sign-in}
 
-Öffne `http://<server-address>:5000` im Browser, oder den Port, den du gewählt
+Öffne `http://<server-address>:3375` im Browser, oder den Port, den du gewählt
 hast, und melde dich als `admin` mit dem Passwort von oben an. Die Konsole
 spricht auf diesem Port einfaches HTTP, kein HTTPS.
 
@@ -252,7 +252,7 @@ stattdessen `https://<domain>`.
 Weiter geht es mit [Die erste Anmeldung](/docs/getting-started/first-sign-in).
 
 ::: note
-Port 5000 hat kein TLS. Bevor die Konsole aus dem Internet erreichbar ist, gib
+Port 3375 hat kein TLS. Bevor die Konsole aus dem Internet erreichbar ist, gib
 ihr HTTPS: mit `--domain` wie unten oder mit einem eigenen Reverse Proxy davor
 und `TRUST_PROXY=1`. Siehe
 [Reverse Proxy und TLS](/docs/operations/reverse-proxy-tls).
@@ -260,7 +260,7 @@ und `TRUST_PROXY=1`. Siehe
 
 Die Konsole kann HTTPS auch selbst auf Port 5443 anbieten: Setze
 `HTTPS_ENABLED=true` sowie `SSL_CERT_PATH` und `SSL_KEY_PATH` auf ein
-Zertifikat und einen Schlüssel im Daten-Volume, unter `/opt/rustdesk`.
+Zertifikat und einen Schlüssel im Daten-Volume, unter `/opt/neodesk/data`.
 
 ## HTTPS mit Let's Encrypt {#https-with-lets-encrypt}
 
@@ -281,7 +281,7 @@ Für eine neue Installation setzt du für `<domain>` den DNS-Namen und für
 `<email-address>` deine E-Mail-Adresse ein:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/install.sh | sudo bash -s -- --domain <domain> --letsencrypt-email <email-address>
+curl -fsSL https://neode.sk/install.sh | sudo bash -s -- --domain <domain> --letsencrypt-email <email-address>
 ```
 
 Für eine Installation, die schon läuft, führst du das Skript in
@@ -313,13 +313,13 @@ Das Skript schreibt diese Einstellungen in `.env`:
 | `COMPOSE_PROFILES` | Bekommt `traefik`, das den Traefik-Container startet. |
 | `NEODESK_DOMAIN` | Der DNS-Name. |
 | `LETSENCRYPT_EMAIL` | Die E-Mail-Adresse. |
-| `NEODESK_CONSOLE_BIND` | `127.0.0.1`: Die eigenen Ports der Konsole, 5000 und 5443, antworten nur noch auf dem Host selbst. |
+| `NEODESK_CONSOLE_BIND` | `127.0.0.1`: Die eigenen Ports der Konsole, 3375 und 5443, antworten nur noch auf dem Host selbst. |
 | `TRUST_PROXY` | `1`: Die Konsole nimmt die Adresse jedes Besuchers von Traefik. |
 | `PANEL_PUBLIC_URL` | `https://<domain>`, für die Links in E-Mails, außer du hast dort selbst eine andere Adresse gesetzt. |
 | `LETSENCRYPT_CA_SERVER` | Nur mit `--letsencrypt-staging`: der Staging-Server von Let's Encrypt. |
 
 Traefik belegt die Ports 80 und 443, eine Firewall vor dem Rechner braucht
-also diese beiden statt 5000 und 5443. Traefik spricht TLS 1.2 oder neuer und
+also diese beiden statt 3375 und 5443. Traefik spricht TLS 1.2 oder neuer und
 sagt Browsern per HSTS, für diesen Namen ein Jahr lang nur HTTPS zu nutzen. Das
 Zertifikat liegt im Volume `neodesk-traefik-letsencrypt`.
 
@@ -366,7 +366,7 @@ Das entfernt den Traefik-Container und nimmt `traefik` aus
 `COMPOSE_PROFILES`. Es löscht `NEODESK_DOMAIN`, `LETSENCRYPT_CA_SERVER` und
 `TRUST_PROXY` aus `.env`, dazu `NEODESK_CONSOLE_BIND` und `PANEL_PUBLIC_URL`,
 solange sie noch die Werte haben, die es gesetzt hat. Die Konsole ist dann
-wieder für jede Adresse auf Port 5000 veröffentlicht. `TRUST_PROXY` löscht es
+wieder für jede Adresse auf Port 3375 veröffentlicht. `TRUST_PROXY` löscht es
 auch, wenn du den Wert selbst gesetzt hast: Setz ihn wieder, wenn ein eigener
 Proxy davor steht. Das Volume mit dem Zertifikat bleibt.
 
@@ -408,13 +408,17 @@ docker compose up -d
 
 | Volume | Eingehängt unter | Inhalt |
 |--------|------------------|--------|
-| `neodesk-data` | `/opt/rustdesk` | Die Datenbank `db_v2.sqlite3`, das Schlüsselpaar `id_ed25519` und `id_ed25519.pub`, der API-Schlüssel `.api_key`, `.admin_credentials` und der Schlüssel für gespeicherte Passwörter von Remote-Zielen, `.remote_target_vault_key` |
+| `neodesk-data` | `/opt/neodesk/data` | Die Datenbank `db_v2.sqlite3`, das Schlüsselpaar `id_ed25519` und `id_ed25519.pub`, der API-Schlüssel `.api_key`, `.admin_credentials` und der Schlüssel für gespeicherte Passwörter von Remote-Zielen, `.remote_target_vault_key` |
 | `neodesk-console-data` | `/app/data` | Die eigenen Dateien der Konsole, etwa hochgeladene Bilder, Schriften, Builds des Support-Agenten und die in der Konsole gespeicherten öffentlichen Client-Endpunkte |
 | `neodesk-postgres-data` | `/var/lib/postgresql/data` | Nur mit PostgreSQL |
 | `neodesk-traefik-letsencrypt` | `/letsencrypt` im Traefik-Container | Nur mit [HTTPS mit Let's Encrypt](#https-with-lets-encrypt): das Zertifikat und das Konto bei Let's Encrypt |
 
 Die Compose-Datei benennt die Volumes selbst, deshalb sind die Namen gleich,
-egal wie der Ordner heißt. `docker volume ls` listet sie.
+egal wie der Ordner heißt. `docker volume ls` listet sie. Eine Installation
+von 3.6.0-rc.4 oder älter hat `neodesk-data` unter `/opt/rustdesk` eingehängt,
+und das Update des Skripts hängt es nach `/opt/neodesk/data` um. Eine eigene
+Compose-Datei, die es noch unter `/opt/rustdesk` einhängt, funktioniert weiter,
+und das Log sagt, dass du sie ändern sollst.
 
 ::: warning
 Clients vertrauen dem Schlüsselpaar des Servers in `neodesk-data`. Löschst du
@@ -478,12 +482,12 @@ Details.
 
 Willst du eigene Änderungen betreiben, baue das Image stattdessen aus einem
 Checkout. Das Repository hat dafür eine zweite Compose-Datei,
-`docker-compose.single.yml`:
+`install/docker-compose.single.yml`:
 
 ```bash
 git clone https://github.com/neodeskapp/neodesk.git
 cd neodesk
-docker compose -f docker-compose.single.yml up -d --build
+docker compose -f install/docker-compose.single.yml up -d --build
 ```
 
 Der Build läuft in Containern: Er baut die Web-App mit Node.js, baut den
@@ -494,14 +498,14 @@ erste Build dauert ein paar Minuten.
 
 Diese Datei funktioniert wie die veröffentlichte, mit diesen Unterschieden:
 
-- Jeder Befehl braucht `-f docker-compose.single.yml`. So gibst du zum
+- Jeder Befehl braucht `-f install/docker-compose.single.yml`. So gibst du zum
   Beispiel das Admin-Passwort aus:
 
   ```bash
-  docker compose -f docker-compose.single.yml exec neodesk neodesk-show-admin-credentials
+  docker compose -f install/docker-compose.single.yml exec neodesk neodesk-show-admin-credentials
   ```
-- Compose stellt jedem Volume-Namen den Ordnernamen voran, nach dem Klonen
-  oben heißt das Daten-Volume also `neodesk_neodesk-data`.
+- Compose stellt jedem Volume-Namen den Namen des Ordners der Compose-Datei
+  voran, `install`, das Daten-Volume heißt also `install_neodesk-data`.
 - Das PostgreSQL-Passwort heißt hier `PG_PASSWORD`, nicht `POSTGRES_PASSWORD`.
 - `docker compose pull` aktualisiert diese Installation nicht. Hol den neuen
   Stand des Repositorys und baue neu; `NEODESK_COMMIT_SHA` teilt dem Binary
@@ -509,9 +513,9 @@ Diese Datei funktioniert wie die veröffentlichte, mit diesen Unterschieden:
 
   ```bash
   git pull
-  NEODESK_COMMIT_SHA=$(git rev-parse HEAD) docker compose -f docker-compose.single.yml up -d --build
+  NEODESK_COMMIT_SHA=$(git rev-parse HEAD) docker compose -f install/docker-compose.single.yml up -d --build
   ```
 
-`sudo bash neodesk-docker.sh --build`, im Checkout ausgeführt, baut dasselbe
+`sudo bash install/neodesk-docker.sh --build`, im Checkout ausgeführt, baut dasselbe
 Image als `ghcr.io/neodeskapp/neodesk:local` und installiert es wie das
 veröffentlichte.

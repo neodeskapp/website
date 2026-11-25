@@ -24,10 +24,10 @@ export const INSTALLS: InstallMethod[] = [
 		tab: 'Docker',
 		docs: '/docs/getting-started/docker',
 		lang: 'bash',
-		lines: ['curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/install.sh | sudo bash'],
+		lines: ['curl -fsSL https://neode.sk/install.sh | sudo bash'],
 		note: {
-			en: 'The script installs Docker when it is missing, pulls the published image and runs the server and the web console in one container. At the end it prints the console\'s address and the admin password. The console speaks plain HTTP on port 5000.',
-			de: 'Das Skript installiert Docker, falls es fehlt, lädt das veröffentlichte Image und startet Server und Web-Konsole in einem Container. Am Ende zeigt es die Adresse der Konsole und das Admin-Passwort. Die Konsole spricht unverschlüsseltes HTTP auf Port 5000.'
+			en: 'The script installs Docker when it is missing, pulls the published image and runs the server and the web console in one container. At the end it prints the console\'s address and the admin password. The console speaks plain HTTP on port 3375.',
+			de: 'Das Skript installiert Docker, falls es fehlt, lädt das veröffentlichte Image und startet Server und Web-Konsole in einem Container. Am Ende zeigt es die Adresse der Konsole und das Admin-Passwort. Die Konsole spricht unverschlüsseltes HTTP auf Port 3375.'
 		},
 		oneLine: 'Docker: the server and the web console in one container, from the published image'
 	},
@@ -36,7 +36,7 @@ export const INSTALLS: InstallMethod[] = [
 		tab: 'Linux',
 		docs: '/docs/getting-started/linux',
 		lang: 'bash',
-		lines: ['curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/neodesk.sh | sudo bash'],
+		lines: ['curl -fsSL https://neode.sk/neodesk.sh | sudo bash'],
 		note: {
 			en: 'The script downloads the newest release, checks it and installs it as one systemd service. Piped into bash like this, it asks nothing and installs with the defaults. It shows the admin password once.',
 			de: 'Das Skript lädt das neueste Release herunter, prüft es und installiert es als einen systemd-Dienst. So an bash übergeben, fragt es nichts und nimmt die Standardwerte. Das Admin-Passwort zeigt es nur einmal an.'
@@ -49,7 +49,7 @@ export const INSTALLS: InstallMethod[] = [
 		docs: '/docs/getting-started/windows',
 		lang: 'powershell',
 		lines: [
-			'Invoke-WebRequest https://raw.githubusercontent.com/neodeskapp/neodesk/main/neodesk.ps1 -OutFile neodesk.ps1 -UseBasicParsing',
+			'Invoke-WebRequest https://neode.sk/neodesk.ps1 -OutFile neodesk.ps1 -UseBasicParsing',
 			'.\\neodesk.ps1'
 		],
 		note: {

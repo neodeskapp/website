@@ -7,9 +7,10 @@ order: 3
 Das Skript `neodesk.sh` installiert NeoDesk auf einem Linux-Server als einen
 systemd-Dienst, `neodesk-server`. Es lädt das neueste Release von
 `neodesk-server` von GitHub herunter und prüft es vor der Installation.
-Außerdem bleibt es als Befehl `neodesk` auf dem Rechner. Damit aktualisierst
-und reparierst du die Installation später, legst Backups an und
-deinstallierst sie. Diese Seite beschreibt die erste Installation.
+Außerdem bleibt es als Befehl `neodesk-setup` auf dem Rechner. Damit
+aktualisierst und reparierst du die Installation später, legst Backups an und
+deinstallierst sie. Die Kommandozeile [`neodesk`](/docs/command-line/neodesk)
+legt es nach `/usr/local/bin`. Diese Seite beschreibt die erste Installation.
 
 ## Voraussetzungen {#requirements}
 
@@ -29,7 +30,7 @@ deinstallierst sie. Diese Seite beschreibt die erste Installation.
 ## Installieren {#install}
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/neodesk.sh | sudo bash
+curl -fsSL https://neode.sk/neodesk.sh | sudo bash
 ```
 
 Per Pipe an `bash` übergeben, hat das Skript kein Terminal für seine Fragen.
@@ -39,7 +40,7 @@ die öffentliche IP-Adresse des Servers für das Relay und „P2P first“.
 Willst du die Fragen beantworten, lade das Skript herunter und führe es aus:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/neodesk.sh -o neodesk.sh
+curl -fsSL https://neode.sk/neodesk.sh -o neodesk.sh
 sudo bash neodesk.sh
 ```
 
@@ -56,7 +57,7 @@ Entwicklungs-Build. Spätere Updates folgen dann dem Entwicklungskanal, bis du
 auf den stabilen Kanal umstellst:
 
 ```bash
-sudo neodesk --update --channel stable
+sudo neodesk-setup --update --channel stable
 ```
 
 Bevor es einen Download installiert, prüft das Skript dessen SHA-256 gegen die
@@ -108,7 +109,7 @@ nächsten Update prüft der installierte Server die Signatur selbst.
 - Öffnet diese Ports in ufw oder firewalld, wenn eines davon aktiv ist, oder
   legt iptables-Regeln an, wenn keines von beiden installiert ist: 21115, 21116
   für TCP und UDP, 21117, 21121, 21122 für CDAP-Geräte-Agents, außer die
-  env-Datei setzt `CDAP_ENABLED=N`, und die Ports 5000 und 5443 der Konsole.
+  env-Datei setzt `CDAP_ENABLED=N`, und die Ports 3375 und 5443 der Konsole.
   Ein ufw oder firewalld, das installiert, aber ausgeschaltet ist, bleibt, wie
   es ist, und der Installer legt dann gar keine Regeln an. Wählst du danach
   bei der TLS-Frage einen Reverse Proxy auf demselben Server, schließt es die
@@ -116,7 +117,10 @@ nächsten Update prüft der installierte Server die Signatur selbst.
   Beschränke ihre Regeln selbst auf die Adresse des Proxys. Firewalls
   außerhalb des Servers, etwa die eines Cloud-Anbieters, sind deine Sache; das
   Skript gibt die Liste aus.
-- Speichert sich selbst als `/usr/local/sbin/neodesk`.
+- Speichert sich selbst als `/usr/local/sbin/neodesk-setup` und eine Kopie des
+  Server-Binarys als `/usr/local/bin/neodesk`, die Kommandozeile, die jeder
+  Benutzer auf dem Server ausführen kann. Sie braucht ein API-Token, um etwas zu
+  tun; siehe [Die Kommandozeile neodesk](/docs/command-line/neodesk).
 
 ## Ohne Rückfragen installieren {#install-without-questions}
 
@@ -142,7 +146,7 @@ Die Flags funktionieren auch mit der Ein-Zeilen-Installation, hinter
 `bash -s --`:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/neodesk.sh | sudo bash -s -- --relay-mode local
+curl -fsSL https://neode.sk/neodesk.sh | sudo bash -s -- --relay-mode local
 ```
 
 Das Skript liest auch Umgebungsvariablen, etwa `ADMIN_PASSWORD` für dein
@@ -172,7 +176,7 @@ gestartet ist. Geht es verloren, setzt dieser Befehl das Passwort aus
 `ADMIN_PASSWORD` oder ein zufälliges und zeigt es einmal an:
 
 ```bash
-sudo neodesk --reset-password
+sudo neodesk-setup --reset-password
 ```
 
 Im Menü kannst du unter **Reset admin password** auch selbst eines eintippen,
@@ -185,7 +189,7 @@ Am Ende gibt das Skript aus, was du als Nächstes brauchst:
 ```text
 NeoDesk is installed
 
-  Web console:   https://203.0.113.10:5443  (http://203.0.113.10:5000 leads there)
+  Web console:   https://203.0.113.10:5443  (http://203.0.113.10:3375 leads there)
                  The certificate is self-signed, so the browser warns once.
   First sign-in: user admin, with the password shown above (it is not shown again)
   RustDesk clients (Settings > Network > ID/Relay server):
@@ -195,8 +199,10 @@ NeoDesk is installed
     Key:           <the server's public key>
   Log:           sudo journalctl -u neodesk-server -f
   Settings:      /opt/NeoDeskConsole/.env (then: sudo systemctl restart neodesk-server)
-  Update:        sudo neodesk --update
-  Uninstall:     sudo neodesk --uninstall
+  Update:        sudo neodesk-setup --update
+  Uninstall:     sudo neodesk-setup --uninstall
+  Command line:  sudo neodesk --help
+  Help:          https://discord.gg/nwERSawufr
 ```
 
 Die Zeile **Web console** ist die Adresse der Konsole. Dein Browser warnt
@@ -210,11 +216,12 @@ Weiter geht es mit [Die erste Anmeldung](/docs/getting-started/first-sign-in).
 
 | Pfad | Inhalt |
 |------|--------|
-| `/opt/neodesk` | Das Binary `neodesk-server`, die Datenbank `db_v2.sqlite3`, das Schlüsselpaar `id_ed25519` und `id_ed25519.pub`, der API-Schlüssel `.api_key` und `ssl/` |
+| `/opt/neodesk` | Das Binary `neodesk-server`, die Datenbank `db_v2.sqlite3`, das Schlüsselpaar `id_ed25519` und `id_ed25519.pub`, der API-Schlüssel `.api_key`, die Schlüsseldatei der gespeicherten Anmeldung `.device_vault_key` und `ssl/` |
 | `/opt/NeoDeskConsole` | Die Einstellungsdatei `.env` und der Ordner `data/` der Konsole |
 | `/etc/systemd/system/neodesk-server.service` | Der Dienst. Er läuft als Benutzer `neodesk` und liest `/opt/NeoDeskConsole/.env`. |
-| `/opt/rustdesk-backups` | Backups, die das Skript anlegt, zum Beispiel vor einem Update |
-| `/usr/local/sbin/neodesk` | Das Skript, als Befehl für später |
+| `/opt/neodesk-backups` | Backups, die das Skript anlegt, zum Beispiel vor einem Update. Bis 3.6.0-rc.4 lagen sie in `/opt/rustdesk-backups`; der erste Lauf des neuen Skripts verschiebt sie hierher. |
+| `/usr/local/sbin/neodesk-setup` | Das Skript, als Befehl für später. Bis 3.6.0-rc.4 war es `/usr/local/sbin/neodesk`. |
+| `/usr/local/bin/neodesk` | Die Kommandozeile, eine Kopie des Server-Binarys, die jeder Benutzer ausführen kann |
 
 ```bash
 sudo systemctl status neodesk-server
@@ -228,19 +235,25 @@ genehmigt. Die env-Datei setzt das nur als ersten Modus; ein Modus, den du in
 der Konsole wählst, bleibt. Siehe
 [Registrierungsanfragen](/docs/console/enrollment).
 
-## Später: der Befehl neodesk {#later-the-neodesk-command}
+## Später: neodesk-setup {#later-the-neodesk-command}
 
-`sudo neodesk` öffnet dasselbe Menü wie das Skript. Ohne das Menü:
+`sudo neodesk-setup` öffnet dasselbe Menü wie das Skript. Ohne das Menü:
 
 ```bash
-sudo neodesk --update
-sudo neodesk --reset-password
-sudo neodesk --uninstall
+sudo neodesk-setup --update
+sudo neodesk-setup --reset-password
+sudo neodesk-setup --uninstall
 ```
+
+`neodesk` ist die [Kommandozeile](/docs/command-line/neodesk). Sie gibt die
+Optionen des Skripts an `neodesk-setup` weiter, `sudo neodesk --update`
+funktioniert also auch, und ein bloßes `sudo neodesk` in einem Terminal öffnet
+das Menü.
 
 `--uninstall` macht ein Backup, entfernt dann den Dienst und behält die Daten.
 Es listet, was auf dem Rechner übrig bleibt. `--uninstall --purge` löscht
-außerdem `/opt/neodesk`, `/opt/NeoDeskConsole` und den Befehl.
+außerdem `/opt/neodesk`, `/opt/NeoDeskConsole` und die Befehle `neodesk-setup`
+und `neodesk`.
 
 ## Aus dem Repository bauen {#build-from-the-repository}
 
@@ -249,7 +262,7 @@ Willst du eigene Änderungen betreiben, baue den Server aus einem Checkout:
 ```bash
 git clone https://github.com/neodeskapp/neodesk.git
 cd neodesk
-sudo ./neodesk.sh --from-source
+sudo ./install/neodesk.sh --from-source
 ```
 
 Wähle im Menü **Fresh installation** oder ergänze `--auto`. `--from-source`

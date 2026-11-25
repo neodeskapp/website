@@ -30,7 +30,7 @@ erste Installation.
 Öffne PowerShell als Administrator, lade das Skript herunter und führe es aus:
 
 ```powershell
-Invoke-WebRequest https://raw.githubusercontent.com/neodeskapp/neodesk/main/neodesk.ps1 -OutFile neodesk.ps1 -UseBasicParsing
+Invoke-WebRequest https://neode.sk/neodesk.ps1 -OutFile neodesk.ps1 -UseBasicParsing
 .\neodesk.ps1
 ```
 
@@ -101,10 +101,13 @@ gültige Signatur ab.
   Systemstart als SYSTEM läuft.
 - Öffnet diese Ports in der Windows-Firewall, für alle Netzwerkprofile: 21115,
   21116 für TCP und UDP, 21117, 21121, 21122 für CDAP-Geräte-Agents, außer die
-  env-Datei setzt `CDAP_ENABLED=N`, und die Ports 5000 und 5443 der Konsole.
+  env-Datei setzt `CDAP_ENABLED=N`, und die Ports 3375 und 5443 der Konsole.
 - Startet den Server und wartet, bis die API, die Konsole und die Ports 21116
   und 21117 antworten.
 - Speichert sich selbst als `C:\NeoDesk\neodesk.ps1`.
+- Legt die Kommandozeile [`neodesk`](/docs/command-line/neodesk) in den `Path`
+  des Rechners: `C:\NeoDesk\bin\neodesk.exe`, ein Link auf
+  `neodesk-server.exe`. Ein neues Terminal findet sie.
 
 ## Ohne Rückfragen installieren {#install-without-questions}
 
@@ -161,7 +164,7 @@ Am Ende gibt das Skript aus, was du als Nächstes brauchst: die Zeile
 API-Server und Schlüssel für RustDesk-Clients und die Ports, die eine Firewall
 außerhalb dieses Rechners durchlassen muss. Mit dem selbstsignierten
 Zertifikat einer frischen Installation ist die Konsole unter
-`https://<server-address>:5443` erreichbar, und `http://<server-address>:5000`
+`https://<server-address>:5443` erreichbar, und `http://<server-address>:3375`
 führt dorthin. Dein Browser warnt wegen des Zertifikats, weil keine Stelle,
 der er vertraut, es signiert hat.
 
@@ -181,7 +184,7 @@ Weiter geht es dann mit
 
 | Pfad | Inhalt |
 |------|--------|
-| `C:\NeoDesk` | Der Server `neodesk-server.exe`, die Datenbank `db_v2.sqlite3`, das Schlüsselpaar `id_ed25519` und `id_ed25519.pub`, der API-Schlüssel `.api_key`, `ssl\`, `logs\` und die Kopie des Skripts, `neodesk.ps1` |
+| `C:\NeoDesk` | Der Server `neodesk-server.exe`, die Datenbank `db_v2.sqlite3`, das Schlüsselpaar `id_ed25519` und `id_ed25519.pub`, der API-Schlüssel `.api_key`, die Schlüsseldatei der gespeicherten Anmeldung `.device_vault_key`, `ssl\`, `logs\`, die Kopie des Skripts, `neodesk.ps1`, und `bin\neodesk.exe`, die Kommandozeile |
 | `C:\NeoDeskConsole` | Die Einstellungsdatei `.env` und der Ordner `data\` der Konsole |
 | `C:\NeoDesk-Backups` | Backups, die das Skript anlegt, zum Beispiel vor einem Update |
 
@@ -228,7 +231,7 @@ Willst du eigene Änderungen betreiben, baue den Server aus einem Checkout:
 ```powershell
 git clone https://github.com/neodeskapp/neodesk.git
 cd neodesk
-.\neodesk.ps1 -FromSource
+.\install\neodesk.ps1 -FromSource
 ```
 
 Wähle im Menü **Fresh installation** oder ergänze `-Auto`. `-FromSource` baut

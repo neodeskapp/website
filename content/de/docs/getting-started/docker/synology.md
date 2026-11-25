@@ -19,21 +19,21 @@ NeoDesk braucht, und nicht jeden Klick. Lies zuerst
   ```bash
   sudo docker compose version
   ```
-- Ein freier Port für die Konsole: Die Weboberfläche von DSM lauscht
-  standardmäßig auf Port 5000, demselben Port, den die NeoDesk-Konsole nutzt.
-  Gib der Konsole mit `NEODESK_CONSOLE_PORT` in `.env` einen anderen
-  Host-Port.
+- Freie Ports für die Konsole, 3375 und 5443. Die Weboberfläche von DSM
+  lauscht auf 5000 und 5001, die beiden kommen sich also nicht in die Quere.
+  Belegt ein anderes Paket auf dem NAS 3375, gib der Konsole mit
+  `NEODESK_CONSOLE_PORT` in `.env` einen anderen Host-Port.
 
 ## Einrichten {#set-it-up}
 
 1. Lege auf dem NAS einen Ordner für NeoDesk an, zum Beispiel
    `/volume1/docker/neodesk`.
-2. Lege die Compose-Datei als `docker-compose.yml` hinein:
-   [docker-compose.quick.single.yml](https://raw.githubusercontent.com/neodeskapp/neodesk/main/docker-compose.quick.single.yml).
+2. Lege die Compose-Datei als `docker-compose.yml` hinein. Du lädst sie von
+   `https://neode.sk/install/docker-compose.quick.single.yml`, das zur Kopie
+   des neuesten Releases führt.
 3. Lege daneben eine Datei namens `.env` an:
 
    ```ini
-   NEODESK_CONSOLE_PORT=5080
    RELAY_SERVERS=<nas-address>
    ```
 
@@ -49,7 +49,7 @@ NeoDesk braucht, und nicht jeden Klick. Lies zuerst
    sudo docker compose up -d
    ```
 
-Die Konsole ist dann unter `http://<nas-address>:5080` erreichbar. Gib das
+Die Konsole ist dann unter `http://<nas-address>:3375` erreichbar. Gib das
 Admin-Passwort über SSH aus:
 
 ```bash
@@ -68,7 +68,7 @@ gibt sie als `uid` und `gid` aus; setze sie für `<uid>` und `<gid>` ein.
 
 ```yaml
     volumes:
-      - /volume1/docker/neodesk/data:/opt/rustdesk
+      - /volume1/docker/neodesk/data:/opt/neodesk/data
       - /volume1/docker/neodesk/console:/app/data
 ```
 
@@ -81,8 +81,8 @@ Der Container startet als root, gibt seinem Benutzer `neodesk` diese Nummern
 und betreibt den Server als dieser Benutzer. Ohne `PUID` und `PGID` hat der
 Benutzer die Nummer 10001. Keiner der beiden Werte darf 0 sein. Füge der
 Compose-Datei kein `user:` hinzu: Der Container muss als root starten, um das
-zu tun. Kann der Benutzer nicht in `/opt/rustdesk` schreiben, steht im Log
-`/opt/rustdesk is NOT writable by the neodesk user`.
+zu tun. Kann der Benutzer nicht in `/opt/neodesk/data` schreiben, steht im Log
+`/opt/neodesk/data is NOT writable by the neodesk user`.
 
 ## Firewall und Router {#firewall-and-router}
 
@@ -102,3 +102,10 @@ Lade das Image neu und erstelle den Container neu. Über SSH, im Ordner:
 sudo docker compose pull
 sudo docker compose up -d
 ```
+
+Eine Compose-Datei von 3.6.0-rc.4 oder älter funktioniert mit dem neuen Image
+weiter. Willst du auf die neue wechseln, lade sie wie unter
+[Einrichten](#set-it-up) neu herunter und ändere in einer Ordner-Zeile, die du
+hinzugefügt hast, `/opt/rustdesk` in `/opt/neodesk/data`. Diese Datei
+veröffentlicht die Konsole auf 3375 statt auf 5000; ein `NEODESK_CONSOLE_PORT`
+in `.env` behält den Port, den du gesetzt hast.

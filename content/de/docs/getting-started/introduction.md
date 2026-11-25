@@ -45,8 +45,8 @@ betreibt:
 
 Jeder Teil lauscht auf seinem eigenen Port. ID-Server und Relay nutzen 21115
 bis 21117, dazu 21118 und 21119 für Clients, die sich über WebSocket
-verbinden. Die API für Clients nutzt 21121. Die Konsole nutzt 5000; die
-Installer für Linux und Windows geben ihr HTTPS auf 5443, und 5000 leitet
+verbinden. Die API für Clients nutzt 21121. Die Konsole nutzt 3375; die
+Installer für Linux und Windows geben ihr HTTPS auf 5443, und 3375 leitet
 Browser dorthin weiter. Bei einer Installation unter Linux oder Windows lauscht
 die eigene API des Servers auf 21114, und CDAP-Geräte-Agents verbinden sich auf
 21122. [Ports](/docs/operations/ports) listet alle auf und sagt, welche davon

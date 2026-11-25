@@ -288,12 +288,13 @@ starten:
   kein anderes Programm sie hat, und gibt sie zurück, wenn er entfernt wird.
   Unter Linux und macOS übernimmt er sie nie.
 
-Die Links der Konsole, die ein Gerät in einer App öffnen, nutzen `rustdesk://`:
-**Über Desktop-Client verbinden** in der Geräteliste, **In der RustDesk-App
-öffnen** auf Handys und **In der Desktop-App öffnen** in der
-[Schnellhilfe](/docs/console/quick-support). Sie starten das normale RustDesk.
-Auf einem Computer, der nur den NeoDesk-Client hat, starten sie ihn unter
-Windows und unter Linux und macOS nichts.
+Die Konsole öffnet ein Gerät im NeoDesk-Client mit einem `neodesk://`-Link:
+**In NeoDesk öffnen** in der Geräteliste, die Aktion **NeoDesk-App** auf der
+Seite des Geräts und **NeoDesk** unter **In der Desktop-App öffnen** in der
+[Schnellhilfe](/docs/console/quick-support). **In RustDesk öffnen** und die
+anderen RustDesk-Auswahlen daneben nutzen `rustdesk://` für das normale
+RustDesk. Für Handys gibt es keine NeoDesk-App, dort bietet die Konsole die
+RustDesk-App an.
 
 Diese Links öffnen die Sitzung auf deiner Seite. Die Schnellhilfe braucht
 NeoDesk nur auf dem Computer, dem du hilfst: Dort startet die Person die NeoDesk
@@ -354,7 +355,7 @@ Geh diese Punkte der Reihe nach durch:
   jeder Client braucht den neuen Schlüssel.
 - **API-Server.** Leer, oder er beginnt mit `http://` oder `https://` und
   endet mit dem Port, den **Übersicht** zeigt, also 21121. Der eigene Port der
-  Konsole, 5000, ist der falsche.
+  Konsole, 3375 (5000 bei älteren Installationen), ist der falsche.
 - **Eine öffentliche Adresse.** Erreichen mehrere Computer in einem Büro den
   Server über dieselbe öffentliche Adresse, kann eine Sitzung, die einer von
   ihnen startet, mit „ID does not exist“ fehlschlagen (im deutschen Client
