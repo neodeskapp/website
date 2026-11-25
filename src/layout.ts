@@ -113,6 +113,8 @@ interface FrameOptions extends Shared {
 	display?: boolean;
 	/** A page of its own, such as the brand page: no docs sidebar, no docs controls in the header */
 	plain?: boolean;
+	/** A plain page that uses the page's whole width, such as the download page */
+	wide?: boolean;
 }
 
 function frame(o: FrameOptions) {
@@ -132,6 +134,7 @@ function frame(o: FrameOptions) {
 		home: inLocale(o, '/'),
 		docs: docsHome,
 		brand: inLocale(o, '/brand/'),
+		download: inLocale(o, '/download/'),
 		languages: noindex ? [] : o.versions(o.path).filter((l) => l.code !== locale.code).map((l) => ({ locale: l, href: o.urls.url(`${l.prefix}${o.path}`) })),
 		tools
 	};
@@ -162,7 +165,7 @@ ${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd).replace(
 
 ${siteHeader(chrome)}
 
-<div class="layout${o.plain ? ' plain' : toc ? '' : ' no-toc'}">
+<div class="layout${o.plain ? ' plain' : toc ? '' : ' no-toc'}${o.wide ? ' wide' : ''}">
 ${o.plain ? '' : `  <nav id="sidebar" class="sidebar" aria-label="${esc(t.documentation)}">
     ${sidebar(o, current)}
   </nav>
@@ -462,6 +465,11 @@ export function notFoundPage(shared: Shared, path = '/404.html') {
 /** The brand page: logo files, colours, fonts, the name and the voice (src/brand.ts). */
 export function brandPage(shared: Shared & { main: string; title: string; fullTitle: string; description: string }) {
 	return frame({ ...shared, path: '/brand/', current: '', plain: true, display: true });
+}
+
+/** The download page: the client's file for this computer, the scam notice and every file (src/download.ts). */
+export function downloadPage(shared: Shared & { main: string; title: string; fullTitle: string; description: string; jsonLd: object }) {
+	return frame({ ...shared, path: '/download/', current: '', plain: true, wide: true, display: true });
 }
 
 export { DEFAULT_LOCALE };

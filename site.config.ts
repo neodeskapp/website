@@ -18,6 +18,10 @@ const config: SiteConfig = {
 	// time (ND_VERSION overrides it). This one is used, with a warning, when it cannot be fetched.
 	versionUrl: 'https://api.github.com/repos/neodeskapp/neodesk/releases?per_page=30',
 	version: '3.6.0-rc.4',
+	// The desktop client's releases, for the download page. Without them the build uses the
+	// release src/client-release.json recorded the last time it could read them.
+	clientRepo: 'https://github.com/neodeskapp/neodesk-client',
+	clientReleasesUrl: 'https://api.github.com/repos/neodeskapp/neodesk-client/releases?per_page=30',
 	// "Edit on GitHub" appears on docs pages once this points at the folder that holds
 	// content/docs in a repository, for example
 	// https://github.com/neodeskapp/website/edit/main/content/docs

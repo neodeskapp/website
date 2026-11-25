@@ -87,6 +87,8 @@ export interface CheckInput {
 	siteUrl: string;
 	urls: Urls;
 	version: string;
+	/** The desktop client's version the download page offers; its SoftwareApplication names it */
+	clientVersion?: string;
 	production: boolean;
 	aiCrawlers: string[];
 }
@@ -173,14 +175,17 @@ const VERSION_MENTIONS = [
 	/\bGeschrieben für Version (\d+\.\d+\.\d+(?:-[\w.]*\w)?)/g
 ];
 
-export function checkVersion({ dist, version }: CheckInput) {
+export function checkVersion({ dist, urls, version, clientVersion }: CheckInput) {
 	const problems: string[] = [];
 	for (const rel of listFiles(dist).filter((f) => TEXT.test(f))) {
 		const raw = fs.readFileSync(path.join(dist, rel), 'utf8');
 		if (raw.includes('{{VERSION}}')) problems.push(`${rel}: "{{VERSION}}" was not replaced`);
+		// The download page is about the desktop client: its softwareVersion is the client's
+		const isDownload = urls.withoutLocale(rel) === 'download/index.html';
 		for (const re of VERSION_MENTIONS) {
 			for (const m of raw.matchAll(re)) {
-				if (m[1] !== version) problems.push(`${rel}:${lineOf(raw, m.index)}: names version ${m[1]}, the build is for ${version}: "${m[0]}"`);
+				const want = isDownload && m[0].startsWith('"softwareVersion"') ? (clientVersion ?? version) : version;
+				if (m[1] !== want) problems.push(`${rel}:${lineOf(raw, m.index)}: names version ${m[1]}, the build is for ${want}: "${m[0]}"`);
 			}
 		}
 	}

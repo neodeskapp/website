@@ -6,7 +6,9 @@
     "build": "node build.ts",
     "serve": "node build.ts --serve",
     "typecheck": "tsc -p tsconfig.json",
-    "test:search": "node search-test.ts"
+    "test": "node --test test/download.test.ts",
+    "test:search": "node search-test.ts",
+    "test:download": "node download-test.ts"
   },
   "dependencies": {
     "@resvg/resvg-js": "^2.6.2",

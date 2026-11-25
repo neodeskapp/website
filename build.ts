@@ -11,10 +11,13 @@ import type { StateBlock, StateCore, Token, RendererRule } from 'markdown-it';
 import hljs from 'highlight.js';
 import sharp from 'sharp';
 import config from './site.config.ts';
-import { docsIndexPage, allPagesPage, brandPage, docPage, sectionPage, notFoundPage, contactSheetPage, hreflangLinks, socialTags, esc } from './src/layout.ts';
+import { docsIndexPage, allPagesPage, brandPage, downloadPage, docPage, sectionPage, notFoundPage, contactSheetPage, hreflangLinks, socialTags, esc } from './src/layout.ts';
 import { siteHeader, siteFooter } from './src/chrome.ts';
 import { makeUrls } from './src/urls.ts';
 import { BRAND, brandMain } from './src/brand.ts';
+import { DOWNLOAD, downloadMain, clientSoftware, repoCommands } from './src/download.ts';
+import { pickRelease, parseSums, toClientRelease } from './src/client-release.ts';
+import type { ClientOffer, GitHubRelease } from './src/client-release.ts';
 import { zipFolder } from './src/zip.ts';
 import { HEADING_ATTRS_LINE, buildIndex, indexFiles, checkIndex } from './src/search.ts';
 import { answersOf, answerHtml, answerText, answerMarkdown } from './src/answers.ts';
@@ -167,6 +170,57 @@ async function currentVersion(): Promise<string> {
 	}
 	console.warn(`Could not read ${config.versionUrl}; building for version ${config.version} from site.config.ts. Set ND_VERSION to choose one.`);
 	return config.version;
+}
+
+/**
+ * The desktop client's release for the download page, and a newer release candidate as a
+ * preview (src/client-release.ts), read from GitHub with each release's SHA256SUMS.
+ * ND_CLIENT_RELEASES=<file> reads the list from a file in the API's shape instead, to try
+ * the page with other releases. When GitHub can't be reached, the build uses the release
+ * that src/client-release.json recorded; a build that read GitHub records what it read
+ * there (not in CI), like content/anchors.json.
+ */
+async function clientOffer(): Promise<ClientOffer> {
+	const file = at('src/client-release.json');
+	const recorded: ClientOffer = fs.existsSync(file) ? JSON.parse(read(file)) : { main: null, preview: null };
+	const headers: Record<string, string> = { accept: 'application/vnd.github+json' };
+	if (process.env.GITHUB_TOKEN) headers.authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
+	const fromFile = process.env.ND_CLIENT_RELEASES;
+	try {
+		let list: GitHubRelease[];
+		if (fromFile) list = JSON.parse(read(path.resolve(fromFile)));
+		else {
+			const res = await fetch(config.clientReleasesUrl, { headers, signal: AbortSignal.timeout(8000) });
+			if (!res.ok) throw new Error(`${res.status}`);
+			list = (await res.json()) as GitHubRelease[];
+		}
+		const picked = pickRelease(list.map((r) => ({ ...r, tag: r.tag_name, published: r.published_at })));
+		const withSums = async (r: GitHubRelease | null) => {
+			if (!r) return null;
+			const sumsAsset = r.assets.find((a) => a.name === 'SHA256SUMS');
+			let sums = new Map<string, string>();
+			if (sumsAsset) {
+				try {
+					const res = await fetch(sumsAsset.browser_download_url, { signal: AbortSignal.timeout(15000) });
+					if (!res.ok) throw new Error(`${res.status}`);
+					sums = parseSums(await res.text());
+				} catch (e) {
+					if (!fromFile) throw e;
+				}
+			}
+			return toClientRelease(r, sums, problems);
+		};
+		const offer: ClientOffer = { main: await withSums(picked.main), preview: await withSums(picked.preview) };
+		const text = `${JSON.stringify(offer, null, '\t')}\n`;
+		if (!fromFile && !process.env.CI && (!fs.existsSync(file) || read(file) !== text)) {
+			fs.writeFileSync(file, text);
+			console.log('Recorded the client release in src/client-release.json; commit it.');
+		}
+		return offer;
+	} catch (e) {
+		console.warn(`Could not read the client's releases (${(e as Error).message}); the download page offers ${recorded.main?.tag ?? 'nothing'} from src/client-release.json.`);
+		return recorded;
+	}
 }
 
 /**
@@ -517,6 +571,7 @@ const kb = (bytes: number) => `${Math.max(1, Math.round(bytes / 1024))} KB`;
 function llmsTxt({ bundles, fullBytes, titleOf, answers }: { bundles: { label: string; file: string; bytes: number; pages: number }[]; fullBytes: number; titleOf: (docs: string) => string; answers: Answer[] }) {
 	// A docs link in an answer leads to the page's Markdown copy, its heading kept
 	const mdHref = (p: string) => {
+		if (p.startsWith('/') && !p.startsWith('/docs')) return url(p.replace(/\/?$/, '/'));
 		if (!p.startsWith('/docs')) return p;
 		const [page, hash] = p.split('#');
 		return `${url(`${page.replace(/\/$/, '')}.md`)}${hash ? `#${hash}` : ''}`;
@@ -568,6 +623,7 @@ async function build() {
 	problems.length = 0;
 	const searchSizes: string[] = [];
 	const version = await currentVersion();
+	const client = await clientOffer();
 
 	// Every language with docs files: the default from content/docs, the others from content/<code>/docs
 	const sites: Site[] = [];
@@ -616,6 +672,7 @@ async function build() {
 		offer('/docs/', site.locale);
 		offer('/docs/all/', site.locale);
 		if (BRAND[site.locale.code]) offer('/brand/', site.locale);
+		if (DOWNLOAD[site.locale.code]) offer('/download/', site.locale);
 		for (const s of site.sections) offer(`/docs/${s.slug}/`, site.locale);
 		for (const p of site.pages) offer(`/docs/${p.slug}/`, site.locale);
 	}
@@ -642,7 +699,7 @@ async function build() {
 			name === 'site.css'
 				? Buffer.from(`${chromeCss}\n${read(at('src', name))}`)
 				: name === 'docs.css'
-					? Buffer.from(`${read(at('src', name))}\n${read(at('src/brand.css'))}`)
+					? Buffer.from(`${read(at('src', name))}\n${read(at('src/brand.css'))}\n${read(at('src/download.css'))}`)
 					: fs.readFileSync(at('src', name));
 		assets[name] = `/assets/${name}?v=${hashOf(data)}`;
 		write(`assets/${name}`, data);
@@ -677,7 +734,7 @@ async function build() {
 				}
 				const target = p.replace(/\/$/, '');
 				// Pages of the www host that are not docs, such as the brand page
-				if (/^(\/[a-z]{2})?\/brand$/.test(target)) continue;
+				if (/^(\/[a-z]{2})?\/(brand|download)$/.test(target)) continue;
 				if (target === '' || target === '/docs' || main.sections.some((s) => `/docs/${s.slug}` === target)) continue;
 				if (p.endsWith('.md')) problems.push(`${page.rel}: link "${href}" should not end in .md`);
 				const to = own.get(target) ?? known.get(target);
@@ -717,6 +774,7 @@ async function build() {
 		preview(`${locale.prefix}/docs/`, fill(t.docsTitle, { name: config.name }), { template: 'landing', title: t.documentation });
 		preview(`${locale.prefix}/docs/all/`, t.allPages, { template: 'landing', title: t.allPages });
 		if (BRAND[locale.code]) preview(`${locale.prefix}/brand/`, BRAND[locale.code].title, { template: 'landing', title: BRAND[locale.code].title });
+		if (DOWNLOAD[locale.code]) preview(`${locale.prefix}/download/`, DOWNLOAD[locale.code].title, { template: 'landing', title: DOWNLOAD[locale.code].title });
 		for (const s of site.sections) preview(`${locale.prefix}/docs/${s.slug}/`, s.label, { template: 'landing', title: s.label });
 		for (const page of site.pages) {
 			const template = (page.og ?? 'docs') as OgTemplate;
@@ -784,6 +842,24 @@ async function build() {
 		const brand = BRAND[locale.code];
 		if (!brand) problems.push(`src/brand.ts: no brand page text for ${locale.label}`);
 		else write(out('brand/index.html'), brandPage({ ...shared, title: brand.title, fullTitle: brand.pageTitle, description: brand.description, main: brandMain(locale.code, brandZip.length) }));
+		// The download page, with the client's release that clientOffer read
+		const dl = DOWNLOAD[locale.code];
+		if (!dl) problems.push(`src/download.ts: no download page text for ${locale.label}`);
+		else {
+			const docsLink = (p: string) => {
+				const [page, hash] = p.split('#');
+				return `${url(linkTo(page))}${hash ? `#${hash}` : ''}`;
+			};
+			const main = downloadMain(locale.code, locale.dateLocale, client, {
+				docs: docsLink,
+				server: `${url(`${locale.prefix}/`)}#server`,
+				discord: config.discord,
+				discussions: `${config.repo}/discussions`,
+				releases: `${config.clientRepo}/releases`
+			});
+			const pageUrl = url(`${locale.prefix}/download/`);
+			write(out('download/index.html'), downloadPage({ ...shared, title: dl.title, fullTitle: dl.pageTitle, description: dl.description, main, jsonLd: clientSoftware(locale.code, client, pageUrl, SITE_URL) }));
+		}
 		// The web server sends 404.html for an address that does not exist, on each host;
 		// another language's 404 page needs a rule of its own there, such as one for /de/
 		write(out('404.html'), notFoundPage(shared));
@@ -923,6 +999,7 @@ async function build() {
 			home: `${locale.prefix}/`,
 			docs: url(`${locale.prefix}/docs/`),
 			brand: `${locale.prefix}/brand/`,
+			download: `${locale.prefix}/download/`,
 			languages: versions('/').filter((l) => l.code !== locale.code).map((l) => ({ locale: l, href: `${l.prefix}/` }))
 		};
 		const page = homeTemplate
@@ -975,13 +1052,22 @@ async function build() {
 		const inDocs = blocksOf(page.body, m.lang);
 		for (const line of m.lines) if (!inDocs.includes(line)) problems.push(`src/install.ts: "${line}" is not in a ${m.lang} block of ${page.rel}`);
 	}
+	// The download page's package repository commands are the docs' own; the docs write
+	// stable in the line that the page writes with testing while there is no final release
+	const repoPage = main.pages.find((p) => p.slug === 'getting-started/connect-a-client');
+	const repoBlocks = repoPage ? blocksOf(repoPage.body, 'bash') : [];
+	for (const suite of ['stable', 'testing']) {
+		for (const line of Object.values(repoCommands(suite)).flat()) {
+			if (!repoBlocks.includes(line.replace(' testing main', ' stable main'))) problems.push(`src/download.ts: "${line}" is not in a bash block of content/docs/getting-started/connect-a-client.md`);
+		}
+	}
 	for (const tool of AGENT_TOOLS) {
 		if (tool.available && !(tool.docs && main.pages.some((p) => `/docs/${p.slug}` === tool.docs))) problems.push(`src/agents.ts: ${tool.id} is available, but its docs page "${tool.docs ?? ''}" does not exist`);
 	}
 	write(
 		'llms.txt',
 		llmsTxt({ bundles, fullBytes: Buffer.byteLength(full), titleOf: (docs) => main.pages.find((p) => `/docs/${p.slug}` === docs)?.title ?? docs, answers: llmsAnswers }) +
-			`## Start here\n\n- [Source code](${config.repo}): the repository, with the installers and the changelog\n\n` +
+			`## Start here\n\n- [Source code](${config.repo}): the repository, with the installers and the changelog\n- [Download the desktop client](${url('/download/')}): the NeoDesk client for Windows, macOS and Linux${client.main ? `, version ${client.main.version}${client.main.prerelease ? ', a release candidate for testing' : ''}` : ''}. The page recommends the file for the visitor's computer and lists every file with its SHA-256.\n\n` +
 			sections.map((s) => `## ${s.label}\n\n${s.intro}\n\n${pageList(s.items)}`).join('\n\n') +
 			'\n'
 	);
@@ -995,6 +1081,7 @@ async function build() {
 			[`${site.locale.prefix}/docs/`, newest(site.pages.map((p) => p.updated))],
 			[`${site.locale.prefix}/docs/all/`, newest(site.pages.map((p) => p.updated))],
 			[`${site.locale.prefix}/brand/`, newest([updatedOf(at('src/brand.ts')), updatedOf(at('public/brand/files'))])],
+			[`${site.locale.prefix}/download/`, newest([updatedOf(at('src/download.ts')), ...(client.main ? [client.main.published] : [])])],
 			...site.sections.map((s): [string, string] => [`${site.locale.prefix}/docs/${s.slug}/`, newest(s.items.map((p) => p.updated))]),
 			...site.reading.map((p): [string, string] => [`${site.locale.prefix}/docs/${p.slug}/`, p.updated])
 		])
@@ -1023,7 +1110,7 @@ async function build() {
 	write('docs/robots.txt', robotsTxt([`${DOCS_URL}/sitemap.xml`]));
 
 	// Checks on what was written
-	const checked = { dist: DIST, siteUrl: SITE_URL, urls, version, production: PRODUCTION, aiCrawlers: config.aiCrawlers };
+	const checked = { dist: DIST, siteUrl: SITE_URL, urls, version, clientVersion: client.main?.version, production: PRODUCTION, aiCrawlers: config.aiCrawlers };
 	problems.push(
 		...checkOldNames(checked),
 		...checkConsolePort(checked),

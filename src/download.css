@@ -1,0 +1,187 @@
+/* The download page (src/download.ts): the file for this computer next to the scam
+   notice, then every file by system. The build adds this file to docs.css. */
+.layout.plain.wide .article { max-width: 1400px; }
+.dl { --dl-gap: clamp(32px, 4vw, 64px); }
+.dl-vh { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.dl a:not(.dl-btn):not(.dl-get):not(.dl-pick) { color: var(--teal); }
+.dl code { font-family: var(--mono); font-size: 0.875em; padding: 2px 5px; border-radius: 3px; background: var(--code-inline); overflow-wrap: anywhere; }
+
+/* First screen: the recommendation on the left, the scam notice on the right */
+.dl-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: var(--dl-gap);
+  align-items: start;
+  padding: 12px 0 8px;
+}
+.dl-start { min-width: 0; }
+.dl h1.display { margin: 0 0 18px; font-size: clamp(44px, 5.4vw, 84px); line-height: 0.92; letter-spacing: -0.048em; }
+.dl .lead { margin-bottom: 28px; max-width: 46ch; }
+
+.dl-rec { max-width: 640px; }
+.dl-wait .dl-card { visibility: hidden; }
+.dl-card { padding: 0 0 4px; }
+.dl-for { margin: 0 0 12px; font-size: 15px; color: var(--muted); }
+.dl-for b { color: var(--text); font-weight: 600; }
+.dl-btn {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  width: 100%;
+  min-height: 76px;
+  padding: 12px 24px;
+  border-radius: 4px;
+  background: var(--blue);
+  color: var(--on-blue);
+  text-decoration: none;
+}
+.dl-btn:hover .dl-btn-main { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.dl-btn-main { font-size: 21px; font-weight: 600; line-height: 1.25; }
+.dl-btn-file { font-size: 14px; line-height: 1.4; opacity: 0.86; overflow-wrap: anywhere; }
+.dl-pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 12px; }
+.dl-btn-small { min-height: 68px; padding: 10px 18px; }
+.dl-btn-small .dl-btn-main { font-size: 18px; }
+.dl-after { margin: 14px 0 0; max-width: 62ch; font-size: 15px; line-height: 1.6; color: var(--muted); }
+.dl-after:first-of-type { margin-top: 16px; }
+.dl-phone-title { margin: 0; font-size: 21px; font-weight: 600; line-height: 1.35; }
+.dl-picks { display: flex; flex-wrap: wrap; gap: 10px; }
+.dl-pick {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 22px;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.dl-pick:hover { border-color: var(--blue); }
+.dl-release { margin: 20px 0 0; padding-top: 16px; border-top: 1px solid var(--rule); font-size: 15px; color: var(--muted); }
+.dl-badge {
+  display: inline-block;
+  margin-right: 6px;
+  padding: 1px 8px;
+  border: 1px solid var(--warn);
+  border-radius: 3px;
+  color: var(--warn);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* The scam notice: amber edge and icon on the page's own surface */
+.dl-scam {
+  position: relative;
+  padding: 22px 24px 22px 64px;
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--warn);
+  border-radius: 4px;
+  background: var(--hover);
+  font-size: 15px;
+  line-height: 1.6;
+}
+.dl-scam-icon { position: absolute; left: 22px; top: 22px; color: var(--warn); }
+.dl-scam h2 { margin: 0 0 12px; font-size: 19px; font-weight: 600; line-height: 1.35; letter-spacing: -0.005em; }
+.dl-scam h3 { margin: 18px 0 8px; font-size: 15px; font-weight: 600; }
+.dl-scam ul, .dl-scam ol { margin: 0; padding-left: 20px; }
+.dl-scam li { margin: 4px 0; }
+.dl-scam li::marker { color: var(--muted); }
+
+/* Every file */
+.dl-all { margin-top: clamp(64px, 8vw, 112px); }
+.dl > section > h2, .dl-all-head h2, .dl-info h2 { margin: 0 0 10px; font-size: clamp(26px, 2.6vw, 34px); font-weight: 600; letter-spacing: -0.015em; line-height: 1.2; }
+.dl-all-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 32px; align-items: center; }
+.dl-mark { display: block; width: clamp(140px, 14vw, 220px); height: auto; overflow: visible; }
+.dl-mark .sq { fill: #58a6ff; }
+.dl-mark .ci { fill: #a3e635; }
+.dl-mark .ov { fill: #3fd0c4; }
+@media (prefers-color-scheme: light) {
+  .dl-mark .sq { fill: #1f6feb; }
+  .dl-mark .ci { fill: #4d8f06; }
+  .dl-mark .ov { fill: #0f9e96; }
+}
+.dl-lead { margin: 0 0 18px; max-width: 68ch; color: var(--muted); }
+.dl-jump { display: flex; flex-wrap: wrap; gap: 4px 24px; margin: 0 0 8px; }
+.dl-jump a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+.dl-os { margin-top: 36px; scroll-margin-top: 16px; }
+.dl-os h3 { margin: 0 0 6px; font-size: 22px; font-weight: 600; }
+.dl-os > p { margin: 0 0 12px; max-width: 72ch; color: var(--muted); }
+.dl-os-note { font-size: 15px; }
+.dl-rows { list-style: none; margin: 10px 0 0; padding: 0; border-bottom: 1px solid var(--rule); }
+.dl-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px 32px;
+  align-items: center;
+  padding: 16px 0;
+  border-top: 1px solid var(--rule);
+}
+.dl-row h4 { margin: 0; font-size: 17px; font-weight: 600; }
+.dl-ext { font-family: var(--mono); font-size: 14px; font-weight: 400; color: var(--muted); }
+.dl-row-text p { margin: 2px 0 0; font-size: 15px; color: var(--muted); max-width: 62ch; }
+.dl-row-get { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; }
+.dl-get {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  min-height: 44px;
+  min-width: 150px;
+  padding: 10px 16px;
+  border: 1px solid var(--blue);
+  border-radius: 4px;
+  color: var(--blue);
+  font-weight: 600;
+  line-height: 1.4;
+  text-decoration: none;
+}
+.dl-get span { margin-left: auto; white-space: nowrap; font-size: 14px; font-weight: 400; color: var(--muted); }
+.dl-get:hover { background: var(--hover); text-decoration: underline; text-underline-offset: 3px; }
+.dl-sha { grid-column: 1 / -1; font-size: 14px; color: var(--muted); }
+.dl-sha summary, .dl-cmds summary, .dl-preview-files summary { display: inline-flex; align-items: center; min-height: 44px; cursor: pointer; }
+.dl-sha summary { min-height: 32px; }
+.dl-sha p { display: flex; gap: 12px; margin: 4px 0; }
+.dl-sha span { flex: none; min-width: 7em; }
+.dl .dl-sha code { background: none; padding: 0; color: var(--text); font-size: 13px; overflow-wrap: anywhere; word-break: break-all; }
+.dl-cmds { border-top: 1px solid var(--rule); }
+.dl-cmds:last-of-type { border-bottom: 1px solid var(--rule); }
+.dl-cmds summary { font-weight: 600; }
+.dl-cmds .code { margin: 4px 0 16px; }
+.dl .code code { padding: 0; background: none; overflow-wrap: normal; }
+.dl-repo details + p { margin-top: 16px; }
+.dl-check p { margin: 0 0 10px; }
+.dl-preview { margin-top: clamp(56px, 7vw, 96px); }
+.dl-preview > p { margin: 0 0 8px; color: var(--muted); }
+.dl-preview-files summary { font-weight: 600; }
+
+/* What it needs, for administrators, help */
+.dl-info {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--dl-gap);
+  margin-top: clamp(64px, 8vw, 112px);
+  padding-top: 32px;
+  border-top: 1px solid var(--rule);
+}
+.dl-info h2 { font-size: 22px; }
+.dl-info p { margin: 0; color: var(--muted); font-size: 15px; }
+.dl-info-list { list-style: none; margin: 0; padding: 0; }
+.dl-info-list li { padding: 12px 0; border-top: 1px solid var(--rule); }
+.dl-info-list li:first-child { border-top: 0; padding-top: 0; }
+.dl-info-list b { font-weight: 600; }
+
+@media (max-width: 1023px) {
+  .dl-hero { grid-template-columns: minmax(0, 1fr); }
+  .dl-rec { max-width: none; }
+  .dl-info { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 640px) {
+  .dl-scam { padding: 18px 18px 18px 18px; }
+  .dl-scam-icon { position: static; display: block; margin-bottom: 8px; }
+  .dl-row { grid-template-columns: minmax(0, 1fr); }
+  .dl-row-get { justify-content: flex-start; }
+  .dl-get { flex: 1 1 100%; }
+  .dl-all-head { grid-template-columns: minmax(0, 1fr); }
+  .dl-mark { display: none; }
+  .dl-btn { padding: 12px 18px; }
+}

@@ -22,6 +22,8 @@ export interface SiteConfig {
 	downloadUrl: string;
 	versionUrl: string;
 	version: string;
+	clientRepo: string;
+	clientReleasesUrl: string;
 	editBase: string;
 	aiCrawlers: string[];
 	summary: string;

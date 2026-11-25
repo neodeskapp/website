@@ -17,6 +17,8 @@ export interface ChromeOptions {
 	docs: string;
 	/** The brand page in the page's language; a right-click on the logo opens it */
 	brand: string;
+	/** The download page in the page's language, linked from the footer */
+	download: string;
 	/** The same page in the other languages, for the language entry */
 	languages: { locale: Locale; href: string }[];
 	/** Controls a kind of page adds between the logo and the entries, such as the docs' search */
@@ -70,6 +72,7 @@ export function siteFooter(o: ChromeOptions) {
     <p>${t.footer}</p>
     <nav aria-label="${esc(t.more)}">
       <a href="${esc(o.docs)}">${esc(t.docs)}</a>
+      <a href="${esc(o.download)}">${esc(t.download)}</a>
       <a href="${esc(o.docs)}compare/">${esc(t.compare)}</a>
       <a href="${esc(o.docs)}use-cases/">${esc(t.useCases)}</a>
       <a href="/llms.txt">llms.txt</a>

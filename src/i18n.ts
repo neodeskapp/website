@@ -73,6 +73,8 @@ export interface Strings {
 	security: string;
 	/** The footer's link to the brand page */
 	brand: string;
+	/** The footer's link to the download page */
+	download: string;
 	/** The footer's links to the comparisons and the use cases */
 	compare: string;
 	useCases: string;
@@ -146,6 +148,7 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		changelog: 'Changelog',
 		security: 'Security',
 		brand: 'Brand and logo',
+		download: 'Download',
 		compare: 'Compare',
 		useCases: 'Use cases',
 		note: 'Note',
@@ -206,6 +209,7 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		changelog: 'Changelog',
 		security: 'Sicherheit',
 		brand: 'Logo und Marke',
+		download: 'Download',
 		compare: 'Vergleiche',
 		useCases: 'Einsatzbeispiele',
 		note: 'Hinweis',

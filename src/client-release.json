@@ -1,0 +1,175 @@
+{
+	"main": {
+		"tag": "desktop-v1.5.0-rc.7",
+		"version": "1.5.0-rc.7",
+		"prerelease": true,
+		"published": "2026-11-24T17:17:18Z",
+		"page": "https://github.com/neodeskapp/neodesk-client/releases/tag/desktop-v1.5.0-rc.7",
+		"sums": "https://github.com/neodeskapp/neodesk-client/releases/download/desktop-v1.5.0-rc.7/SHA256SUMS",
+		"files": [
+			{
+				"name": "neodesk-1.5.0-rc.7-linux-aarch64-portable.tar.gz",
+				"os": "linux",
+				"arch": "arm64",
+				"kind": "portable",
+				"size": 31972141,
+				"url": "https://github.com/neodeskapp/neodesk-client/releases/download/desktop-v1.5.0-rc.7/neodesk-1.5.0-rc.7-linux-aarch64-portable.tar.gz",
+				"sha256": "b8a9c4b2739e7353db5eee3abac3cf6b601fc58faa72605f682816d2506d5c18"
+			},
+			{
+				"name": "neodesk-1.5.0-rc.7-linux-aarch64-suse.rpm",
+				"os": "linux",
+				"arch": "arm64",
+				"kind": "suse",
+				"size": 31872194,
+				"url": "https://github.com/neodeskapp/neodesk-client/releases/download/desktop-v1.5.0-rc.7/neodesk-1.5.0-rc.7-linux-aarch64-suse.rpm",
+				"sha256": "e849fcb12421b1a3542324b94ebebd36b366591e53eb47ebc92396f5eab28a30"
+			},
+			{
+				"name": "neodesk-1.5.0-rc.7-linux-aarch64.deb",
+				"os": "linux",
+				"arch": "arm64",
+				"kind": "deb",
+				"size": 22421768,
+				"url": "https://github.com/neodeskapp/neodesk-client/releases/download/desktop-v1.5.0-rc.7/neodesk-1.5.0-rc.7-linux-aarch64.deb",
+				"sha256": "ce0f68ba8e0b49a165ef4231f274624e4c36de974c0996c30e6405fee2ea9651"
+			},
+			{
+				"name": "neodesk-1.5.0-rc.7-linux-aarch64.rpm",
+				"os": "linux",
+				"arch": "arm64",
+				"kind": "rpm",
+				"size": 31872143,
+				"url": "https://github.com/neodeskapp/neodesk-client/releases/download/desktop-v1.5.0-rc.7/neodesk-1.5.0-rc.7-linux-aarch64.rpm",
+				"sha256": "1b47031e6878fd015773d0ce762e7da169b47bc25bb693d111e7a3d25af78a76"
+			},
+			{
+				"name": "neodesk-1.5.0-rc.7-linux-x86_64-portable.tar.gz",
+				"os": "linux",
+				"arch": "x64",
+				"kind": "portable",
+				"size": 32808801,
+				"url": "https://github.com/neodeskapp/neodesk-client/releases/download/desktop-v1.5.0-rc.7/neodesk-1.5.0-rc.7-linux-x86_64-portable.tar.gz",
+				"sha256": "75d627ebc9cabb03138efd546e9ca72931d0bd111a900278c52daf789c40244c"
+			},
+			{
+				"name": "neodesk-1.5.0-rc.7-linux-x86_64-suse.rpm",
+				"os": "linux",
+				"arch": "x64",
+				"kind": "suse",
+				"size": 32601725,
+				"url": "https://github.com/neodeskapp/neodesk-client/releases/download/desktop-v1.5.0-rc.7/neodesk-1.5.0-rc.7-linux-x86_64-suse.rpm",
+				"sha256": "0b0ad1f378fe13db02b2415abe9743fa18213cb12c62e253101a4a0822b892e0"
+			},
+			{
+				"name": "neodesk-1.5.0-rc.7-linux-x86_64.deb",
+				"os": "linux",
+				"arch": "x64",
+				"kind": "deb",
+				"size": 24076888,
+				"url": "https://github.com/neodeskapp/neodesk-client/releases/download/desktop-v1.5.0-rc.7/neodesk-1.5.0-rc.7-linux-x86_64.deb",
+				"sha256": "82230333596fe8999be51ef71d1825edeb27679c91c557cd58507c6ca42be5da"
+			},
+			{
+				"name": "neodesk-1.5.0-rc.7-linux-x86_64.rpm",
+				"os": "linux",
+				"arch": "x64",
+				"kind": "rpm",
+				"size": 32601736,
+				"url": "https://github.com/neodeskapp/neodesk-client/releases/download/desktop-v1.5.0-rc.7/neodesk-1.5.0-rc.7-linux-x86_64.rpm",
+				"sha256": "9b38bd7ba8a98d10bf50f6d7c53bcf16138d09caf926131a65c53d64948d22ba"
+			},
+			{
+				"name": "neodesk-1.5.0-rc.7-macos-aarch64-portable.zip",
+				"os": "macos",
+				"arch": "arm64",
+				"kind": "portable",
+				"size": 27732706,
+				"url": "https://github.com/neodeskapp/neodesk-client/releases/download/desktop-v1.5.0-rc.7/neodesk-1.5.0-rc.7-macos-aarch64-portable.zip",
+				"sha256": "b044a06b8c7233d25d7dfe7c109c9a07af388af1d193ef85996da34bb1c55ef3"
+			},
+			{
+				"name": "neodesk-1.5.0-rc.7-macos-aarch64.dmg",
+				"os": "macos",
+				"arch": "arm64",
+				"kind": "dmg",
+				"size": 27617298,
+				"url": "https://github.com/neodeskapp/neodesk-client/releases/download/desktop-v1.5.0-rc.7/neodesk-1.5.0-rc.7-macos-aarch64.dmg",
+				"sha256": "8bce4d3ed0b0c234f2b668e0b90459be0e5f172ac263977681b92756acdebfb7"
+			},
+			{
+				"name": "neodesk-1.5.0-rc.7-macos-x86_64-portable.zip",
+				"os": "macos",
+				"arch": "x64",
+				"kind": "portable",
+				"size": 34330014,
+				"url": "https://github.com/neodeskapp/neodesk-client/releases/download/desktop-v1.5.0-rc.7/neodesk-1.5.0-rc.7-macos-x86_64-portable.zip",
+				"sha256": "0cec4905f21266776bf1ea6499dfa14bf36e59c1e2219181bb2bdf31b08a7a61"
+			},
+			{
+				"name": "neodesk-1.5.0-rc.7-macos-x86_64.dmg",
+				"os": "macos",
+				"arch": "x64",
+				"kind": "dmg",
+				"size": 34128869,
+				"url": "https://github.com/neodeskapp/neodesk-client/releases/download/desktop-v1.5.0-rc.7/neodesk-1.5.0-rc.7-macos-x86_64.dmg",
+				"sha256": "ef38678b34977d7a584235e3e72002843cd3deab7c870eeedae3f01321be6b14"
+			},
+			{
+				"name": "neodesk-1.5.0-rc.7-windows-aarch64.exe",
+				"os": "windows",
+				"arch": "arm64",
+				"kind": "exe",
+				"size": 23371528,
+				"url": "https://github.com/neodeskapp/neodesk-client/releases/download/desktop-v1.5.0-rc.7/neodesk-1.5.0-rc.7-windows-aarch64.exe",
+				"sha256": "cd711397aef285257d459ac2b243fff4ff3443583c053379318700782b6ee4d6"
+			},
+			{
+				"name": "neodesk-1.5.0-rc.7-windows-aarch64.msi",
+				"os": "windows",
+				"arch": "arm64",
+				"kind": "msi",
+				"size": 25792512,
+				"url": "https://github.com/neodeskapp/neodesk-client/releases/download/desktop-v1.5.0-rc.7/neodesk-1.5.0-rc.7-windows-aarch64.msi",
+				"sha256": "d951a63ed72c99480314a63ad25b60d58d6ba18e2882aca6b0bf786edd2cbebb"
+			},
+			{
+				"name": "neodesk-1.5.0-rc.7-windows-aarch64.tar.gz",
+				"os": "windows",
+				"arch": "arm64",
+				"kind": "portable",
+				"size": 31923847,
+				"url": "https://github.com/neodeskapp/neodesk-client/releases/download/desktop-v1.5.0-rc.7/neodesk-1.5.0-rc.7-windows-aarch64.tar.gz",
+				"sha256": "1253d47949d430ac450f73dc83bc06f015d38c062242acb3e2a7d45925b36fc8"
+			},
+			{
+				"name": "neodesk-1.5.0-rc.7-windows-x86_64.exe",
+				"os": "windows",
+				"arch": "x64",
+				"kind": "exe",
+				"size": 25438608,
+				"url": "https://github.com/neodeskapp/neodesk-client/releases/download/desktop-v1.5.0-rc.7/neodesk-1.5.0-rc.7-windows-x86_64.exe",
+				"sha256": "ef03b3f019ba579a7f3eff4a608c90ae3e6e00b46abbea737e5055b412ebe72a"
+			},
+			{
+				"name": "neodesk-1.5.0-rc.7-windows-x86_64.msi",
+				"os": "windows",
+				"arch": "x64",
+				"kind": "msi",
+				"size": 27652096,
+				"url": "https://github.com/neodeskapp/neodesk-client/releases/download/desktop-v1.5.0-rc.7/neodesk-1.5.0-rc.7-windows-x86_64.msi",
+				"sha256": "848dc7210b773b130e31fd09e30b1f4e60822f2fc25c5c258d1ec659b45c3465"
+			},
+			{
+				"name": "neodesk-1.5.0-rc.7-windows-x86_64.tar.gz",
+				"os": "windows",
+				"arch": "x64",
+				"kind": "portable",
+				"size": 34044780,
+				"url": "https://github.com/neodeskapp/neodesk-client/releases/download/desktop-v1.5.0-rc.7/neodesk-1.5.0-rc.7-windows-x86_64.tar.gz",
+				"sha256": "703b8d9697e3f95d5e67feb328fd52d5dc935215f50636074c43c4fc85058a6a"
+			}
+		]
+	},
+	"preview": null
+}
