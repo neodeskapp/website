@@ -152,7 +152,7 @@ export const DOWNLOAD: Record<string, DownloadStrings> = {
 		checkText: 'Each file\'s SHA-256 is under its row and in <a href="{sums}" rel="noopener">SHA256SUMS</a>. Compute the hash of the file you downloaded and compare:',
 		checkHow: 'In PowerShell: <code>Get-FileHash &lt;file&gt;</code>. On a Mac: <code>shasum -a 256 &lt;file&gt;</code>. On Linux: <code>sha256sum &lt;file&gt;</code>.',
 		previewTitle: 'Preview',
-		previewText: 'Version {version} is a release candidate, for testing. It was published {date}.',
+		previewText: 'The next version, {version}, published {date}.',
 		previewFiles: 'Files of the preview',
 		needsTitle: 'Before you install',
 		needs: [
@@ -238,7 +238,7 @@ export const DOWNLOAD: Record<string, DownloadStrings> = {
 		checkText: 'Die SHA-256 jeder Datei steht unter ihrer Zeile und in <a href="{sums}" rel="noopener">SHA256SUMS</a>. Berechne den Hash der heruntergeladenen Datei und vergleiche:',
 		checkHow: 'In PowerShell: <code>Get-FileHash &lt;datei&gt;</code>. Auf dem Mac: <code>shasum -a 256 &lt;datei&gt;</code>. Unter Linux: <code>sha256sum &lt;datei&gt;</code>.',
 		previewTitle: 'Vorschau',
-		previewText: 'Version {version} ist ein Release Candidate, zum Testen. Veröffentlicht am {date}.',
+		previewText: 'Die nächste Version, {version}, veröffentlicht am {date}.',
 		previewFiles: 'Dateien der Vorschau',
 		needsTitle: 'Vor der Installation',
 		needs: [
