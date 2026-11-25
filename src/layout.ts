@@ -2,6 +2,7 @@
 import type { Page, Pager, Section, Shared } from './types.ts';
 import { DEFAULT_LOCALE, fill } from './i18n.ts';
 import { siteHeader, siteFooter } from './chrome.ts';
+import { plain } from './search.ts';
 
 export const esc = (s: unknown) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -327,10 +328,12 @@ ${tocItems.map((h) => `      <li${h.level === 3 ? ' class="sub"' : ''}><a href="
     <div class="prose">
 ${page.html}
     </div>
+    ${seeAlso(shared, page)}
     ${prev || next ? `<nav class="pager" aria-label="${esc(t.pager)}">${pagerLink(prev, 'pager-prev')}${pagerLink(next, 'pager-next')}</nav>` : ''}`;
 	return frame({
 		...shared,
 		title: page.title,
+		...(page.seoTitle ? { fullTitle: page.seoTitle } : {}),
 		description: page.description,
 		path: `/docs/${page.slug}/`,
 		current: page.slug,
@@ -352,9 +355,63 @@ ${page.html}
 				url: inLocale(shared, `/docs/${page.slug}/`),
 				inLanguage: locale.code,
 				dateModified: page.updated
-			}
+			},
+			...(page.howto ? [howTo(shared, page)] : [])
 		]
 	});
+}
+
+/** "See also": the pages front matter `related` names, with their descriptions. */
+function seeAlso(shared: Shared, page: Page) {
+	const all = shared.sections.flatMap((s) => s.items);
+	const items = (page.related ?? []).map((r) => all.find((p) => `/docs/${p.slug}` === r)).filter((p): p is Page => !!p);
+	if (!items.length) return '';
+	return `<nav class="see-also" aria-labelledby="see-also">
+      <h2 id="see-also">${esc(shared.t.seeAlso)}</h2>
+      <ul class="rows">
+${items.map((p) => `        <li><a href="${inLocale(shared, `/docs/${p.slug}/`)}">${esc(p.title)}</a><p>${esc(p.description)}</p></li>`).join('\n')}
+      </ul>
+    </nav>`;
+}
+
+/**
+ * HowTo structured data for a page whose sections are steps (front matter `howto`): each
+ * step is a heading, its address and the first paragraph under it.
+ */
+function howTo(shared: Shared, page: Page) {
+	const lines = page.body.split('\n');
+	const steps = (page.howto ?? []).map((id) => {
+		const h = page.headings.find((x) => x.id === id)!;
+		// The first block of text or list under the heading, before the next heading; code, tables and notes are skipped
+		const blocks: string[][] = [];
+		let fence = false;
+		let block: string[] = [];
+		for (const l of lines.slice(h.line + 1)) {
+			if (/^#{1,6} /.test(l) && !fence) break;
+			if (/^\s*(```|~~~)/.test(l)) {
+				fence = !fence;
+				block = [];
+				continue;
+			}
+			if (fence) continue;
+			if (!l.trim()) {
+				if (block.length) blocks.push(block);
+				block = [];
+			} else block.push(l);
+		}
+		if (block.length) blocks.push(block);
+		const first = blocks.find((b) => !/^(\||:::|!\[)/.test(b[0].trim()));
+		const text = first ? plain(first.join('\n')) : h.text;
+		return { '@type': 'HowToStep', name: h.text, text, url: `${inLocale(shared, `/docs/${page.slug}/`)}#${h.id}` };
+	});
+	return {
+		'@context': 'https://schema.org',
+		'@type': 'HowTo',
+		name: page.title,
+		description: page.description,
+		inLanguage: shared.locale.code,
+		step: steps
+	};
 }
 
 export interface PreviewItem {

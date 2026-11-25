@@ -86,11 +86,12 @@
   });
 
   /* ---- Keep the current page visible in a long sidebar ---- */
+  // After the first frame, so reading the sidebar's size does not force a layout of its own
   var here = $('.sidebar li a[aria-current="page"]');
   var side = $('.sidebar');
-  if (here && side && side.scrollHeight > side.clientHeight) {
-    side.scrollTop = here.offsetTop - side.clientHeight / 2;
-  }
+  if (here && side) requestAnimationFrame(function () {
+    if (side.scrollHeight > side.clientHeight) side.scrollTop = here.offsetTop - side.clientHeight / 2;
+  });
 
   /* ---- "On this page": mark the section being read ---- */
   var tocLinks = $$('.toc a');
@@ -112,7 +113,7 @@
       queued = true;
       requestAnimationFrame(function () { queued = false; mark(); });
     }, { passive: true });
-    mark();
+    requestAnimationFrame(mark);
   }
 
   /* ---- Search ----

@@ -2,6 +2,8 @@
 title: First sign-in
 description: Sign in as admin, secure the account, set the address clients use, and find your way around the console.
 order: 5
+related: /docs/console/add-a-computer, /docs/getting-started/connect-a-client, /docs/people/two-factor
+howto: open-the-console, sign-in, change-the-admin-password, turn-on-two-factor-sign-in, set-the-address-clients-use
 ---
 
 After the install, sign in to the web console as `admin`. This page covers the

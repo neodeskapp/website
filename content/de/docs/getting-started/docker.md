@@ -2,6 +2,7 @@
 title: Installation mit Docker
 description: Betreibe Server und Web-Konsole in einem Container aus dem veröffentlichten Image, mit dem Installationsskript oder einer Compose-Datei.
 order: 2
+seoTitle: NeoDesk mit Docker installieren, RustDesk-kompatibel
 ---
 
 Das Docker-Setup betreibt `neodesk-server` in einem Container: den ID-Server,

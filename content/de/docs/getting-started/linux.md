@@ -2,6 +2,7 @@
 title: Installation unter Linux
 description: Installiere Server und Web-Konsole mit dem Skript neodesk.sh als einen systemd-Dienst.
 order: 3
+seoTitle: NeoDesk unter Linux installieren, RustDesk-kompatibel
 ---
 
 Das Skript `neodesk.sh` installiert NeoDesk auf einem Linux-Server als einen

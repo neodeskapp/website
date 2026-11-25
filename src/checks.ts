@@ -538,6 +538,27 @@ export function checkStructuredData({ dist, urls, version }: CheckInput) {
 			});
 			if (items.length && items[items.length - 1].item !== canonical) problems.push(`${rel}: the last breadcrumb is not the page itself`);
 		}
+		// HowTo: every step names a heading of this page and says something in words
+		const howTo = ofType('HowTo');
+		if (howTo) {
+			const steps = (howTo.step ?? []) as Thing[];
+			if (steps.length < 2) problems.push(`${rel}: the HowTo has fewer than two steps`);
+			const ids = new Set(findAll(parse(html), (el) => !!el.attrs.id).map((el) => el.attrs.id));
+			for (const s of steps) {
+				const [at, id] = String(s.url ?? '').split('#');
+				if (at !== canonical || !ids.has(id)) problems.push(`${rel}: the HowTo step "${s.name}" does not lead to a heading of this page`);
+				if (!s.text || /```|\|/.test(String(s.text))) problems.push(`${rel}: the HowTo step "${s.name}" has no plain text`);
+			}
+		}
+		// FAQPage: every question is on the page, as a heading the reader sees
+		const faq = ofType('FAQPage');
+		if (faq) {
+			const headings = new Set(findAll(parse(html), (el) => /^h[2-4]$/.test(el.tag)).map((el) => squash(textOf(el))));
+			for (const q of (faq.mainEntity ?? []) as Thing[]) {
+				if (!headings.has(String(q.name))) problems.push(`${rel}: the FAQPage question "${q.name}" is not a heading of the page`);
+				if (!(q.acceptedAnswer as Thing | undefined)?.text) problems.push(`${rel}: the FAQPage question "${q.name}" has no answer`);
+			}
+		}
 	}
 	// One sitemap per host: each lists only its own host's pages
 	const listed = new Set<string>();
@@ -549,6 +570,9 @@ export function checkStructuredData({ dist, urls, version }: CheckInput) {
 			if (!loc.startsWith(`${base}/`)) problems.push(`${file}: ${loc} is not on ${base}`);
 			if (!validDate(m[1].match(/<lastmod>([^<]+)<\/lastmod>/)?.[1])) problems.push(`${file}: ${loc} has no valid lastmod`);
 			if (!canonicals.has(loc)) problems.push(`${file}: ${loc} is not the canonical address of a built page`);
+			const langs = [...m[1].matchAll(/<xhtml:link rel="alternate" hreflang="([^"]+)" href="([^"]+)"\/>/g)];
+			for (const [, code, href] of langs) if (!canonicals.has(href)) problems.push(`${file}: ${loc} names ${href} for ${code}, which is not the canonical address of a built page`);
+			if (langs.length && !langs.some((l) => l[1] === 'x-default')) problems.push(`${file}: ${loc} has language versions but no x-default`);
 		}
 	}
 	for (const c of canonicals) if (!listed.has(c)) problems.push(`sitemap.xml: no sitemap lists ${c}`);

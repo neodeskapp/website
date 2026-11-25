@@ -62,6 +62,12 @@ export interface Page {
 	product?: string;
 	/** For the release template: the version, from front matter `release` */
 	release?: string;
+	/** Front matter `seoTitle`: the whole <title>, when the page's title alone is not what people search for */
+	seoTitle?: string;
+	/** Front matter `related`: docs pages for "See also", by address; translations take the English page's */
+	related?: string[];
+	/** Front matter `howto`: the ids of the headings that are the steps, in order, for HowTo structured data */
+	howto?: string[];
 	/**
 	 * Front matter `fold: true`: the sidebar lists this page's children only on the page
 	 * and its children, and the section page and the docs index leave them out

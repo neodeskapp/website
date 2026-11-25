@@ -2,6 +2,9 @@
 title: Connect a RustDesk client
 description: Point a RustDesk client at your server with the four values from the Overview page.
 order: 6
+seoTitle: Connect a RustDesk client to your NeoDesk server
+related: /docs/console/add-a-computer, /docs/console/unattended-access, /docs/operations/troubleshooting
+howto: install-the-rustdesk-client, get-the-four-values, enter-the-values-in-the-client
 ---
 
 A RustDesk client connects to your server once it knows four values: the ID

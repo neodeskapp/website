@@ -2,6 +2,7 @@
 title: Installation unter Windows
 description: Installiere Server und Web-Konsole mit dem Skript neodesk.ps1 als Windows-Dienst.
 order: 4
+seoTitle: NeoDesk unter Windows installieren, RustDesk-kompatibel
 ---
 
 Das Skript `neodesk.ps1` installiert NeoDesk auf einem Windows-Rechner. Es

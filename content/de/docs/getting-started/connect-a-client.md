@@ -2,6 +2,7 @@
 title: Einen RustDesk-Client verbinden
 description: Trage deinen Server mit den vier Werten von der Seite Übersicht in einen RustDesk-Client ein.
 order: 6
+seoTitle: RustDesk-Client mit deinem NeoDesk-Server verbinden
 ---
 
 Ein RustDesk-Client verbindet sich mit deinem Server, sobald er vier Werte

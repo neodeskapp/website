@@ -2,6 +2,7 @@
 title: API tokens
 description: Make a token for a script, the neodesk command line or an AI agent, pick its permissions, use it with neodesk or curl, and revoke it.
 order: 2
+related: /docs/command-line/neodesk, /docs/command-line/mcp
 ---
 
 An API token lets a script, the `neodesk` command line or an AI agent use the

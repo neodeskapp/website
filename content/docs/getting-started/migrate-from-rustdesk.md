@@ -2,6 +2,8 @@
 title: Move from a RustDesk server
 description: Replace a RustDesk server (hbbs and hbbr) with NeoDesk and keep its key, so the RustDesk clients keep working without changes.
 order: 7
+seoTitle: Replace hbbs and hbbr with NeoDesk and keep the key
+related: /docs/getting-started/connect-a-client, /docs/operations/ports
 ---
 
 NeoDesk takes the place of hbbs and hbbr. A RustDesk client checks the server

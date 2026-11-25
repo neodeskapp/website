@@ -290,10 +290,14 @@ The build checks the pages as it reads them and the files it wrote to
   strings. Every page of the English site has its German version at the same
   address under `/de/` (the `/og/` contact sheet excepted).
 - Structured data: the home page has a JSON-LD SoftwareApplication with name,
-  license, operating systems, version and download address; every docs page a
-  TechArticle with `dateModified` and a BreadcrumbList that ends at the page.
-  The two sitemaps together list every page that has a canonical address,
-  each on its own host's sitemap, each with
+  license, operating systems, version, download address and a free offer, the
+  Organization with its logo, Discord and GitHub, and a FAQPage whose every
+  question is a heading of the page; every docs page a TechArticle with
+  `dateModified` and a BreadcrumbList that ends at the page; a page with
+  `howto` a HowTo whose every step leads to a heading of the page and has
+  plain text. The two sitemaps together list every page that has a canonical
+  address, each on its own host's sitemap with its language versions and
+  `x-default`, each with
   `lastmod`: a page's date is the last commit of its file, a list's the newest
   of its pages. Without git history (a shallow clone) every date is the same
   commit, so CI needs the full history.
@@ -367,6 +371,23 @@ One or two sentences that say what the page covers and who needs it.
 - `quoted: true` says the page quotes NeoDesk's own help text, so its inline
   code may keep NeoDesk's placeholders (`--file PATH`, `{id}`); see [Code](#code).
   Only the generated command reference needs it.
+- `seoTitle` is the whole `<title>`, at most 60 characters, for a page whose
+  title alone is not what people search for: `seoTitle: Install NeoDesk with
+  Docker: a RustDesk-compatible server`. The h1, the sidebar and the link
+  preview keep `title`. A translation sets its own.
+- `related` lists docs pages, by address and comma-separated, that the page
+  shows under "See also" with their descriptions. Use it where a reader
+  usually goes next, not to link everything. Translations take the English
+  page's list.
+- `howto` lists, comma-separated, the ids of the headings that are the
+  page's steps, in order. The page then gets HowTo structured data: each step
+  with its heading, address and first paragraph. Only for a page whose
+  sections really are steps, such as an install page. Translations take the
+  English page's list.
+
+The short answers under "Questions" on the home page, and under "Quick
+answers" in llms.txt, are in `src/answers.ts`, one list per language. Keep
+them true of the docs and end each with the page that has the details.
 
 ### Links
 

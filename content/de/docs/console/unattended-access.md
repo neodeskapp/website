@@ -2,6 +2,7 @@
 title: Unbeaufsichtigter Zugriff und Wake-on-LAN
 description: Ein Gerät ohne jemanden davor erreichen, mit einem permanenten Passwort in NeoDesk oder RustDesk, und einen schlafenden Computer vom Server aus wecken.
 order: 10
+seoTitle: Unbeaufsichtigter Zugriff mit RustDesk und NeoDesk
 ---
 
 Unbeaufsichtigter Zugriff heißt, sich mit einem Gerät zu verbinden, wenn niemand da ist, der die Verbindung annimmt. Das geht über ein permanentes Passwort, das auf dem Gerät selbst gesetzt wird, im NeoDesk-Client oder im normalen RustDesk. Diese Seite zeigt, wo du dieses Passwort setzt, wie die Konsole dir hilft, es zu teilen, und wie du einen schlafenden Computer aufweckst.

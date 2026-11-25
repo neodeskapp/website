@@ -2,6 +2,8 @@
 title: Ports and firewall
 description: Which ports NeoDesk listens on, who connects to each, which to open to the internet, and firewall commands for Linux and Windows.
 order: 2
+seoTitle: NeoDesk ports and firewall for RustDesk clients
+related: /docs/operations/reverse-proxy-tls, /docs/operations/configuration, /docs/operations/troubleshooting
 ---
 
 RustDesk clients reach the server on a handful of ports, and people open the web console in a browser on another. This page lists them, says which ones the internet has to reach, and shows how to open them.

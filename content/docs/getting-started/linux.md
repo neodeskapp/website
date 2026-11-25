@@ -2,6 +2,9 @@
 title: Install on Linux
 description: Install the server and the web console as one systemd service with the neodesk.sh script.
 order: 3
+seoTitle: Install NeoDesk on Linux: a RustDesk-compatible server
+related: /docs/getting-started/first-sign-in, /docs/operations/ports, /docs/operations/reverse-proxy-tls, /docs/operations/updating
+howto: requirements, install, admin-credentials, first-sign-in-address
 ---
 
 The `neodesk.sh` script installs NeoDesk on a Linux server as one systemd

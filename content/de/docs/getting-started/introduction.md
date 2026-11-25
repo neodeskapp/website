@@ -2,6 +2,7 @@
 title: Einführung
 description: Was NeoDesk ist, woraus es besteht und was du brauchst, um es zu betreiben.
 order: 1
+seoTitle: Was NeoDesk ist: ein RustDesk-kompatibler Server - NeoDesk
 ---
 
 NeoDesk ist ein selbst gehosteter Server für den Remote-Desktop-Client
@@ -28,7 +29,10 @@ Deine Geräte können weiter den normalen RustDesk-Client nutzen, auf Computern
 wie auf Handys: Du trägst deinen Server ein, sonst ändert sich auf der
 Client-Seite nichts. NeoDesk hat außerdem einen eigenen Client für Windows,
 macOS und Linux, der sich über einen Einladungslink mit deinem Server
-verbindet.
+verbindet. Seine Releases liegen auf
+[github.com/neodeskapp/neodesk-client](https://github.com/neodeskapp/neodesk-client/releases):
+`.exe` und `.msi` für Windows, `.dmg` für macOS sowie `.deb`, `.rpm` und ein
+portables Archiv für Linux.
 
 ## Woraus es besteht {#what-it-is-made-of}
 

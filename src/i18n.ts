@@ -83,6 +83,8 @@ export interface Strings {
 	/** "Nothing found for "{query}". ...", under the search field */
 	nothingFound: string;
 	searchFailed: string;
+	/** The heading over a page's related pages */
+	seeAlso: string;
 	/** The groups of search results */
 	groupPages: string;
 	groupCommands: string;
@@ -146,6 +148,7 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		resultsCount: '{count} results',
 		nothingFound: 'Nothing found for "{query}". Try fewer or other words.',
 		searchFailed: 'The search index could not be loaded.',
+		seeAlso: 'See also',
 		groupPages: 'Pages',
 		groupCommands: 'Commands',
 		groupSettings: 'Settings and flags',
@@ -202,6 +205,7 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		resultsCount: '{count} Ergebnisse',
 		nothingFound: 'Nichts gefunden für „{query}“. Versuch es mit weniger oder anderen Wörtern.',
 		searchFailed: 'Der Suchindex ließ sich nicht laden.',
+		seeAlso: 'Siehe auch',
 		groupPages: 'Seiten',
 		groupCommands: 'Befehle',
 		groupSettings: 'Einstellungen und Flags',

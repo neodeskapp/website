@@ -2,6 +2,7 @@
 title: Ports und Firewall
 description: Auf welchen Ports NeoDesk lauscht, wer sich mit welchem verbindet, welche du zum Internet öffnest, und Firewall-Befehle für Linux und Windows.
 order: 2
+seoTitle: NeoDesk: Ports und Firewall für RustDesk-Clients
 ---
 
 RustDesk-Clients erreichen den Server über eine Handvoll Ports, und die Web-Konsole öffnen Menschen im Browser auf einem weiteren Port. Diese Seite listet die Ports auf, sagt, welche aus dem Internet erreichbar sein müssen, und zeigt, wie du sie öffnest.

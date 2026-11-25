@@ -2,6 +2,7 @@
 title: Umzug von einem RustDesk-Server
 description: Ersetze einen RustDesk-Server (hbbs und hbbr) durch NeoDesk und behalte seinen Schlüssel, damit die RustDesk-Clients ohne Änderung weiterlaufen.
 order: 7
+seoTitle: hbbs und hbbr durch NeoDesk ersetzen, Schlüssel behalten
 ---
 
 NeoDesk nimmt den Platz von hbbs und hbbr ein. Ein RustDesk-Client prüft den

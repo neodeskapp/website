@@ -15,6 +15,8 @@ import { docsIndexPage, allPagesPage, docPage, sectionPage, notFoundPage, contac
 import { siteHeader, siteFooter } from './src/chrome.ts';
 import { makeUrls } from './src/urls.ts';
 import { HEADING_ATTRS_LINE, buildIndex, indexFiles, checkIndex } from './src/search.ts';
+import { answersOf, answerHtml, answerText, answerMarkdown } from './src/answers.ts';
+import type { Answer } from './src/answers.ts';
 import type { PreviewItem } from './src/layout.ts';
 import { render as renderPreview } from './src/og.ts';
 import type { OgData, OgTemplate } from './src/og.ts';
@@ -218,6 +220,9 @@ function loadPages(dir: string, locale: Locale, version: string): Page[] {
 			og: data.og,
 			product: data.product,
 			release: data.release,
+			seoTitle: data.seoTitle,
+			related: data.related ? data.related.split(',').map((s) => s.trim()).filter(Boolean) : undefined,
+			howto: data.howto ? data.howto.split(',').map((s) => s.trim()).filter(Boolean) : undefined,
 			fold: data.fold === 'true',
 			quoted: data.quoted === 'true',
 			body: body.trim() + '\n',
@@ -496,7 +501,13 @@ const kb = (bytes: number) => `${Math.max(1, Math.round(bytes / 1024))} KB`;
  * The top of llms.txt: what NeoDesk is, a section for AI agents with the one-line installs
  * and the agent tools that exist (src/agents.ts), and the docs as one file per section.
  */
-function llmsTxt({ bundles, fullBytes, titleOf }: { bundles: { label: string; file: string; bytes: number; pages: number }[]; fullBytes: number; titleOf: (docs: string) => string }) {
+function llmsTxt({ bundles, fullBytes, titleOf, answers }: { bundles: { label: string; file: string; bytes: number; pages: number }[]; fullBytes: number; titleOf: (docs: string) => string; answers: Answer[] }) {
+	// A docs link in an answer leads to the page's Markdown copy, its heading kept
+	const mdHref = (p: string) => {
+		if (!p.startsWith('/docs')) return p;
+		const [page, hash] = p.split('#');
+		return `${url(`${page.replace(/\/$/, '')}.md`)}${hash ? `#${hash}` : ''}`;
+	};
 	const installs = INSTALLS.filter((i) => i.oneLine)
 		.map((i) => `- ${i.oneLine}. See [${titleOf(i.docs)}](${url(`${i.docs}.md`)}).\n\n  \`\`\`${i.lang}\n  ${i.lines[0]}\n  \`\`\``)
 		.join('\n\n');
@@ -508,6 +519,9 @@ function llmsTxt({ bundles, fullBytes, titleOf }: { bundles: { label: string; fi
 		`Install NeoDesk on a server with one command:\n\n${installs}`,
 		'Both print the address of the web console and the admin password at the end. In the docs every command is in a fenced block with its language, placeholders look like `<server-address>`, and the text next to a block says what to put in.',
 		...(tools.length ? [`Tools for agents:\n\n${tools.join('\n')}`] : []),
+		`The website is ${SITE_URL}/ and the docs are at ${DOCS_URL}/, in English and in German (${url('/de/docs/')}). Paid support and help with a setup: support@neode.sk. Help on Discord: ${config.discord}.`,
+		'## Quick answers',
+		answers.map((x) => `### ${x.q}\n\n${answerMarkdown(x.a, mdHref)}`).join('\n\n'),
 		'## Docs as text',
 		'Every docs page below is Markdown at the address shown. The same page as HTML is at that address without .md. The docs of one section are also in one file:',
 		[...bundles.map((b) => `- [${b.label}](${SITE_URL}/${b.file}): ${kb(b.bytes)}, ${b.pages} page${b.pages === 1 ? '' : 's'}`), `- [All docs](${SITE_URL}/llms-full.txt): ${kb(fullBytes)}`].join('\n'),
@@ -569,6 +583,17 @@ async function build() {
 		console.error(`No docs in ${DOCS}`);
 		return false;
 	}
+	// A translation takes "See also" and the HowTo steps from the English page
+	for (const site of sites.filter((s) => s !== main)) {
+		for (const page of site.pages) {
+			const en = main.pages.find((p) => p.slug === page.slug);
+			page.related ??= en?.related;
+			page.howto ??= en?.howto;
+		}
+	}
+	for (const page of main.pages) {
+		for (const r of page.related ?? []) if (!main.pages.some((p) => `/docs/${p.slug}` === r)) problems.push(`${page.rel}: related: "${r}" is not a page`);
+	}
 
 	// Which languages have a page at each address
 	const available = new Map<string, Locale[]>();
@@ -603,6 +628,9 @@ async function build() {
 	// Render every page
 	const usedShots = new Set<string>();
 	for (const site of sites) for (const page of site.pages) page.html = makeMarkdown(page, usedShots, site.t, linkIn(site.locale)).render(page.body);
+	for (const site of sites) {
+		for (const page of site.pages) for (const id of page.howto ?? []) if (!page.headings.some((h) => h.id === id)) problems.push(`${page.rel}: howto: no heading "#${id}"`);
+	}
 
 	// Check every link between pages. A translated page may link to a page that exists in the default language only.
 	const byAddress = (site: Site) => new Map(site.pages.map((p) => [`/docs/${p.slug}`, p]));
@@ -793,6 +821,7 @@ async function build() {
 	const ports = clientPorts(main.pages.find((p) => p.slug === PORTS_PAGE)?.body ?? '');
 	if (!ports.length) problems.push(`src/home.html: no client ports found in the table of content/docs/${PORTS_PAGE}.md`);
 	const homeTemplate = withWebp(read(at('src/home.html')));
+	let llmsAnswers: Answer[] = [];
 	for (const site of sites) {
 		const { locale } = site;
 		const h = homeStringsOf(locale.code);
@@ -804,6 +833,27 @@ async function build() {
 			.map((p) => `<span class="mono lime">${esc(p.port)}</span>${/UDP/.test(p.protocol) ? ` (${esc(protocols.get(p.port) ?? p.protocol)})` : ''}`)
 			.join(', ')
 			.replace(/, ([^,]*)$/, ` ${h.and} $1`);
+		const portsText = ports
+			.map((p) => `${p.port}${/UDP/.test(p.protocol) ? ` (${protocols.get(p.port) ?? p.protocol})` : ''}`)
+			.join(', ')
+			.replace(/, ([^,]*)$/, ` ${h.and} $1`);
+		// Short answers to what people ask, shown under "Questions" and as FAQPage data
+		const answers = answersOf(locale.code, portsText, version);
+		if (locale.default) llmsAnswers = answers;
+		const answerHref = (p: string) => (p.startsWith('/') ? url(linkIn(locale)(p.split('#')[0]) + (p.includes('#') ? `#${p.split('#')[1]}` : '')) : p);
+		const questions = answers
+			.map((x, i) => `        <div class="faq-item">\n          <h3 id="q${i + 1}">${esc(x.q)}</h3>\n          <p>${answerHtml(x.a, answerHref)}</p>\n        </div>`)
+			.join('\n');
+		const organization = {
+			'@context': 'https://schema.org',
+			'@type': 'Organization',
+			'@id': `${SITE_URL}/#organization`,
+			name: config.name,
+			url: `${SITE_URL}/`,
+			logo: `${SITE_URL}/img/neodesk-app-icon-512.png`,
+			email: 'support@neode.sk',
+			sameAs: [config.discord, 'https://github.com/neodeskapp']
+		};
 		const software = {
 			'@context': 'https://schema.org',
 			'@type': 'SoftwareApplication',
@@ -811,11 +861,21 @@ async function build() {
 			description: locale.default ? config.summary : h.summary,
 			url: `${SITE_URL}${locale.prefix}/`,
 			applicationCategory: 'UtilitiesApplication',
+			applicationSubCategory: 'Remote desktop server',
 			operatingSystem: 'Linux, Windows',
 			softwareVersion: version,
 			license: config.license,
 			downloadUrl: config.downloadUrl,
-			isAccessibleForFree: true
+			isAccessibleForFree: true,
+			offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
+			publisher: { '@id': `${SITE_URL}/#organization` },
+			sameAs: [config.repo]
+		};
+		const faq = {
+			'@context': 'https://schema.org',
+			'@type': 'FAQPage',
+			inLanguage: locale.code,
+			mainEntity: answers.map((x) => ({ '@type': 'Question', name: x.q, acceptedAnswer: { '@type': 'Answer', text: answerText(x.a) } }))
 		};
 		const { tabs, panels } = installMarkup(locale, h);
 		const chrome = {
@@ -838,7 +898,8 @@ async function build() {
 				'{{SOCIAL}}',
 				socialTags({ type: 'website', siteName: config.name, title: h.title, description: h.description, url: `${SITE_URL}${locale.prefix}/`, locale: locale.ogLocale, image: previewOf(`${locale.prefix}/`) })
 			)
-			.replace('{{JSONLD}}', `<script type="application/ld+json">${JSON.stringify(software).replace(/</g, '\\u003c')}</script>`)
+			.replace('{{QUESTIONS}}', questions)
+			.replace('{{JSONLD}}', `<script type="application/ld+json">${JSON.stringify([software, organization, faq]).replace(/</g, '\\u003c')}</script>`)
 			.replace('{{LANG}}', locale.code)
 			.replaceAll('{{PREFIX}}', locale.prefix)
 			.replaceAll('{{VERSION}}', version)
@@ -880,7 +941,7 @@ async function build() {
 	}
 	write(
 		'llms.txt',
-		llmsTxt({ bundles, fullBytes: Buffer.byteLength(full), titleOf: (docs) => main.pages.find((p) => `/docs/${p.slug}` === docs)?.title ?? docs }) +
+		llmsTxt({ bundles, fullBytes: Buffer.byteLength(full), titleOf: (docs) => main.pages.find((p) => `/docs/${p.slug}` === docs)?.title ?? docs, answers: llmsAnswers }) +
 			`## Start here\n\n- [Source code](${config.repo}): the repository, with the installers and the changelog\n\n` +
 			sections.map((s) => `## ${s.label}\n\n${s.intro}\n\n${pageList(s.items)}`).join('\n\n') +
 			'\n'
@@ -899,9 +960,20 @@ async function build() {
 		])
 	];
 	// One sitemap per host: the www host's pages in sitemap.xml, the docs in docs/sitemap.xml
+	// Each entry names its language versions and x-default, as the page's hreflang links do
+	const alternates = (u: string) => {
+		const locale = LOCALES.find((l) => l.prefix && (u === `${l.prefix}/` || u.startsWith(`${l.prefix}/`))) ?? DEFAULT_LOCALE;
+		const bare = u.slice(locale.prefix.length) || '/';
+		const langs = versions(bare);
+		if (langs.length < 2) return '';
+		const fallback = langs.find((l) => l.default) ?? langs[0];
+		return [...langs.map((l) => [l.code, url(`${l.prefix}${bare}`)]), ['x-default', url(`${fallback.prefix}${bare}`)]]
+			.map(([code, href]) => `\n    <xhtml:link rel="alternate" hreflang="${code}" href="${href}"/>`)
+			.join('');
+	};
 	const sitemap = (list: [string, string][]) =>
-		`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-		list.map(([u, date]) => `  <url><loc>${url(u)}</loc><lastmod>${date}</lastmod></url>`).join('\n') +
+		`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n` +
+		list.map(([u, date]) => `  <url><loc>${url(u)}</loc><lastmod>${date}</lastmod>${alternates(u)}\n  </url>`).join('\n') +
 		'\n</urlset>\n';
 	const isDocs = (u: string) => urls.isDocsFile(urls.distOf(u.slice(1)));
 	write('sitemap.xml', sitemap(urls_.filter(([u]) => !isDocs(u))));

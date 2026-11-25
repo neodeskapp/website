@@ -2,6 +2,8 @@
 title: Unattended access and Wake-on-LAN
 description: Reach a device when nobody is at it, with a permanent password in the NeoDesk client or in RustDesk, and wake a sleeping computer from the server.
 order: 10
+seoTitle: Unattended access with RustDesk and NeoDesk - NeoDesk docs
+related: /docs/console/add-a-computer, /docs/console/device-details
 ---
 
 Unattended access means connecting to a device when nobody is there to accept the connection. It works with a permanent password that is set on the device itself, in the NeoDesk client or in stock RustDesk. This page covers where to set that password, how the console helps you share it, and how to wake a computer that is asleep.

@@ -2,6 +2,7 @@
 title: AI agents over MCP
 description: Connect an AI agent to the console with neodesk mcp, which tools it gets, the flags that add more, and which commands stay out on purpose.
 order: 3
+related: /docs/command-line/api-tokens, /docs/command-line/reference
 ---
 
 `neodesk mcp` serves the commands of the command line as tools for an AI agent,

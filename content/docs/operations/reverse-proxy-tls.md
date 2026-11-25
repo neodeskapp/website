@@ -2,6 +2,7 @@
 title: Reverse proxy and TLS
 description: Give the web console HTTPS with Let's Encrypt on Docker, with nginx or Caddy in front, or with its own certificate, and check what clients get.
 order: 3
+related: /docs/operations/ports, /docs/operations/security
 ---
 
 The web console listens on plain HTTP on port 3375. Before people use it over the internet, give it HTTPS. Remote desktop in the browser needs it too: over plain HTTP the viewer shows only devices with a hardware H.264 encoder (see [HTTPS for every device](/docs/console/remote-in-browser#https-for-every-device)). There are three ways:
