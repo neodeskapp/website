@@ -33,6 +33,13 @@ src/chrome.ts        the header and footer of every page, home page included
 src/chrome.css       their styles; the build puts them in front of site.css and into the home page
 src/brand.ts         the brand page (/brand/, /de/brand/), its text in each language
 src/brand.css        its styles; the build adds them to docs.css
+src/download.ts      the download page (/download/, /de/download/), its text in each language
+src/download.css     its styles; the build adds them to docs.css
+src/client-release.ts  which client release the download page offers, and what each file is
+src/client-release.json  the client release the last build read from GitHub, the fallback
+src/detect.ts        which file the download page recommends for the visitor's system
+test/                unit tests of the release choice and the detection (npm test)
+download-test.ts     checks the download page in a headless browser
 src/zip.ts           writes the zip of the logo files
 public/brand/files/  the owner's logo files, copied unchanged from .ui-rework/brand
 src/checks.ts        the checks on the built site
@@ -108,6 +115,39 @@ top (`src/brand.css`).
 A right-click on the logo in the header, or the context menu key or Shift+F10
 while it has focus, opens the brand page in the page's language; a left click
 still goes home. The script for it is part of the header in `src/chrome.ts`.
+
+## The download page
+
+`/download/` and `/de/download/` on the www host offer the desktop client. The
+first screen has the file for the visitor's computer next to a notice about
+phone scams; below it every file of the release by system, with its size and
+SHA-256, the package repository's commands, and what the client needs.
+
+The build reads the client's releases from the GitHub API
+(`clientReleasesUrl` in `site.config.ts`) and each release's `SHA256SUMS`, and
+stops when a hash there differs from the one GitHub computed. `pickRelease` in
+`src/client-release.ts` chooses: a final release wins over a newer release
+candidate, which the page then shows under "Preview"; while there is no final
+release, the newest candidate is offered and marked "Release candidate, for
+testing". A build that read GitHub records the result in
+`src/client-release.json` (not in CI), and a build that can't reach GitHub uses
+that file. `ND_CLIENT_RELEASES=<file>` reads the list from a file in the API's
+shape instead, to try the page with other releases.
+
+The recommendation runs in the browser. `src/detect.ts` reads the system from
+the user agent and, where the browser has `navigator.userAgentData`, the
+processor; the build puts its two functions into the page's script as they
+are. The page has a hidden block for every recommendation the script can make,
+and the script shows one; nothing is sent anywhere. Safari and Firefox on a Mac
+don't say the processor, so the page offers both disk images with a line on
+how to tell. Without scripts the page shows "Pick your system" and the full
+list.
+
+`npm test` runs the unit tests of both choices. `node download-test.ts` checks
+the built page in a headless browser, as `search-test.ts` does: the primary
+button for emulated Windows, macOS, Linux and iPhone browsers, every file
+linked without scripts, and the scam notice on the first screen at 1280 by 800
+and within two screens at 390 by 844.
 
 ## Fonts and images
 
