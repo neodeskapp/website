@@ -115,6 +115,8 @@ interface FrameOptions extends Shared {
 	plain?: boolean;
 	/** A plain page that uses the page's whole width, such as the download page */
 	wide?: boolean;
+	/** With plain: the content is the whole width under the header, not an article column */
+	bare?: boolean;
 }
 
 function frame(o: FrameOptions) {
@@ -165,7 +167,12 @@ ${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd).replace(
 
 ${siteHeader(chrome)}
 
-<div class="layout${o.plain ? ' plain' : toc ? '' : ' no-toc'}${o.wide ? ' wide' : ''}">
+${
+	o.bare
+		? `<main id="content">
+${main}
+</main>`
+		: `<div class="layout${o.plain ? ' plain' : toc ? '' : ' no-toc'}${o.wide ? ' wide' : ''}">
 ${o.plain ? '' : `  <nav id="sidebar" class="sidebar" aria-label="${esc(t.documentation)}">
     ${sidebar(o, current)}
   </nav>
@@ -173,7 +180,8 @@ ${o.plain ? '' : `  <nav id="sidebar" class="sidebar" aria-label="${esc(t.docume
 ${main}
   </main>
   ${toc}
-</div>
+</div>`
+}
 
 ${siteFooter(chrome)}
 
@@ -449,17 +457,30 @@ ${shared.templates.map(figure).join('\n')}
 	return frame({ ...shared, title: 'Link preview images', description: 'Every link preview image of the site with the title it shows.', path: '/og/', current: '', main, noindex: true });
 }
 
-/** The 404 page; path is where it lives, /404.html on the www host or /docs/404.html on the docs host. */
+/**
+ * The 404 page; path is where it lives, /404.html on the www host or /docs/404.html on the docs host.
+ * The mark is a large graphic that runs off the right edge, with the area square and circle
+ * share left out, and the ways on are next to it.
+ */
 export function notFoundPage(shared: Shared, path = '/404.html') {
 	const { t } = shared;
-	const main = `    <h1>${esc(t.notFound)}</h1>
-    <p class="lead">${esc(t.notFoundLead)}</p>
-    <p>${searchButton(shared, true)}</p>
-    <ul class="rows">
-      <li><a href="${inLocale(shared, '/docs/')}">${esc(t.documentation)}</a><p>${esc(t.everySection)}</p></li>
-      <li><a href="${inLocale(shared, '/')}">${esc(t.home)}</a><p>${esc(t.whatItIs)}</p></li>
-    </ul>`;
-	return frame({ ...shared, title: t.notFound, description: t.notFoundDescription, path, current: '', main, noindex: true, ...(path.startsWith('/docs/') ? {} : { fullTitle: `${t.notFound} - ${shared.config.name}` }) });
+	const main = `  <div class="nf">
+    <svg class="nf-mark" viewBox="10 10 44 44" aria-hidden="true">
+      <defs><clipPath id="nf-clip"><circle cx="38" cy="26" r="16"></circle></clipPath></defs>
+      <rect class="sq" x="10" y="22" width="32" height="32" rx="10"></rect>
+      <circle class="ci" cx="38" cy="26" r="16"></circle>
+      <rect class="gap" x="10" y="22" width="32" height="32" rx="10" clip-path="url(#nf-clip)"></rect>
+    </svg>
+    <div class="nf-copy">
+      <h1>${esc(t.notFoundTitle)}</h1>
+      <p class="nf-lead">${esc(t.notFoundLead)}</p>
+      <div class="nf-actions">
+        <a class="nf-btn" href="${inLocale(shared, '/docs/')}">${esc(t.goToDocs)}</a>
+        <a href="${inLocale(shared, '/')}">${esc(t.home)}</a>
+      </div>
+    </div>
+  </div>`;
+	return frame({ ...shared, title: t.notFound, description: t.notFoundDescription, path, current: '', main, noindex: true, display: true, plain: true, bare: true, ...(path.startsWith('/docs/') ? {} : { fullTitle: `${t.notFound} - ${shared.config.name}` }) });
 }
 
 /** The brand page: logo files, colours, fonts, the name and the voice (src/brand.ts). */

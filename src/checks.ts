@@ -212,7 +212,8 @@ export function checkWithoutScripts({ dist, urls }: CheckInput) {
 			.filter((nav) => !isHidden(nav))
 			.flatMap((nav) => findAll(nav, (el) => el.tag === 'a' && !!el.attrs.href && !isHidden(el) && squash(textOf(el)) !== ''));
 		if (!links.length) problems.push(`${rel}: no navigation links without scripts`);
-		if (urls.withoutLocale(rel).startsWith('docs/') && urls.withoutLocale(rel) !== 'docs/index.html') {
+		// The docs host's 404 page is a page of its own, without the sidebar
+		if (urls.withoutLocale(rel).startsWith('docs/') && !['docs/index.html', 'docs/404.html'].includes(urls.withoutLocale(rel))) {
 			const side = find(doc, (el) => el.attrs.id === 'sidebar');
 			if (!side || findAll(side, byTag('a')).length < 2) problems.push(`${rel}: the docs sidebar is empty`);
 		}

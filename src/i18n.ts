@@ -66,8 +66,8 @@ export interface Strings {
 	notFound: string;
 	notFoundLead: string;
 	notFoundDescription: string;
-	everySection: string;
-	whatItIs: string;
+	notFoundTitle: string;
+	goToDocs: string;
 	footer: string;
 	changelog: string;
 	security: string;
@@ -140,10 +140,10 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		writtenFor: 'Written for version {version}.',
 		docsDescription: 'How to install NeoDesk, connect RustDesk clients to it and run it.',
 		notFound: 'Page not found',
-		notFoundLead: 'There is no page at this address. It may have moved.',
+		notFoundTitle: 'The part you wanted is missing',
+		notFoundLead: 'Page not found (404). The link may be mistyped, or the page has moved.',
 		notFoundDescription: 'There is no page at this address.',
-		everySection: 'Every section and page.',
-		whatItIs: 'What NeoDesk is.',
+		goToDocs: 'Go to the documentation',
 		footer: 'NeoDesk works with RustDesk clients. Open source under AGPL-3.0.',
 		changelog: 'Changelog',
 		security: 'Security',
@@ -201,10 +201,10 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		writtenFor: 'Geschrieben für Version {version}.',
 		docsDescription: 'Wie du NeoDesk installierst, RustDesk-Clients damit verbindest und den Server betreibst.',
 		notFound: 'Seite nicht gefunden',
-		notFoundLead: 'Unter dieser Adresse gibt es keine Seite. Vielleicht ist sie umgezogen.',
+		notFoundTitle: 'Der Teil, den du suchst, fehlt',
+		notFoundLead: 'Seite nicht gefunden (404). Vielleicht ist der Link falsch geschrieben, oder die Seite ist umgezogen.',
 		notFoundDescription: 'Unter dieser Adresse gibt es keine Seite.',
-		everySection: 'Alle Abschnitte und Seiten.',
-		whatItIs: 'Was NeoDesk ist.',
+		goToDocs: 'Zur Dokumentation',
 		footer: 'NeoDesk funktioniert mit RustDesk-Clients. Open Source unter der AGPL-3.0.',
 		changelog: 'Changelog',
 		security: 'Sicherheit',

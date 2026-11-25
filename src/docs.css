@@ -275,6 +275,94 @@
 .pager span { display: block; font-size: 14px; font-weight: 400; color: var(--muted); }
 .pager-next { margin-left: auto; text-align: right; }
 
+/* The 404 page: the mark as a large graphic, the area both shapes share left out */
+.nf {
+  /* Side length of the mark: as tall as the space under the header allows */
+  --nf-mark: min(54vw, calc(100vh - var(--top) - 150px));
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: max(520px, calc(100vh - var(--top)));
+  padding: 48px var(--edge) 72px;
+  overflow: clip;
+}
+@supports (height: 100svh) {
+  .nf {
+    --nf-mark: min(54vw, calc(100svh - var(--top) - 150px));
+    min-height: max(520px, calc(100svh - var(--top)));
+  }
+}
+.nf-mark {
+  position: absolute;
+  top: 50%;
+  right: calc(var(--nf-mark) * -0.16);
+  width: var(--nf-mark);
+  height: var(--nf-mark);
+  transform: translateY(-50%);
+  overflow: visible;
+  pointer-events: none;
+}
+.nf-mark .sq { fill: #58a6ff; }
+.nf-mark .ci { fill: #a3e635; }
+.nf-mark .gap { fill: var(--bg); }
+@media (prefers-color-scheme: light) {
+  .nf-mark .sq { fill: #1f6feb; }
+  .nf-mark .ci { fill: #4d8f06; }
+}
+.nf-copy {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 26px;
+  /* Ends where the square begins, so no text sits on a shape */
+  width: calc(100vw - var(--edge) - var(--nf-mark) * 0.84 - 40px);
+  max-width: 600px;
+}
+.nf h1 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(48px, min(6.6vw, 13vh), 104px);
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+  text-wrap: balance;
+}
+.nf-lead { margin: 0; font-size: clamp(18px, 1.5vw, 21px); line-height: 1.5; max-width: 32ch; }
+.nf-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px; font-weight: 500; }
+.nf-btn {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 22px;
+  border-radius: 4px;
+  background: var(--blue);
+  color: var(--on-blue);
+  font-weight: 600;
+  text-decoration: none;
+}
+.nf-btn:hover { text-decoration: underline; text-decoration-thickness: 2px; }
+@media (max-width: 899px) {
+  .nf {
+    --nf-mark: min(60vw, 380px);
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    gap: 28px;
+    padding-top: 24px;
+  }
+  .nf-mark {
+    position: relative;
+    top: auto;
+    right: auto;
+    transform: none;
+    flex: none;
+    align-self: flex-end;
+    margin-right: calc(var(--nf-mark) * -0.16 - var(--edge));
+  }
+  .nf-copy { width: auto; max-width: 34rem; gap: 22px; }
+}
+
 /* Search */
 .search {
   width: min(720px, calc(100vw - 24px));
@@ -347,7 +435,7 @@
 }
 
 @media print {
-  .top, .sidebar, .toc, .foot, .copy, .pager, .skip { display: none !important; }
+  .top, .sidebar, .toc, .foot, .copy, .pager, .skip, .nf-mark { display: none !important; }
   .layout { display: block; }
 }
 
