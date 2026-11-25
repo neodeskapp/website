@@ -28,7 +28,7 @@ Der Bereich zeigt nur die Tabs, die zum Gerät passen:
 
 Ist das Gerät gesperrt, steht oben ein Hinweis, wann und von wem, und der Grund, falls einer angegeben wurde. Ist der Computer mit einem neuen Schlüssel zurückgekommen, etwa nach einer Neuinstallation, folgt ein Hinweis **Neuer Schlüssel**. Nach einer abgelehnten Einladung nennt er den Computer, seine Adresse, die Uhrzeit und den Fingerabdruck des neuen Schlüssels und bietet Konten mit **Registrierungen genehmigen** die Schaltfläche **Neuen Schlüssel genehmigen** an; sonst sagt er, dass der Server den neuen Schlüssel nicht annimmt. Siehe [Ein neu installierter oder zurückgesetzter Computer](/docs/console/add-a-computer#a-reinstalled-or-reset-computer). Danach folgen diese Abschnitte:
 
-- **Aktuelle Auslastung**: CPU-, Arbeitsspeicher- und Festplattennutzung als Balken, wenn das Gerät sie meldet.
+- **Aktuelle Auslastung**: **CPU**, **Arbeitsspeicher** und **Festplatte** als Balken, **Netzwerk** mit dem, was das Gerät pro Sekunde empfängt und sendet, und unter **Aktualisiert** die Zeit dieser Werte. [Auslastungsdaten](#usage-data) sagt, welche Clients sie senden und was der Abschnitt zeigt, wenn sie fehlen.
 - **Identität**: **ID**, **Anzeigename**, **Hostname**, **Benutzername**, **Plattform** und, wenn das Gerät sie gesendet hat, seine UUID, **Version** und **Funktionen**.
 - **Verbindung**: nur bei einem RDP/VNC-Ziel, mit Technik, Adresse, dem Umgang mit dem Passwort, TLS und ob das Ziel aktiviert ist.
 - **Verbindungsmodus**: nur bei Clients, die zwischen **Normal** und **Nur eingehend** wechseln können. Wähle den Modus, gib einen Grund an (er kommt ins Audit-Protokoll) und klicke auf **Modus anwenden**. Das Gerät wechselt, wenn es sich das nächste Mal meldet. Beim Support-Agenten sagt dieser Abschnitt nur, dass er bei „nur eingehend“ bleibt.
@@ -44,13 +44,25 @@ Hat das Gerät nie etwas gemeldet, steht im Tab „Keine Hardwareinformationen v
 ### Metriken {#metrics}
 
 - **Server-Metriken**: eine kurze Zusammenfassung.
-- **Auslastungsverlauf**: ein Diagramm der CPU-, Arbeitsspeicher- und Festplattennutzung aus den Heartbeats, die das Gerät sendet. Eine Lücke in den Linien heißt, dass keine Messwerte ankamen, meist weil das Gerät aus war.
-- **Verfügbarkeitsverlauf**: die Statuswechsel eines Tages als Band und als Tabelle, mit **Vorheriger Tag** und **Nächster Tag**. Der Server zeichnet sie nur auf, solange **Verfügbarkeitsverlauf** unter **Einstellungen**, **Allgemein** eingeschaltet ist.
+- **Auslastungsverlauf**: ein Diagramm der CPU-, Arbeitsspeicher- und Festplattennutzung in Prozent und darunter ein Diagramm des Netzwerkverkehrs in Bytes pro Sekunde, empfangen und gesendet. Jeder Punkt ist ein Messwert aus den Heartbeats, die das Gerät sendet. Eine Lücke in den Linien heißt, dass eine Zeit lang keine Messwerte ankamen, meist weil das Gerät aus war. Gibt es erst einen Messwert, nennt der Abschnitt seine Werte in einem Satz.
+- **Verfügbarkeitsverlauf**: die Statuswechsel eines Tages als Band und als Tabelle, mit **Vorheriger Tag** und **Nächster Tag**. Der Server zeichnet sie nur auf, solange **Verfügbarkeitsverlauf** unter **Einstellungen**, **Beitritt** eingeschaltet ist.
 - **Verbindungssitzungen**: wer sich mit dem Gerät verbunden hat, wann, von welcher IP-Adresse, ob die Verbindung **Direkt / Punch** lief oder über das **Relay** ging und wie lange sie dauerte.
+
+### Auslastungsdaten {#usage-data}
+
+Der NeoDesk-Client sendet die Auslastung von CPU, Arbeitsspeicher, Festplatte und Netzwerk mit seinem Heartbeat, alle 60 bis 90 Sekunden. Der Server behält die Werte jedes Heartbeats als Messwert: **Aktuelle Auslastung** zeigt den neuesten, **Auslastungsverlauf** zeichnet alle. Normale RustDesk-Clients senden keine Auslastungsdaten.
+
+Fehlen die Werte, sagen beide Abschnitte, warum:
+
+- „Noch keine Daten. Der Client des Geräts sendet seine ersten Werte innerhalb von zwei Minuten nach dem Start.“ Das Gerät hat einen NeoDesk-Client, der noch keine Werte gesendet hat.
+- „Der Client dieses Geräts sendet keine Auslastungsdaten. Der normale RustDesk-Client tut das nicht, der NeoDesk-Client schon.“
+- „Der Client auf diesem Gerät sendet keine Auslastungsdaten: Sie sind dort ausgeschaltet, oder das System erlaubt es nicht.“
+
+Der NeoDesk-Client 1.5.0-rc.7 und ältere messen die CPU-Last nicht: Sie senden unter Windows 100 % und unter Linux 0 %, und keinen Netzwerkverkehr. Der Server behält ihren CPU-Wert als unbekannt. Das Panel zeigt dann Arbeitsspeicher und Festplatte, keine Zeile **Netzwerk** und kein Netzwerkdiagramm und sagt „Diese Client-Version misst die CPU-Last nicht. Aktualisieren Sie den NeoDesk-Client, um sie zu sehen.“ NeoDesk-Clients nach 1.5.0-rc.7 messen CPU und Netzwerk über die Zeit seit ihrem letzten Heartbeat, und das Panel zeigt alle vier Werte.
 
 ### Live-Daten {#live-data}
 
-Ansichten, die beim Öffnen vom Agenten auf dem Gerät gelesen werden: **Services**, **Processes**, **Events**, **Activity** und **Dateien**. Ist das Gerät offline und hat es die Ansicht schon einmal gesendet, erscheint sie sofort, unter „Das Gerät ist offline. Das hat es zuletzt gesendet:“ und der Uhrzeit. Sonst wartet die Anfrage, bis sich das Gerät wieder meldet: Die Ansicht sagt „Beim Gerät angefragt“ und zeigt die Antwort von selbst, sobald sie ankommt.
+Ansichten, die beim Öffnen vom Agenten auf dem Gerät gelesen werden: **Services**, **Processes**, **Events**, **Activity** und **Dateien**. Hat das Gerät die Ansicht schon einmal gesendet, erscheint sie sofort mit der Uhrzeit, zu der es sie gesendet hat: unter „Das hat das Gerät zuletzt gesendet:“, solange das Gerät online ist, sonst unter „Das Gerät ist offline. Das hat es zuletzt gesendet:“. Ist diese Kopie älter als eine Minute, bittet die Konsole das Gerät um eine neue und schreibt dazu „Die Daten erscheinen hier von selbst, sobald sich das Gerät wieder meldet.“ Hat das Gerät die Ansicht nie gesendet, wartet die Anfrage, bis sich das Gerät wieder meldet: Die Ansicht sagt „Beim Gerät angefragt“ und zeigt die Antwort von selbst, sobald sie ankommt.
 
 Dienste starten und beenden und Prozesse beenden brauchen die Berechtigung, sich mit Geräten zu verbinden, und die Ansicht **Dateien** braucht **Dateien auf NeoDesk-Agenten**. Die Client-Funktionen **Fernsteuerung** und **Dateiübertragung** einer Person schalten sie ebenfalls ab. Siehe [Benutzer und Rollen](/docs/people/users-and-roles#what-each-role-can-do).
 
