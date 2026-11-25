@@ -210,6 +210,9 @@
     // A setting on a page that lists many settings is on its reference page
     if (it.kind === 3) s += Math.min(10, (settingsOn[it.page] || 0) / 5);
     if (it.kind === 0) s += 30;
+    // A page whose title has every word, or the word's stem ("installieren" in
+    // "Installation"), is what the reader looks for, before a heading on another page
+    if (it.kind === 0 && terms.every(function (t) { return it.lower.indexOf(t) !== -1 || (t.length >= 7 && it.lower.indexOf(t.slice(0, 6)) !== -1); })) s += 120;
     if (it.kind === 3 && /[_-]/.test(phrase)) s += 20;
     if (it.kind === 2 && /^neodesk\b/.test(phrase)) s += 20;
     s += Math.max(0, 20 - it.lower.length / 4);
