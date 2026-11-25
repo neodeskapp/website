@@ -131,9 +131,11 @@ The home page's first screen shows `public/img/hero-console-*.png` and
 over the mark, at twice their shown size. Their WebP is lossy at quality 88,
 plus a copy at half the width (`-half.webp`) for narrow screens, and the page
 preloads the console's on wide screens, where it is the largest thing on the
-first screen. The console is the public demo (demo.neode.sk, the account its
-sign-in page names) at 1280 by 760 at 2x, cut to the page beside the sidebar and
-scaled to 1300 px; the client is a rendered test screen of the client
+first screen. The console is the published server image of the release in a
+local Docker container, filled with the public demo's sample data (its seed
+scripts, run against the container) and taken as the administrator, so no
+read-only notice shows: /devices at 1280 by 760 at 2x, cut to the page beside
+the sidebar and scaled to 1300 px. The client is a rendered test screen of the client
 repository at 2x, scaled to 880 px. Take both again when either looks different.
 
 ## Link previews
