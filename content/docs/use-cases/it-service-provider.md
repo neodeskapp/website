@@ -124,4 +124,7 @@ you require work reports, the sessions still waiting for one. See [Activity and 
   server's bandwidth.
 - There is no NeoDesk app for phones. Phones use the RustDesk app.
 - NeoDesk is free and open source under the AGPL-3.0, for commercial work
-  too. There is no paid support; see [License](/docs/project/license).
+  too. Help is free on the [NeoDesk Discord](https://discord.gg/nwERSawufr);
+  paid support and help with a setup are available on request at
+  [support@neode.sk](mailto:support@neode.sk). See
+  [Price and support](/docs/project/license#price-and-support).

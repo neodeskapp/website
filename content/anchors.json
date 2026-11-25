@@ -691,6 +691,51 @@
 		"neodesk-users-scope",
 		"neodesk-users-update"
 	],
+	"compare/anydesk": [
+		"who-each-one-suits",
+		"the-facts-side-by-side",
+		"what-anydesk-does-better",
+		"what-neodesk-does-differently",
+		"license-and-cost",
+		"move-from-anydesk-to-neodesk",
+		"sources"
+	],
+	"compare/meshcentral": [
+		"who-each-one-suits",
+		"the-facts-side-by-side",
+		"what-meshcentral-does-better",
+		"what-neodesk-does-differently",
+		"license-and-cost",
+		"move-from-meshcentral-to-neodesk",
+		"sources"
+	],
+	"compare/rustdesk-server-oss": [
+		"who-each-one-suits",
+		"the-facts-side-by-side",
+		"what-rustdesk-server-oss-does-better",
+		"what-neodesk-does-differently",
+		"license-and-cost",
+		"move-from-rustdesk-server-oss-to-neodesk",
+		"sources"
+	],
+	"compare/rustdesk-server-pro": [
+		"who-each-one-suits",
+		"the-facts-side-by-side",
+		"what-server-pro-does-better",
+		"what-neodesk-does-differently",
+		"license-and-cost",
+		"move-from-server-pro-to-neodesk",
+		"sources"
+	],
+	"compare/teamviewer": [
+		"who-each-one-suits",
+		"the-facts-side-by-side",
+		"what-teamviewer-does-better",
+		"what-neodesk-does-differently",
+		"license-and-cost",
+		"move-from-teamviewer-to-neodesk",
+		"sources"
+	],
 	"console/activity": [
 		"who-can-see-it",
 		"security-and-audit",
@@ -1331,5 +1376,36 @@
 		"installers-and-docker",
 		"report-a-connection-this-page-misses",
 		"this-website"
+	],
+	"use-cases/company-it": [
+		"sign-in-with-the-companys-accounts",
+		"give-each-person-in-it-the-right-role",
+		"require-a-second-factor",
+		"roll-the-client-out",
+		"help-a-colleague",
+		"see-who-did-what",
+		"when-someone-leaves",
+		"what-stays-in-the-company"
+	],
+	"use-cases/home-and-club": [
+		"what-you-need",
+		"install-with-docker",
+		"on-a-synology-nas",
+		"https-with-your-own-domain",
+		"bring-the-computers-in",
+		"wake-a-computer-at-home",
+		"keep-it-running",
+		"what-it-costs"
+	],
+	"use-cases/it-service-provider": [
+		"set-up-the-server-once",
+		"one-organization-per-customer",
+		"bring-a-customers-computers-in",
+		"help-someone-right-now",
+		"reach-a-computer-when-nobody-is-there",
+		"give-technicians-only-some-customers",
+		"let-someone-else-in-for-a-while",
+		"keep-track-and-bill-the-work",
+		"before-you-start"
 	]
 }

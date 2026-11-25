@@ -133,5 +133,8 @@ auf einen warten. Siehe [Aktivität und Audit-Protokoll](/docs/console/activity)
 - Eine NeoDesk-App fürs Handy gibt es nicht. Auf Handys nimmst du die
   RustDesk-App.
 - NeoDesk ist kostenlos und Open Source unter der AGPL-3.0, auch für die
-  gewerbliche Nutzung. Bezahlten Support gibt es nicht; siehe
-  [Lizenz](/docs/project/license).
+  gewerbliche Nutzung. Hilfe gibt es kostenlos auf dem
+  [NeoDesk-Discord](https://discord.gg/nwERSawufr); bezahlten Support und Hilfe
+  bei der Einrichtung gibt es auf Anfrage über
+  [support@neode.sk](mailto:support@neode.sk). Siehe
+  [Preis und Support](/docs/project/license#price-and-support).

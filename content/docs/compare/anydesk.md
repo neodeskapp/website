@@ -11,12 +11,13 @@ Ultimate, can be hosted in AnyDesk's cloud or On-Premises, on an appliance in
 your network. NeoDesk is a server you run yourself, open source
 under the AGPL-3.0, that the RustDesk client and NeoDesk's own client connect
 to. Every fact about AnyDesk on this page comes from AnyDesk's own help
-center, read on 23 November 2026 and listed under [Sources](#sources).
+center, read on 25 November 2026 and listed under [Sources](#sources).
 
 ## Who each one suits
 
 **AnyDesk** suits you when you want a hosted service and no server of your
-own, when you need its clients on older or unusual systems, or when you need a
+own, when you want one vendor's apps on computers, phones, tablets and TVs,
+when you need its clients on older or unusual systems, or when you need a
 vendor's appliance that works without an internet connection.
 
 **NeoDesk** suits you when you want your own server and directory sign-in
@@ -29,15 +30,15 @@ client.
 |---|---|---|
 | Who runs the servers | You | AnyDesk, in its cloud. Ultimate can also be hosted On-Premises |
 | Own servers | The whole server is yours | On-Premises, on Ultimate only: an appliance on physical or virtual hardware in your network. "Only custom AnyDesk clients created in your my.anydesk portal can connect to each other" |
-| License | AGPL-3.0 | Paid subscriptions. For commercial use, only outgoing clients that start connections need a license |
+| License | AGPL-3.0 | Paid yearly subscriptions, and a free version with session timeouts. For commercial use, only outgoing clients that start connections need a license |
 | Price | Free | Not quoted here; see AnyDesk's pricing page |
-| Billing | None | Yearly, paid upfront, in a currency set by your country. Renews every year unless you cancel at least 30 days before |
-| Users | No limit set by a license | Solo 1, Standard 20, Advanced 100, Ultimate on request |
+| Billing | None | Yearly, paid upfront, in a currency set by your country. Subscriptions usually run 12 months and renew automatically unless you cancel at least 30 days before the renewal date |
+| Users | No limit set by a license | Solo 1, Standard 20, Advanced 100. Ultimate is customized, with no fixed numbers on the licenses page |
 | Directory and single sign-on | LDAP and Active Directory, and OIDC, on every install | OIDC and LDAP on Ultimate Cloud |
 | API | An HTTP API with API keys | A REST API on Standard, Advanced, Ultimate Cloud and On-Premises |
 | Console | The web console on your server | The my.anydesk portal |
-| Phones and tablets | Phones control through the RustDesk app. NeoDesk's browser viewer runs on tablets | Android 5 and newer, where control needs a plugin. iOS and iPadOS 16 and newer can't be controlled remotely |
-| Computers it reaches | Devices with the RustDesk client, NeoDesk's client on Windows, macOS and Linux, the MeshAgent, and RDP and VNC hosts | Windows XP SP2 and newer, macOS 11 and newer, Linux with Xorg for incoming sessions, Raspberry Pi OS 12 |
+| Phones and tablets | Phones control through the RustDesk app. NeoDesk's browser viewer runs on tablets | AnyDesk's own apps. The Android app starts and receives sessions; Android 5 and newer and Fire OS 4 and newer can be controlled with a control plugin. iOS and iPadOS 16 and newer can't be controlled remotely, and connecting from them needs a paid outgoing client. ChromeOS devices with the Play Store can be viewed but not controlled |
+| Computers it reaches | Devices with the RustDesk client, NeoDesk's client on Windows, macOS and Linux, the MeshAgent, and RDP and VNC hosts | Windows XP SP2 and Windows Server 2003 SP2 and newer, macOS 11 and newer, Linux with Xorg for incoming sessions (Wayland only for outgoing ones), Raspberry Pi OS 12 (ARM64) and newer. tvOS 16 runs outgoing sessions only |
 
 AnyDesk's plans, from its licenses page:
 
@@ -46,13 +47,21 @@ AnyDesk's plans, from its licenses page:
 | Solo | 1 | 1 | Up to 100 |
 | Standard | 20 | 1, up to 19 more as an add-on | Up to 500 |
 | Advanced | 100 | 2, up to 48 more as an add-on | Up to 1,000 |
-| Ultimate | On request | On request | On request |
+| Ultimate | Customized | Customized | Customized |
+
+Managed devices are the ones you reach with unattended access. On every plan
+you can connect to any number of devices where someone accepts the session.
+Solo starts connections from up to 3 licensed devices. Standard and Advanced
+also sell address books and a namespace as add-ons.
 
 ## What AnyDesk does better
 
 - **No server to run.** On the cloud plans AnyDesk runs everything. With
   NeoDesk you install, update and back up the server, and relayed sessions use
   your bandwidth.
+- **Its own mobile apps.** AnyDesk makes apps for Android, iOS, iPadOS,
+  ChromeOS, tvOS and Fire OS, and its Android app can both start and receive
+  sessions. With NeoDesk, phones use the RustDesk app.
 - **Sessions without the internet.** AnyDesk On-Premises starts sessions
   without an internet connection, as long as both devices reach the appliance.
   NeoDesk's docs don't cover running without internet access;
@@ -79,17 +88,22 @@ AnyDesk's plans, from its licenses page:
 ## License and cost
 
 AnyDesk sells subscriptions that are billed yearly and paid upfront, in a
-currency set by your country. They renew every year unless you cancel at
-least 30 days before the renewal date. For commercial use, only the clients
-that start connections need a license; clients that only receive sessions
-don't. The free version has session timeouts, and AnyDesk suggests a paid
-license to avoid them. This page quotes no prices; AnyDesk's pricing page has
-them.
+currency set by your country. They usually run 12 months and renew
+automatically unless you cancel at least 30 days before the renewal date. For
+commercial use, only the clients that start connections need a license;
+clients that only receive sessions don't. The free version has session
+timeouts. You can restart a session as often as you like, and AnyDesk suggests
+a paid license to avoid the timeouts. This page quotes no prices; AnyDesk's
+pricing page has them.
 
 NeoDesk costs nothing. You may use, change and run it, for commercial work
 too. If you change it and offer it as a network service, you share your
-changes with the people who use it. There is no paid support. See
-[License](/docs/project/license).
+changes with the people who use it. There is no paid version. Help is free on the
+[NeoDesk Discord](https://discord.gg/nwERSawufr) and in the
+[discussions on GitHub](https://github.com/neodeskapp/neodesk/discussions);
+paid support and help with a setup are available on request at
+[support@neode.sk](mailto:support@neode.sk). See
+[Price and support](/docs/project/license#price-and-support).
 
 ## Move from AnyDesk to NeoDesk
 
@@ -110,22 +124,32 @@ AnyDesk is a trademark of its owner. NeoDesk is not affiliated with AnyDesk.
 
 ## Sources
 
-Every page below was read on 23 November 2026.
+Every page below was read on 25 November 2026. AnyDesk's pricing page on
+anydesk.com refused automated reads, so this page quotes nothing from it.
 
 - [support.anydesk.com, AnyDesk licenses](https://support.anydesk.com/docs/anydesk-licenses):
-  users, connections and managed devices per plan, and Ultimate in the cloud
-  or On-Premises.
+  users, outgoing connections, add-ons and managed devices per plan, Solo's 3
+  licensed devices, unlimited interactive access, and Ultimate as a
+  customizable license hosted in the cloud or On-Premises.
 - [support.anydesk.com, On-Premises](https://support.anydesk.com/docs/on-premises):
-  the appliance, sessions without internet, and custom clients only.
+  Ultimate only, the appliance on physical or virtual hardware, sessions
+  without internet, custom clients only, and AnyDesk's cloud addresses for
+  standard clients.
 - [support.anydesk.com, billing](https://support.anydesk.com/docs/billing-pricing-subscriptions):
-  yearly billing, currency, renewal and the 30 days' notice.
+  yearly billing paid upfront, currency by country, automatic renewal and the
+  30 days' notice.
 - [support.anydesk.com, licensing model](https://support.anydesk.com/docs/how-does-the-anydesk-licensing-model-work):
-  only outgoing clients need a license for commercial use.
+  yearly subscriptions managed in my.anydesk, and only outgoing clients need a
+  license for commercial use.
 - [support.anydesk.com, single sign-on](https://support.anydesk.com/docs/single-sign-on-sso):
   OIDC and LDAP on Ultimate Cloud.
 - [support.anydesk.com, REST API](https://support.anydesk.com/docs/rest-api):
   the plans with the REST API.
 - [support.anydesk.com, supported operating systems](https://support.anydesk.com/docs/supported-operating-systems):
-  the systems AnyDesk runs on, and what works on phones.
+  the systems AnyDesk runs on, and what works on phones, tablets, ChromeOS
+  and tvOS.
+- [support.anydesk.com, Android](https://support.anydesk.com/docs/android):
+  the Android app starts and receives sessions.
 - [support.anydesk.com, longer sessions on the free version](https://support.anydesk.com/docs/what-if-i-need-longer-sessions-time-on-the-free-version):
-  session timeouts on the free version.
+  session timeouts on the free version, restarting sessions, and the paid
+  license as AnyDesk's answer.

@@ -27,7 +27,7 @@ für jeden Schritt.
 Auf einem Linux-Rechner installiert ein Befehl alles:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/install.sh | sudo bash
+curl -fsSL https://neode.sk/install.sh | sudo bash
 ```
 
 Am Ende zeigt er die Adresse der Konsole, das Admin-Passwort und die vier
@@ -38,9 +38,10 @@ erklärt jede Option.
 ## Auf einem Synology-NAS {#on-a-synology-nas}
 
 Eine Synology betreibt dieselbe Compose-Datei im Container Manager. Die
-Weboberfläche von DSM belegt Port 5000, den Standardport der Konsole, gib der
-Konsole deshalb mit `NEODESK_CONSOLE_PORT` in der Datei `.env` einen anderen
-Port. Sollen die Daten in einem freigegebenen Ordner liegen statt in einem
+Konsole nutzt die Ports 3375 und 5443, die Weboberfläche von DSM lauscht auf
+5000 und 5001, sie kommen sich also nicht in die Quere. Belegt ein anderes Paket
+auf dem NAS schon 3375, gib der Konsole mit `NEODESK_CONSOLE_PORT` in der Datei
+`.env` einen anderen Port. Sollen die Daten in einem freigegebenen Ordner liegen statt in einem
 Docker-Volume, setze `PUID` und `PGID` auf den Besitzer dieses Ordners.
 [Docker auf einem Synology-NAS](/docs/getting-started/docker/synology) hat die
 Dateien und die Schritte.
@@ -56,19 +57,19 @@ Für eine neue Installation gibst du den Namen und eine E-Mail-Adresse für die
 Ablaufhinweise von Let's Encrypt an:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/install.sh | sudo bash -s -- --domain <console-domain> --letsencrypt-email <email-address>
+curl -fsSL https://neode.sk/install.sh | sudo bash -s -- --domain <domain> --letsencrypt-email <email-address>
 ```
 
-Setze deinen DNS-Namen für `<console-domain>` und deine E-Mail-Adresse für
+Setze deinen DNS-Namen für `<domain>` und deine E-Mail-Adresse für
 `<email-address>` ein. Für eine Installation, die schon läuft, startest du das
 Skript in ihrem Ordner mit denselben beiden Werten:
 
 ```bash
 cd /opt/neodesk/docker
-sudo bash neodesk-docker.sh --domain <console-domain> --email <email-address>
+sudo bash neodesk-docker.sh --domain <domain> --email <email-address>
 ```
 
-Setze dieselben Werte für `<console-domain>` und `<email-address>` ein.
+Setze dieselben Werte für `<domain>` und `<email-address>` ein.
 
 Was sich ändert:
 
@@ -131,5 +132,8 @@ und [Backup und Wiederherstellung](/docs/operations/backup).
 NeoDesk ist kostenlos und Open Source unter der AGPL-3.0. Es schickt keine
 Analysedaten, Absturzberichte oder Nutzungsdaten;
 [Datenschutz](/docs/project/privacy) listet die Hosts, die der Server
-kontaktiert, etwa GitHub für die Client-Downloads. Bezahlten Support gibt es
-nicht.
+kontaktiert, etwa GitHub für die Client-Downloads. Hilfe gibt es kostenlos auf
+dem [NeoDesk-Discord](https://discord.gg/nwERSawufr) und in den
+[Diskussionen auf GitHub](https://github.com/neodeskapp/neodesk/discussions);
+bezahlte Hilfe bei der Einrichtung gibt es auf Anfrage über
+[support@neode.sk](mailto:support@neode.sk).

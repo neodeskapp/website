@@ -25,7 +25,7 @@ link to the docs for each step.
 On a Linux machine, one command installs everything:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/install.sh | sudo bash
+curl -fsSL https://neode.sk/install.sh | sudo bash
 ```
 
 At the end it prints the console's address, the admin password, and the four
@@ -34,9 +34,10 @@ it. [Install with Docker](/docs/getting-started/docker) explains every option.
 
 ## On a Synology NAS
 
-A Synology runs the same compose file in Container Manager. DSM's own web
-interface uses port 5000, the console's default, so give the console another
-port with `NEODESK_CONSOLE_PORT` in the `.env` file. To keep the data in a
+A Synology runs the same compose file in Container Manager. The console uses
+ports 3375 and 5443, and DSM's own web interface listens on 5000 and 5001, so
+they don't collide. If another package on the NAS has 3375, give the console
+another port with `NEODESK_CONSOLE_PORT` in the `.env` file. To keep the data in a
 shared folder instead of a Docker volume, set `PUID` and `PGID` to the owner
 of that folder. [Docker on a Synology NAS](/docs/getting-started/docker/synology)
 has the files and the steps.
@@ -52,19 +53,19 @@ For a new install, give the name and an email address for Let's Encrypt's
 expiry notices:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/neodeskapp/neodesk/main/install.sh | sudo bash -s -- --domain <console-domain> --letsencrypt-email <email-address>
+curl -fsSL https://neode.sk/install.sh | sudo bash -s -- --domain <domain> --letsencrypt-email <email-address>
 ```
 
-Put your DNS name in place of `<console-domain>` and your email address in
+Put your DNS name in place of `<domain>` and your email address in
 place of `<email-address>`. For an install that runs already, run the script
 in its folder with the same two values:
 
 ```bash
 cd /opt/neodesk/docker
-sudo bash neodesk-docker.sh --domain <console-domain> --email <email-address>
+sudo bash neodesk-docker.sh --domain <domain> --email <email-address>
 ```
 
-Put the same values in place of `<console-domain>` and `<email-address>`.
+Put the same values in place of `<domain>` and `<email-address>`.
 
 What changes:
 
@@ -124,5 +125,8 @@ new key. See [Updating](/docs/operations/updating) and
 
 NeoDesk is free and open source under the AGPL-3.0. It sends no analytics,
 crash reports or usage data; [Privacy](/docs/project/privacy) lists the hosts
-the server contacts, such as GitHub for the client downloads. There is no paid
-support.
+the server contacts, such as GitHub for the client downloads. Help is free on
+the [NeoDesk Discord](https://discord.gg/nwERSawufr) and in the
+[discussions on GitHub](https://github.com/neodeskapp/neodesk/discussions); paid
+help with a setup is available on request at
+[support@neode.sk](mailto:support@neode.sk).

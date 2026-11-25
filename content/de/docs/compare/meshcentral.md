@@ -12,7 +12,7 @@ seinen eigenen Agenten gebaut, den MeshAgent. NeoDesk ist um den
 RustDesk-Client gebaut und spricht zusätzlich das Protokoll des MeshAgent,
 derselbe Agent kann sich also mit beiden verbinden. Alles, was hier über
 MeshCentral steht, stammt von dessen Website, Doku und Repository, gelesen am
-23. November 2026 und aufgeführt unter [Quellen](#sources).
+25. November 2026 und aufgeführt unter [Quellen](#sources).
 
 ## Für wen sich was eignet {#who-each-one-suits}
 
@@ -32,15 +32,15 @@ MeshAgent-Geräte sowie RDP- und VNC-Hosts in einer Geräteliste haben willst.
 | Lizenz | AGPL-3.0 | Apache 2.0 |
 | Preis | Kostenlos | Kostenlos, erhältlich über npm |
 | Server läuft auf | Docker, Linux mit systemd (x86-64, arm64, armv7), 64-Bit-Windows | Windows, Linux, macOS und FreeBSD |
-| Installation | Das veröffentlichte Docker-Image oder Installationsskripte, die ein Release herunterladen. Ohne Node.js | `npm install meshcentral`, mit Node.js und npm. Die Doku hat auch eine Anleitung für Docker |
-| Datenbank | SQLite oder PostgreSQL | MongoDB, PostgreSQL, MariaDB oder MySQL, oder eine lokale Datenbank |
+| Installation | Das veröffentlichte Docker-Image oder Installationsskripte, die ein Release herunterladen. Ohne Node.js | `npm install meshcentral`, mit Node.js und npm. Die Doku hat auch eine Anleitung für Docker mit einem offiziellen Image |
+| Datenbank | SQLite oder PostgreSQL | MongoDB, PostgreSQL, MariaDB oder MySQL, oder eine lokale Datenbank: standardmäßig NeDB, SQLite oder AceBase |
 | Was sich verbindet | Der normale RustDesk-Client, der NeoDesk-Client, der unveränderte MeshAgent sowie RDP- und VNC-Hosts ohne Agenten | MeshAgent unter Windows, Linux, macOS und FreeBSD, ein Android-Agent und Computer mit Intel AMT |
 | Gesteuert wird aus | Einem Browser auf Desktop oder Tablet, der RustDesk-App, dem NeoDesk-Client | Dem Browser; dazu gibt es eine mobile Website |
-| Anmeldung | Passwort mit Codes aus einer Authenticator-App, LDAP oder Active Directory, OIDC | SAML, OpenID Connect und LDAP; Anmeldung in zwei Schritten mit einer Authenticator-App; YubiKey |
-| Werkzeuge am Gerät | Remote Desktop mit Dateiübertragung. Bei MeshAgent-Geräten zusätzlich Terminal, Dateien, Port-Weiterleitungen und Energiebefehle | Die Tabs Desktop, Files und Terminal |
+| Anmeldung | Passwort mit Codes aus einer Authenticator-App, LDAP oder Active Directory, OIDC | SAML, OAuth2 und OpenID Connect, LDAP; Anmeldung in zwei Schritten mit einer Authenticator-App; YubiKey |
+| Werkzeuge am Gerät | Remote Desktop mit Dateiübertragung. Bei MeshAgent-Geräten zusätzlich Terminal, Dateien, Port-Weiterleitungen und Energiebefehle | Die Tabs Desktop, Terminal und Files, dazu die Tabs General, Events, Details, Intel AMT und Console |
 | Aufzeichnung | Im Browser-Viewer als WebM-Datei; bei MeshAgent-Sitzungen auf dem Server | „Record Session to file“ im Tab Desktop |
 | Protokoll | Ein Audit-Protokoll der Konsole und die Ereignisse des Servers, 90 Tage aufbewahrt | Der Tab Events jedes Agenten, „your audit log“ |
-| Um Hilfe bitten | Ein Schnellhilfe-Link und Hilfeanfragen aus dem NeoDesk-Client | MeshCentral Assistant, ein Werkzeug im Infobereich, das eine Hilfeanfrage senden kann |
+| Um Hilfe bitten | Ein Schnellhilfe-Link und Hilfeanfragen aus dem NeoDesk-Client | MeshCentral Assistant, ein Werkzeug im Infobereich, das den Zustand des Agenten zeigt und eine Hilfeanfrage senden kann |
 
 ## Was MeshCentral besser kann {#what-meshcentral-does-better}
 
@@ -50,7 +50,8 @@ MeshAgent-Geräte sowie RDP- und VNC-Hosts in einer Geräteliste haben willst.
   Für alles Weitere, was der Agent kann, ist MeshCentral die Referenz.
 - **Mehr Wege zur Anmeldung.** SAML und YubiKey, die NeoDesk nicht hat.
 - **Läuft an mehr Orten.** Server und Agent von MeshCentral laufen auch unter
-  macOS und FreeBSD, und die Datenbank kann MongoDB oder MariaDB sein. NeoDesk
+  macOS und FreeBSD, und die Datenbank kann auch MongoDB, MariaDB, MySQL, NeDB
+  oder AceBase sein. NeoDesk
   installierst du mit Docker, unter Linux oder unter Windows.
 - **Intel AMT.** MeshCentral erreicht Computer, auf denen Intel AMT aktiviert
   ist. NeoDesk nicht.
@@ -113,19 +114,38 @@ NeoDesk ist nicht mit dem Projekt MeshCentral verbunden.
 
 ## Quellen {#sources}
 
-Alle Seiten wurden am 23. November 2026 gelesen.
+Alle Seiten wurden am 25. November 2026 gelesen.
 
-- [meshcentral.com](https://meshcentral.com/): was MeshCentral ist, wo Server
-  und Agent laufen und dass es kostenlos über npm erhältlich ist.
-- [github.com, Ylianst/MeshCentral](https://github.com/Ylianst/MeshCentral): die
-  Lizenz Apache 2.0 und der Android-Agent.
-- [docs.meshcentral.com, Startseite](https://docs.meshcentral.com/): die Datenbanken und
-  die Anleitung für Docker.
+- [meshcentral.com](https://meshcentral.com/): was MeshCentral ist, dass Server
+  und Agent unter Windows, Linux, macOS und FreeBSD laufen und dass es
+  kostenlos über npm erhältlich ist. Die Website nennt keinen Bezahltarif.
+- [github.com, Ylianst/MeshCentral](https://github.com/Ylianst/MeshCentral):
+  Remote Desktop, Terminal und Dateiverwaltung, der Android-Agent und die
+  Lizenz Apache 2.0.
+- [github.com, Lizenzdatei von MeshCentral](https://github.com/Ylianst/MeshCentral/blob/master/LICENSE):
+  der Text der Apache License 2.0.
+- [docs.meshcentral.com, Startseite](https://docs.meshcentral.com/): die
+  Anleitungen für jede Datenbank und für Docker.
 - [docs.meshcentral.com, Schnellstart](https://docs.meshcentral.com/install/quickstart/):
-  die Installation über npm und was sie voraussetzt.
+  die Installation über npm, mit Node.js und npm als einzigen Voraussetzungen,
+  und NeDB als Standard-Datenbank.
+- [docs.meshcentral.com, Container](https://docs.meshcentral.com/install/container/):
+  die Anleitung für Docker und das offizielle Image unter ghcr.io/ylianst/meshcentral.
+- [docs.meshcentral.com, PostgreSQL](https://docs.meshcentral.com/install/database/postgresql/),
+  [MariaDB und MySQL](https://docs.meshcentral.com/install/database/mariadb/),
+  [MongoDB](https://docs.meshcentral.com/install/database/mongodb/) und
+  [lokale Datenbanken](https://docs.meshcentral.com/install/database/local/):
+  die möglichen Datenbanken, mit NeDB, SQLite und AceBase als lokale Datenbanken.
 - [docs.meshcentral.com, Benutzerhandbuch](https://docs.meshcentral.com/meshcentral/):
-  Wege zur Anmeldung, die mobile Website und Intel AMT.
+  SAML, OAuth2 und OpenID Connect, LDAP, Anmeldung in zwei Schritten mit einer
+  Authenticator-App, YubiKey und die mobile Website.
 - [docs.meshcentral.com, Geräte-Tabs](https://docs.meshcentral.com/meshcentral/devicetabs/):
-  die Tabs Desktop, Files, Terminal und Events und die Aufzeichnung von Sitzungen.
+  die Tabs eines Geräts, „Record Session to file“ im Tab Desktop und der Tab
+  Events als „your audit log“.
+- [docs.meshcentral.com, Agenten](https://docs.meshcentral.com/meshcentral/agents/):
+  der Mesh Agent unter Windows, Linux und BSD, macOS und Android.
+- [docs.meshcentral.com, Intel AMT](https://docs.meshcentral.com/intelamt/):
+  die Verwaltung von Computern, auf denen Intel AMT aktiviert ist.
 - [github.com, Ylianst/MeshCentralAssistant](https://github.com/Ylianst/MeshCentralAssistant):
-  MeshCentral Assistant und seine Hilfeanfragen.
+  MeshCentral Assistant als Werkzeug im Infobereich, das den Zustand des
+  Agenten zeigt und Hilfeanfragen sendet.

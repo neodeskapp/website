@@ -10,15 +10,15 @@ Beide sind Server für den RustDesk-Client, die du selbst betreibst, mit
 Web-Konsole, Benutzerkonten und Audit-Protokoll. RustDesk Server Pro ist der
 kostenpflichtige Server von RustDesk. NeoDesk ist Open Source unter der
 AGPL-3.0 und hat keinen Bezahltarif. Alles, was hier über Server Pro steht,
-stammt von den Seiten von RustDesk selbst, gelesen am 23. November 2026 und
+stammt von den Seiten von RustDesk selbst, gelesen am 25. November 2026 und
 aufgeführt unter [Quellen](#sources).
 
 ## Für wen sich was eignet {#who-each-one-suits}
 
-**RustDesk Server Pro** passt, wenn du den Server bei der Firma kaufen willst,
-die auch den Client baut, wenn deine Clients mit fest eingetragenem Server
-kommen sollen (der Custom Client Generator, ab dem Tarif Basic), oder wenn du
-Relay-Server an mehreren Standorten brauchst.
+**RustDesk Server Pro** passt, wenn du den Server samt Kundensupport bei der
+Firma kaufen willst, die auch den Client baut, wenn deine Clients mit fest
+eingetragenem Server kommen sollen (der Custom Client Generator, ab dem Tarif
+Basic), oder wenn du Relay-Server an mehreren Standorten brauchst.
 
 **NeoDesk** passt, wenn du Konsole, Benutzerkonten, Anmeldung über LDAP oder
 OIDC und ein Audit-Protokoll auf deinem eigenen Server haben willst, ohne
@@ -31,17 +31,18 @@ VNC-Hosts in derselben Geräteliste.
 | | NeoDesk | RustDesk Server Pro |
 |---|---|---|
 | Lizenz | AGPL-3.0 | Proprietär: „commercial, proprietary self-hosted server software“ |
-| Preis | Kostenlos | Ab 11,88 US-Dollar im Monat bei jährlicher Zahlung, Stand 23. November 2026 |
+| Preis | Kostenlos | Ab 11,88 US-Dollar im Monat bei jährlicher Zahlung, so zeigt es die Preisseite von RustDesk am 25. November 2026 |
 | Benutzer und Geräte | Keine Grenze durch eine Lizenz | Tarif Individual: 1 Benutzer zum Anmelden und 20 verwaltete Geräte. Basic: 10 Benutzer und 100 Geräte. Mehr in den Customized-Tarifen |
-| Lizenzprüfung | Keine | Der Server meldet sich etwa einmal am Tag bei rustdesk.com. Ein komplett abgeschotteter Betrieb (air-gapped) wird nicht unterstützt |
+| Lizenzprüfung | Keine | Der Server meldet sich einmal am Tag bei rustdesk.com. Klappt das nicht, versucht er es bis zu 7 Tage lang weiter, danach lässt sich die Lizenz nicht mehr prüfen. Einen komplett abgeschotteten Betrieb (air-gapped) unterstützt RustDesk nach eigener Aussage nicht |
 | Installation | Docker, Linux mit systemd oder 64-Bit-Windows | Docker oder install.sh unter Linux mit systemd. Die Installation unter Windows führt RustDesk als veraltet |
 | Web-Konsole | Ja | Ja, in jedem Bezahltarif |
 | Zwei-Faktor-Anmeldung | Ja | Ja, in jedem Bezahltarif |
 | LDAP und OIDC | Ja | Ab dem Tarif Basic |
 | Adressbuch | Persönliche Adressbücher und ein gemeinsames pro Organisation | Ja, in jedem Bezahltarif |
-| Protokolle | Aktionen in der Konsole, Ereignisse des Servers und die Verbindungs-, Dateiübertragungs- und Alarmeinträge der Clients. 90 Tage aufbewahrt | Verbindungs-, Dateiübertragungs-, Alarm- und Konsolenprotokolle. Die Aufbewahrung stellst du ein, auch unbegrenzt |
+| Protokolle | Aktionen in der Konsole, Ereignisse des Servers und die Verbindungs-, Dateiübertragungs- und Alarmeinträge der Clients. 90 Tage aufbewahrt | Verbindungs-, Dateiübertragungs-, Alarm- und Konsolenprotokolle. Wie viele Tage sie aufbewahrt werden, stellst du ein; 0 heißt unbegrenzt |
 | Remote Desktop im Browser | Der Web-Viewer der Konsole, in jeder Installation | Der selbst gehostete Web-Client, nur in Tarifen mit Benutzer × 10 + Geräte von mindestens 400 |
-| Relay-Server | Ein Relay, eingebaut in den Server | Verteilte Relay-Server in jedem Bezahltarif |
+| Relay-Server | Ein Relay, eingebaut in den Server | Verteilte Relay-Server in jedem Bezahltarif. Mit einer GeoLite2-Datenbank wählt der Server selbst das nächstgelegene Relay |
+| Support | Kostenlose Hilfe auf Discord und GitHub; bezahlter Support auf Anfrage über support@neode.sk | Kundensupport von RustDesk in jedem Bezahltarif |
 | Client mit eingetragenem Server | Kein eigener Build. Der NeoDesk-Client tritt deinem Server über einen Einladungslink bei | Custom Client Generator, ab dem Tarif Basic |
 | Was sich verbindet | Der normale RustDesk-Client, der NeoDesk-Client, der unveränderte MeshAgent sowie RDP- und VNC-Hosts | Der RustDesk-Client |
 
@@ -54,13 +55,16 @@ VNC-Hosts in derselben Geräteliste.
   keine eigenen Clients: Im normalen Client trägst du vier Werte ein oder
   importierst sie als eine Zeichenkette, und nur der NeoDesk-Client richtet
   sich über einen Einladungslink selbst ein.
-- **Mehrere Relays.** Jeder Bezahltarif hat verteilte Relay-Server. NeoDesk
-  gibt jedem Gerät eine Relay-Adresse.
+- **Mehrere Relays.** Jeder Bezahltarif hat verteilte Relay-Server, und der
+  Server kann jede Verbindung zum nächstgelegenen schicken. NeoDesk gibt
+  jedem Gerät eine Relay-Adresse.
 - **Längere Aufbewahrung.** Pro hält Protokolle so lange, wie du einstellst,
   auch unbegrenzt. NeoDesk löscht seine Einträge nach 90 Tagen. Nur die
   Ereignisse des Servers kann es zusätzlich mit `AUDIT_LOG_FILE` in eine Datei
   schreiben, die du behältst; siehe
   [Überwachung](/docs/operations/monitoring#audit-entries).
+- **Support vom Hersteller.** Jeder Bezahltarif enthält den Kundensupport von
+  RustDesk. Bezahlten Support für NeoDesk gibt es auf Anfrage, ohne Tarif dahinter.
 
 ## Was NeoDesk anders macht {#what-neodesk-does-differently}
 
@@ -97,27 +101,30 @@ Einen Gastzugriff-Link kannst du nicht vor seinem Ablauf beenden.
 
 ## Lizenz und Kosten {#license-and-cost}
 
-RustDesk verkauft Server Pro als Jahrestarife in US-Dollar. Laut Preisseite
-ist das „NOT a SaaS subscription“: Den Server betreibst du selbst. Die Tarife
-verlängern sich nicht von allein, und RustDesk schickt 14 Tage vor Ablauf
-einer Lizenz eine Erinnerung per E-Mail. Die Tarife, Stand 23. November 2026,
-jeweils bei jährlicher Zahlung:
+RustDesk verkauft Server Pro nur als Jahrestarife, mit Preisen in US-Dollar.
+Laut Preisseite ist das „NOT a SaaS subscription“: Den Server betreibst du
+selbst. Die Tarife verlängern sich nicht von allein, und RustDesk schickt
+14 Tage vor Ablauf einer Lizenz eine Erinnerung per E-Mail. Eine Lizenz läuft
+immer nur auf einem Rechner. Die Tarife, wie die Preisseite von RustDesk sie
+am 25. November 2026 zeigt, jeweils als Monatspreis bei jährlicher Zahlung:
 
 | Tarif | Preis | Enthalten |
 |---|---|---|
-| Free | 0 US-Dollar | Online-Status und Community-Support |
+| Free | 0 US-Dollar | Der Open-Source-Server, nicht Server Pro: Online-Status und Community-Support |
 | Individual | 11,88 US-Dollar im Monat | 1 Benutzer zum Anmelden, 20 verwaltete Geräte, unbegrenzt gleichzeitige Verbindungen, 2FA, Web-Konsole, Adressbuch, Audit-Protokoll, ID ändern, Zugriffssteuerung, zentrale Einstellungen, verteilte Relay-Server |
 | Basic | 23,88 US-Dollar im Monat | 10 Benutzer und 100 verwaltete Geräte, dazu OIDC, LDAP, gruppenübergreifender Zugriff und der Custom Client Generator |
 | Customized | ab 23,88 US-Dollar im Monat | Basic, dazu 1,20 US-Dollar für jeden weiteren Benutzer und 0,12 US-Dollar für jedes weitere Gerät |
-| Customized V2 | ab 23,88 US-Dollar im Monat | Basic mit begrenzt vielen gleichzeitigen Verbindungen, dazu 24 US-Dollar für jede weitere gleichzeitige Verbindung |
+| Customized V2 | ab 23,88 US-Dollar im Monat | Basic mit begrenzt vielen gleichzeitigen Verbindungen, dazu 1,20 US-Dollar für jeden weiteren Benutzer, 0,12 US-Dollar für jedes weitere Gerät und 24 US-Dollar für jede weitere gleichzeitige Verbindung |
 
 NeoDesk kostet nichts. Die AGPL-3.0 erlaubt dir, es zu nutzen, zu ändern und
 zu betreiben, auch gewerblich. Änderst du es und bietest es als Netzwerkdienst
-an, gibst du deine Änderungen an die Leute weiter, die den Dienst nutzen. Ein
-optionaler Commercial Grant für private Änderungen gehört zu einem Sponsoring
-ab 50 US-Dollar im Monat; zum Betrieb von NeoDesk braucht ihn niemand. Bezahlten
-Support und ein garantiertes SLA gibt es nicht. Siehe
-[Lizenz](/docs/project/license).
+an, gibst du deine Änderungen an die Leute weiter, die den Dienst nutzen. Eine bezahlte Version gibt es nicht. Hilfe gibt es kostenlos auf dem
+[NeoDesk-Discord](https://discord.gg/nwERSawufr) und in den
+[Diskussionen auf GitHub](https://github.com/neodeskapp/neodesk/discussions);
+bezahlten Support und Hilfe bei der Einrichtung gibt es auf Anfrage über
+[support@neode.sk](mailto:support@neode.sk). Siehe
+[Preis und Support](/docs/project/license#price-and-support). Ein
+garantiertes SLA gibt es nicht.
 
 ## Von Server Pro zu NeoDesk umziehen {#move-from-server-pro-to-neodesk}
 
@@ -133,7 +140,8 @@ wie vorher. Bei Server Pro gilt zusätzlich:
   alle umziehst.
 - NeoDesk übernimmt nichts aus Pro. Benutzer, Gruppen, Adressbücher und die
   Anmeldung richtest du in der Konsole neu ein. Die Protokolle von Pro bleiben
-  bei Pro.
+  bei Pro; wie du sie mit dem Skript audits.py exportierst, steht in der Doku
+  von RustDesk.
 - Jeder Client meldet sich als neues Gerät. Im Modus **Verwaltet** wartet er
   auf die Freigabe, oder du schaltest auf **Offen**, solange die Clients
   zurückkommen; siehe
@@ -147,17 +155,32 @@ RustDesk-Team verbunden und wird nicht von ihm unterstützt; siehe
 
 ## Quellen {#sources}
 
-Alle Seiten wurden am 23. November 2026 gelesen.
+Alle Seiten wurden am 25. November 2026 gelesen.
 
 - [rustdesk.com, Preise](https://rustdesk.com/pricing): Tarife, Preise,
-  Grenzen, Abrechnung, Verlängerung und die Bedingung für den Web-Client.
+  Benutzer, Geräte und gleichzeitige Verbindungen pro Tarif, die Funktionen
+  jedes Tarifs, nur jährliche Zahlung, „NOT a SaaS subscription“, keine
+  automatische Verlängerung und die Erinnerung 14 Tage vor Ablauf,
+  Kundensupport in den Bezahltarifen und die Bedingung für den Web-Client.
 - [rustdesk.com, Doku zu Server Pro](https://rustdesk.com/docs/en/self-host/rustdesk-server-pro/):
-  Installationswege und die veraltete Installation unter Windows.
-- [rustdesk.com, Doku zur Web-Konsole von Server Pro](https://rustdesk.com/docs/en/self-host/rustdesk-server-pro/console/):
-  Protokollarten und wie lange Protokolle aufbewahrt werden.
+  Installationswege, Docker als empfohlener Weg, die als veraltet markierte
+  Installation unter Windows und was Pro dem Open-Source-Server hinzufügt.
 - [rustdesk.com, Doku zur Installation von Server Pro](https://rustdesk.com/docs/en/self-host/rustdesk-server-pro/installscript/):
-  den Schlüssel `id_ed25519` vom freien Server zu Pro umziehen.
+  install.sh für systemd unter Linux und den Schlüssel `id_ed25519` vom
+  freien Server zu Pro umziehen.
+- [rustdesk.com, Doku zur Web-Konsole von Server Pro](https://rustdesk.com/docs/en/self-host/rustdesk-server-pro/console/):
+  Protokollarten, die Einstellung zur Aufbewahrung (0 heißt unbegrenzt) und
+  der Export mit audits.py.
+- [rustdesk.com, Doku zur Lizenz von Server Pro](https://rustdesk.com/docs/en/self-host/rustdesk-server-pro/license/):
+  Eine Lizenz läuft auf einem Rechner, und der Server braucht Internet oder
+  einen Proxy, um sie zu prüfen.
+- [rustdesk.com, Doku zu den Relay-Servern von Server Pro](https://rustdesk.com/docs/en/self-host/rustdesk-server-pro/relay/):
+  mehrere Relay-Server und die Wahl des nächstgelegenen per GeoLocation.
+- [RustDesk-FAQ auf GitHub](https://github.com/rustdesk/rustdesk/wiki/FAQ#how-often-does-pro-check-license):
+  Pro meldet sich täglich über Port 443 bei rustdesk.com und versucht es
+  bei einem Fehler jede Minute neu, bis zu 7 Tage lang.
 - [rustdesk.com, Blogbeitrag zum Betrieb offline und air-gapped](https://rustdesk.com/blog/rustdesk-server-pro-offline-air-gapped/):
-  die tägliche Lizenzprüfung und abgeschottete Installationen.
+  Nach etwa sieben Tagen offline lässt sich die Lizenz nicht mehr prüfen, und
+  ein komplett abgeschotteter Betrieb wird nicht unterstützt.
 - [rustdesk.com, Blogbeitrag zum unbeaufsichtigten Zugriff](https://rustdesk.com/blog/rustdesk-unattended-access-setup/):
   „Server Pro is commercial, proprietary self-hosted server software.“

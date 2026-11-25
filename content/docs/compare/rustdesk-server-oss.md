@@ -10,8 +10,8 @@ RustDesk Server OSS is RustDesk's free server: two programs, hbbs and hbbr.
 NeoDesk does the same work in one program and adds the API the client signs in
 to, a web console, accounts and sign-in. Both are free and licensed under the
 AGPL-3.0, and both work with the stock RustDesk client. Every fact about
-RustDesk Server OSS on this page comes from RustDesk's own pages, read on
-23 November 2026 and listed under [Sources](#sources).
+RustDesk Server OSS on this page comes from RustDesk's own pages and its GitHub
+repository, read on 25 November 2026 and listed under [Sources](#sources).
 
 ## Who each one suits
 
@@ -32,12 +32,12 @@ takes over their key, so your clients keep working.
 | License | AGPL-3.0 | AGPL-3.0 |
 | Price | Free | Free |
 | Programs | One, `neodesk-server`: ID server, relay, client API and web console | Two: hbbs for ID, rendezvous and signaling, hbbr for the relay |
-| Install | Docker, a script for Linux with systemd, a script for 64-bit Windows | Docker (recommended), an install script, .deb packages, Windows with PM2 or NSSM, Synology |
-| Ports clients need | 21115 to 21117 and 21121 over TCP, 21116 over UDP | 21115 to 21117 over TCP, 21116 over UDP. 21118 and 21119 only for web clients |
+| Install | Docker, a script for Linux with systemd, a script for 64-bit Windows | Docker (recommended), an install script hosted by Techahold, .deb packages, Windows with PM2 or NSSM, Synology. Release builds for Linux on x86 and ARM and for 64-bit Windows |
+| Ports clients need | 21115 to 21117 and 21121 over TCP, 21116 over UDP | 21115 to 21117 over TCP, 21116 over UDP. 21118 and 21119 only for the web client |
 | Web console, accounts, API, OIDC, LDAP, 2FA, device management | Yes | Not included. RustDesk's docs point to Server Pro for these |
-| Address book in the client | Yes, personal and shared per organization | Not included. RustDesk lists the address book among Server Pro's features |
+| Address book in the client | Yes, personal and shared per organization | RustDesk lists the address book among the reasons to choose Server Pro over OSS |
 | Command-line tools | `neodesk-server reset-password`, and the installers' update, status and backup commands | rustdesk-utils |
-| Key | NeoDesk reads RustDesk's `id_ed25519` key files as they are | Clients need the server's public key |
+| Key | NeoDesk reads RustDesk's `id_ed25519` key files as they are | Clients need the server's public key. hbbs keeps the key pair in `id_ed25519` and `id_ed25519.pub` |
 
 ## What RustDesk Server OSS does better
 
@@ -46,8 +46,12 @@ takes over their key, so your clients keep working.
 - **Less to run.** Two programs with no web app and no accounts. NeoDesk adds a
   console, a client API on 21121 and accounts, which is more to set up, update
   and back up.
-- **A longer history.** Its releases on GitHub go back to 2022. NeoDesk has
-  only pre-releases so far, the first from November 2026.
+- **More ways to install.** RustDesk has guides for Docker, a Linux install
+  script, .deb packages, Windows services and Synology NAS, and publishes
+  builds for Linux on x86 and ARM, 32 and 64 bit.
+- **A longer history.** Its first release on GitHub, 1.1.5, came out in March
+  2022, and the latest, 1.1.16, in July 2026. NeoDesk has only pre-releases so
+  far, the first from November 2026.
 
 ## What NeoDesk does differently
 
@@ -76,8 +80,10 @@ Both servers are free and licensed under the AGPL-3.0. You may use, change and
 run them, for commercial work too. If you change one and offer it as a network
 service, you share your changes with the people who use it. Neither has a paid
 plan; RustDesk sells its console and accounts as
-[Server Pro](/docs/compare/rustdesk-server-pro). NeoDesk's optional Commercial
-Grant is described under [License](/docs/project/license).
+[Server Pro](/docs/compare/rustdesk-server-pro). For NeoDesk, paid support and
+help with a setup are available on request at
+[support@neode.sk](mailto:support@neode.sk); see
+[Price and support](/docs/project/license#price-and-support).
 
 ## Move from RustDesk Server OSS to NeoDesk
 
@@ -96,26 +102,49 @@ The clients keep their settings and their IDs. The device list starts empty
 and fills as the clients connect; on PostgreSQL the installer can copy the
 devices from RustDesk's database.
 
-"RustDesk" is a trademark of the RustDesk Team. NeoDesk is not affiliated with
-or endorsed by the RustDesk Team; see [License](/docs/project/license#trademark).
+RustDesk is made by Purslane Tech Pte. Ltd. NeoDesk is not affiliated with or
+endorsed by RustDesk or Purslane Tech; see [License](/docs/project/license#trademark).
 
 ## Sources
 
-Every page below was read on 23 November 2026.
+Every page below was read on 25 November 2026.
 
 - [rustdesk.com, Server OSS docs](https://rustdesk.com/docs/en/self-host/rustdesk-server-oss/):
-  hbbs and hbbr, the install options, and the features RustDesk points to
-  Server Pro for.
+  Server OSS is free and open source, hbbs handles ID, rendezvous and
+  signaling, hbbr the relay, the install guides, and the web console, API,
+  OIDC, LDAP, 2FA and device management that RustDesk points to Server Pro
+  for.
 - [rustdesk.com, Server OSS installation docs](https://rustdesk.com/docs/en/self-host/rustdesk-server-oss/install/):
-  Docker as the recommended install, the install script, .deb packages and the
-  key clients need.
+  Docker as the recommended install, the install script hosted by Techahold,
+  .deb packages from the releases page, and the ID server and public key
+  clients need.
 - [rustdesk.com, Server OSS Docker docs](https://rustdesk.com/docs/en/self-host/rustdesk-server-oss/docker/):
-  the ports.
+  the ports, and that 21118 and 21119 serve only the web client and can stay
+  closed without it.
+- [rustdesk.com, Server OSS on Windows](https://rustdesk.com/docs/en/self-host/rustdesk-server-oss/windows/):
+  running hbbs and hbbr with PM2 or NSSM.
+- [rustdesk.com, Server OSS on Synology](https://rustdesk.com/docs/en/self-host/rustdesk-server-oss/synology/):
+  guides for DSM 6 and DSM 7.2 Container Manager.
 - [rustdesk.com, Server Pro docs](https://rustdesk.com/docs/en/self-host/rustdesk-server-pro/):
-  the address book among Server Pro's features.
+  accounts, web console, address book and log management among the reasons
+  to choose Server Pro when OSS is not enough.
+- [rustdesk.com, pricing](https://rustdesk.com/pricing): self-hosting with
+  OSS costs nothing, and Server Pro has paid plans.
 - [github.com, rustdesk/rustdesk-server](https://github.com/rustdesk/rustdesk-server):
-  the AGPL-3.0 license and rustdesk-utils.
+  the AGPL-3.0 license, and the three programs the build makes: hbbs, hbbr and
+  rustdesk-utils.
+- [github.com, license of rustdesk/rustdesk-server](https://github.com/rustdesk/rustdesk-server/blob/master/LICENSE):
+  the AGPL-3.0 terms for use, changes and network services.
+- [github.com, rustdesk-server source, common.rs](https://github.com/rustdesk/rustdesk-server/blob/master/src/common.rs)
+  and [peer.rs](https://github.com/rustdesk/rustdesk-server/blob/master/src/peer.rs):
+  the key files `id_ed25519` and `id_ed25519.pub`, and the database
+  `db_v2.sqlite3`.
 - [github.com, releases of rustdesk/rustdesk-server](https://github.com/rustdesk/rustdesk-server/releases):
-  the oldest published release, 1.1.5 from March 2022.
+  the oldest release, 1.1.5 from March 2022, the latest, 1.1.16 from July
+  2026, and the builds for Linux on x86 and ARM and for 64-bit Windows.
 - [rustdesk.com, client docs](https://rustdesk.com/docs/en/client/): the
-  client connects to the public servers once installed.
+  client connects to the public servers once installed, and you enter your
+  ID server, relay and key under Network in its settings.
+- [rustdesk.com, terms](https://rustdesk.com/terms): Purslane Tech Pte. Ltd.
+  runs the public ID and relay servers and releases the client and Server OSS
+  under an open source license.

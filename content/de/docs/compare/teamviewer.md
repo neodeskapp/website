@@ -10,14 +10,15 @@ TeamViewer ist ein Dienst für Fernwartung: TeamViewer betreibt die Server, und
 du kaufst ein Jahresabo. NeoDesk ist ein Server, den du selbst betreibst, Open
 Source unter der AGPL-3.0, mit dem sich der RustDesk-Client und der eigene
 Client von NeoDesk verbinden. Alles, was hier über TeamViewer steht, stammt von
-den Seiten von TeamViewer selbst, gelesen am 23. November 2026 und aufgeführt
+den Seiten von TeamViewer selbst, gelesen am 25. November 2026 und aufgeführt
 unter [Quellen](#sources).
 
 ## Für wen sich was eignet {#who-each-one-suits}
 
 **TeamViewer** passt, wenn du keinen Server betreiben willst, wenn du viele
-Handys und Tablets betreust oder wenn du Single Sign-on mit
-Benutzerbereitstellung aus Entra ID brauchst.
+Handys und Tablets betreust, wenn du Single Sign-on mit
+Benutzerbereitstellung aus Entra ID brauchst oder wenn dein Anbieter nach
+ISO 27001 und SOC 2 geprüft sein muss.
 
 **NeoDesk** passt, wenn der Server auf deiner eigenen Maschine oder in deinem
 eigenen Rechenzentrum laufen soll, oder wenn du für die Arbeit keine
@@ -27,42 +28,49 @@ Lizenzen pro Benutzer oder Kanal zahlen willst.
 
 | | NeoDesk | TeamViewer |
 |---|---|---|
-| Wer die Server betreibt | Du | TeamViewer. Eine Verbindung beginnt mit einem Handshake über die Master-Server von TeamViewer |
-| Eigene Server | Der ganze Server gehört dir | Nur für Tensor-Kunden mit dem Add-on Conditional Access: Router bei dir vor Ort, wobei der Verbindungsaufbau weiter über die TeamViewer-Cloud läuft („Initial connection setup is made via the TeamViewer cloud“) |
+| Wer die Server betreibt | Du | TeamViewer. Eine Verbindung beginnt mit einem Handshake über die Master-Server von TeamViewer und läuft dann direkt oder über die Router von TeamViewer. Die Sitzungsdaten sind Ende-zu-Ende verschlüsselt |
+| Eigene Server | Der ganze Server gehört dir | Nur für Tensor-Kunden mit dem Add-on Conditional Access: Router bei dir vor Ort, gekauft bei TeamViewer und mit einem bezahlten Servicepaket eingerichtet, wobei der Verbindungsaufbau weiter über die TeamViewer-Cloud läuft („Initial connection setup is made via the TeamViewer cloud“) |
 | Lizenz | AGPL-3.0 | Bezahlte Abos. Die kostenlose Version ist für die private, nicht kommerzielle Nutzung |
 | Preis | Kostenlos | Hier nicht genannt; siehe die Preisseite von TeamViewer |
 | Abrechnung | Keine | Jährlich. Das Abo verlängert sich alle 12 Monate, wenn du nicht spätestens 28 Tage vor Ende der Laufzeit kündigst |
 | Benutzer und Sitzungen | Keine Grenze durch eine Lizenz | Je nach Tarif, von 1 Benutzer und 3 Sitzungen bei Remote Access bis 30 Benutzer und 15 Sitzungen bei Corporate |
 | Zwei-Faktor-Anmeldung | Ja | Ja, in jedem Tarif |
-| Verzeichnis und Single Sign-on | LDAP und Active Directory sowie OIDC, in jeder Installation | AD Connector bei Corporate und Tensor. Single Sign-on und SCIM für Entra ID bei Tensor |
-| Protokoll | Das Audit-Protokoll der Konsole und die Ereignisse des Servers | Verbindungsberichte bei Corporate. Ein Audit-Protokoll bei Tensor |
-| Hilfe ohne Einrichtung | Ein Schnellhilfe-Link und eine kleine App, die nichts installiert | QuickSupport |
+| Verzeichnis und Single Sign-on | LDAP und Active Directory sowie OIDC, in jeder Installation | AD Connector bei Corporate und Tensor. Bei Tensor Single Sign-on mit Entra ID, Okta, OneLogin, Google, ADFS und Centrify sowie SCIM-Bereitstellung aus Entra ID |
+| Protokoll | Das Audit-Protokoll der Konsole und die Ereignisse des Servers | Verbindungsberichte bei Corporate und Tensor. Ein Audit-Protokoll mit API bei Tensor |
+| Hilfe ohne Einrichtung | Ein Schnellhilfe-Link und eine kleine App, die nichts installiert | QuickSupport, aufgeführt bei Business, Corporate und Tensor |
 | Sitzungen aufzeichnen | Im Browser-Viewer, als WebM-Datei | „Record and playback remote sessions“ bei Business, Corporate und Tensor |
-| Handys und Tablets | Handys steuern über die RustDesk-App. Der Browser-Viewer von NeoDesk läuft auf Tablets | Apps Remote Control und QuickSupport für Android ab 8 und iOS ab 17. Verbindungen zu Mobilgeräten brauchen das Add-on Mobile Device Support |
-| Erreichbare Computer | Geräte mit dem RustDesk-Client, der NeoDesk-Client unter Windows, macOS und Linux, der MeshAgent sowie RDP- und VNC-Hosts | Windows 10 22H2 und 11, Windows Server 2016 bis 2022, macOS ab 14 und Linux über TeamViewer Classic |
+| Handys und Tablets | Handys steuern über die RustDesk-App. Der Browser-Viewer von NeoDesk läuft auf Tablets | Apps Remote Control und QuickSupport für Android ab 8 sowie für iOS und iPadOS ab 17, dazu eine Host-App für Android. Verbindungen zu Mobilgeräten brauchen das Add-on Mobile Device Support, das es für Business, Premium, Corporate und Tensor gibt |
+| Erreichbare Computer | Geräte mit dem RustDesk-Client, der NeoDesk-Client unter Windows, macOS und Linux, der MeshAgent sowie RDP- und VNC-Hosts | Windows 11, auch auf ARM, und macOS ab 14. Windows 10 22H2 und Windows Server 2016 bis 2022 stehen mit Support bis Oktober 2026 in der Liste. Linux über TeamViewer Classic. ChromeOS über die Android-Apps, nur als Bildschirmfreigabe |
 
 Die Tarife von TeamViewer laut Lizenzübersicht:
 
 | Tarif | Lizenzierte Benutzer | Sitzungen gleichzeitig | Verwaltete Geräte |
 |---|---|---|---|
-| Remote Access | 1 | Bis zu 3, auf einem Gerät | Nicht angegeben |
-| Business | 1 | Bis zu 3, auf einem Gerät | 200 |
+| Remote Access | 1 | Bis zu 3, auf einem Gerät, zu höchstens 3 entfernten Geräten | Nicht angegeben |
+| Business | 1 | Bis zu 3, auf einem Gerät, aus einem festen Satz von 3 Geräten | 200 |
 | Premium | 15 | Bis zu 10, auf einem Gerät | 300 |
 | Corporate | 30 | Bis zu 15, auf drei Geräten | 500 |
 
 ## Was TeamViewer besser kann {#what-teamviewer-does-better}
 
 - **Kein Server zu betreiben.** TeamViewer betreibt die Infrastruktur, mit
-  einem Netz von Routern für Verbindungen, die nicht direkt zustande kommen.
-  Mit NeoDesk installierst, aktualisierst und sicherst du den Server selbst,
-  und Sitzungen über das Relay laufen über deine Bandbreite.
+  einem Netz von Routern für Verbindungen, die nicht direkt zustande kommen,
+  und du öffnest keine Ports. Mit NeoDesk installierst, aktualisierst und
+  sicherst du den Server selbst, und Sitzungen über das Relay laufen über
+  deine Bandbreite.
 - **Handys und Tablets.** TeamViewer hat eigene Apps für Android und iOS und
   verbindet sich mit einem Add-on auch zu Mobilgeräten. NeoDesk hat keine App
   fürs Handy; dort nimmst du die RustDesk-App, und laut Doku von RustDesk lässt
   sich ein iPhone oder iPad nicht fernsteuern.
-- **Benutzerbereitstellung.** Tensor hat Single Sign-on und SCIM-Bereitstellung
-  aus Entra ID. NeoDesk meldet Leute über OIDC oder LDAP an und legt ihr Konto
-  bei der ersten Anmeldung an, kennt aber kein SCIM.
+- **Benutzerbereitstellung.** Tensor hat Single Sign-on mit mehreren
+  Identitätsanbietern und SCIM-Bereitstellung aus Entra ID. NeoDesk meldet
+  Leute über OIDC oder LDAP an und legt ihr Konto bei der ersten Anmeldung an,
+  kennt aber kein SCIM.
+- **Prüfungen und Compliance.** Laut TeamViewer wird das Unternehmen nach
+  ISO 27001, SOC 2 Typ 2, SOC 3 und HIPAA HITECH geprüft, die Rechenzentren
+  erfüllen ISO 27001, und Server mit sensiblen Daten stehen in Deutschland
+  oder Österreich. Bei NeoDesk liegen diese Prüfungen bei dem, der den Server
+  betreibt.
 
 ## Was NeoDesk anders macht {#what-neodesk-does-differently}
 
@@ -87,16 +95,20 @@ Die Tarife von TeamViewer laut Lizenzübersicht:
 TeamViewer verkauft Abos, die jedes Jahr bezahlt und verlängert werden, und
 sie verlängern sich von selbst, wenn du nicht spätestens 28 Tage vor Ende der
 Laufzeit kündigst. Die kostenlose Version ist für die private Nutzung: Familie
-und Freunden helfen oder auf eigene Computer zugreifen, die nicht gewerblich
-genutzt werden. Als kommerziell zählt für TeamViewer „any use of TeamViewer for
-purposes that are either directly or indirectly paid for“, das Homeoffice
-eingeschlossen. Preise nennt diese Seite nicht; sie stehen auf der Preisseite
-von TeamViewer.
+und Freunden helfen oder auf eigene Computer zugreifen, die keine Server sind
+und nicht gewerblich genutzt werden. Als kommerziell zählt für TeamViewer
+„any use of TeamViewer for purposes that are either directly or indirectly
+paid for“, das Homeoffice eingeschlossen. Preise nennt diese Seite nicht; sie
+stehen auf der Preisseite von TeamViewer.
 
 NeoDesk kostet nichts. Du darfst es nutzen, ändern und betreiben, auch
 gewerblich. Änderst du es und bietest es als Netzwerkdienst an, gibst du deine
-Änderungen an die Leute weiter, die den Dienst nutzen. Bezahlten Support gibt
-es nicht. Siehe [Lizenz](/docs/project/license).
+Änderungen an die Leute weiter, die den Dienst nutzen. Eine bezahlte Version gibt es nicht. Hilfe gibt es kostenlos auf dem
+[NeoDesk-Discord](https://discord.gg/nwERSawufr) und in den
+[Diskussionen auf GitHub](https://github.com/neodeskapp/neodesk/discussions);
+bezahlten Support und Hilfe bei der Einrichtung gibt es auf Anfrage über
+[support@neode.sk](mailto:support@neode.sk). Siehe
+[Preis und Support](/docs/project/license#price-and-support).
 
 ## Von TeamViewer zu NeoDesk umziehen {#move-from-teamviewer-to-neodesk}
 
@@ -114,37 +126,49 @@ NeoDesk übernimmt nichts aus TeamViewer, du richtest die Geräte also neu ein:
    [Unbeaufsichtigter Zugriff](/docs/console/unattended-access).
 4. Für schnelle Hilfe zwischendurch schickst du einen
    [Schnellhilfe-Link](/docs/console/quick-support).
-5. Kündige TeamViewer spätestens 28 Tage vor Ende der Laufzeit.
+5. Kündige TeamViewer spätestens 28 Tage vor Ende der Laufzeit, im
+   Customer Portal von TeamViewer, mit einem schriftlichen Ticket oder per
+   Telefon.
 
 TeamViewer ist eine Marke ihres Inhabers. NeoDesk ist nicht mit TeamViewer
 verbunden.
 
 ## Quellen {#sources}
 
-Alle Seiten wurden am 23. November 2026 gelesen.
+Alle Seiten wurden am 25. November 2026 gelesen.
 
 - [teamviewer.com, Preise](https://www.teamviewer.com/en/pricing/): jährliche
-  Abrechnung, automatische Verlängerung und die Kündigungsfrist von 28 Tagen.
+  Abrechnung, automatische Verlängerung alle 12 Monate und die
+  Kündigungsfrist von 28 Tagen.
+- [teamviewer.com, All about subscription](https://www.teamviewer.com/en-us/global/support/knowledge-base/teamviewer-classic/licensing/subscription/all-about-subscription/):
+  jährliche Abrechnung, automatische Verlängerung, die Kündigungsfrist von
+  28 Tagen und die drei Wege zu kündigen.
 - [teamviewer.com, Lizenzübersicht](https://www.teamviewer.com/en/global/support/knowledge-base/teamviewer-classic/licensing/purchase/licenses-overview/):
-  Benutzer, Sitzungen und verwaltete Geräte je Tarif und das Add-on Mobile
-  Device Support.
-- [teamviewer.com, Produktbeschreibung von TeamViewer Core](https://www.teamviewer.com/en/product-descriptions/teamviewer-core/):
+  Benutzer, Sitzungen, Geräte und verwaltete Geräte je Tarif sowie das Add-on
+  Mobile Device Support und die Tarife, die es kaufen können.
+- [teamviewer.com, Produktbeschreibung von TeamViewer Remote, früher TeamViewer Core](https://www.teamviewer.com/en/product-descriptions/teamviewer-core/):
   die kostenlose Version für die private, nicht kommerzielle Nutzung und die
   Zwei-Faktor-Authentifizierung in jedem Tarif.
 - [teamviewer.com, Verdacht auf kommerzielle Nutzung](https://www.teamviewer.com/en/global/support/knowledge-base/teamviewer-classic/licensing/personal-use/commercial-use-suspected/):
-  was als kommerzielle Nutzung zählt.
+  was als kommerzielle und was als private Nutzung zählt, Homeoffice
+  eingeschlossen.
 - [teamviewer.com, Sicherheitserklärung](https://www.teamviewer.com/en/global/support/knowledge-base/teamviewer-remote/security/security-statement/):
-  der Handshake über die Master-Server und das Router-Netz.
+  der Handshake über die Master-Server, das Router-Netz, keine offenen Ports,
+  die Ende-zu-Ende-Verschlüsselung, die Prüfungen und wo die Server stehen.
 - [teamviewer.com, Hybrid Conditional Access](https://www.teamviewer.com/en/global/support/knowledge-base/teamviewer-tensor/conditional-access/hybrid-conditional-access/):
-  Router bei dir vor Ort für Tensor.
+  Router bei dir vor Ort für Tensor mit dem Add-on Conditional Access, gekauft
+  bei TeamViewer und mit einem Servicepaket eingerichtet.
 - [teamviewer.com, Funktionen der Lizenz Business](https://www.teamviewer.com/en-us/global/support/knowledge-base/teamviewer-remote/licenses/licenses-and-features/business-license-feature-overview/):
-  QuickSupport und Aufzeichnung bei Business.
+  QuickSupport, Aufzeichnung und Zwei-Faktor-Authentifizierung bei Business.
 - [teamviewer.com, Funktionen der Lizenz Corporate](https://www.teamviewer.com/en/global/support/knowledge-base/teamviewer-remote/licenses/licenses-and-features/corporate-license-feature-overview/):
-  AD Connector, Verbindungsberichte und Aufzeichnung bei Corporate.
+  AD Connector, Verbindungsberichte, QuickSupport und Aufzeichnung bei
+  Corporate.
 - [teamviewer.com, Funktionen der Lizenz Tensor](https://www.teamviewer.com/en/global/support/knowledge-base/teamviewer-remote/licenses/licenses-and-features/tensor-license-feature-overview/):
-  Single Sign-on, SCIM, AD Connector, Audit-Protokoll und Aufzeichnung bei
-  Tensor.
+  Single Sign-on und seine Identitätsanbieter, SCIM aus Entra ID, AD
+  Connector, Audit-Protokoll, Verbindungsberichte, QuickSupport und
+  Aufzeichnung bei Tensor.
 - [teamviewer.com, unterstützte Betriebssysteme](https://www.teamviewer.com/en/global/support/knowledge-base/teamviewer-remote/download-and-installation/supported-operating-systems-for-teamviewer-remote/):
-  die Systeme, auf denen TeamViewer Remote läuft.
+  die Systeme, auf denen TeamViewer Remote läuft, die Versionen der mobilen
+  Apps und die Enddaten des Supports.
 - [rustdesk.com, Client-Doku](https://rustdesk.com/docs/en/client/): iOS lässt
   sich nicht fernsteuern.
