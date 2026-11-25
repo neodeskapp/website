@@ -129,7 +129,7 @@ The first six are the first defaults of **Connection strategy** under **Settings
 | `SESSION_IDLE_TIMEOUT` | `1800000` | Milliseconds without activity before a console session ends (1 minute to 24 hours). |
 | `SESSION_MAX_AGE` | `86400000` | Milliseconds after sign-in when a session ends anyway (5 minutes to 7 days). |
 | `SESSION_IDLE_WARN_MS` | `60000` | How long before the idle end the console warns. |
-| `SESSION_MAX_PER_USER` | `1` | Sessions one account may have at once. A new sign-in beyond that ends the least recently active one; `0` allows any number. |
+| `SESSION_MAX_PER_USER` | not set | Sessions one account may have at once. While it is not set, **One session per account** under **Settings**, **Sign-in** decides: 1 when it is on, 10 when it is off. A value here decides instead and locks that switch. A new sign-in beyond the limit ends the least recently active session; `0` allows any number. See [Your account](/docs/people/your-account). |
 | `CLIENT_SESSION_EXPIRY_DAYS`, `CLIENT_SESSION_SLIDING`, `CLIENT_SESSION_MAX_DAYS` | `7`, on, `30` | Sign-in sessions of RustDesk clients. Values saved under **Settings**, **Sign-in** win. |
 | `DEFAULT_LANGUAGE` | `en` | Language for a browser that asks for none. |
 | `LOG_LEVEL` | `info` | `error`, `warn`, `info` or `debug`, for the whole process. The installers' env file sets `info`. |

@@ -89,7 +89,9 @@ These are the default permissions. Super admin and Administrator have all of the
 | Manage organization devices | No | Yes | Yes | No |
 | Manage enrollment | Yes | Yes | No | No |
 | Approve enrollment | No | Yes | No | No |
-| Chat access | No | Yes | Yes | Yes |
+| Support chat, Team chat | No | Yes | Yes | Yes |
+| Assign conversations | No | Yes | Yes | No |
+| Manage canned replies | No | Yes | No | No |
 | View audit logs, View metrics | Yes | Yes | Yes | Yes |
 | Edit blocklist | Yes | No | No | No |
 | Server configuration | Yes | No | No | No |

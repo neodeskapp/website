@@ -68,6 +68,9 @@ Dieser Schlüssel kann den ganzen Server verwalten. Trage einen Scraper deshalb 
 | `neodesk_audit_events_total` | Server-Ereignisse, die seit dem Start des Servers protokolliert wurden |
 | `neodesk_uptime_seconds` | Zeit seit dem Start des Servers |
 | `neodesk_goroutines`, `neodesk_memory_alloc_bytes`, `neodesk_memory_sys_bytes` | Der Serverprozess |
+| `neodesk_client_api_dropped_total{limit="device"}`, `{limit="address"}` | Heartbeats und Systeminfos von Clients, die die Client-API wegen einer Grenze abgelehnt hat |
+
+Die Client-API nimmt von einem Gerät bis zu 40 Heartbeats pro Minute an und von einer Adresse bis zu 6000 pro Minute. So passen auch viele Computer hinter einer Büroadresse. Eine IPv6-Adresse zählt als ihr /64. Ein Aufruf über einer Grenze bekommt 429 mit `Retry-After`, und das Log hat pro Adresse und Grenze eine Zeile pro Minute.
 
 ## Log-Format {#log-format}
 

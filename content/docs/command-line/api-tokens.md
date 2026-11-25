@@ -83,7 +83,10 @@ device.ban".
 | Manage organization devices | `org.manage_devices` |
 | Manage enrollment | `enrollment.manage` |
 | Approve enrollment | `enrollment.approve` |
-| Chat access | `chat.access` |
+| Support chat | `chat.support` |
+| Team chat | `chat.team` |
+| Assign conversations | `chat.assign` |
+| Manage canned replies | `chat.canned_manage` |
 | View audit logs | `audit.view` |
 | View metrics | `metrics.view` |
 | Edit blocklist | `blocklist.edit` |

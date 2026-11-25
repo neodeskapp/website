@@ -69,6 +69,9 @@ That key can manage the whole server, so give a scraper the allowlist rather tha
 | `neodesk_audit_events_total` | Server events logged since the server started |
 | `neodesk_uptime_seconds` | Time since the server started |
 | `neodesk_goroutines`, `neodesk_memory_alloc_bytes`, `neodesk_memory_sys_bytes` | The server process |
+| `neodesk_client_api_dropped_total{limit="device"}`, `{limit="address"}` | Heartbeat and system information calls of clients that the client API refused because of a limit |
+
+The client API takes up to 40 heartbeats a minute from one device, and up to 6000 a minute from one address, so many computers behind one office address fit. An IPv6 address counts as its /64. A call over a limit gets 429 with `Retry-After`, and the log has one line per address and limit a minute.
 
 ## Log format
 

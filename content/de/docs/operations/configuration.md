@@ -128,7 +128,7 @@ Die ersten sechs liefern die Anfangswerte für **Verbindungsstrategie** unter **
 | `SESSION_IDLE_TIMEOUT` | `1800000` | Millisekunden ohne Aktivität, nach denen eine Sitzung der Konsole endet (1 Minute bis 24 Stunden). |
 | `SESSION_MAX_AGE` | `86400000` | Millisekunden nach der Anmeldung, nach denen eine Sitzung in jedem Fall endet (5 Minuten bis 7 Tage). |
 | `SESSION_IDLE_WARN_MS` | `60000` | Wie lange vor dem Ende durch Inaktivität die Konsole warnt. |
-| `SESSION_MAX_PER_USER` | `1` | Sitzungen, die ein Konto gleichzeitig haben darf. Eine weitere Anmeldung darüber hinaus beendet die Sitzung, die am längsten nicht aktiv war; `0` erlaubt beliebig viele. |
+| `SESSION_MAX_PER_USER` | nicht gesetzt | Sitzungen, die ein Konto gleichzeitig haben darf. Solange der Wert nicht gesetzt ist, entscheidet **Eine Sitzung pro Konto** unter **Einstellungen**, **Anmeldung**: 1, wenn es eingeschaltet ist, sonst 10. Ein Wert hier entscheidet stattdessen und sperrt diesen Schalter. Eine weitere Anmeldung über die Grenze hinaus beendet die Sitzung, die am längsten nicht aktiv war; `0` erlaubt beliebig viele. Siehe [Dein Konto](/docs/people/your-account). |
 | `CLIENT_SESSION_EXPIRY_DAYS`, `CLIENT_SESSION_SLIDING`, `CLIENT_SESSION_MAX_DAYS` | `7`, an, `30` | Anmeldesitzungen von RustDesk-Clients. Werte, die unter **Einstellungen**, **Anmeldung** gespeichert sind, gewinnen. |
 | `DEFAULT_LANGUAGE` | `en` | Sprache für einen Browser, der keine verlangt. |
 | `LOG_LEVEL` | `info` | `error`, `warn`, `info` oder `debug`, für den ganzen Prozess. Die env-Datei der Installer setzt `info`. |

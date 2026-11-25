@@ -88,7 +88,9 @@ Das sind die Standardberechtigungen. Super-Admin und Administrator haben alle. D
 | Organisationsgeräte verwalten | Nein | Ja | Ja | Nein |
 | Registrierungen verwalten | Ja | Ja | Nein | Nein |
 | Registrierungen genehmigen | Nein | Ja | Nein | Nein |
-| Chat verwenden | Nein | Ja | Ja | Ja |
+| Support-Chat, Team-Chat | Nein | Ja | Ja | Ja |
+| Unterhaltungen zuweisen | Nein | Ja | Ja | Nein |
+| Textbausteine verwalten | Nein | Ja | Nein | Nein |
 | Audit anzeigen, Metriken anzeigen | Ja | Ja | Ja | Ja |
 | Sperrliste bearbeiten | Ja | Nein | Nein | Nein |
 | Server konfigurieren | Ja | Nein | Nein | Nein |

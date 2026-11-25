@@ -84,7 +84,10 @@ device.ban“.
 | Organisationsgeräte verwalten | `org.manage_devices` |
 | Registrierungen verwalten | `enrollment.manage` |
 | Registrierungen genehmigen | `enrollment.approve` |
-| Chat verwenden | `chat.access` |
+| Support-Chat | `chat.support` |
+| Team-Chat | `chat.team` |
+| Unterhaltungen zuweisen | `chat.assign` |
+| Textbausteine verwalten | `chat.canned_manage` |
 | Audit anzeigen | `audit.view` |
 | Metriken anzeigen | `metrics.view` |
 | Sperrliste bearbeiten | `blocklist.edit` |
