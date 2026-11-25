@@ -1,7 +1,7 @@
 ---
 title: neodesk strategies
 description: 7 Befehle. Strategien: Einstellungen, die an Desktop-Clients gehen.
-order: 50
+order: 51
 quoted: true
 ---
 

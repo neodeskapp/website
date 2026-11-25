@@ -1,7 +1,7 @@
 ---
 title: neodesk setup-guide
 description: 3 Befehle. Die Einrichtungsanleitung, die eine neue Installation ihrem ersten Admin auf der Übersicht zeigt.
-order: 49
+order: 50
 quoted: true
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: neodesk invites
-description: 6 commands. Invites that add a computer to this server.
+description: 7 commands. Invites that add a computer to this server.
 order: 30
 quoted: true
 ---
@@ -96,6 +96,26 @@ neodesk invites revoke <id> [flags]
 | `<id>` | The invite ID (see invites list) |
 
 Needs enrollment.approve; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/onboard/invites/{id}`.
+
+## neodesk invites show
+
+Show an invite and the computers that joined with it, also once they used it up, until it would have expired.
+
+devices are the computers that joined with the invite, with their name, folder and when they joined. refused is the last computer the invite turned away; reason key_changed means its ID is enrolled with another key, which invites approve-key accepts.
+
+```text quoted
+neodesk invites show <id> [flags]
+```
+
+| Argument | What it is |
+|---|---|
+| `<id>` | The invite ID (see invites list) |
+
+Needs enrollment.approve; only reads. Calls `GET /api/onboard/invites/{id}`.
+
+```bash quoted
+neodesk invites show 0123456789abcdef
+```
 
 ## neodesk invites status
 

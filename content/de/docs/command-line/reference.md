@@ -6,7 +6,7 @@ fold: true
 quoted: true
 ---
 
-Die Referenz aller Befehle der Kommandozeile neodesk, erzeugt aus der Befehlstabelle des Releases 3.6.0-rc.5: 536 Befehle in 59 Gruppen. Jede Gruppe hat eine Seite mit ihren Befehlen, deren Argumenten und Flags, der Berechtigung, die jeder braucht, und der Route der Konsole, die er aufruft.
+Die Referenz aller Befehle der Kommandozeile neodesk, erzeugt aus der Befehlstabelle des Releases 3.6.0-rc.6: 564 Befehle in 60 Gruppen. Jede Gruppe hat eine Seite mit ihren Befehlen, deren Argumenten und Flags, der Berechtigung, die jeder braucht, und der Route der Konsole, die er aufruft.
 
 Der Text unten und auf den Seiten der Gruppen steht auf Englisch, so wie die Kommandozeile selbst ihn mit `--help` zeigt.
 
@@ -50,7 +50,7 @@ For an AI agent, `neodesk mcp` serves the commands as MCP tools: read only, with
 | [branding](/docs/command-line/reference/branding) | The console's look: logo, colors, profiles and fonts | 17 |
 | [cdap](/docs/command-line/reference/cdap) | CDAP devices, their widgets and commands | 10 |
 | [cdap-studio](/docs/command-line/reference/cdap-studio) | CDAP Studio flows | 10 |
-| [chat](/docs/command-line/reference/chat) | Chat search and files | 2 |
+| [chat](/docs/command-line/reference/chat) | Chat search and files | 23 |
 | [client-branding](/docs/command-line/reference/client-branding) | Name, logo and links the desktop clients show | 2 |
 | [cross-platform](/docs/command-line/reference/cross-platform) | What each device platform supports | 3 |
 | [dashboard](/docs/command-line/reference/dashboard) | The numbers on the dashboard and the server status | 6 |
@@ -67,7 +67,7 @@ For an AI agent, `neodesk mcp` serves the commands as MCP tools: read only, with
 | [guest-links](/docs/command-line/reference/guest-links) | Guest links that let someone without an account connect | 3 |
 | [help-requests](/docs/command-line/reference/help-requests) | Help requests sent from devices | 3 |
 | [inventory](/docs/command-line/reference/inventory) | Hardware and software inventory of devices | 2 |
-| [invites](/docs/command-line/reference/invites) | Invites that add a computer to this server | 6 |
+| [invites](/docs/command-line/reference/invites) | Invites that add a computer to this server | 7 |
 | [keys](/docs/command-line/reference/keys) | The server's key, the client settings and the QR code | 6 |
 | [languages](/docs/command-line/reference/languages) | The console's languages and translations | 9 |
 | [mesh](/docs/command-line/reference/mesh) | MeshCentral devices, groups and recordings | 16 |
@@ -85,7 +85,8 @@ For an AI agent, `neodesk mcp` serves the commands as MCP tools: read only, with
 | [roles](/docs/command-line/reference/roles) | Roles and their permissions | 5 |
 | [scaling](/docs/command-line/reference/scaling) | Relay servers and scaling rules | 12 |
 | [server](/docs/command-line/reference/server) | The server: health, versions, resources, services and logs | 15 |
-| [settings](/docs/command-line/reference/settings) | Server settings: mail, sign-in, addresses, enrollment, sessions | 28 |
+| [sessions](/docs/command-line/reference/sessions) | Console sign-ins: the browsers and devices an account is signed in on | 4 |
+| [settings](/docs/command-line/reference/settings) | Server settings: mail, sign-in, addresses, enrollment, sessions | 30 |
 | [setup-guide](/docs/command-line/reference/setup-guide) | The setup guide a new install shows its first admin on the overview | 3 |
 | [strategies](/docs/command-line/reference/strategies) | Strategies: settings pushed to desktop clients | 7 |
 | [support](/docs/command-line/reference/support) | Quick support sessions | 7 |

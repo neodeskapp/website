@@ -1,7 +1,7 @@
 ---
 title: neodesk setup-guide
 description: 3 commands. The setup guide a new install shows its first admin on the overview.
-order: 49
+order: 50
 quoted: true
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: neodesk settings
-description: 28 commands. Server settings: mail, sign-in, addresses, enrollment, sessions.
-order: 48
+description: 30 commands. Server settings: mail, sign-in, addresses, enrollment, sessions.
+order: 49
 quoted: true
 ---
 
@@ -135,6 +135,34 @@ neodesk settings connection-mode-set [flags]
 ```
 
 Needs server.config; changes something: needs a token with read and write access. Calls `PUT /api/settings/connection-mode`.
+
+## neodesk settings console-sessions
+
+Show whether an account may be signed in on several browsers at once.
+
+single_session is the switch One session per account; source says what decides the limit: the switch, the default, or SESSION_MAX_PER_USER (env_value) in the server's environment.
+
+```text quoted
+neodesk settings console-sessions [flags]
+```
+
+Needs server.config; only reads. Calls `GET /api/settings/console-sessions`.
+
+## neodesk settings console-sessions-set
+
+Turn One session per account on or off.
+
+On: a new sign-in signs out the account's other browser. Off (the default): up to 10 at once. It applies from the next sign-in. SESSION_MAX_PER_USER, when set in the server's environment, decides instead.
+
+```text quoted
+neodesk settings console-sessions-set --single-session  [flags]
+```
+
+| Flag | What it is |
+|---|---|
+| `--single-session` | one session per account (required) |
+
+Needs server.config; changes something: needs a token with read and write access. Calls `PUT /api/settings/console-sessions`.
 
 ## neodesk settings device-scope
 

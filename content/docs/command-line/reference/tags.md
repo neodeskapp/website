@@ -1,7 +1,7 @@
 ---
 title: neodesk tags
 description: 3 commands. Device tags.
-order: 52
+order: 53
 quoted: true
 ---
 

@@ -23,7 +23,7 @@ neodesk help-requests accept <id> [flags]
 |---|---|
 | `<id>` | The ID |
 
-Needs chat.access; changes something: needs a token with read and write access. Calls `POST /api/help/requests/{id}/accept`.
+Needs chat.support; changes something: needs a token with read and write access. Calls `POST /api/help/requests/{id}/accept`.
 
 ## neodesk help-requests list
 
@@ -33,7 +33,7 @@ List help requests.
 neodesk help-requests list [flags]
 ```
 
-Needs chat.access; only reads. Calls `GET /api/help/requests`.
+Needs chat.support; only reads. Calls `GET /api/help/requests`.
 
 ## neodesk help-requests resolve
 
@@ -49,4 +49,4 @@ neodesk help-requests resolve <id> [flags]
 |---|---|
 | `<id>` | The ID |
 
-Needs chat.access; changes something: needs a token with read and write access. Calls `POST /api/help/requests/{id}/resolve`.
+Needs chat.support; changes something: needs a token with read and write access. Calls `POST /api/help/requests/{id}/resolve`.

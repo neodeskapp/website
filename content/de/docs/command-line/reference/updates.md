@@ -1,7 +1,7 @@
 ---
 title: neodesk updates
 description: 16 Befehle. Updates des Servers und die Sicherungen davor.
-order: 57
+order: 58
 quoted: true
 ---
 

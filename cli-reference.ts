@@ -80,6 +80,7 @@ const GERMAN: Record<string, string> = {
 	roles: 'Rollen und ihre Berechtigungen',
 	scaling: 'Relay-Server und Regeln zur Skalierung',
 	server: 'Der Server: Zustand, Versionen, Ressourcen, Dienste und Logs',
+	sessions: 'Anmeldungen an der Konsole: die Browser und Geräte, auf denen ein Konto angemeldet ist',
 	settings: 'Einstellungen des Servers: Mail, Anmeldung, Adressen, Registrierung, Sitzungen',
 	'setup-guide': 'Die Einrichtungsanleitung, die eine neue Installation ihrem ersten Admin auf der Übersicht zeigt',
 	strategies: 'Strategien: Einstellungen, die an Desktop-Clients gehen',

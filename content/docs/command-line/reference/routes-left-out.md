@@ -104,6 +104,11 @@ Called by NeoDesk agents and clients with a device token, not by people.
 - `POST /api/tickets/nd`
 - `PUT /api/nd/smtp`
 
+Called by the NeoDesk app's chat window with its device token, not by people.
+
+- `POST /api/chat/device/files`
+- `GET /api/chat/device/files/{fileId}`
+
 Making API tokens needs a browser session: a token never makes another token.
 
 - `POST /api/panel/api-tokens`
@@ -192,6 +197,10 @@ The RustDesk client API: desktop clients call it with their own sign-in.
 The browser viewer's answer to a device's password question; it needs the device's question from an open session.
 
 - `POST /api/devices/{id}/connect-password/answer`
+
+The invite page the person who got a link opens in a browser, not an admin's command.
+
+- `GET /join/{code}`
 
 The same route at the /api/nd address the old console also served; the command line uses the main address.
 
@@ -324,6 +333,11 @@ What the web console loads for its own pages and layout.
 - `GET /api/ui-shell`
 - `POST /api/desktop/layout`
 - `POST /api/ui-shell`
+
+Your own account's sessions: API tokens cannot end them (a stolen token must not sign its owner out). Signed-in devices in the account menu does it; sessions end does it for other accounts.
+
+- `DELETE /api/users/me/sessions/{id}`
+- `POST /api/users/me/sessions/end-others`
 
 Your own profile: change it in the console. API tokens cannot change their account's profile.
 
