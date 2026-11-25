@@ -15,15 +15,14 @@ Diese Seite ist für alle, die den Code von NeoDesk ändern. Sie erklärt, wo wa
 | `sdks/` | CDAP-Client-Bibliotheken für Python und Node.js. |
 | `bridges/` | CDAP-Beispiel-Bridges für Modbus, SNMP und REST-Webhooks, gebaut auf dem Python-SDK. |
 | `remote-gateway/` | Dienstdateien und die festgeschriebene Version von guacd, dem Gateway für RDP- und VNC-Ziele. |
-| `docker/` | Die Entrypoints der Images, der Health-Check und die Hilfsprogramme für das Admin-Passwort. |
+| `docker/` | `Dockerfile` und `Dockerfile.server`, die die Images `neodesk` und `neodesk-server` bauen: Beide bauen die Web-App mit Node.js und den Server mit Go und laufen auf Alpine. Daneben die Entrypoints der Images, der Health-Check und die Hilfsprogramme für das Admin-Passwort. |
+| `install/` | Die Installer `install.sh`, `neodesk.sh`, `neodesk.ps1` und `neodesk-docker.sh` und die Compose-Dateien `docker-compose.single.yml` und `docker-compose.quick.single*.yml`. Jedes Release hat sie als eigene Dateien dabei. |
 | `config/` | Der Stand der Upstream-Beobachtung von RustDesk, siehe [Kompatibilität mit RustDesk](/docs/development/rustdesk-compatibility#the-upstream-watch). |
 | `scripts/` | Installer-Tests, die Sicherheits-Testsuite, das lokale Gate, der Installer für die Build-Toolchain, die Upstream-Beobachtung. |
 | `contrib/` | Beiträge aus der Community, etwa ein rc.d-Skript für FreeBSD. |
-| `.github/` | CI-Workflows, Dependabot, CodeQL und die Vorlage für Pull Requests. |
-| `Dockerfile`, `Dockerfile.server` | Die Images `neodesk` und `neodesk-server`. Beide bauen die Web-App mit Node.js und den Server mit Go und laufen auf Alpine. |
-| `docker-compose.single.yml`, `docker-compose.quick.single*.yml` | Die Compose-Dateien. |
-| `install.sh`, `neodesk.sh`, `neodesk.ps1`, `neodesk-docker.sh` | Die Installer. |
+| `.github/` | CI-Workflows, Dependabot, CodeQL, die gitleaks-Konfiguration `gitleaks.toml` und die Vorlage für Pull Requests. |
 | `VERSION`, `CHANGELOG.md` | Die Produktversion und das Änderungsprotokoll. |
+| `release-notes/` | Die Notizen jedes Release, siehe [Releases](/docs/development/releasing). |
 
 Einige Ordner haben eine eigene kurze README, die beim Code bleibt: [web-ui](https://github.com/neodeskapp/neodesk/blob/main/web-ui/README.md), [sdks](https://github.com/neodeskapp/neodesk/blob/main/sdks/README.md), [bridges](https://github.com/neodeskapp/neodesk/blob/main/bridges/README.md), [remote-gateway](https://github.com/neodeskapp/neodesk/blob/main/remote-gateway/README.md) und die [Contract-Suite der Konsole](https://github.com/neodeskapp/neodesk/blob/main/neodesk-server/console/contract/README.md).
 
@@ -59,7 +58,7 @@ Verlangt die Konsole nach einem Update oder einer Wiederherstellung einen Neusta
 | `console` | Die Web-Konsole und ihre Unterpakete, siehe unten. |
 | `cdap` | Das CDAP-Gateway auf 21122, siehe [CDAP-Protokoll](/docs/development/cdap-protocol). |
 | `meshcentral` | Das Agentenprotokoll von MeshCentral: `/agent.ashx`, `/meshrelay.ashx` und `/control.ashx`. |
-| `crypto` | Das Schlüsselpaar, die Kodierung der Adressen, der sichere TCP-Handshake des ID-Servers und `peervault`, das gespeicherte Gerätepasswörter verschlüsselt. |
+| `crypto` | Das Schlüsselpaar, die Kodierung der Adressen, der sichere TCP-Handshake des ID-Servers, `devicevault`, das gespeicherte Anmeldedaten und die Gerätepasswörter von Organisationen mit der Schlüsseldatei `.device_vault_key` verschlüsselt, und `peervault`, der ältere Schlüssel, der nur Passwörter von vor 3.6.0-rc.5 öffnet. |
 | `codec` | Das Framing der RustDesk-Nachrichten auf der Leitung. |
 | `config` | Einstellungen aus Flags und Umgebung sowie die TLS-Listener. |
 | `audit`, `events` | Die Server-Ereignisse, 90 Tage lang in der Datenbank gespeichert, mit dem Konto oder API-Schlüssel, der gehandelt hat, und der Event-Bus, der die Konsole versorgt. |
@@ -82,7 +81,7 @@ Beginnt das erste Argument nicht mit `-`, führt das Binary einen Befehl aus sta
 |---|---|
 | `update`, `rollback` | Installiert das neueste Release des Update-Kanals oder setzt das vorherige Binary wieder ein. |
 | `backup` | Schreibt das vollständige Backup der Konsole, auch während der Server läuft. |
-| `migrate` | Zieht eine ganze Installation von SQLite nach PostgreSQL um oder zurück (`sqlite2pg`, `pg2sqlite`), wandelt eine ältere Datenbank in das Schema des Servers um (`rust2go`, `nodejs2go`) oder legt eine Kopie einer SQLite-Datei beiseite (`backup`). |
+| `migrate` | Zieht eine ganze Installation von SQLite nach PostgreSQL um oder zurück (`sqlite2pg`, `pg2sqlite`), wandelt die Datenbank eines RustDesk-Servers in das Schema des Servers um (`rust2go`) oder legt eine Kopie einer SQLite-Datei beiseite (`backup`). |
 | `reset-password` | Setzt das Passwort eines Kontos, gelesen von der Standardeingabe. |
 | `config` | Prüft, was die Konsole kann, oder setzt Einstellungen aus einer Positivliste. |
 | `check`, `cert` | Prüft die Adressen und Ports einer Installation oder erzeugt ihr selbstsigniertes Zertifikat. |
@@ -93,7 +92,7 @@ Ein unbekannter Befehl gibt die Liste der Befehle mit ihrer Verwendung aus.
 
 ## Die Web-Konsole {#the-web-console}
 
-Die Konsole ist das Paket `console`. Sie lauscht auf ihrem eigenen Port, `CONSOLE_PORT` (5000; `0` schaltet die Konsole aus, während der Rest des Servers weiterläuft), oder im HTTPS-Modus auf 5443. Sie liefert drei Dinge aus: eine JSON-API unter `/api`, WebSockets unter `/ws` und die Web-App.
+Die Konsole ist das Paket `console`. Sie lauscht auf ihrem eigenen Port, `CONSOLE_PORT` (3375, vor 3.6.0-rc.5 5000; `0` schaltet die Konsole aus, während der Rest des Servers weiterläuft), oder im HTTPS-Modus auf 5443. Sie liefert drei Dinge aus: eine JSON-API unter `/api`, WebSockets unter `/ws` und die Web-App.
 
 - Jede Anfrage läuft durch eine Pipeline (`console/pipeline.go`). Die Routengruppen liegen in `console/routes`, ein Paket pro Bereich, und tragen ihre Routen in eine von zwei Tabellen ein: die Client- und Geräte-API, die vor den Prüfungen von Sprache und CSRF kommt, und alles andere.
 - Die Konsole ruft den API-Server im selben Prozess auf, über seinen Handler und ohne Socket (`console/goapi`). Der API-Server sieht diese Aufrufe als Aufrufe mit dem API-Schlüssel der Konsole.

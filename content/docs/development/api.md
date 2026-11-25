@@ -4,7 +4,7 @@ description: How a script or an integration signs in to the server's API, and th
 order: 12
 ---
 
-The NeoDesk server has one HTTP API. The web console, RustDesk clients and your own scripts all talk to it. This page is for scripts and integrations: where the API listens, how to sign in, and the routes worth building on. The console's own addresses under `/api/` on port 5000 serve the browser and are not covered here. A script can use them too, with an API token of the console, as the `neodesk` command line does; see [API tokens](/docs/command-line/api-tokens) and the [command reference](/docs/command-line/reference).
+The NeoDesk server has one HTTP API. The web console, RustDesk clients and your own scripts all talk to it. This page is for scripts and integrations: where the API listens, how to sign in, and the routes worth building on. The console's own addresses under `/api/` on the console's port (3375 by default, 5000 on installs from before 3.6.0-rc.5) serve the browser and are not covered here. A script can use them too, with an API token of the console, as the `neodesk` command line does; see [API tokens](/docs/command-line/api-tokens) and the [command reference](/docs/command-line/reference).
 
 ## Where it listens
 

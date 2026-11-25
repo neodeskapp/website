@@ -12,7 +12,7 @@ This page describes the security design as the code implements it, for people wh
 |---|---|---|
 | Internet to the ID server and relay (21115 to 21119) | RustDesk clients | Device identity, the key exchange on TCP, optional TLS, enrollment, the check of who may start a session, rate limits |
 | Internet to the client API (21121), and scripts to the API (21114 on Linux and Windows) | RustDesk clients, scripts | Sign-in tokens, API keys in a header, device tokens, rate limits |
-| Browser to the console (5000 or 5443) | People | The session cookie, the CSRF token, roles and permissions, TLS from the console or a reverse proxy |
+| Browser to the console (3375 or 5443) | People | The session cookie, the CSRF token, roles and permissions, TLS from the console or a reverse proxy |
 | Invite and quick support links on the console | Anyone with a link, NeoDesk's client | A code that works for a limited time and number of uses, a rate limit per address, see [Join and support codes](#join-and-support-codes) |
 | Console to the API server | The console | Nothing crosses a network: the console calls the API server's handler in the same process, as the console's API key |
 | Console to the ID server and relay | The browser's remote desktop | A proof only this process can make, see [The browser's bridge](#the-browsers-bridge) |
@@ -111,7 +111,9 @@ The session secret is `SESSION_SECRET`, or else the file `.session_secret` in th
 | Join, support and pairing codes | `server_config` | SHA-256 hashes |
 | Quick support session passwords | Memory only | Given once to the supporter, then forgotten |
 | The telemetry key | `server_config` | An X25519 private key, see [The envelope](/docs/development/architecture#the-envelope) |
-| Device passwords an organization stores | Database | AES-256-GCM, with a key from `ORG_PEER_VAULT_KEY`, or else from the secret that signs API tokens |
+| The key of the device secrets | `.device_vault_key`, next to `id_ed25519` | 32 random bytes in hex, file mode 0600; made at the first start, in no backup but the Docker manager's |
+| Device passwords an organization stores | Database | AES-256-GCM with the key in `.device_vault_key`, sealed for the organization and the device. Rows from before 3.6.0-rc.5, sealed with a key from `ORG_PEER_VAULT_KEY` or else from the secret that signs API tokens, move to the new key at the next start |
+| Saved sign-in details (account name and password) | Database | AES-256-GCM with the key in `.device_vault_key`, sealed for the device and the field; see [Saved sign-in](/docs/console/saved-sign-in) |
 | Passwords of RDP and VNC targets | Database | AES-256-GCM, with a key from `REMOTE_TARGET_VAULT_KEY`; without that key the server stores none |
 | Two-factor secrets | Database | As they are |
 | The LDAP bind password and the OIDC client secret | `server_config` | As they are; the API answers with a mask instead |
@@ -131,4 +133,4 @@ Each release has a manifest of its binaries and their SHA-256 sums, signed with 
 - The audit trail can be changed by whoever can write to the database; nothing chains or signs the entries.
 - Two-factor secrets, the LDAP bind password and the OIDC client secret are stored unencrypted.
 - Messages to the ID server over UDP are never encrypted, and neither are TCP messages from clients that skip the key exchange while TLS is off.
-- The console speaks plain HTTP on port 5000 unless it serves HTTPS itself or sits behind a reverse proxy with TLS.
+- The console speaks plain HTTP on its port, 3375 by default, unless it serves HTTPS itself or sits behind a reverse proxy with TLS.

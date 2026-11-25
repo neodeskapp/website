@@ -4,20 +4,24 @@ description: For work on the install scripts: what each one does, where it gets 
 order: 8
 ---
 
-The repository has four install scripts. This page is for changing them. How to install with them is in [Install with Docker](/docs/getting-started/docker), [Install on Linux](/docs/getting-started/linux) and [Install on Windows](/docs/getting-started/windows).
+The repository has four install scripts, in its `install/` folder next to the three compose files. This page is for changing them. How to install with them is in [Install with Docker](/docs/getting-started/docker), [Install on Linux](/docs/getting-started/linux) and [Install on Windows](/docs/getting-started/windows).
 
 ## The scripts
 
 | Script | Runs on | What it does |
 |--------|---------|--------------|
-| `install.sh` | Linux | The one-line installer. By default it fetches `neodesk-docker.sh` and installs with Docker; `--native` clones the repository and runs `neodesk.sh --auto`. |
+| `install.sh` | Linux | The one-line installer. By default it fetches `neodesk-docker.sh` and installs with Docker; `--native` fetches `neodesk.sh` and runs it with `--auto`. |
 | `neodesk.sh` | Linux | Installs `neodesk-server` as the systemd service `neodesk-server`, and updates, repairs, backs up, diagnoses and removes it. |
 | `neodesk.ps1` | Windows | The same on Windows, with the service `NeoDeskServer`, or a scheduled task of that name. |
 | `neodesk-docker.sh` | Linux with Docker | Runs the published image `ghcr.io/neodeskapp/neodesk` in one container, with `docker-compose.yml` and `.env` in `/opt/neodesk/docker`. |
 
-`install.sh` fetches the other scripts from the `main` branch unless `--branch` or `NEODESK_BRANCH` names another. `--channel stable|dev` picks the release channel of a native install.
+Every release carries the four scripts and the three compose files as files of its own, listed in the release's `SHA256SUMS`, which `SHA256SUMS.sig` signs with the release key. The public install commands fetch them from neode.sk, which leads to the newest release that has them. No script takes its files from the `main` branch any more.
 
-Both native installers keep a copy of themselves for later runs: `neodesk.sh` as the command `/usr/local/sbin/neodesk`, `neodesk.ps1` as `C:\NeoDesk\neodesk.ps1`. Run from that copy, an install or update replaces it with the newest one from `main` (`INSTALLER_REF` names another branch).
+`install.sh` takes the other scripts from the first of these that applies: the release folder `RELEASE_BASE_URL` names; a branch's `install/` folder with `--branch` or `NEODESK_BRANCH`, for development, where a native install also clones that branch; the files next to it when it runs from a file that has them, such as a checkout's `install/` folder; else the release of its own version, or of `--version`, checked against that release's `SHA256SUMS`. `--channel stable|dev` picks the release channel of a native install.
+
+Both native installers keep a copy of themselves for later runs: `neodesk.sh` as the command `/usr/local/sbin/neodesk-setup`, `neodesk.ps1` as `C:\NeoDesk\neodesk.ps1`. Run from a download or a checkout, an install or update saves the file it runs from. Run from that copy, or piped from curl, it takes the script of the release it installs and checks it against the release's `SHA256SUMS` and the list's signature (`verify-release --sums` of the installed server, or on Linux `openssl` with the release key in the script); a release without the script, or a copy that fails the check, leaves the saved copy as it is. `install.sh` and `neodesk-docker.sh` check the SHA-256 of what they fetch against the release's list.
+
+`neodesk.sh` also puts the command line on the machine: `/usr/local/bin/neodesk`, a copy of the server binary that root owns and every user may run. It hands the installer's options to `neodesk-setup`. Up to 3.6.0-rc.4 the installer's copy was `/usr/local/sbin/neodesk`; the next run as root removes it. `neodesk.ps1` puts `bin\neodesk.exe`, a link to the server binary, on the machine's Path.
 
 Work that both native installers need lives in the server binary as commands, so Bash and PowerShell don't each carry a copy:
 
@@ -29,9 +33,9 @@ Work that both native installers need lives in the server binary as commands, so
 | `neodesk-server config check`, `config set` | The capability report and the allowlisted settings, see [Configuration commands](#configuration-commands). |
 | `neodesk-server reset-password` | A new password for an account, read from standard input. |
 | `neodesk-server cert` | The self-signed certificate of an install. |
-| `neodesk-server verify-release` | Checks a downloaded binary against the release's signed manifest. |
+| `neodesk-server verify-release` | Checks a downloaded binary against the release's signed manifest, or with `--sums` an installer or compose file against the release's signed `SHA256SUMS`. |
 | `neodesk-server migrate` | Moves a database between SQLite and PostgreSQL. |
-| `neodesk-server upgrade-env` | Turns the old Node.js console's env file into the server's. |
+| `neodesk-server upgrade-env` | Adds what the server needs to the env file the installer wrote, such as `CONSOLE_PORT` and the pinned ports, and comments out what it doesn't use. |
 
 ## Where the server comes from
 
@@ -39,9 +43,9 @@ Work that both native installers need lives in the server binary as commands, so
 
 - **The release of the update channel** (the default). While the repository has no stable release, the stable channel takes the newest pre-release, or the development build when there is no pre-release either; the script says which. They download the binary for the machine, check its SHA-256 and check it against the release's signed `manifest.json` and `manifest.sig`. An installed server checks the signature with `verify-release`. On Linux without one, `openssl` checks it with the release key in the script. A first install on Windows checks only the SHA-256 over HTTPS, since Windows has no tool for the signature before the server is installed. `--skip-verify` (`-SkipVerify`) skips the checks.
 - **A binary you give:** `--binary <file>` (`-Binary <path>`).
-- **A build of the checkout the script runs in:** `--from-source` (`-FromSource`). It needs Go, and Node.js unless `web-ui/build` exists. The Go the installers download or accept for this build must be the toolchain `neodesk-server/go.mod` names; `scripts/check-go-toolchain-pins.sh` checks that.
+- **A build of the checkout the script runs in:** `--from-source` (`-FromSource`). It needs Go, and Node.js unless `web-ui/build` exists. The Go the installers download or accept for this build must be the toolchain `neodesk-server/go.mod` names; `scripts/check-go-toolchain-pins.sh` checks that. Both find the checkout one folder above `install/`.
 
-`neodesk-docker.sh` pulls the image tag from `.env` (`NEODESK_IMAGE_TAG`, `latest` by default), uses an image already on the machine with `--no-pull`, or builds one from the checkout with `--build`. It reads no GitHub release. When Docker is missing it installs it with Docker's script from get.docker.com; `--no-install-docker` stops with an error instead.
+`neodesk-docker.sh` pulls the image tag from `.env` (`NEODESK_IMAGE_TAG`, `latest` by default), uses an image already on the machine with `--no-pull`, or builds one from the checkout it sits in with `--build`. It takes its compose file and the new copy of itself from the release of the image tag, the newest release for `latest`; for a tag of 3.6.0-rc.4 or older, which have no such files, it takes the compose file from the repository at that tag. When Docker is missing it installs it with Docker's script from get.docker.com; `--no-install-docker` stops with an error instead.
 
 ## The installer contract
 
@@ -74,21 +78,21 @@ go generate
 ```
 
 ```bash
-sudo ./neodesk.sh --check-permissions
-sudo ./neodesk.sh --repair-permissions
-sudo ./neodesk.sh --set-config HTTPS_ENABLED=true --set-config HTTPS_PORT=5443
+sudo neodesk-setup --check-permissions
+sudo neodesk-setup --repair-permissions
+sudo neodesk-setup --set-config HTTPS_ENABLED=true --set-config HTTPS_PORT=5443
 ```
 
 ```powershell
-.\neodesk.ps1 -CheckPermissions
-.\neodesk.ps1 -RepairPermissions
-.\neodesk.ps1 -SetConfig "HTTPS_ENABLED=true","HTTPS_PORT=5443"
+& 'C:\NeoDesk\neodesk.ps1' -CheckPermissions
+& 'C:\NeoDesk\neodesk.ps1' -RepairPermissions
+& 'C:\NeoDesk\neodesk.ps1' -SetConfig "HTTPS_ENABLED=true","HTTPS_PORT=5443"
 ```
 
 ```bash
-sudo bash neodesk-docker.sh --check-permissions
-sudo bash neodesk-docker.sh --repair-permissions
-sudo bash neodesk-docker.sh --set-config LOG_LEVEL=info
+sudo bash /opt/neodesk/docker/neodesk-docker.sh --check-permissions
+sudo bash /opt/neodesk/docker/neodesk-docker.sh --repair-permissions
+sudo bash /opt/neodesk/docker/neodesk-docker.sh --set-config LOG_LEVEL=info
 ```
 
 The console has the same report at `GET /api/settings/management/capabilities` and the allowlisted settings at `GET` and `PUT /api/settings/management/config`. `PUT` refuses the keys that are set on the host only; see [Protect the secrets](/docs/operations/security#protect-the-secrets).
@@ -100,11 +104,11 @@ The console has the same report at `GET /api/settings/management/capabilities` a
 ```bash
 neodesk-server check \
   --api http://127.0.0.1:21114/api/health \
-  --panel http://127.0.0.1:5000/health \
+  --panel http://127.0.0.1:3375/health \
   --port 127.0.0.1:21116 --port 127.0.0.1:21117
 ```
 
-On Linux and Windows the API is on 21114 and the client API on 21121. In Docker the API is on 21121. The console is on 5000, or 5443 with HTTPS.
+On Linux and Windows the API is on 21114 and the client API on 21121. In Docker the API is on 21121. The console is on 3375, or 5443 with HTTPS. Installs from before 3.6.0-rc.5 keep 5000, because their env file names it: an install whose settings name a port keeps it.
 
 ## Menus
 
@@ -120,7 +124,7 @@ These run in Installer CI without changing the machine they run on. The [local g
 |------|----------------|
 | `bash -n` and `shellcheck --severity=error` | Every Bash installer and test script. |
 | `--help` of `install.sh`, `neodesk.sh` and `neodesk-docker.sh` | The help paths, which must not change the host. |
-| `scripts/test-go-installer.sh` | `neodesk.sh`'s upgrade from the Node.js console: reading the old units, carrying their settings into the env file and writing the one unit, in a temporary folder without systemd. |
+| `scripts/test-go-installer.sh` | `neodesk.sh`'s functions: reading the units, writing the one unit, the settings, the update and its way back, and the commands it installs, in a temporary folder without systemd. |
 | `scripts/test-native-installer.sh` | `neodesk.sh`'s watchdog for long Go commands and its recovery of a broken clone. |
 | `scripts/test-postgresql-hba.sh` | The PostgreSQL `pg_hba.conf` setup. |
 | `scripts/test-docker-installer.sh` | `neodesk-docker.sh`'s functions, with stand-ins for `docker`, `curl`, `ss` and `id`, followed by `scripts/test-docker-entrypoint.sh` for the image's start scripts, the Dockerfiles and the compose files. |
@@ -130,6 +134,11 @@ These run in Installer CI without changing the machine they run on. The [local g
 | PowerShell parse | `neodesk.ps1` parses without errors. |
 | `go test ./cli/... ./console/safepath/... ./console/updater/...` | The server commands the installers call, the path checks and the updater. |
 
-`scripts/test-docker-hardening.sh` needs Docker: it runs an image with hardened bind mounts and restarts it. Installer CI runs it by hand against a published tag, the local gate against `neodesk:local`.
+`scripts/test-docker-hardening.sh` needs Docker: it runs an image with hardened bind mounts and restarts it. Installer CI runs it with the image of the checkout, or, started by hand with a tag, with that published image; the local gate runs it against `neodesk:local`.
+
+Two more scripts install for real and belong on a machine you can throw away, such as the CI runner:
+
+- `scripts/test-setup-command.sh` installs natively through a local stand-in for neode.sk and the releases, checks `neodesk` as a normal user and `neodesk-setup`, updates with `neodesk-setup` and with the old manager of 3.6.0-rc.4 followed by the one manual step, checks the way back after an update that doesn't start, and uninstalls.
+- `scripts/test-docker-data-path.sh` updates a Docker install of 3.6.0-rc.4 with data to the image of the checkout, which keeps its data in `/opt/neodesk/data`, and restores backups from before and after the update.
 
 What no script can test is an installer on a real host. Before a release, run each installer on disposable Linux and Windows machines: fresh install, update, repair, backup and restore, uninstall and reinstall, and check that nothing ends up twice (see [the checklist](/docs/development/releasing#before-a-stable-release)).

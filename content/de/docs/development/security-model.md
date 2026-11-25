@@ -12,7 +12,7 @@ Diese Seite beschreibt das Sicherheitsdesign so, wie der Code es umsetzt, für a
 |---|---|---|
 | Internet zum ID-Server und Relay (21115 bis 21119) | RustDesk-Clients | Geräteidentität, der Schlüsselaustausch über TCP, optionales TLS, die Registrierung, die Prüfung, wer eine Sitzung starten darf, Rate Limits |
 | Internet zur Client-API (21121) und Skripte zur API (21114 unter Linux und Windows) | RustDesk-Clients, Skripte | Anmelde-Tokens, API-Schlüssel in einem Header, Geräte-Tokens, Rate Limits |
-| Browser zur Konsole (5000 oder 5443) | Menschen | Das Sitzungs-Cookie, der CSRF-Token, Rollen und Berechtigungen, TLS von der Konsole oder einem Reverse Proxy |
+| Browser zur Konsole (3375 oder 5443) | Menschen | Das Sitzungs-Cookie, der CSRF-Token, Rollen und Berechtigungen, TLS von der Konsole oder einem Reverse Proxy |
 | Einladungs- und Schnellhilfe-Links der Konsole | Jeder mit einem Link, der NeoDesk-Client | Ein Code, der für begrenzte Zeit und begrenzt oft gilt, ein Rate Limit pro Adresse, siehe [Beitritts- und Support-Codes](#join-and-support-codes) |
 | Konsole zum API-Server | Die Konsole | Nichts geht über ein Netzwerk: Die Konsole ruft den Handler des API-Servers im selben Prozess auf, unter dem API-Schlüssel der Konsole |
 | Konsole zum ID-Server und Relay | Remote Desktop im Browser | Ein Nachweis, den nur dieser Prozess erbringen kann, siehe [Die Brücke für den Browser](#the-browsers-bridge) |
@@ -111,7 +111,9 @@ Das Sitzungsgeheimnis ist `SESSION_SECRET`, sonst die Datei `.session_secret` im
 | Beitritts-, Support- und Kopplungscodes | `server_config` | SHA-256-Hashes |
 | Sitzungspasswörter der Schnellhilfe | Nur im Speicher | Einmal an den Supporter gegeben, dann vergessen |
 | Der Telemetrie-Schlüssel | `server_config` | Ein privater X25519-Schlüssel, siehe [Das Envelope](/docs/development/architecture#the-envelope) |
-| Gerätepasswörter, die eine Organisation speichert | Datenbank | AES-256-GCM, mit einem Schlüssel aus `ORG_PEER_VAULT_KEY`, sonst aus dem Geheimnis, das API-Tokens signiert |
+| Der Schlüssel der Gerätegeheimnisse | `.device_vault_key`, neben `id_ed25519` | 32 zufällige Bytes als Hex, Dateimodus 0600; beim ersten Start angelegt, in keiner Sicherung außer der des Docker-Verwalters |
+| Gerätepasswörter, die eine Organisation speichert | Datenbank | AES-256-GCM mit dem Schlüssel in `.device_vault_key`, für Organisation und Gerät versiegelt. Zeilen von vor 3.6.0-rc.5, versiegelt mit einem Schlüssel aus `ORG_PEER_VAULT_KEY` oder sonst aus dem Geheimnis, das API-Tokens signiert, ziehen beim nächsten Start auf den neuen Schlüssel um |
+| Gespeicherte Anmeldedaten (Kontoname und Passwort) | Datenbank | AES-256-GCM mit dem Schlüssel in `.device_vault_key`, für Gerät und Feld versiegelt; siehe [Gespeicherte Anmeldung](/docs/console/saved-sign-in) |
 | Passwörter von RDP- und VNC-Zielen | Datenbank | AES-256-GCM, mit einem Schlüssel aus `REMOTE_TARGET_VAULT_KEY`; ohne diesen Schlüssel speichert der Server keine |
 | Zwei-Faktor-Geheimnisse | Datenbank | Im Klartext |
 | Das LDAP-Bind-Passwort und das OIDC-Client-Secret | `server_config` | Im Klartext; die API antwortet stattdessen mit einer Maske |
@@ -131,4 +133,4 @@ Jedes Release hat ein Manifest seiner Binaries und ihrer SHA-256-Summen, signier
 - Wer in die Datenbank schreiben kann, kann den Audit-Trail ändern; nichts verkettet oder signiert die Einträge.
 - Zwei-Faktor-Geheimnisse, das LDAP-Bind-Passwort und das OIDC-Client-Secret werden unverschlüsselt gespeichert.
 - Nachrichten an den ID-Server über UDP werden nie verschlüsselt. Solange TLS ausgeschaltet ist, gilt das auch für TCP-Nachrichten von Clients, die den Schlüsselaustausch auslassen.
-- Die Konsole spricht auf Port 5000 einfaches HTTP, außer sie liefert selbst HTTPS aus oder sitzt hinter einem Reverse Proxy mit TLS.
+- Die Konsole spricht auf ihrem Port, von Haus aus 3375, einfaches HTTP, außer sie liefert selbst HTTPS aus oder sitzt hinter einem Reverse Proxy mit TLS.

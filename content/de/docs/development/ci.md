@@ -14,14 +14,14 @@ Diese Workflows laufen bei Pushes auf `main` und bei Pull Requests, die meisten 
 |----------|------------------------|--------------|
 | Go Server CI | `neodesk-server/`, `web-ui/` | `go vet` und `govulncheck`; die Go-Tests mit dem Race-Detector, verteilt auf sechs Runner mit 30 Minuten pro Paket; die Mesh-Interop-Tests; und der Release-Build: Die Web-App wird gebaut, die Sprachdateien werden mit `i18n-check` geprüft, die Web-App wird eingebettet, und der gebaute Server wird nach `-version` gefragt. |
 | Web UI CI | `web-ui/`, `neodesk-server/protos/` | Installiert die Pakete der Web-App mit npm 11, schlägt bei einem Befund von `npm audit` mit hoher oder kritischer Stufe fehl und führt dann `lint`, `check`, `test` und `build` aus. |
-| Installer CI | die Installer, ihre Testskripte, `neodesk-server/cli`, der Updater, Docker- und Compose-Dateien | Prüft, dass die Skripte auf oberster Ebene in git ausführbar sind, parst jeden Bash-Installer und lässt ShellCheck darüber laufen, führt die Testskripte der Installer aus, parst `neodesk.ps1` unter Windows, führt die Go-Tests der Befehle und Pakete aus, die die Installer nutzen, ruft bei jedem Bash-Installer den `--help`-Pfad auf und validiert die drei Compose-Dateien. Außerdem testet er `scripts/docker-latest.sh`, das entscheidet, wann die Docker-Images `latest` bekommen. Siehe [die Tests der Installer](/docs/development/installers#tests). |
+| Installer CI | `install/`, `docker/`, die Testskripte der Installer, `neodesk-server/cli`, die Übergabe der Kommandozeile an `neodesk-setup` und den Desktop-Client, der Updater, `release-notes/` und der Release-Workflow | Prüft, dass die Skripte im Wurzelverzeichnis des Repositorys in git ausführbar sind, parst jeden Bash-Installer und lässt ShellCheck darüber laufen, führt die Testskripte der Installer aus, parst `install/neodesk.ps1` unter Windows, führt die Go-Tests der Befehle und Pakete aus, die die Installer nutzen, ruft bei jedem Bash-Installer den `--help`-Pfad auf und validiert die drei Compose-Dateien in `install/`. Auf dem Runner installiert, aktualisiert (auch mit dem alten Verwalter von 3.6.0-rc.4) und entfernt er eine native Installation und aktualisiert eine Docker-Installation von 3.6.0-rc.4 auf das Image des Checkouts und stellt ihre Sicherung wieder her. Zwei Smoke-Jobs bauen das Image des Checkouts und starten es mit seinen eigenen Compose-Dateien: einer mit gehärtetem Bind-Mount, einer, der `/api/health` auf 21121 und `/health` auf dem Port der Konsole prüft und im Container `neodesk-server check` ausführt. Außerdem testet er `scripts/docker-latest.sh`, das entscheidet, wann die Docker-Images `latest` bekommen. Siehe [die Tests der Installer](/docs/development/installers#tests). |
 | CDAP SDK CI | `sdks/`, `bridges/`, `neodesk-server/cdap/` | Baut das Node.js-SDK und lässt dann das Beispiel jedes SDK und jede Bridge mit ihrer Beispielkonfiguration gegen das Gateway laufen (`go test ./cdap/`). |
 | Version Verify | jede Datei, die die Version trägt, `CHANGELOG.md`, `neodesk-server/cmd/repotool/` | `bump-version --verify`. |
 | Secret Scan | jeder Push und jeder Pull Request | gitleaks über die Dateien, die Prüfung auf sensible Pfade, die Prüfungen `check-port-docs`, `check-pairing-i18n` und `check-js` von repotool (siehe [Prüfungen des Repositorys](/docs/development/tests-and-checks#repository-checks)) und die Prüfung auf Sicherheitsregressionen (`scripts/check-security-regressions.sh`, mit eigenem Test). |
 
 Alle außer Web UI CI brechen einen Lauf ab, wenn ein neuerer Push auf denselben Branch oder Pull Request einen neuen startet. Ein abgebrochener Lauf ist also kein Fehlschlag.
 
-Installer CI hat zwei weitere Jobs, die nur laufen, wenn du ihn von Hand mit einem Image-Tag startest (Standard: `latest`): den Test mit gehärteten Bind-Mounts und einen Laufzeit-Smoke-Test. Der Smoke-Test startet das veröffentlichte Image mit `docker-compose.quick.single.yml`, prüft `/api/health` auf 21121 und `/health` auf 5000 und führt im Container `neodesk-server check` aus.
+Startest du Installer CI von Hand mit einem Image-Tag, laufen die beiden Smoke-Jobs stattdessen mit diesem veröffentlichten Image und den Compose-Dateien des Commits, aus dem es gebaut wurde. Der Port der Konsole ist 3375 bei einem Image ab 3.6.0-rc.5 und 5000 bei einem älteren.
 
 ## Release-Workflows {#release-workflows}
 
@@ -51,7 +51,7 @@ Ein Push kann also mehrere Läufe zeigen, und wenn mehrere davon fehlschlagen, h
 
 ## Häufige Fehler {#common-failures}
 
-**Version Verify: `neodesk.sh: expected X, got Y`.** Eine Datei nennt eine andere Version als `VERSION`. In `neodesk-server`:
+**Version Verify: `install/neodesk.sh: expected X, got Y`.** Eine Datei nennt eine andere Version als `VERSION`. In `neodesk-server`:
 
 ```bash
 go run ./cmd/repotool bump-version --sync
@@ -90,7 +90,7 @@ Die Befehle hinter den Pflichtprüfungen, vom Wurzelordner des Checkouts aus:
 (cd neodesk-server && go run ./cmd/repotool bump-version --verify)
 (cd neodesk-server && go vet ./... && go test -race -count=1 -timeout 30m ./...)
 (cd web-ui && npx -y npm@11.6.2 ci && npm run lint && npm run check && npm test && npm run build)
-gitleaks detect --source . --config .gitleaks.toml
+gitleaks detect --source . --config .github/gitleaks.toml
 bash scripts/check-no-sensitive-paths.sh
 bash scripts/check-security-regressions.sh
 ```

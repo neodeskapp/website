@@ -82,7 +82,7 @@ Eine Route, die keine der beiden Ebenen erreicht, lässt die Suite fehlschlagen.
 
 ```bash
 cd neodesk-server/console/contract
-ND_URL=http://localhost:5000 go test -tags contract -count=1 -run '^TestCases$/^devices$'
+ND_URL=http://localhost:3375 go test -tags contract -count=1 -run '^TestCases$/^devices$'
 ```
 
 Die Suite meldet sich mit Konten `e2e_<role>` an, mit dem Passwort aus der Datei, die `ND_PASSWORD_FILE` nennt. Die Matrix schreibt auf jede Route, die sie erreicht; nimm also eine frische Wegwerf-Konsole. Wie du Cases schreibst und Golden Files aufzeichnest und welche Variablen es noch gibt, steht in [der README der Suite](https://github.com/neodeskapp/neodesk/blob/main/neodesk-server/console/contract/README.md).
@@ -168,7 +168,7 @@ Jede endet mit 0, wenn sie bestanden hat, mit 1, wenn sie etwas gefunden hat, un
 gitleaks und zwei Skripte ergänzen den Secret-Scan: die Prüfung auf private Adressen und Home-Ordner von Build-Rechnern und die Prüfung, dass kein Installer und keine Unit-Datei im Repository ein Geheimnis in eine systemd-Unit schreibt:
 
 ```bash
-gitleaks detect --source . --config .gitleaks.toml
+gitleaks detect --source . --config .github/gitleaks.toml
 bash scripts/check-no-sensitive-paths.sh
 bash scripts/check-security-regressions.sh
 ```

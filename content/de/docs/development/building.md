@@ -73,7 +73,7 @@ CGO_ENABLED=0 go build -trimpath \
 
 ## An der Web-App arbeiten {#work-on-the-web-app}
 
-`npm run dev` in `web-ui` startet Vite auf Port 5173. Es leitet die API, die Sockets und die eigenen Adressen des Servers an eine NeoDesk-Konsole auf `http://localhost:5000` weiter; `ND_BACKEND` nennt eine andere. Die Seiten laden neu, während du bearbeitest.
+`npm run dev` in `web-ui` startet Vite auf Port 5173. Es leitet die API, die Sockets und die eigenen Adressen des Servers an eine NeoDesk-Konsole auf `http://localhost:5000` weiter; `ND_BACKEND` nennt eine andere. Eine Konsole auf dem Standardport seit 3.6.0-rc.5 braucht `ND_BACKEND=http://localhost:3375`. Die Seiten laden neu, während du bearbeitest.
 
 Der Server hat Einstellungen für die Entwicklung, die Dateien von der Festplatte statt aus dem Binary lesen:
 
@@ -92,33 +92,33 @@ Der Server hat Einstellungen für die Entwicklung, die Dateien von der Festplatt
 Im Wurzelverzeichnis des Checkouts:
 
 ```bash
-docker build -t neodesk:local .
-docker build -f Dockerfile.server -t neodesk-server:local .
+docker build -f docker/Dockerfile -t neodesk:local .
+docker build -f docker/Dockerfile.server -t neodesk-server:local .
 ```
 
-`Dockerfile` ist das veröffentlichte Image `neodesk`: der Server mit seiner Web-Konsole. `Dockerfile.server` ist derselbe Server mit ausgeschalteter Konsole (`CONSOLE_PORT=0`). Beide bauen die Web-App und den Server innerhalb des Docker-Builds, der Host braucht also weder Node.js noch Go. `NEODESK_COMMIT_SHA` als Build-Argument gibt dem Binary seinen Commit.
+`docker/Dockerfile` ist das veröffentlichte Image `neodesk`: der Server mit seiner Web-Konsole. `docker/Dockerfile.server` ist derselbe Server mit ausgeschalteter Konsole (`CONSOLE_PORT=0`). Beide bauen die Web-App und den Server innerhalb des Docker-Builds, der Host braucht also weder Node.js noch Go. `NEODESK_COMMIT_SHA` als Build-Argument gibt dem Binary seinen Commit.
 
 Wie du das Image mit Compose startest, steht unter [Das Image aus dem Repository bauen](/docs/getting-started/docker#build-the-image-from-the-repository).
 
 ## Deinen Build installieren {#install-your-build}
 
-Die Installer nehmen statt eines Release einen Build. Führe sie im Checkout aus.
+Die Installer nehmen statt eines Release einen Build. Führe sie im Wurzelverzeichnis des Checkouts aus; sie liegen in seinem Ordner `install/`.
 
 - Linux: `--from-source` baut diesen Checkout, und `--binary <file>` installiert ein Binary, das du gebaut hast. Siehe [Aus dem Repository bauen](/docs/getting-started/linux#build-from-the-repository).
 
   ```bash
-  sudo ./neodesk.sh --from-source
+  sudo ./install/neodesk.sh --from-source
   ```
 
 - Windows: `-FromSource`, oder `-Binary <path>` für ein Binary, das du gebaut hast. Siehe [Aus dem Repository bauen](/docs/getting-started/windows#build-from-the-repository).
 
   ```powershell
-  .\neodesk.ps1 -FromSource
+  .\install\neodesk.ps1 -FromSource
   ```
 
 - Docker: `--build` baut das Image und installiert es wie das veröffentlichte.
 
   ```bash
-  sudo bash neodesk-docker.sh --build
+  sudo bash install/neodesk-docker.sh --build
   ```
 

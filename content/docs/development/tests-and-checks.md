@@ -82,7 +82,7 @@ A route that neither layer reaches fails the suite. The test files carry the bui
 
 ```bash
 cd neodesk-server/console/contract
-ND_URL=http://localhost:5000 go test -tags contract -count=1 -run '^TestCases$/^devices$'
+ND_URL=http://localhost:3375 go test -tags contract -count=1 -run '^TestCases$/^devices$'
 ```
 
 The suite signs in as `e2e_<role>` accounts, with the password in the file `ND_PASSWORD_FILE` names. The matrix writes to every route it reaches, so use a fresh, throwaway console. Writing cases, recording goldens and the other variables are in [the suite's README](https://github.com/neodeskapp/neodesk/blob/main/neodesk-server/console/contract/README.md).
@@ -168,7 +168,7 @@ go run ./cmd/repotool <command>
 gitleaks and two scripts complete the secret scan: the check for private addresses and home folders of build machines, and the check that no installer or unit file in the repository puts a secret into a systemd unit:
 
 ```bash
-gitleaks detect --source . --config .gitleaks.toml
+gitleaks detect --source . --config .github/gitleaks.toml
 bash scripts/check-no-sensitive-paths.sh
 bash scripts/check-security-regressions.sh
 ```

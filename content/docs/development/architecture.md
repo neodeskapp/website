@@ -15,15 +15,14 @@ This page is for people who change NeoDesk's code. It explains where things are 
 | `sdks/` | CDAP client libraries for Python and Node.js. |
 | `bridges/` | Example CDAP bridges for Modbus, SNMP and REST webhooks, built on the Python SDK. |
 | `remote-gateway/` | Service files and the pinned version of guacd, the gateway for RDP and VNC targets. |
-| `docker/` | The images' entrypoints, the health check and the admin password helpers. |
+| `docker/` | `Dockerfile` and `Dockerfile.server`, which build the `neodesk` and `neodesk-server` images: both build the web app with Node.js and the server with Go, and run on Alpine. Next to them the images' entrypoints, the health check and the admin password helpers. |
+| `install/` | The installers `install.sh`, `neodesk.sh`, `neodesk.ps1` and `neodesk-docker.sh`, and the compose files `docker-compose.single.yml` and `docker-compose.quick.single*.yml`. Every release carries them as files of its own. |
 | `config/` | The state of the RustDesk upstream watch, see [RustDesk compatibility](/docs/development/rustdesk-compatibility#the-upstream-watch). |
 | `scripts/` | Installer tests, the security suite, the local gate, the build toolchain installer, the upstream watch. |
 | `contrib/` | Additions from the community, such as an rc.d script for FreeBSD. |
-| `.github/` | CI workflows, Dependabot, CodeQL and the pull request template. |
-| `Dockerfile`, `Dockerfile.server` | The `neodesk` and `neodesk-server` images. Both build the web app with Node.js, the server with Go, and run on Alpine. |
-| `docker-compose.single.yml`, `docker-compose.quick.single*.yml` | The compose files. |
-| `install.sh`, `neodesk.sh`, `neodesk.ps1`, `neodesk-docker.sh` | The installers. |
+| `.github/` | CI workflows, Dependabot, CodeQL, the gitleaks config `gitleaks.toml` and the pull request template. |
 | `VERSION`, `CHANGELOG.md` | The product version and the change log. |
+| `release-notes/` | The notes of each release, see [Releasing](/docs/development/releasing). |
 
 Some folders have a short README of their own, which stays next to the code: [web-ui](https://github.com/neodeskapp/neodesk/blob/main/web-ui/README.md), [sdks](https://github.com/neodeskapp/neodesk/blob/main/sdks/README.md), [bridges](https://github.com/neodeskapp/neodesk/blob/main/bridges/README.md), [remote-gateway](https://github.com/neodeskapp/neodesk/blob/main/remote-gateway/README.md) and the [console's contract suite](https://github.com/neodeskapp/neodesk/blob/main/neodesk-server/console/contract/README.md).
 
@@ -59,7 +58,7 @@ When the console asks for a restart after an update or a restore, the process en
 | `console` | The web console and its sub-packages, see below. |
 | `cdap` | The CDAP gateway on 21122, see [CDAP protocol](/docs/development/cdap-protocol). |
 | `meshcentral` | The MeshCentral agent protocol: `/agent.ashx`, `/meshrelay.ashx` and `/control.ashx`. |
-| `crypto` | The key pair, address encoding, the secure TCP handshake of the ID server, and `peervault`, which encrypts stored device passwords. |
+| `crypto` | The key pair, address encoding, the secure TCP handshake of the ID server, `devicevault`, which encrypts saved sign-in details and the device passwords organizations store with the key file `.device_vault_key`, and `peervault`, the older key that only opens passwords stored before 3.6.0-rc.5. |
 | `codec` | RustDesk's wire framing. |
 | `config` | Settings from flags and the environment, and the TLS listeners. |
 | `audit`, `events` | Server events, kept in the database for 90 days with the account or API key that acted, and the event bus that feeds the console. |
@@ -82,7 +81,7 @@ A first argument that doesn't start with `-` runs a command instead of the serve
 |---|---|
 | `update`, `rollback` | Install the newest release of the update channel, or put the previous binary back. |
 | `backup` | Write the console's full backup, also while the server runs. |
-| `migrate` | Move a whole install from SQLite to PostgreSQL or back (`sqlite2pg`, `pg2sqlite`), convert an older database to the server's schema (`rust2go`, `nodejs2go`), or copy a SQLite file aside (`backup`). |
+| `migrate` | Move a whole install from SQLite to PostgreSQL or back (`sqlite2pg`, `pg2sqlite`), convert a RustDesk server's database to the server's schema (`rust2go`), or copy a SQLite file aside (`backup`). |
 | `reset-password` | Set an account's password, read from standard input. |
 | `config` | Check what the console can do, or set settings from an allowlist. |
 | `check`, `cert` | Check an install's addresses and ports, or make its self-signed certificate. |
@@ -93,7 +92,7 @@ An unknown command prints the list of commands with their usage.
 
 ## The web console
 
-The console is the package `console`. It listens on its own port, `CONSOLE_PORT` (5000; `0` turns the console off while the rest of the server runs), or on 5443 in HTTPS mode, and serves three things: a JSON API under `/api`, websockets under `/ws`, and the web app.
+The console is the package `console`. It listens on its own port, `CONSOLE_PORT` (3375, 5000 before 3.6.0-rc.5; `0` turns the console off while the rest of the server runs), or on 5443 in HTTPS mode, and serves three things: a JSON API under `/api`, websockets under `/ws`, and the web app.
 
 - Every request passes one pipeline (`console/pipeline.go`). Route groups live in `console/routes`, one package per area, and add their routes to one of two tables: the client and device API, which comes before the language and CSRF checks, and everything else.
 - The console calls the API server inside the same process, through its handler and without a socket (`console/goapi`). The API server sees these calls as the console's API key.
