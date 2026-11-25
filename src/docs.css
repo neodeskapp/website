@@ -275,10 +275,11 @@
 .pager span { display: block; font-size: 14px; font-weight: 400; color: var(--muted); }
 .pager-next { margin-left: auto; text-align: right; }
 
-/* The 404 page: the mark as a large graphic, the area both shapes share left out */
+/* The 404 page: the mark as a large graphic inside the page's column, the area both
+   shapes share left out */
 .nf {
   /* Side length of the mark: as tall as the space under the header allows */
-  --nf-mark: min(54vw, calc(100vh - var(--top) - 150px));
+  --nf-mark: min(46vw, 640px, calc(100vh - var(--top) - 150px));
   position: relative;
   display: flex;
   align-items: center;
@@ -288,14 +289,14 @@
 }
 @supports (height: 100svh) {
   .nf {
-    --nf-mark: min(54vw, calc(100svh - var(--top) - 150px));
+    --nf-mark: min(46vw, 640px, calc(100svh - var(--top) - 150px));
     min-height: max(520px, calc(100svh - var(--top)));
   }
 }
 .nf-mark {
   position: absolute;
   top: 50%;
-  right: calc(var(--nf-mark) * -0.16);
+  right: var(--edge);
   width: var(--nf-mark);
   height: var(--nf-mark);
   transform: translateY(-50%);
@@ -316,7 +317,7 @@
   align-items: flex-start;
   gap: 26px;
   /* Ends where the square begins, so no text sits on a shape */
-  width: calc(100vw - var(--edge) - var(--nf-mark) * 0.84 - 40px);
+  width: calc(100vw - 2 * var(--edge) - var(--nf-mark) - 40px);
   max-width: 600px;
 }
 .nf h1 {
@@ -357,8 +358,7 @@
     right: auto;
     transform: none;
     flex: none;
-    align-self: flex-end;
-    margin-right: calc(var(--nf-mark) * -0.16 - var(--edge));
+    align-self: center;
   }
   .nf-copy { width: auto; max-width: 34rem; gap: 22px; }
 }
