@@ -13,7 +13,7 @@ export const hasIcon = (name: string) => /^[a-z0-9_]+$/.test(name) && fs.existsS
 export function iconSvg(name: string) {
 	let svg = cache.get(name);
 	if (svg === undefined) {
-		svg = fs.readFileSync(path.join(dir, `${name}.svg`), 'utf8').trim().replace('<svg ', '<svg width="22" height="22" fill="currentColor" aria-hidden="true" focusable="false" ');
+		svg = fs.readFileSync(path.join(dir, `${name}.svg`), 'utf8').trim().replace('<svg ', '<svg width="24" height="24" fill="currentColor" aria-hidden="true" focusable="false" ');
 		cache.set(name, svg);
 	}
 	return svg;
