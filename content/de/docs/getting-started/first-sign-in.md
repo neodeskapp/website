@@ -131,7 +131,7 @@ andere Konten sehen die Seiten, die ihre Rolle erlaubt, siehe
 
 | Abschnitt | Zuerst gezeigte Seiten | Unter N weitere anzeigen |
 |-----------|------------------------|--------------------------|
-| Geräte | Übersicht, Alle Geräte, Beitrittsanfragen, Computer hinzufügen, Fernzugriff im Browser | Inventar, Netzwerküberwachung, Flottenaufgaben, IoT-Geräte |
+| Geräte | Übersicht, Alle Geräte, Beitrittsanfragen, Computer hinzufügen, Fernsitzungen | Inventar, Netzwerküberwachung, Flottenaufgaben, IoT-Geräte |
 | Support | Hilfeanfragen, Tickets, Chat, Netzwerk-Tools | |
 | Personen | Benutzer | Organisationen, Rollen und Berechtigungen |
 | Aktivität | Audit-Protokoll, Sicherheitsprüfungen, Berichte | App-Nutzung, Abrechnung |
@@ -240,6 +240,7 @@ funktionieren also weiter.
 | Richtlinien, Warnungen und Automatisierung, USB- und Laufwerkszugriff, Schutz vor Datenabfluss, Geräteidentität | Regeln |
 | Plattform-Unterstützung | Hilfe in der oberen Leiste |
 | Die Schaltflächen für Design, Sprache und Barrierefreiheit in der oberen Leiste | Das Kontomenü |
+| Fernzugriff im Browser, in einem eigenen Tab | Geräte, Fernsitzungen, in der Konsole |
 
 ## Nächste Schritte {#next-steps}
 

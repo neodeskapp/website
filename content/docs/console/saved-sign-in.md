@@ -55,7 +55,9 @@ When a sign-in is saved, the viewer says "A sign-in is saved for this
 computer." It signs in at most once per session:
 
 - **By itself**, when the switch is on and the session opens on the lock or
-  sign-in screen. A reconnect in the same browser tab doesn't do it again.
+  sign-in screen. A reconnect in the same browser tab doesn't do it again. A
+  session that opens while you are on another page of the console waits and
+  signs in once you come back to it.
 - **With Sign in**, in the bar or as **Sign in with the saved details** under
   **Actions**, in every other case.
 
@@ -106,7 +108,8 @@ installed on it again. The viewer then says to update NeoDesk on the computer.
 ### Where it doesn't work
 
 - Linux and macOS computers: the viewer says "Saved sign-in works on Windows
-  computers only."
+  computers only.", and so does the **Saved sign-in** sheet when the device
+  reports another system.
 - A computer where NeoDesk runs without its service, such as a portable copy:
   "NeoDesk on this computer runs without its service, so it can't type at the
   lock screen."

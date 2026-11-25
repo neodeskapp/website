@@ -92,7 +92,7 @@ Editing needs permission to edit devices. By default Super admin, Global admin a
 
 ## Connecting
 
-**Connect** in the footer opens the device in the web viewer, in a new browser tab. If a viewer tab is already open, the device opens there as another tab instead. The row menu and the **Actions** tab offer more ways:
+**Connect** in the footer opens a session with the device in the web viewer, inside the console; a device with a session open already goes back to it. An RDP/VNC target opens the viewer in a new browser tab. The row menu and the **Actions** tab offer more ways:
 
 | Option | What it does | What it needs |
 |---|---|---|
@@ -107,9 +107,9 @@ Connecting needs permission to connect to devices. By default Super admin, Globa
 
 ### On a phone
 
-The web viewer needs a wider screen than a phone has. On a phone, **Connect** asks how to connect:
+The web viewer needs a phone held sideways, at 640 pixels wide or more. On a phone, **Connect** asks how to connect:
 
-- **Web viewer** opens it anyway in a new tab; turn the phone sideways or use a tablet.
+- **Web viewer** opens the session anyway; it shows once you turn the phone sideways.
 - **RustDesk app** opens the RustDesk app on the phone with the device's ID. Nothing happens if the app isn't installed.
 
 RDP/VNC targets only offer the web viewer.

@@ -91,7 +91,7 @@ Zum Bearbeiten brauchst du die Berechtigung, Geräte zu bearbeiten. Standardmä�
 
 ## Verbinden {#connecting}
 
-**Verbinden** in der Fußzeile öffnet das Gerät im Web-Viewer, in einem neuen Browser-Tab. Ist schon ein Viewer-Tab offen, öffnet sich das Gerät stattdessen dort als weiterer Tab. Das Zeilenmenü und der Tab **Aktionen** bieten weitere Wege:
+**Verbinden** in der Fußzeile öffnet eine Sitzung mit dem Gerät im Web-Viewer, in der Konsole; hat das Gerät schon eine offene Sitzung, kommst du zu ihr zurück. Ein RDP/VNC-Ziel öffnet den Viewer in einem neuen Browser-Tab. Das Zeilenmenü und der Tab **Aktionen** bieten weitere Wege:
 
 | Option | Was sie tut | Was sie braucht |
 |---|---|---|
@@ -106,9 +106,9 @@ Zum Verbinden brauchst du die Berechtigung, dich mit Geräten zu verbinden. Stan
 
 ### Auf dem Handy {#on-a-phone}
 
-Der Web-Viewer braucht einen breiteren Bildschirm, als ein Handy hat. Auf dem Handy fragt **Verbinden**, wie du dich verbinden willst:
+Der Web-Viewer braucht ein Handy im Querformat, ab 640 Pixel Breite. Auf dem Handy fragt **Verbinden**, wie du dich verbinden willst:
 
-- **Web-Viewer** öffnet ihn trotzdem in einem neuen Tab; dreh das Handy quer oder nimm ein Tablet.
+- **Web-Viewer** öffnet die Sitzung trotzdem; sie erscheint, sobald du das Handy quer drehst.
 - **RustDesk-App** öffnet die RustDesk-App auf dem Handy mit der ID des Geräts. Ist die App nicht installiert, passiert nichts.
 
 RDP/VNC-Ziele bieten nur den Web-Viewer.

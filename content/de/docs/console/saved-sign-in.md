@@ -59,7 +59,9 @@ Anmeldung gespeichert.“ Er meldet sich höchstens einmal pro Sitzung an:
 
 - **Von selbst**, wenn der Schalter an ist und die Sitzung am Sperr- oder
   Anmeldebildschirm beginnt. Ein neues Verbinden im selben Browser-Tab macht
-  es nicht noch einmal.
+  es nicht noch einmal. Öffnet sich die Sitzung, während du auf einer anderen
+  Seite der Konsole bist, wartet sie und meldet sich an, sobald du zu ihr
+  zurückkehrst.
 - **Mit Anmelden**, in der Leiste oder als **Mit den gespeicherten Daten
   anmelden** unter **Aktionen**, in jedem anderen Fall.
 
@@ -115,7 +117,8 @@ dann, dass NeoDesk auf dem Computer aktualisiert werden muss.
 ### Wo es nicht geht {#where-it-doesnt-work}
 
 - Linux- und macOS-Computer: Der Viewer meldet „Die gespeicherte Anmeldung
-  funktioniert nur auf Windows-Computern.“
+  funktioniert nur auf Windows-Computern.“, und das Fenster **Gespeicherte
+  Anmeldung** sagt dasselbe, wenn das Gerät ein anderes System meldet.
 - Ein Computer, auf dem NeoDesk ohne seinen Dienst läuft, etwa als portable
   Kopie: „NeoDesk läuft auf diesem Computer ohne seinen Dienst und kann deshalb
   am Sperrbildschirm nichts eingeben.“

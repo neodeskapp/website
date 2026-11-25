@@ -122,7 +122,7 @@ what a super admin sees; other accounts see the pages their role allows, see
 
 | Section | Pages shown at first | Under Show N more |
 |---------|----------------------|-------------------|
-| Devices | Overview, All devices, Join requests, Add computers, Remote desktop in browser | Inventory, Network monitoring, Fleet tasks, IoT devices |
+| Devices | Overview, All devices, Join requests, Add computers, Remote sessions | Inventory, Network monitoring, Fleet tasks, IoT devices |
 | Support | Help requests, Tickets, Chat, Network tools | |
 | People | Users | Organizations, Roles and permissions |
 | Activity | Audit log, Security checks, Reports | App usage, Billing |
@@ -223,6 +223,7 @@ lead to the new pages, so bookmarks and links in mails keep working.
 | Policies, Alerts and automation, USB and drive access, Data loss prevention, Device identity | Rules |
 | Platform support | Help, in the top bar |
 | Theme, language and accessibility buttons in the top bar | The account menu |
+| Remote desktop in browser, in a tab of its own | Devices, Remote sessions, inside the console |
 
 ## Next steps
 
