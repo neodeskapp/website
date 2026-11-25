@@ -1,5 +1,6 @@
 // Types sample queries into the docs search in a headless browser and checks that the
-// expected page comes first, in each language.   node search-test.ts
+// expected page comes first, in each language; then checks that a right-click on the
+// header's logo opens the brand page and a left click goes home.   node search-test.ts
 //
 // It reads the built site in dist/ (DIST_DIR for another folder) for the address it was
 // built for (SITE_URL and DOCS_URL, as for the build), and answers every request from
@@ -50,6 +51,10 @@ interface Page {
 	fill(selector: string, text: string): Promise<void>;
 	waitForFunction(fn: () => boolean, arg: undefined, options: { timeout: number }): Promise<unknown>;
 	evaluate<T>(fn: () => T): Promise<T>;
+	click(selector: string, options?: { button?: 'right' | 'left' }): Promise<void>;
+	focus(selector: string): Promise<void>;
+	waitForURL(url: string, options: { timeout: number }): Promise<void>;
+	url(): string;
 }
 interface Browser {
 	newPage(): Promise<Page>;
@@ -86,9 +91,33 @@ for (const [start, cases] of Object.entries(CASES)) {
 		await page.fill('#search-input', '');
 		await page.keyboard.press('Escape');
 	}
+	// The logo: a right-click, and Shift+F10 on the focused logo, open the brand page in the
+	// page's language; a left click goes home
+	const brand = urls.url(start.startsWith('/de') ? '/de/brand/' : '/brand/');
+	const home = urls.url(start.startsWith('/de') ? '/de/' : '/');
+	const ways: [string, () => Promise<void>, string][] = [
+		['right-click', () => page.click('header .logo', { button: 'right' }), brand],
+		['Shift+F10', async () => {
+			await page.focus('header .logo');
+			await page.keyboard.press('Shift+F10');
+		}, brand],
+		['left click', () => page.click('header .logo'), home]
+	];
+	for (const [way, act, want] of ways) {
+		await page.goto(urls.url(start));
+		await act();
+		try {
+			await page.waitForURL(want, { timeout: 5000 });
+		} catch {
+			/* reported below */
+		}
+		const ok = page.url() === want;
+		if (!ok) failed++;
+		console.log(`${ok ? 'ok  ' : 'FAIL'} ${start.startsWith('/de') ? 'de' : 'en'} logo ${way} -> ${page.url()}${ok ? '' : `\n     want ${want}`}`);
+	}
 }
 await browser.close();
 if (failed) {
-	console.error(`${failed} queries did not find the expected page first`);
+	console.error(`${failed} checks failed`);
 	process.exit(1);
 }

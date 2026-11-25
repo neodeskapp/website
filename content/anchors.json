@@ -893,6 +893,38 @@
 		"direct-contribution-and-clean-room-work",
 		"agpl-obligations"
 	],
+	"development/design": [
+		"rules-for-every-screen"
+	],
+	"development/design/components": [
+		"buttons-and-menus",
+		"forms",
+		"lists-and-data",
+		"status-and-people",
+		"messages-and-panels"
+	],
+	"development/design/icons": [
+		"one-icon-per-meaning",
+		"how-to-use-them",
+		"updating-the-font"
+	],
+	"development/design/layout": [
+		"the-frame",
+		"spacing",
+		"dialog-or-sheet"
+	],
+	"development/design/tokens": [
+		"colours",
+		"type",
+		"space",
+		"shape-shadow-and-motion",
+		"controls-and-rows",
+		"layers"
+	],
+	"development/design/writing": [
+		"rules",
+		"glossary"
+	],
 	"development/installers": [
 		"the-scripts",
 		"where-the-server-comes-from",

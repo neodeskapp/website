@@ -71,6 +71,8 @@ export interface Strings {
 	footer: string;
 	changelog: string;
 	security: string;
+	/** The footer's link to the brand page */
+	brand: string;
 	note: string;
 	warning: string;
 	/** The copy button of a code block, its label for screen readers, and what it says after a copy */
@@ -140,6 +142,7 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		footer: 'NeoDesk works with RustDesk clients. Open source under AGPL-3.0.',
 		changelog: 'Changelog',
 		security: 'Security',
+		brand: 'Brand and logo',
 		note: 'Note',
 		warning: 'Warning',
 		copy: 'Copy',
@@ -197,6 +200,7 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		footer: 'NeoDesk funktioniert mit RustDesk-Clients. Open Source unter der AGPL-3.0.',
 		changelog: 'Changelog',
 		security: 'Sicherheit',
+		brand: 'Logo und Marke',
 		note: 'Hinweis',
 		warning: 'Achtung',
 		copy: 'Kopieren',

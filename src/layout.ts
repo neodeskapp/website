@@ -111,6 +111,8 @@ interface FrameOptions extends Shared {
 	fullTitle?: string;
 	/** Whether the page's h1 is set in Funnel Display, so that font is loaded early */
 	display?: boolean;
+	/** A page of its own, such as the brand page: no docs sidebar, no docs controls in the header */
+	plain?: boolean;
 }
 
 function frame(o: FrameOptions) {
@@ -122,13 +124,14 @@ function frame(o: FrameOptions) {
 	// The search dialog is on the docs host's pages; elsewhere search is the link to all pages
 	const docsHost = o.urls.isDocsFile(o.urls.distOf(own.slice(1)));
 	// The docs add the button that opens the sidebar on narrow screens, and search
-	const tools = `<button type="button" class="menu-button" aria-controls="sidebar" aria-expanded="false" aria-label="${esc(t.contents)}">${CONTENTS_ICON}</button>${searchButton(o)}`;
+	const tools = o.plain ? '' : `<button type="button" class="menu-button" aria-controls="sidebar" aria-expanded="false" aria-label="${esc(t.contents)}">${CONTENTS_ICON}</button>${searchButton(o)}`;
 	const chrome = {
 		config,
 		t,
 		locale,
 		home: inLocale(o, '/'),
 		docs: docsHome,
+		brand: inLocale(o, '/brand/'),
 		languages: noindex ? [] : o.versions(o.path).filter((l) => l.code !== locale.code).map((l) => ({ locale: l, href: o.urls.url(`${l.prefix}${o.path}`) })),
 		tools
 	};
@@ -159,11 +162,11 @@ ${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd).replace(
 
 ${siteHeader(chrome)}
 
-<div class="layout${toc ? '' : ' no-toc'}">
-  <nav id="sidebar" class="sidebar" aria-label="${esc(t.documentation)}">
+<div class="layout${o.plain ? ' plain' : toc ? '' : ' no-toc'}">
+${o.plain ? '' : `  <nav id="sidebar" class="sidebar" aria-label="${esc(t.documentation)}">
     ${sidebar(o, current)}
   </nav>
-  <main id="content" class="article">
+`}  <main id="content" class="article">
 ${main}
   </main>
   ${toc}
@@ -171,7 +174,7 @@ ${main}
 
 ${siteFooter(chrome)}
 
-${docsHost ? `<dialog class="search" aria-label="${esc(t.searchDocs)}" data-index="${inLocale(o, '/docs/search.json')}" data-base="${esc(o.urls.url('/docs/'))}" data-groups="${esc([t.groupPages, t.groupSections, t.groupCommands, t.groupSettings].join('|'))}" data-results="${esc(t.resultsCount)}" data-nothing="${esc(t.nothingFound)}" data-failed="${esc(t.searchFailed)}">
+${docsHost && !o.plain ? `<dialog class="search" aria-label="${esc(t.searchDocs)}" data-index="${inLocale(o, '/docs/search.json')}" data-base="${esc(o.urls.url('/docs/'))}" data-groups="${esc([t.groupPages, t.groupSections, t.groupCommands, t.groupSettings].join('|'))}" data-results="${esc(t.resultsCount)}" data-nothing="${esc(t.nothingFound)}" data-failed="${esc(t.searchFailed)}">
   <div class="search-field">
     ${SEARCH_ICON}
     <input type="search" id="search-input" placeholder="${esc(t.searchDocs)}" aria-label="${esc(t.searchDocs)}" autocomplete="off" spellcheck="false" aria-controls="search-results">
@@ -454,6 +457,11 @@ export function notFoundPage(shared: Shared, path = '/404.html') {
       <li><a href="${inLocale(shared, '/')}">${esc(t.home)}</a><p>${esc(t.whatItIs)}</p></li>
     </ul>`;
 	return frame({ ...shared, title: t.notFound, description: t.notFoundDescription, path, current: '', main, noindex: true, ...(path.startsWith('/docs/') ? {} : { fullTitle: `${t.notFound} - ${shared.config.name}` }) });
+}
+
+/** The brand page: logo files, colours, fonts, the name and the voice (src/brand.ts). */
+export function brandPage(shared: Shared & { main: string; title: string; fullTitle: string; description: string }) {
+	return frame({ ...shared, path: '/brand/', current: '', plain: true, display: true });
 }
 
 export { DEFAULT_LOCALE };

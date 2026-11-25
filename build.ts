@@ -11,9 +11,11 @@ import type { StateBlock, StateCore, Token, RendererRule } from 'markdown-it';
 import hljs from 'highlight.js';
 import sharp from 'sharp';
 import config from './site.config.ts';
-import { docsIndexPage, allPagesPage, docPage, sectionPage, notFoundPage, contactSheetPage, hreflangLinks, socialTags, esc } from './src/layout.ts';
+import { docsIndexPage, allPagesPage, brandPage, docPage, sectionPage, notFoundPage, contactSheetPage, hreflangLinks, socialTags, esc } from './src/layout.ts';
 import { siteHeader, siteFooter } from './src/chrome.ts';
 import { makeUrls } from './src/urls.ts';
+import { BRAND, brandMain } from './src/brand.ts';
+import { zipFolder } from './src/zip.ts';
 import { HEADING_ATTRS_LINE, buildIndex, indexFiles, checkIndex } from './src/search.ts';
 import { answersOf, answerHtml, answerText, answerMarkdown } from './src/answers.ts';
 import type { Answer } from './src/answers.ts';
@@ -602,6 +604,7 @@ async function build() {
 		offer('/', site.locale);
 		offer('/docs/', site.locale);
 		offer('/docs/all/', site.locale);
+		if (BRAND[site.locale.code]) offer('/brand/', site.locale);
 		for (const s of site.sections) offer(`/docs/${s.slug}/`, site.locale);
 		for (const p of site.pages) offer(`/docs/${p.slug}/`, site.locale);
 	}
@@ -614,13 +617,22 @@ async function build() {
 
 	fs.rmSync(DIST, { recursive: true, force: true });
 	copyDir(at('public'), DIST);
+	// Every logo file in one archive, the same bytes for the same files
+	const brandZip = zipFolder(at('public/brand/files'), 'neodesk-logo');
+	write('brand/neodesk-logo.zip', brandZip);
 
 	// Styles and scripts, with a hash in the address so a new build is never served from cache
 	// The header and footer styles (src/chrome.css) go in front of site.css, and into the home page
 	const chromeCss = read(at('src/chrome.css'));
 	const assets: Record<string, string> = {};
 	for (const name of ['site.css', 'docs.css', 'docs.js']) {
-		const data = name === 'site.css' ? Buffer.from(`${chromeCss}\n${read(at('src', name))}`) : fs.readFileSync(at('src', name));
+		// site.css gets the header and footer in front; docs.css gets the brand page's styles at the end
+		const data =
+			name === 'site.css'
+				? Buffer.from(`${chromeCss}\n${read(at('src', name))}`)
+				: name === 'docs.css'
+					? Buffer.from(`${read(at('src', name))}\n${read(at('src/brand.css'))}`)
+					: fs.readFileSync(at('src', name));
 		assets[name] = `/assets/${name}?v=${hashOf(data)}`;
 		write(`assets/${name}`, data);
 	}
@@ -653,6 +665,8 @@ async function build() {
 					continue;
 				}
 				const target = p.replace(/\/$/, '');
+				// Pages of the www host that are not docs, such as the brand page
+				if (/^(\/[a-z]{2})?\/brand$/.test(target)) continue;
 				if (target === '' || target === '/docs' || main.sections.some((s) => `/docs/${s.slug}` === target)) continue;
 				if (p.endsWith('.md')) problems.push(`${page.rel}: link "${href}" should not end in .md`);
 				const to = own.get(target) ?? known.get(target);
@@ -691,6 +705,7 @@ async function build() {
 		preview(`${locale.prefix}/`, h.title, { template: 'landing', title: h.heroTitle.replace(/<[^>]+>/g, '') });
 		preview(`${locale.prefix}/docs/`, fill(t.docsTitle, { name: config.name }), { template: 'landing', title: t.documentation });
 		preview(`${locale.prefix}/docs/all/`, t.allPages, { template: 'landing', title: t.allPages });
+		if (BRAND[locale.code]) preview(`${locale.prefix}/brand/`, BRAND[locale.code].title, { template: 'landing', title: BRAND[locale.code].title });
 		for (const s of site.sections) preview(`${locale.prefix}/docs/${s.slug}/`, s.label, { template: 'landing', title: s.label });
 		for (const page of site.pages) {
 			const template = (page.og ?? 'docs') as OgTemplate;
@@ -754,6 +769,10 @@ async function build() {
 			);
 		}
 		write(out('docs/index.html'), docsIndexPage(shared));
+		// The brand page, with the logo files of public/brand/files and their zip
+		const brand = BRAND[locale.code];
+		if (!brand) problems.push(`src/brand.ts: no brand page text for ${locale.label}`);
+		else write(out('brand/index.html'), brandPage({ ...shared, title: brand.title, fullTitle: brand.pageTitle, description: brand.description, main: brandMain(locale.code, brandZip.length) }));
 		// The web server sends 404.html for an address that does not exist, on each host;
 		// another language's 404 page needs a rule of its own there, such as one for /de/
 		write(out('404.html'), notFoundPage(shared));
@@ -884,6 +903,7 @@ async function build() {
 			locale,
 			home: `${locale.prefix}/`,
 			docs: url(`${locale.prefix}/docs/`),
+			brand: `${locale.prefix}/brand/`,
 			languages: versions('/').filter((l) => l.code !== locale.code).map((l) => ({ locale: l, href: `${l.prefix}/` }))
 		};
 		const page = homeTemplate
@@ -955,6 +975,7 @@ async function build() {
 			[`${site.locale.prefix}/`, homeUpdated],
 			[`${site.locale.prefix}/docs/`, newest(site.pages.map((p) => p.updated))],
 			[`${site.locale.prefix}/docs/all/`, newest(site.pages.map((p) => p.updated))],
+			[`${site.locale.prefix}/brand/`, newest([updatedOf(at('src/brand.ts')), updatedOf(at('public/brand/files'))])],
 			...site.sections.map((s): [string, string] => [`${site.locale.prefix}/docs/${s.slug}/`, newest(s.items.map((p) => p.updated))]),
 			...site.reading.map((p): [string, string] => [`${site.locale.prefix}/docs/${p.slug}/`, p.updated])
 		])

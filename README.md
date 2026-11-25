@@ -31,6 +31,10 @@ src/og.ts            the link preview images
 src/layout.ts        the frame around every docs page, and the docs index
 src/chrome.ts        the header and footer of every page, home page included
 src/chrome.css       their styles; the build puts them in front of site.css and into the home page
+src/brand.ts         the brand page (/brand/, /de/brand/), its text in each language
+src/brand.css        its styles; the build adds them to docs.css
+src/zip.ts           writes the zip of the logo files
+public/brand/files/  the owner's logo files, copied unchanged from .ui-rework/brand
 src/checks.ts        the checks on the built site
 src/types.ts         the shapes the build passes around
 src/site.css         fonts, colours and base styles
@@ -87,6 +91,23 @@ A new section needs a folder under `content/docs` and an entry in
 `site.config.ts`. Docs pages get an "Edit on GitHub" link and an "Updated"
 date once `content/docs` is in a git repository and `editBase` in
 `site.config.ts` points at it.
+
+## The brand page
+
+`/brand/` and `/de/brand/` on the www host show the logo files, clear space and
+size, what not to do, the colours, the fonts, the name, the voice and how to
+name RustDesk. The text is in `src/brand.ts` and comes from
+`.ui-rework/brand/BRAND.md`; what BRAND.md does not say is not on the page.
+
+The files in `public/brand/files/` are the owner's artwork as it is: copy new
+ones over from `.ui-rework/brand`, never edit, re-export or rescale them. The
+build packs the folder into `/brand/neodesk-logo.zip`, the same bytes for the
+same files. The examples of what not to do are the real logo file with CSS on
+top (`src/brand.css`).
+
+A right-click on the logo in the header, or the context menu key or Shift+F10
+while it has focus, opens the brand page in the page's language; a left click
+still goes home. The script for it is part of the header in `src/chrome.ts`.
 
 ## Fonts and images
 
@@ -337,7 +358,8 @@ The build checks the pages as it reads them and the files it wrote to
 The build stops when a page, or a command of the command reference, is not in
 its language's search index. `npm run test:search` types sample queries into
 the search of the built site in a headless Chromium and checks that the
-expected page comes first, in English and German. It answers every request from
+expected page comes first, in English and German, and that a right-click on
+the logo opens the brand page. It answers every request from
 `dist/`, so it works on a build for any address; set `SITE_URL` and `DOCS_URL`
 as for that build; with `LIVE=1` it searches the deployed site at that
 address instead. It needs Playwright, as `shots.ts` does. The queries are in

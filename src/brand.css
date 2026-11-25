@@ -1,0 +1,45 @@
+/* A page without the docs sidebar, such as the brand page: one column at the page edge */
+.layout.plain { display: block; }
+.plain .article { max-width: 960px; padding-left: 0; padding-right: 0; }
+.plain .article > h2 { margin: 56px 0 14px; padding-top: 28px; border-top: 1px solid var(--rule); font-size: 26px; font-weight: 600; letter-spacing: -0.01em; }
+.plain .article > h3 { margin: 28px 0 10px; font-size: 18px; font-weight: 600; }
+.plain .article > p { margin: 0 0 16px; max-width: 68ch; }
+.plain .article table { width: 100%; border-collapse: collapse; font-size: 15px; }
+.plain .article th { text-align: left; font-weight: 600; padding: 0 20px 10px 0; }
+.plain .article td { padding: 10px 20px 10px 0; border-top: 1px solid var(--rule); vertical-align: middle; }
+.plain .article td code { font-family: var(--mono); font-size: 0.875em; white-space: nowrap; }
+.plain .article p code { font-family: var(--mono); font-size: 0.875em; padding: 2px 5px; border-radius: 3px; background: var(--code-inline); }
+.plain .mono { font-family: var(--mono); }
+
+/* Brand page */
+.brand-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 24px; margin: 0 0 8px; }
+.brand-tile, .brand-dont, .brand-space { margin: 0; }
+.brand-bg { display: flex; align-items: center; justify-content: center; min-height: 150px; padding: 24px; border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; }
+.brand-dark { background: #141616; }
+.brand-light { background: #ffffff; }
+.brand-plain { background: var(--bg); }
+.brand-bg img { display: block; max-width: 100%; height: auto; }
+.brand-tile figcaption, .brand-dont figcaption { margin-top: 8px; font-size: 14px; line-height: 1.6; color: var(--muted); }
+.brand-tile figcaption a { color: var(--teal); }
+.brand-tile figcaption b { color: var(--text); font-weight: 600; margin-right: 4px; }
+.brand-zip { margin: 20px 0 0; }
+.brand-zip a { font-weight: 600; color: var(--blue); }
+.brand-zip span { color: var(--muted); }
+/* The clear space: the circle's radius is 36.4 % of the logo's height */
+.space-box { display: inline-block; padding: calc(56px * 0.364); outline: 1px dashed #566064; }
+.space-box img { display: block; }
+/* What not to do: CSS on top of the real file, never a changed file */
+.brand-dont figcaption b { color: var(--warn); }
+.dont-recolour { filter: hue-rotate(150deg) saturate(1.6); }
+.dont-stretch { transform: scaleX(1.35) scaleY(0.8); }
+.dont-rotate { transform: rotate(-14deg); }
+.dont-shadow { filter: drop-shadow(0 0 10px #1f6feb) drop-shadow(4px 6px 6px rgba(0, 0, 0, 0.45)); }
+.dont-outline { filter: drop-shadow(2px 0 0 #b3261e) drop-shadow(-2px 0 0 #b3261e) drop-shadow(0 2px 0 #b3261e) drop-shadow(0 -2px 0 #b3261e); }
+.brand-bg:has(.dont-gradient) { position: relative; }
+.brand-bg:has(.dont-gradient)::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, #ff4fd8, #ffb020); -webkit-mask: url("/brand/files/svg/logo-on-light.svg") center / 236px 56px no-repeat; mask: url("/brand/files/svg/logo-on-light.svg") center / 236px 56px no-repeat; pointer-events: none; }
+.dont-pill { padding: 10px 26px; border-radius: 999px; background: #e8ebeb; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); box-sizing: content-box; }
+.dont-small { width: auto !important; height: 16px !important; }
+.brand-voice .ok { font-weight: 600; color: var(--lime); }
+.brand-voice .no { font-weight: 600; color: var(--warn); }
+.brand-voice p { margin: 4px 0 0; }
+.swatch { display: inline-block; width: 18px; height: 18px; margin-right: 8px; vertical-align: -4px; border: 1px solid var(--rule); border-radius: 3px; }
