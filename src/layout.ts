@@ -18,19 +18,21 @@ const searchButton = (t: Shared['t'], wide = false) =>
 const formatDate =(iso: string, dateLocale: string) =>
 	new Date(iso).toLocaleDateString(dateLocale, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 
-/** An address of the site in the page's language: /docs/ becomes /de/docs/ in German. */
-const inLocale = (shared: Shared, p: string) => `${shared.locale.prefix}${p}`;
+/** A logical address in the page's language: /docs/ becomes /de/docs/ in German. */
+const logical = (shared: Pick<Shared, 'locale'>, p: string) => `${shared.locale.prefix}${p}`;
+/** The address a visitor uses for a logical address in the page's language (see src/urls.ts). */
+const inLocale = (shared: Shared, p: string) => shared.urls.url(logical(shared, p));
 
 /**
  * The <link rel="alternate" hreflang> tags of a page: one for every language that has it,
  * and x-default for the default language's version.
  */
-export function hreflangLinks(shared: Pick<Shared, 'siteUrl' | 'versions'>, p: string) {
+export function hreflangLinks(shared: Pick<Shared, 'urls' | 'versions'>, p: string) {
 	const versions = shared.versions(p);
 	if (!versions.length) return '';
-	const links = versions.map((l) => `<link rel="alternate" hreflang="${l.code}" href="${esc(`${shared.siteUrl}${l.prefix}${p}`)}">`);
+	const links = versions.map((l) => `<link rel="alternate" hreflang="${l.code}" href="${esc(shared.urls.url(`${l.prefix}${p}`))}">`);
 	const fallback = versions.find((l) => l.default) ?? versions[0];
-	links.push(`<link rel="alternate" hreflang="x-default" href="${esc(`${shared.siteUrl}${fallback.prefix}${p}`)}">`);
+	links.push(`<link rel="alternate" hreflang="x-default" href="${esc(shared.urls.url(`${fallback.prefix}${p}`))}">`);
 	return links.join('\n');
 }
 
@@ -107,10 +109,10 @@ interface FrameOptions extends Shared {
 }
 
 function frame(o: FrameOptions) {
-	const { config, assets, siteUrl, production, locale, t, title, description, current, main, toc = '', markdown, jsonLd, type = 'website', noindex = false } = o;
+	const { config, assets, production, locale, t, title, description, current, main, toc = '', markdown, jsonLd, type = 'website', noindex = false } = o;
 	const full = o.fullTitle ?? fill(t.pageTitle, { title, name: config.name });
-	const own = inLocale(o, o.path);
-	const canonical = `${siteUrl}${own}`;
+	const own = logical(o, o.path);
+	const canonical = o.urls.url(own);
 	const docsHome = inLocale(o, '/docs/');
 	// The docs add the button that opens the sidebar on narrow screens, and search
 	const tools = `<button type="button" class="menu-button" aria-controls="sidebar" aria-expanded="false" aria-label="${esc(t.contents)}">${CONTENTS_ICON}</button>${searchButton(t)}`;
@@ -120,7 +122,7 @@ function frame(o: FrameOptions) {
 		locale,
 		home: inLocale(o, '/'),
 		docs: docsHome,
-		languages: noindex ? [] : o.versions(o.path).filter((l) => l.code !== locale.code).map((l) => ({ locale: l, href: `${l.prefix}${o.path}` })),
+		languages: noindex ? [] : o.versions(o.path).filter((l) => l.code !== locale.code).map((l) => ({ locale: l, href: o.urls.url(`${l.prefix}${o.path}`) })),
 		tools
 	};
 	return `<!doctype html>
@@ -202,7 +204,7 @@ ${unfolded(items)
 const crumbList = (shared: Shared, crumbs: { name: string; path: string }[]) => ({
 	'@context': 'https://schema.org',
 	'@type': 'BreadcrumbList',
-	itemListElement: crumbs.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.name, item: `${shared.siteUrl}${inLocale(shared, c.path)}` }))
+	itemListElement: crumbs.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.name, item: inLocale(shared, c.path) }))
 });
 
 export function docsIndexPage(shared: Shared) {
@@ -255,7 +257,7 @@ export function sectionPage(shared: Shared & { section: Section }) {
 }
 
 export function docPage(shared: Shared & { page: Page; sectionLabel: string; prev: Pager | null; next: Pager | null }) {
-	const { page, sectionLabel, prev, next, config, siteUrl, t, locale } = shared;
+	const { page, sectionLabel, prev, next, config, t, locale } = shared;
 	const tocItems = page.headings.filter((h) => h.level === 2 || h.level === 3);
 	const toc =
 		tocItems.length >= 2
@@ -306,7 +308,7 @@ ${page.html}
 				'@type': 'TechArticle',
 				headline: page.title,
 				description: page.description,
-				url: `${siteUrl}${inLocale(shared, `/docs/${page.slug}/`)}`,
+				url: inLocale(shared, `/docs/${page.slug}/`),
 				inLanguage: locale.code,
 				dateModified: page.updated
 			}
@@ -328,7 +330,7 @@ export function contactSheetPage(shared: Shared & { items: PreviewItem[]; templa
 	const kb = (b: number) => `${Math.round(b / 1024)} KB`;
 	const figure = (p: PreviewItem) => `      <figure class="og-item">
         <img src="${esc(p.image)}" width="600" height="315" alt="${esc(`The link preview of ${p.title}`)}" loading="lazy" decoding="async">
-        <figcaption>${p.page ? `<a href="${esc(p.page)}">${esc(p.title)}</a>` : esc(p.title)}<span>${esc(p.template)}, ${kb(p.bytes)}</span></figcaption>
+        <figcaption>${p.page ? `<a href="${esc(shared.urls.url(p.page))}">${esc(p.title)}</a>` : esc(p.title)}<span>${esc(p.template)}, ${kb(p.bytes)}</span></figcaption>
       </figure>`;
 	const main = `    <h1>Link preview images</h1>
     <p class="lead">Every page's link preview, 1200 by 630 pixels, with the title the page gives it. ${shared.items.length} images.</p>
@@ -343,7 +345,8 @@ ${shared.templates.map(figure).join('\n')}
 	return frame({ ...shared, title: 'Link preview images', description: 'Every link preview image of the site with the title it shows.', path: '/og/', current: '', main, noindex: true });
 }
 
-export function notFoundPage(shared: Shared) {
+/** The 404 page; path is where it lives, /404.html on the www host or /docs/404.html on the docs host. */
+export function notFoundPage(shared: Shared, path = '/404.html') {
 	const { t } = shared;
 	const main = `    <h1>${esc(t.notFound)}</h1>
     <p class="lead">${esc(t.notFoundLead)}</p>
@@ -352,7 +355,7 @@ export function notFoundPage(shared: Shared) {
       <li><a href="${inLocale(shared, '/docs/')}">${esc(t.documentation)}</a><p>${esc(t.everySection)}</p></li>
       <li><a href="${inLocale(shared, '/')}">${esc(t.home)}</a><p>${esc(t.whatItIs)}</p></li>
     </ul>`;
-	return frame({ ...shared, title: t.notFound, description: t.notFoundDescription, path: '/404.html', current: '', main, noindex: true });
+	return frame({ ...shared, title: t.notFound, description: t.notFoundDescription, path, current: '', main, noindex: true, ...(path.startsWith('/docs/') ? {} : { fullTitle: `${t.notFound} - ${shared.config.name}` }) });
 }
 
 export { DEFAULT_LOCALE };

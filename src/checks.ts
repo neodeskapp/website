@@ -3,7 +3,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { parse, find, findAll, byTag, isHidden, textOf, decode } from './html.ts';
-import { LOCALES, localeOfPath } from './i18n.ts';
+import { LOCALES } from './i18n.ts';
+import type { Urls } from './urls.ts';
 
 /** Every file under a folder, as paths relative to it with forward slashes. */
 export function listFiles(dir: string, base = dir): string[] {
@@ -55,15 +56,9 @@ export const OLD_NAME_ALLOW: { page: string; sentence: RegExp }[] = [
 	].map((s) => ({ page: 'development/contributing', sentence: sentence(s) }))
 ];
 
-/** A built file's path without its language folder: de/docs/a.md is docs/a.md. */
-const withoutLocale = (rel: string) => {
-	const l = LOCALES.find((x) => x.prefix && rel.startsWith(`${x.prefix.slice(1)}/`));
-	return l ? rel.slice(l.prefix.length) : rel;
-};
-
-/** The docs page a file is the copy of: docs/a/b/index.html, docs/a/b.md and de/docs/a/b.md are page a/b. */
-function pageOfFile(rel: string) {
-	const m = withoutLocale(rel).match(/^docs\/(.+?)(?:\/index\.html|\.md)$/);
+/** The docs page a file is the copy of: docs/a/b/index.html, docs/a/b.md and docs/de/a/b.md are page a/b. */
+function pageOfFile(urls: Urls, rel: string) {
+	const m = urls.withoutLocale(rel).match(/^docs\/(.+?)(?:\/index\.html|\.md)$/);
 	return m ? m[1] : null;
 }
 
@@ -72,33 +67,39 @@ function pageOfFile(rel: string) {
  * pages with their descriptions) belongs to that page; in the collected llms files
  * the rest belongs to the page under the last "Source:" line.
  */
-function pageAt(text: string, index: number, rel: string) {
+function pageAt(urls: Urls, text: string, index: number, rel: string) {
 	const start = text.lastIndexOf('\n', index) + 1;
 	const end = text.indexOf('\n', index);
 	const line = text.slice(start, end === -1 ? text.length : end);
-	const listed = [...line.matchAll(/(?:href="|\]\()(?:[a-z]+:\/\/[^/"]+)?(?:\/[a-z]{2})?\/docs\/([\w/-]+?)(?:\/|\.md)?(?:#[\w-]*)?(?:"|\))/g)].map((m) => m[1]);
+	const pageOfUrl = (u: string) => {
+		const file = urls.fileOfUrl(u.replace(/\.md$/, '/'));
+		return file ? pageOfFile(urls, file) : null;
+	};
+	const listed = [...line.matchAll(/(?:href="|\]\()(https?:\/\/[^"\s)]+)(?:"|\))/g)].map((m) => pageOfUrl(m[1])).filter(Boolean);
 	if (listed.length === 1) return listed[0];
-	const sources = [...text.slice(0, index).matchAll(/^Source: \S+?\/docs\/([\w/-]+?)\/?$/gm)];
-	if (sources.length && rel.endsWith('.txt')) return sources[sources.length - 1][1];
-	return pageOfFile(rel);
+	const sources = [...text.slice(0, index).matchAll(/^Source: (\S+?)$/gm)];
+	if (sources.length && rel.endsWith('.txt')) return pageOfUrl(sources[sources.length - 1][1]);
+	return pageOfFile(urls, rel);
 }
 
 export interface CheckInput {
 	dist: string;
 	siteUrl: string;
+	urls: Urls;
 	version: string;
 	production: boolean;
 	aiCrawlers: string[];
 }
 
-export function checkOldNames({ dist }: CheckInput) {
+export function checkOldNames({ dist, urls }: CheckInput) {
 	const problems: string[] = [];
 	for (const rel of listFiles(dist).filter((f) => OLD_NAME_FILES.test(f))) {
 		const raw = fs.readFileSync(path.join(dist, rel), 'utf8');
 		for (const m of raw.matchAll(OLD_IMAGE)) problems.push(`${rel}:${lineOf(raw, m.index)}: old image path "${m[0]}"`);
-		if (withoutLocale(rel) === 'docs/search.json') {
+		if (urls.withoutLocale(rel) === 'docs/search.json') {
 			for (const entry of JSON.parse(raw) as { u: string }[]) {
-				const page = withoutLocale(entry.u.slice(1)).replace(/^docs\/|\/(#.*)?$|#.*$/g, '');
+				const file = urls.fileOfUrl(entry.u);
+				const page = file ? pageOfFile(urls, file) : null;
 				let fields = JSON.stringify(entry);
 				for (const a of OLD_NAME_ALLOW) if (a.page === page) fields = fields.replace(a.sentence, '');
 				const hit = fields.match(OLD_NAME);
@@ -110,7 +111,7 @@ export function checkOldNames({ dist }: CheckInput) {
 		let text = raw;
 		for (const a of OLD_NAME_ALLOW) {
 			for (const m of raw.matchAll(a.sentence)) {
-				if (pageAt(raw, m.index, rel) === a.page) text = text.slice(0, m.index) + ' '.repeat(m[0].length) + text.slice(m.index + m[0].length);
+				if (pageAt(urls, raw, m.index, rel) === a.page) text = text.slice(0, m.index) + ' '.repeat(m[0].length) + text.slice(m.index + m[0].length);
 			}
 		}
 		for (const m of text.matchAll(OLD_NAME)) {
@@ -192,7 +193,7 @@ const squash = (s: string) => s.replace(/\s+/g, ' ').trim();
  * the main content and a navigation with links are not empty, no code block is
  * empty, and every tab has a panel of its own with content in it.
  */
-export function checkWithoutScripts({ dist }: CheckInput) {
+export function checkWithoutScripts({ dist, urls }: CheckInput) {
 	const problems: string[] = [];
 	for (const rel of listFiles(dist).filter((f) => f.endsWith('.html'))) {
 		const doc = parse(fs.readFileSync(path.join(dist, rel), 'utf8'));
@@ -203,7 +204,7 @@ export function checkWithoutScripts({ dist }: CheckInput) {
 			.filter((nav) => !isHidden(nav))
 			.flatMap((nav) => findAll(nav, (el) => el.tag === 'a' && !!el.attrs.href && !isHidden(el) && squash(textOf(el)) !== ''));
 		if (!links.length) problems.push(`${rel}: no navigation links without scripts`);
-		if (withoutLocale(rel).startsWith('docs/') && withoutLocale(rel) !== 'docs/index.html') {
+		if (urls.withoutLocale(rel).startsWith('docs/') && urls.withoutLocale(rel) !== 'docs/index.html') {
 			const side = find(doc, (el) => el.attrs.id === 'sidebar');
 			if (!side || findAll(side, byTag('a')).length < 2) problems.push(`${rel}: the docs sidebar is empty`);
 		}
@@ -248,15 +249,13 @@ export const TITLE_MAX = 60;
 export const DESCRIPTION_MAX = 155;
 
 /** The file a link in a built page points at, with its fragment, or null for an outside link. */
-function target(href: string, fromRel: string, siteUrl: string): { file: string; hash: string } | null {
-	let h = href;
-	if (h.startsWith(siteUrl)) h = h.slice(siteUrl.length) || '/';
-	if (/^[a-z][\w+.-]*:/i.test(h) || h.startsWith('//')) return null;
-	const [pathAndQuery, hash = ''] = h.split('#');
-	const p = pathAndQuery.split('?')[0];
-	const base = urlOfFile(fromRel).replace(/[^/]*$/, '');
-	const abs = !p ? urlOfFile(fromRel) : p.startsWith('/') ? p : new URL(p, `http://x${base}`).pathname;
-	return { file: abs.endsWith('/') ? `${abs.slice(1)}index.html` : decodeURIComponent(abs.slice(1)), hash };
+function target(urls: Urls, href: string, fromRel: string): { file: string; hash: string } | null {
+	if (/^[a-z][\w+.-]*:/i.test(href) && !/^https?:/i.test(href)) return null;
+	const abs = new URL(href, urls.urlOfFile(fromRel));
+	const hash = decodeURIComponent(abs.hash.slice(1));
+	if (!href.split('#')[0]) return { file: fromRel, hash };
+	const file = urls.fileOfUrl(`${abs.origin}${abs.pathname}`);
+	return file === null ? null : { file, hash };
 }
 
 /**
@@ -266,7 +265,7 @@ function target(href: string, fromRel: string, siteUrl: string): { file: string;
  * be indexed; alt, width and height on every image; every link and anchor inside the site
  * leads somewhere; and every page is linked from another page.
  */
-export function checkSeo({ dist, siteUrl }: CheckInput) {
+export function checkSeo({ dist, urls }: CheckInput) {
 	const problems: string[] = [];
 	const files = listFiles(dist).filter((f) => f.endsWith('.html'));
 	const docs = new Map(files.map((rel) => [rel, parse(fs.readFileSync(path.join(dist, rel), 'utf8'))]));
@@ -320,13 +319,13 @@ export function checkSeo({ dist, siteUrl }: CheckInput) {
 			...findAll(doc, (el) => el.tag === 'link' && /stylesheet|icon|preload/.test(el.attrs.rel ?? '')).map((el) => ({ el, url: el.attrs.href, kind: 'file' }))
 		];
 		for (const { el, url, kind } of refs) {
-			const to = target(url, rel, siteUrl);
+			const to = target(urls, url, rel);
 			if (!to) continue;
 			if (!fs.existsSync(path.join(dist, to.file))) {
 				problems.push(`${rel}:${el.line}: ${kind === 'link' ? 'a link' : 'a file'} to ${url}, which is not in the site`);
 				continue;
 			}
-			if (to.hash && to.file.endsWith('.html') && docs.has(to.file) && !ids(to.file).has(decodeURIComponent(to.hash))) problems.push(`${rel}:${el.line}: a link to ${url}, which has no "#${to.hash}"`);
+			if (to.hash && to.file.endsWith('.html') && docs.has(to.file) && !ids(to.file).has(to.hash)) problems.push(`${rel}:${el.line}: a link to ${url}, which has no "#${to.hash}"`);
 			if (kind === 'link' && to.file.endsWith('.html') && to.file !== rel) {
 				if (!linkedFrom.has(to.file)) linkedFrom.set(to.file, new Set());
 				linkedFrom.get(to.file)!.add(rel);
@@ -358,7 +357,7 @@ const OG_TAGS = ['og:title', 'og:description', 'og:url', 'og:type', 'og:image', 
  * summary_large_image; og:url is the canonical address; its image exists, is a PNG of
  * 1200 x 630 under 300 KB, and belongs to this page alone; no two pages share a title.
  */
-export function checkPreviews({ dist, siteUrl }: CheckInput) {
+export function checkPreviews({ dist, urls }: CheckInput) {
 	const problems: string[] = [];
 	const titles = new Map<string, string>();
 	const images = new Map<string, string>();
@@ -377,7 +376,7 @@ export function checkPreviews({ dist, siteUrl }: CheckInput) {
 		}
 		const image = meta.get('og:image');
 		if (!image) continue;
-		const file = fileOfUrl(image, siteUrl);
+		const file = urls.fileOfUrl(image);
 		if (!file || !fs.existsSync(path.join(dist, file))) {
 			problems.push(`${rel}: og:image ${image} was not built`);
 			continue;
@@ -398,9 +397,9 @@ export function checkPreviews({ dist, siteUrl }: CheckInput) {
  * Every docs page and section page has "Copy as Markdown" next to its h1: a plain link,
  * without query string or inline script, to the page's own .md copy, which exists.
  */
-export function checkMarkdownLinks({ dist }: CheckInput) {
+export function checkMarkdownLinks({ dist, urls }: CheckInput) {
 	const problems: string[] = [];
-	for (const rel of listFiles(dist).filter((f) => /(^|\/)docs\/.+\/index\.html$/.test(f))) {
+	for (const rel of listFiles(dist).filter((f) => /^docs\/.+\/index\.html$/.test(urls.withoutLocale(f)))) {
 		const doc = parse(fs.readFileSync(path.join(dist, rel), 'utf8'));
 		const head = find(doc, (el) => el.attrs.class === 'page-head');
 		const h1 = head && find(head, byTag('h1'));
@@ -409,9 +408,9 @@ export function checkMarkdownLinks({ dist }: CheckInput) {
 			problems.push(`${rel}: no "Copy as Markdown" link next to the h1`);
 			continue;
 		}
-		const want = `${urlOfFile(rel).replace(/\/$/, '')}.md`;
+		const want = `${urls.urlOfFile(rel).replace(/\/$/, '')}.md`;
 		if (link.attrs.href !== want) problems.push(`${rel}: "Copy as Markdown" leads to ${link.attrs.href}, not ${want}`);
-		else if (!fs.existsSync(path.join(dist, want.slice(1)))) problems.push(`${rel}: ${want} was not built`);
+		else if (!fs.existsSync(path.join(dist, urls.fileOfUrl(want) ?? '-'))) problems.push(`${rel}: ${want} was not built`);
 		if (Object.keys(link.attrs).some((a) => a.startsWith('on'))) problems.push(`${rel}: "Copy as Markdown" has an inline script`);
 	}
 	return problems;
@@ -419,47 +418,38 @@ export function checkMarkdownLinks({ dist }: CheckInput) {
 
 /* ---------- languages ---------- */
 
-/** The address a built HTML file is served at: docs/a/index.html is /docs/a/. */
-export const urlOfFile = (rel: string) => `/${rel.replace(/(^|\/)index\.html$/, '$1')}`;
-/** The built file an address of the site is served from, or null when it is outside the site. */
-export function fileOfUrl(url: string, siteUrl: string): string | null {
-	if (!url.startsWith(siteUrl)) return null;
-	const p = url.slice(siteUrl.length).split('#')[0] || '/';
-	return p.endsWith('/') ? `${p.slice(1)}index.html` : p.slice(1);
-}
-
 /**
  * Every page says its language in <html lang>, which matches its address (/de/... is German),
  * and lists every language version of itself with hreflang, itself and x-default included.
  * Each version it lists exists and lists it back.
  */
-export function checkLocales({ dist, siteUrl }: CheckInput) {
+export function checkLocales({ dist, urls }: CheckInput) {
 	const problems: string[] = [];
 	const alternates = new Map<string, Map<string, string>>();
 	const files = listFiles(dist).filter((f) => f.endsWith('.html') && !NOINDEX_PAGES.has(f));
 	for (const rel of files) {
 		const html = fs.readFileSync(path.join(dist, rel), 'utf8');
 		const head = html.split('</head>')[0];
-		const url = urlOfFile(rel);
-		const locale = localeOfPath(url);
+		const url = urls.urlOfFile(rel);
+		const locale = LOCALES.find((l) => l.code === urls.localeOfFile(rel))!;
 		const lang = head.match(/<html lang="([^"]*)"/)?.[1];
 		if (lang !== locale.code) problems.push(`${rel}: <html lang="${lang}">, but its address is in ${locale.label} (${locale.code})`);
 		const links = new Map<string, string>();
 		for (const m of head.matchAll(/<link rel="alternate" hreflang="([^"]+)" href="([^"]+)">/g)) links.set(m[1], decode(m[2]));
 		alternates.set(rel, links);
-		if (links.get(locale.code) !== `${siteUrl}${url}`) problems.push(`${rel}: no hreflang="${locale.code}" link to itself`);
+		if (links.get(locale.code) !== url) problems.push(`${rel}: no hreflang="${locale.code}" link to itself`);
 		if (!links.has('x-default')) problems.push(`${rel}: no hreflang="x-default" link`);
 	}
 	for (const [rel, links] of alternates) {
 		for (const [code, href] of links) {
-			const target = fileOfUrl(href, siteUrl);
+			const target = urls.fileOfUrl(href);
 			if (!target || !fs.existsSync(path.join(dist, target))) {
 				problems.push(`${rel}: hreflang="${code}" names ${href}, which is not a page of the site`);
 				continue;
 			}
 			if (code === 'x-default' || target === rel) continue;
 			const back = alternates.get(target);
-			if (!back || ![...back.values()].includes(`${siteUrl}${urlOfFile(rel)}`)) problems.push(`${rel}: hreflang="${code}" names ${href}, which does not name this page back`);
+			if (!back || ![...back.values()].includes(urls.urlOfFile(rel))) problems.push(`${rel}: hreflang="${code}" names ${href}, which does not name this page back`);
 		}
 	}
 	return problems;
@@ -470,18 +460,18 @@ export function checkLocales({ dist, siteUrl }: CheckInput) {
  * address under that language's prefix: docs/console/devices/index.html needs
  * de/docs/console/devices/index.html. The contact sheet of link previews is English only.
  */
-export function checkTranslations({ dist }: CheckInput) {
+export function checkTranslations({ dist, urls }: CheckInput) {
 	const problems: string[] = [];
 	const files = listFiles(dist).filter((f) => f.endsWith('.html'));
 	const have = new Set(files);
-	const english = files.filter((f) => localeOfPath(urlOfFile(f)).default && f !== CONTACT_SHEET);
+	const english = files.filter((f) => urls.localeOfFile(f) === LOCALES.find((l) => l.default)!.code && f !== CONTACT_SHEET);
 	for (const locale of LOCALES.filter((l) => !l.default)) {
-		const dir = locale.prefix.slice(1);
 		for (const rel of english) {
-			if (have.has(`${dir}/${rel}`)) continue;
+			const other = urls.inLanguage(rel, locale.prefix);
+			if (have.has(other)) continue;
 			const page = rel.match(/^docs\/(.+\/.+)\/index\.html$/)?.[1];
 			const hint = page ? `: translate content/docs/${page}.md into content/${locale.code}/docs/${page}.md` : '';
-			problems.push(`${dir}/${rel}: ${rel} has no ${locale.label} version${hint}`);
+			problems.push(`${other}: ${rel} has no ${locale.label} version${hint}`);
 		}
 	}
 	return problems;
@@ -499,7 +489,7 @@ const canonicalOf = (head: string) => head.match(/<link rel="canonical" href="([
  * BreadcrumbList that ends at the page. The sitemap lists every page with a canonical
  * address, and only those, each with a lastmod date.
  */
-export function checkStructuredData({ dist, siteUrl, version }: CheckInput) {
+export function checkStructuredData({ dist, urls, version }: CheckInput) {
 	const problems: string[] = [];
 	const canonicals = new Set<string>();
 	for (const rel of listFiles(dist).filter((f) => f.endsWith('.html'))) {
@@ -541,20 +531,24 @@ export function checkStructuredData({ dist, siteUrl, version }: CheckInput) {
 			if (items.length < 2) problems.push(`${rel}: the BreadcrumbList has fewer than two items`);
 			items.forEach((item, i) => {
 				if (item.position !== i + 1 || !item.name || typeof item.item !== 'string') problems.push(`${rel}: breadcrumb ${i + 1} lacks a position, name or address`);
-				else if (!fs.existsSync(path.join(dist, fileOfUrl(item.item, siteUrl) ?? '-'))) problems.push(`${rel}: breadcrumb ${i + 1} leads to ${item.item}, which is not a page`);
+				else if (!fs.existsSync(path.join(dist, urls.fileOfUrl(item.item) ?? '-'))) problems.push(`${rel}: breadcrumb ${i + 1} leads to ${item.item}, which is not a page`);
 			});
 			if (items.length && items[items.length - 1].item !== canonical) problems.push(`${rel}: the last breadcrumb is not the page itself`);
 		}
 	}
-	const sitemap = fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8');
+	// One sitemap per host: each lists only its own host's pages
 	const listed = new Set<string>();
-	for (const m of sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)) {
-		const loc = m[1].match(/<loc>([^<]+)<\/loc>/)?.[1] ?? '';
-		listed.add(loc);
-		if (!validDate(m[1].match(/<lastmod>([^<]+)<\/lastmod>/)?.[1])) problems.push(`sitemap.xml: ${loc} has no valid lastmod`);
-		if (!canonicals.has(loc)) problems.push(`sitemap.xml: ${loc} is not the canonical address of a built page`);
+	for (const [file, base] of [['sitemap.xml', urls.www], ['docs/sitemap.xml', urls.docs]]) {
+		const sitemap = fs.readFileSync(path.join(dist, file), 'utf8');
+		for (const m of sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)) {
+			const loc = m[1].match(/<loc>([^<]+)<\/loc>/)?.[1] ?? '';
+			listed.add(loc);
+			if (!loc.startsWith(`${base}/`)) problems.push(`${file}: ${loc} is not on ${base}`);
+			if (!validDate(m[1].match(/<lastmod>([^<]+)<\/lastmod>/)?.[1])) problems.push(`${file}: ${loc} has no valid lastmod`);
+			if (!canonicals.has(loc)) problems.push(`${file}: ${loc} is not the canonical address of a built page`);
+		}
 	}
-	for (const c of canonicals) if (!listed.has(c)) problems.push(`sitemap.xml: does not list ${c}`);
+	for (const c of canonicals) if (!listed.has(c)) problems.push(`sitemap.xml: no sitemap lists ${c}`);
 	return problems;
 }
 
@@ -565,14 +559,14 @@ export function checkStructuredData({ dist, siteUrl, version }: CheckInput) {
  * size, and every page of llms-full.txt is in exactly one section file. No agent tool
  * that does not exist yet is named anywhere in the built site.
  */
-export function checkLlms({ dist, siteUrl }: CheckInput, unavailable: string[]) {
+export function checkLlms({ dist, urls }: CheckInput, unavailable: string[]) {
 	const problems: string[] = [];
 	const llms = fs.readFileSync(path.join(dist, 'llms.txt'), 'utf8');
 	const agents = llms.indexOf('\n## For AI agents\n');
 	if (agents === -1 || llms.indexOf('\n## ') !== agents) problems.push('llms.txt: "## For AI agents" is not the first section');
 	const listed = new Set<string>();
 	for (const m of llms.matchAll(/^- \[[^\]]+\]\((\S+?\.txt)\): (\d+) KB/gm)) {
-		const file = fileOfUrl(m[1], siteUrl);
+		const file = urls.fileOfUrl(m[1]);
 		if (!file || !fs.existsSync(path.join(dist, file))) {
 			problems.push(`llms.txt: lists ${m[1]}, which was not built`);
 			continue;
@@ -599,21 +593,24 @@ export function checkLlms({ dist, siteUrl }: CheckInput, unavailable: string[]) 
 /* ---------- who may index the site ---------- */
 
 // Pages that are never indexed, on any host: every language's 404 page and the contact sheet
-export const NOINDEX_PAGES = new Set(['og/index.html', ...LOCALES.map((l) => `${l.prefix ? `${l.prefix.slice(1)}/` : ''}404.html`)]);
+export const NOINDEX_PAGES = new Set(['og/index.html', ...LOCALES.flatMap((l) => [`${l.prefix ? `${l.prefix.slice(1)}/` : ''}404.html`, `docs/${l.prefix ? `${l.prefix.slice(1)}/` : ''}404.html`])]);
 
 /**
  * On production, robots.txt allows everything and names each AI crawler as allowed, and
  * only the pages in NOINDEX_PAGES say noindex. On any other host every page says noindex.
  */
-export function checkIndexing({ dist, production, aiCrawlers }: CheckInput) {
+export function checkIndexing({ dist, urls, production, aiCrawlers }: CheckInput) {
 	const problems: string[] = [];
-	const robots = fs.readFileSync(path.join(dist, 'robots.txt'), 'utf8');
-	const groups = robots.split(/\n\s*\n/).map((g) => g.split('\n').filter((l) => l && !l.startsWith('#')));
-	const allowed = (agent: string) =>
-		groups.some((g) => g.some((l) => l.toLowerCase() === `user-agent: ${agent.toLowerCase()}`) && g.includes('Allow: /') && !g.some((l) => /^Disallow:\s*\S/.test(l)));
-	if (!allowed('*')) problems.push('robots.txt: "User-agent: *" is not allowed everything');
-	if (production) for (const agent of aiCrawlers) if (!allowed(agent)) problems.push(`robots.txt: ${agent} is not named as allowed`);
-	if (!/^Sitemap: \S+\/sitemap\.xml$/m.test(robots)) problems.push('robots.txt: no Sitemap line');
+	// Each host has its robots.txt, which allows everything and names that host's sitemap
+	for (const [file, base] of [['robots.txt', urls.www], ['docs/robots.txt', urls.docs]]) {
+		const robots = fs.readFileSync(path.join(dist, file), 'utf8');
+		const groups = robots.split(/\n\s*\n/).map((g) => g.split('\n').filter((l) => l && !l.startsWith('#')));
+		const allowed = (agent: string) =>
+			groups.some((g) => g.some((l) => l.toLowerCase() === `user-agent: ${agent.toLowerCase()}`) && g.includes('Allow: /') && !g.some((l) => /^Disallow:\s*\S/.test(l)));
+		if (!allowed('*')) problems.push(`${file}: "User-agent: *" is not allowed everything`);
+		if (production) for (const agent of aiCrawlers) if (!allowed(agent)) problems.push(`${file}: ${agent} is not named as allowed`);
+		if (!robots.includes(`Sitemap: ${base}/sitemap.xml`)) problems.push(`${file}: does not name ${base}/sitemap.xml`);
+	}
 	for (const rel of listFiles(dist).filter((f) => f.endsWith('.html'))) {
 		const head = fs.readFileSync(path.join(dist, rel), 'utf8').split('</head>')[0];
 		const noindex = /<meta name="robots" content="[^"]*noindex/.test(head);

@@ -1,8 +1,8 @@
 # NeoDesk website and docs
 
-The website for neode.sk: the landing page and the documentation under
-`/docs`. `npm run build` turns this folder into static files in `dist/`, which
-any web server can host.
+The website for neode.sk: the landing page on neode.sk and the documentation
+on docs.neode.sk. `npm run build` turns this folder into static files in
+`dist/`, which any web server can host.
 
 The build is TypeScript that Node runs directly, without a compile step. It
 needs Node 22.18 or newer, which strips the types itself.
@@ -49,9 +49,37 @@ public/img/releases/ the images of the release notes, one folder per tag
 ```
 
 `SITE_URL=https://beta.neode.sk node build.ts` builds for another address.
+`npm run serve` builds for `http://localhost:4173` unless `SITE_URL` is set.
 `DIST_DIR=<folder>` writes the build there instead of `dist/`.
 `ND_VERSION=3.6.0` sets the version by hand; without it the build reads the
 newest published release of neodeskapp/neodesk, pre-releases included. `DOCS_DIR=<folder>` builds another content folder.
+
+## Two hosts
+
+The docs are on their own host, docs.neode.sk, without `/docs` in the path:
+`https://docs.neode.sk/getting-started/docker/` and
+`https://docs.neode.sk/de/getting-started/docker/`. Everything else is on
+neode.sk. Both come from one build and one deployment:
+
+- `dist/docs/` is the docs host's root, with German under `dist/docs/de/`. It
+  has its own `404.html`, `de/404.html`, `search.json`, `de/search.json`,
+  `sitemap.xml` and `robots.txt`.
+- The docs host serves `/assets/`, `/fonts/`, `/img/`, `/og/` and the llms
+  files from `dist/`, the www host's root, so they exist once.
+- `docsUrl` in `site.config.ts` says where the docs are on production. A build
+  for any other address keeps them under `/docs` on that host
+  (`https://beta.neode.sk/docs/getting-started/docker/`, German under
+  `/docs/de/`), so the beta needs no second name or certificate. `DOCS_URL`
+  overrides both.
+
+Inside the build a page keeps its logical address, the one from before the
+move: `/docs/getting-started/docker/`, `/de/docs/getting-started/docker/`.
+`src/urls.ts` turns it into the address on the right host. Links between docs
+pages and to the other host are absolute, so a docs page also works when it is
+reached at its old address. Every old address on neode.sk redirects to the docs
+host with a 301; the web server's rule is the same mapping:
+`/docs/<path>` to `https://docs.neode.sk/<path>` and `/de/docs/<path>` to
+`https://docs.neode.sk/de/<path>`.
 
 A new section needs a folder under `content/docs` and an entry in
 `site.config.ts`. Docs pages get an "Edit on GitHub" link and an "Updated"
@@ -179,15 +207,16 @@ link to a heading reads the same in every language:
 ```
 
 Links inside a translated page name the English address, `/docs/...`; the
-build turns them into `/de/docs/...`. Every English page needs its German
+build turns them into the German page's address. Every English page needs its German
 version: the build stops and names each page that has none.
 
 Every page lists its language versions with `hreflang`, plus `x-default` for
 the English one, and its language switch leads to the same page in the other
 language. Each language has its own home page, search index
-(`/de/docs/search.json`), 404 page, Markdown copies and link preview images
-(`/og/de/...`). The web server sends `/404.html` for every address that does
-not exist; serving `/de/404.html` under `/de/` needs a rule there. The llms
+(`docs.neode.sk/de/search.json`), 404 page on each host, Markdown copies and
+link preview images (`/og/de/...`). The web server sends `/404.html` for every
+address that does not exist; serving `/de/404.html` under `/de/` needs a rule
+there, on each host. The llms
 files stay in English: they are one set of files at the root for AI tools,
 and every German page's Markdown copy is next to it as for English.
 
@@ -196,7 +225,7 @@ where a page quotes a console message, it quotes it as the console words it.
 
 ## What the build makes
 
-- `/docs/` with every section, `/docs/<section>/` with that section's pages,
+- The docs index with every section, a page per section with its pages,
   and one page per Markdown file, with the sidebar, the "On this page" list,
   breadcrumb, and previous and next links that follow the sidebar across
   sections.
@@ -209,7 +238,7 @@ where a page quotes a console message, it quotes it as the console words it.
   AI agents: the one-line installs from `src/install.ts` and the agent tools
   from `src/agents.ts`. A tool there stays out of every published file while its
   `available` is false; set it to true, with a `docs` page, once it ships.
-- `sitemap.xml`, `robots.txt` and `404.html`.
+- `sitemap.xml`, `robots.txt`, `404.html` and `de/404.html` for each host.
 
 ## Checks
 
@@ -239,7 +268,7 @@ The build checks the pages as it reads them and the files it wrote to
 - Buttons: every button has an aria-label or text of its own. Text inside a
   child element does not count, because the styles may hide it: the search
   button shows only its icon on small screens.
-- Indexing: on neode.sk, `robots.txt` allows everything and names each AI
+- Indexing: on neode.sk, each host's `robots.txt` allows everything and names each AI
   crawler in `aiCrawlers` in `site.config.ts` as allowed, and only the 404 page
   says noindex. A build for any other address, such as beta.neode.sk, puts
   noindex on every page (the beta's web server also sends
@@ -252,7 +281,8 @@ The build checks the pages as it reads them and the files it wrote to
 - Structured data: the home page has a JSON-LD SoftwareApplication with name,
   license, operating systems, version and download address; every docs page a
   TechArticle with `dateModified` and a BreadcrumbList that ends at the page.
-  `sitemap.xml` lists every page that has a canonical address, each with
+  The two sitemaps together list every page that has a canonical address,
+  each on its own host's sitemap, each with
   `lastmod`: a page's date is the last commit of its file, a list's the newest
   of its pages. Without git history (a shallow clone) every date is the same
   commit, so CI needs the full history.

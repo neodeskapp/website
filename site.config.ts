@@ -5,6 +5,9 @@ const config: SiteConfig = {
 	name: 'NeoDesk',
 	// Where the site is served. SITE_URL overrides it for another host, such as the beta.
 	url: 'https://neode.sk',
+	// Where the docs are on production. A build for another host keeps them under /docs
+	// there (beta.neode.sk/docs/...); DOCS_URL overrides it.
+	docsUrl: 'https://docs.neode.sk',
 	repo: 'https://github.com/neodeskapp/neodesk',
 	// The community server: questions, help, announcements
 	discord: 'https://discord.gg/nwERSawufr',
@@ -18,7 +21,7 @@ const config: SiteConfig = {
 	// "Edit on GitHub" appears on docs pages once this points at the folder that holds
 	// content/docs in a repository, for example
 	// https://github.com/neodeskapp/website/edit/main/content/docs
-	editBase: '',
+	editBase: 'https://github.com/neodeskapp/website/edit/main/content/docs',
 	// AI crawlers that robots.txt on neode.sk names as allowed, next to the allow-all,
 	// as each vendor's own crawler page spells them. Other hosts, such as the beta,
 	// get the allow-all only, and every page there says noindex.

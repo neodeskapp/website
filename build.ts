@@ -13,6 +13,7 @@ import sharp from 'sharp';
 import config from './site.config.ts';
 import { docsIndexPage, docPage, sectionPage, notFoundPage, contactSheetPage, hreflangLinks, socialTags, esc } from './src/layout.ts';
 import { siteHeader, siteFooter } from './src/chrome.ts';
+import { makeUrls } from './src/urls.ts';
 import type { PreviewItem } from './src/layout.ts';
 import { render as renderPreview } from './src/og.ts';
 import type { OgData, OgTemplate } from './src/og.ts';
@@ -35,16 +36,23 @@ const SHOTS = at('content/screenshots');
 const CACHE = at('.cache');
 // DIST_DIR writes the build somewhere else than dist/, for a check that runs next to another build
 const DIST = process.env.DIST_DIR ? path.resolve(process.env.DIST_DIR) : at('dist');
-const SITE_URL = (process.env.SITE_URL || config.url).replace(/\/$/, '');
+// `--serve` without SITE_URL builds for the local server, so every link stays on it
+const SERVE_PORT = Number(process.env.PORT) || 4173;
+const SITE_URL = (process.env.SITE_URL || (process.argv.includes('--serve') ? `http://localhost:${SERVE_PORT}` : config.url)).replace(/\/$/, '');
 // Only the production address may be indexed; a build for any other host, such as the beta, says noindex
 const PRODUCTION = SITE_URL === config.url.replace(/\/$/, '');
+// The docs have a host of their own on production; any other build keeps them under /docs (src/urls.ts)
+const DOCS_URL = (process.env.DOCS_URL || (PRODUCTION ? config.docsUrl : `${SITE_URL}/docs`)).replace(/\/$/, '');
+const urls = makeUrls(SITE_URL, DOCS_URL);
+const url = urls.url;
 const problems: string[] = [];
 
 /* ---------- small helpers ---------- */
 
 const read = (file: string) => fs.readFileSync(file, 'utf8').replace(/\r\n?/g, '\n');
+/** Writes a file at its logical place; the docs tree goes to dist/docs/, each language under it (src/urls.ts). */
 function write(rel: string, data: string | Buffer) {
-	const file = path.join(DIST, rel);
+	const file = path.join(DIST, urls.distOf(rel));
 	fs.mkdirSync(path.dirname(file), { recursive: true });
 	fs.writeFileSync(file, data);
 }
@@ -328,7 +336,8 @@ function makeMarkdown(page: Page, usedShots: Set<string>, t: Strings, linkTo: (h
 		if (!token.meta?.anchor) {
 			page.links.push(href);
 			if (/^https?:\/\//.test(href)) token.attrSet('rel', 'noopener');
-			else if (href.startsWith('/docs')) token.attrSet('href', linkTo(href));
+			else if (href.startsWith('/docs')) token.attrSet('href', url(linkTo(href)));
+			else if (href.startsWith('/')) token.attrSet('href', url(href));
 		}
 		return defaultLinkOpen(tokens, i, opts, env, self);
 	};
@@ -349,14 +358,15 @@ function makeMarkdown(page: Page, usedShots: Set<string>, t: Strings, linkTo: (h
 			problems.push(`${page.rel}: no screenshot named "${name}"`);
 			return '';
 		}
-		usedShots.add(name);
+			usedShots.add(name);
 		const { width, height } = pngSize(path.join(SHOTS, `${name}-light.png`));
+		const shot = (file: string) => url(`/docs/shots/${file}`);
 		return (
-			`<a class="shot" href="/docs/shots/${name}-light.png" data-dark="/docs/shots/${name}-dark.png"><picture>` +
-			`<source media="(prefers-color-scheme: dark)" type="image/webp" srcset="/docs/shots/${name}-dark.webp">` +
-			`<source media="(prefers-color-scheme: dark)" srcset="/docs/shots/${name}-dark.png">` +
-			`<source type="image/webp" srcset="/docs/shots/${name}-light.webp">` +
-			`<img src="/docs/shots/${name}-light.png" alt="${esc(alt)}" width="${width}" height="${height}" loading="lazy" decoding="async"></picture></a>`
+			`<a class="shot" href="${shot(`${name}-light.png`)}" data-dark="${shot(`${name}-dark.png`)}"><picture>` +
+			`<source media="(prefers-color-scheme: dark)" type="image/webp" srcset="${shot(`${name}-dark.webp`)}">` +
+			`<source media="(prefers-color-scheme: dark)" srcset="${shot(`${name}-dark.png`)}">` +
+			`<source type="image/webp" srcset="${shot(`${name}-light.webp`)}">` +
+			`<img src="${shot(`${name}-light.png`)}" alt="${esc(alt)}" width="${width}" height="${height}" loading="lazy" decoding="async"></picture></a>`
 		);
 	};
 
@@ -437,18 +447,18 @@ function searchEntries(page: Page, sectionLabel: string, prefix: string): Search
 	const lines = page.body.split('\n');
 	const h2 = page.headings.filter((h) => h.level === 2);
 	const entries: SearchEntry[] = [
-		{ t: page.title, s: sectionLabel, u: `${prefix}/docs/${page.slug}/`, d: page.description, x: plain(lines.slice(0, h2[0]?.line ?? lines.length).join('\n')) }
+		{ t: page.title, s: sectionLabel, u: url(`${prefix}/docs/${page.slug}/`), d: page.description, x: plain(lines.slice(0, h2[0]?.line ?? lines.length).join('\n')) }
 	];
 	h2.forEach((h, i) => {
 		const body = lines.slice(h.line + 1, h2[i + 1]?.line ?? lines.length).join('\n');
-		entries.push({ t: page.title, s: sectionLabel, u: `${prefix}/docs/${page.slug}/#${h.id}`, h: h.text, x: plain(body) });
+		entries.push({ t: page.title, s: sectionLabel, u: url(`${prefix}/docs/${page.slug}/#${h.id}`), h: h.text, x: plain(body) });
 	});
 	return entries;
 }
 
 /* ---------- Markdown copies for AI tools ---------- */
 
-const mdUrl = (slug: string, prefix = '') => `${SITE_URL}${prefix}/docs/${slug}.md`;
+const mdUrl = (slug: string, prefix = '') => url(`${prefix}/docs/${slug}.md`);
 
 /** A page's body as plain Markdown: notes become quotes, screenshots plain images, site links absolute. */
 function agentMarkdown(body: string, linkTo: (href: string) => string, t: Strings) {
@@ -484,9 +494,9 @@ function agentMarkdown(body: string, linkTo: (href: string) => string, t: String
 				part.startsWith('`')
 					? part
 					: part
-							.replace(/!\[([^\]]*)\]\(shot:([\w-]+)\)/g, (_, alt, name) => `![${alt}](${SITE_URL}/docs/shots/${name}-light.png)`)
-							.replace(/\]\((\/docs\/[^)#\s]+?)\/?(#[^)\s]*)?\)/g, (_, p, hash) => `](${SITE_URL}${linkTo(p).replace(/\/$/, '')}.md${hash ?? ''})`)
-							.replace(/\]\((\/[^)\s]*)\)/g, (_, p) => `](${SITE_URL}${p})`)
+							.replace(/!\[([^\]]*)\]\(shot:([\w-]+)\)/g, (_, alt, name) => `![${alt}](${url(`/docs/shots/${name}-light.png`)})`)
+							.replace(/\]\((\/docs\/[^)#\s]+?)\/?(#[^)\s]*)?\)/g, (_, p, hash) => `](${url(linkTo(p)).replace(/\/$/, '')}.md${hash ?? ''})`)
+							.replace(/\]\((\/[^)\s]*)\)/g, (_, p) => `](${url(p)})`)
 			)
 			.join('');
 		out.push(note ? `> ${rewritten}`.trimEnd() : rewritten);
@@ -495,7 +505,7 @@ function agentMarkdown(body: string, linkTo: (href: string) => string, t: String
 }
 
 function pageMarkdown(page: Page, locale: Locale, t: Strings, linkTo: (href: string) => string) {
-	const head = [`# ${page.title}`, `${t.source}: ${SITE_URL}${locale.prefix}/docs/${page.slug}/${page.updated ? `\n${t.lastUpdated}: ${page.updated.slice(0, 10)}` : ''}`];
+	const head = [`# ${page.title}`, `${t.source}: ${url(`${locale.prefix}/docs/${page.slug}/`)}${page.updated ? `\n${t.lastUpdated}: ${page.updated.slice(0, 10)}` : ''}`];
 	if (page.description) head.push(`> ${page.description}`);
 	return `${head.join('\n\n')}\n\n${agentMarkdown(page.body, linkTo, t)}`;
 }
@@ -513,7 +523,7 @@ function installMarkup(locale: Locale, h: HomeStrings) {
 	).join('\n')}\n        </div>`;
 	const notes = INSTALLS.map(
 		(m) =>
-			`        <p class="body install-note" data-os="${m.id}"><b class="os-label">${esc(m.tab)}: </b>${esc(m.note[locale.code])} ${fill(h.docsPageHas, { href: `${locale.prefix}${m.docs}/` })}</p>`
+			`        <p class="body install-note" data-os="${m.id}"><b class="os-label">${esc(m.tab)}: </b>${esc(m.note[locale.code])} ${fill(h.docsPageHas, { href: url(`${locale.prefix}${m.docs}/`) })}</p>`
 	).join('\n');
 	const panels = INSTALLS.map(
 		(m) => `        <div class="term" role="tabpanel" id="install-${m.id}" aria-labelledby="tab-${m.id}" data-os="${m.id}">
@@ -534,9 +544,9 @@ const kb = (bytes: number) => `${Math.max(1, Math.round(bytes / 1024))} KB`;
  */
 function llmsTxt({ bundles, fullBytes, titleOf }: { bundles: { label: string; file: string; bytes: number; pages: number }[]; fullBytes: number; titleOf: (docs: string) => string }) {
 	const installs = INSTALLS.filter((i) => i.oneLine)
-		.map((i) => `- ${i.oneLine}. See [${titleOf(i.docs)}](${SITE_URL}${i.docs}.md).\n\n  \`\`\`${i.lang}\n  ${i.lines[0]}\n  \`\`\``)
+		.map((i) => `- ${i.oneLine}. See [${titleOf(i.docs)}](${url(`${i.docs}.md`)}).\n\n  \`\`\`${i.lang}\n  ${i.lines[0]}\n  \`\`\``)
 		.join('\n\n');
-	const tools = AGENT_TOOLS.filter((t) => t.available).map((t) => `- ${t.name}: ${t.summary} See [the docs](${SITE_URL}${t.docs}.md).`);
+	const tools = AGENT_TOOLS.filter((t) => t.available).map((t) => `- ${t.name}: ${t.summary} See [the docs](${url(`${t.docs}.md`)}).`);
 	return [
 		`# ${config.name}`,
 		`> ${config.summary}`,
@@ -554,10 +564,10 @@ function llmsTxt({ bundles, fullBytes, titleOf }: { bundles: { label: string; fi
 /* ---------- robots.txt ---------- */
 
 /** Everything is allowed; on production the AI crawlers are also named, so their access is explicit. */
-function robotsTxt() {
+function robotsTxt(sitemaps: string[]) {
 	const groups = ['User-agent: *\nAllow: /'];
 	if (PRODUCTION) groups.push(`# AI crawlers, allowed by name\n${config.aiCrawlers.map((a) => `User-agent: ${a}`).join('\n')}\nAllow: /`);
-	return `${groups.join('\n\n')}\n\nSitemap: ${SITE_URL}/sitemap.xml\n`;
+	return `${groups.join('\n\n')}\n\n${sitemaps.map((s) => `Sitemap: ${s}`).join('\n')}\n`;
 }
 
 /* ---------- the build ---------- */
@@ -715,7 +725,7 @@ async function build() {
 
 	for (const site of sites) {
 		const { locale, t } = site;
-		const shared: Shared = { config, sections: site.sections, assets, version, siteUrl: SITE_URL, production: PRODUCTION, locale, t, versions, previewOf };
+		const shared: Shared = { config, sections: site.sections, assets, version, siteUrl: SITE_URL, urls, production: PRODUCTION, locale, t, versions, previewOf };
 		// Files of another language go under its prefix: de/docs/...
 		const out = (file: string) => `${locale.prefix.replace(/^\//, '')}${locale.prefix ? '/' : ''}${file}`;
 		const labelOf = (slug: string) => site.sections.find((s) => s.slug === slug)?.label ?? slug;
@@ -723,7 +733,7 @@ async function build() {
 		site.reading.forEach((page, i) => {
 			const pager = (word: string, wordIn: string, other: Page | undefined): Pager | null =>
 				other
-					? { label: other.section === page.section ? word : fill(wordIn, { section: labelOf(other.section) }), title: other.title, href: `${locale.prefix}/docs/${other.slug}/` }
+					? { label: other.section === page.section ? word : fill(wordIn, { section: labelOf(other.section) }), title: other.title, href: url(`${locale.prefix}/docs/${other.slug}/`) }
 					: null;
 			write(
 				out(`docs/${page.slug}/index.html`),
@@ -742,13 +752,14 @@ async function build() {
 			write(out(`docs/${section.slug}/index.html`), sectionPage({ ...shared, section }));
 			write(
 				out(`docs/${section.slug}.md`),
-				`# ${section.label}\n\n${t.source}: ${SITE_URL}${locale.prefix}/docs/${section.slug}/\n\n${section.intro}\n\n${pageList(section.items, locale.prefix)}\n`
+				`# ${section.label}\n\n${t.source}: ${url(`${locale.prefix}/docs/${section.slug}/`)}\n\n${section.intro}\n\n${pageList(section.items, locale.prefix)}\n`
 			);
 		}
 		write(out('docs/index.html'), docsIndexPage(shared));
-		// The web server sends 404.html for an address that does not exist; another
-		// language's 404 page needs a rule of its own there, such as one for /de/
+		// The web server sends 404.html for an address that does not exist, on each host;
+		// another language's 404 page needs a rule of its own there, such as one for /de/
 		write(out('404.html'), notFoundPage(shared));
+		write(out('docs/404.html'), notFoundPage(shared, '/docs/404.html'));
 	}
 
 	// Draw the link preview images, or take them from the cache when nothing about them changed
@@ -787,6 +798,7 @@ async function build() {
 			assets,
 			version,
 			siteUrl: SITE_URL,
+			urls,
 			production: PRODUCTION,
 			locale: DEFAULT_LOCALE,
 			t: main.t,
@@ -814,7 +826,7 @@ async function build() {
 	for (const site of sites) {
 		const { locale } = site;
 		const h = homeStringsOf(locale.code);
-		const home = { siteUrl: SITE_URL, versions, locale, t: site.t };
+		const home = { siteUrl: SITE_URL, urls, versions, locale, t: site.t };
 		// Which ports comes from the default language's table, how the protocol is written from this language's
 		const protocols = protocolsOf(site.pages.find((p) => p.slug === PORTS_PAGE)?.body ?? '');
 		const portList = ports
@@ -841,7 +853,7 @@ async function build() {
 			t: site.t,
 			locale,
 			home: `${locale.prefix}/`,
-			docs: `${locale.prefix}/docs/`,
+			docs: url(`${locale.prefix}/docs/`),
 			languages: versions('/').filter((l) => l.code !== locale.code).map((l) => ({ locale: l, href: `${l.prefix}/` }))
 		};
 		const page = homeTemplate
@@ -862,7 +874,9 @@ async function build() {
 			.replaceAll('{{VERSION}}', version)
 			.replaceAll('{{SITE_URL}}', SITE_URL)
 			.replace('{{ROBOTS}}', PRODUCTION ? '' : '<meta name="robots" content="noindex">\n')
-			.replace('{{HREFLANG}}', hreflangLinks(home, '/'));
+			.replace('{{HREFLANG}}', hreflangLinks(home, '/'))
+			// Links into the docs go to the docs' own address
+			.replace(/href="(\/(?:[a-z]{2}\/)?docs\b[^"]*)"/g, (_, p: string) => `href="${url(p)}"`);
 		for (const m of page.matchAll(/\{\{[\w:]+\}\}/g)) problems.push(`src/home.html: ${m[0]} was not filled in for ${locale.label}`);
 		write(`${locale.prefix.replace(/^\//, '')}${locale.prefix ? '/' : ''}index.html`, page);
 	}
@@ -877,7 +891,7 @@ async function build() {
 	write('llms-full.txt', full);
 	const bundles = sections.map((s) => {
 		const file = `llms-${s.slug}.txt`;
-		const text = `# ${config.name} docs: ${s.label}\n\n> ${s.intro}\n\nSource: ${SITE_URL}/docs/${s.slug}/\n\n---\n\n${s.items.map(markdownOf).join('\n---\n\n')}`;
+		const text = `# ${config.name} docs: ${s.label}\n\n> ${s.intro}\n\nSource: ${url(`/docs/${s.slug}/`)}\n\n---\n\n${s.items.map(markdownOf).join('\n---\n\n')}`;
 		write(file, text);
 		return { label: s.label, file, bytes: Buffer.byteLength(text), pages: s.items.length };
 	});
@@ -905,7 +919,7 @@ async function build() {
 	// For search engines: every page in every language, dated by the last commit of its file,
 	// a list by the newest of its pages
 	const homeUpdated = newest([updatedOf(at('src/home.html')), updatedOf(at('src/home.ts'))]);
-	const urls: [string, string][] = [
+	const urls_: [string, string][] = [
 		...sites.flatMap((site): [string, string][] => [
 			[`${site.locale.prefix}/`, homeUpdated],
 			[`${site.locale.prefix}/docs/`, newest(site.pages.map((p) => p.updated))],
@@ -913,16 +927,20 @@ async function build() {
 			...site.reading.map((p): [string, string] => [`${site.locale.prefix}/docs/${p.slug}/`, p.updated])
 		])
 	];
-	write(
-		'sitemap.xml',
+	// One sitemap per host: the www host's pages in sitemap.xml, the docs in docs/sitemap.xml
+	const sitemap = (list: [string, string][]) =>
 		`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-			urls.map(([u, date]) => `  <url><loc>${SITE_URL}${u}</loc><lastmod>${date}</lastmod></url>`).join('\n') +
-			'\n</urlset>\n'
-	);
-	write('robots.txt', robotsTxt());
+		list.map(([u, date]) => `  <url><loc>${url(u)}</loc><lastmod>${date}</lastmod></url>`).join('\n') +
+		'\n</urlset>\n';
+	const isDocs = (u: string) => urls.isDocsFile(urls.distOf(u.slice(1)));
+	write('sitemap.xml', sitemap(urls_.filter(([u]) => !isDocs(u))));
+	write('docs/sitemap.xml', sitemap(urls_.filter(([u]) => isDocs(u))));
+	write('robots.txt', robotsTxt(urls.separate ? [`${SITE_URL}/sitemap.xml`] : [`${SITE_URL}/sitemap.xml`, `${DOCS_URL}/sitemap.xml`]));
+	// The docs host's own robots.txt; under /docs on the beta it is just a file
+	write('docs/robots.txt', robotsTxt([`${DOCS_URL}/sitemap.xml`]));
 
 	// Checks on what was written
-	const checked = { dist: DIST, siteUrl: SITE_URL, version, production: PRODUCTION, aiCrawlers: config.aiCrawlers };
+	const checked = { dist: DIST, siteUrl: SITE_URL, urls, version, production: PRODUCTION, aiCrawlers: config.aiCrawlers };
 	problems.push(
 		...checkOldNames(checked),
 		...checkConsolePort(checked),
@@ -1000,5 +1018,5 @@ function serve(port: number) {
 }
 
 const ok = await build();
-if (process.argv.includes('--serve')) serve(Number(process.env.PORT) || 4173);
+if (process.argv.includes('--serve')) serve(SERVE_PORT);
 else if (!ok) process.exit(1);

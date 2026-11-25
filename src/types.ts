@@ -1,5 +1,6 @@
 // The shapes the build passes between its parts.
 import type { Locale, Strings } from './i18n.ts';
+import type { Urls } from './urls.ts';
 
 export interface SectionConfig {
 	slug: string;
@@ -13,6 +14,8 @@ export interface SectionConfig {
 export interface SiteConfig {
 	name: string;
 	url: string;
+	/** Where the docs are served on production: their own host */
+	docsUrl: string;
 	repo: string;
 	discord: string;
 	license: string;
@@ -82,6 +85,8 @@ export interface Shared {
 	assets: Record<string, string>;
 	version: string;
 	siteUrl: string;
+	/** The www and docs hosts, and the address of every logical address (src/urls.ts) */
+	urls: Urls;
 	/** Whether this build is for the production address, which search engines may index */
 	production: boolean;
 	locale: Locale;
