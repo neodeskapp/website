@@ -81,6 +81,16 @@ const config: SiteConfig = {
 			slug: 'project',
 			label: 'The project',
 			intro: 'The license and what the project does with your data.'
+		},
+		{
+			slug: 'use-cases',
+			label: 'Use cases',
+			intro: 'What working with NeoDesk looks like for an IT service provider, for a company\'s own IT team, and for a server at home or in a club.'
+		},
+		{
+			slug: 'compare',
+			label: 'Comparisons',
+			intro: 'NeoDesk next to other remote desktop servers and services: who each suits, the facts with their sources, what the other does better and how to move over.'
 		}
 	]
 };

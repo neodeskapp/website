@@ -73,6 +73,9 @@ export interface Strings {
 	security: string;
 	/** The footer's link to the brand page */
 	brand: string;
+	/** The footer's links to the comparisons and the use cases */
+	compare: string;
+	useCases: string;
 	note: string;
 	warning: string;
 	/** The copy button of a code block, its label for screen readers, and what it says after a copy */
@@ -143,6 +146,8 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		changelog: 'Changelog',
 		security: 'Security',
 		brand: 'Brand and logo',
+		compare: 'Compare',
+		useCases: 'Use cases',
 		note: 'Note',
 		warning: 'Warning',
 		copy: 'Copy',
@@ -201,6 +206,8 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		changelog: 'Changelog',
 		security: 'Sicherheit',
 		brand: 'Logo und Marke',
+		compare: 'Vergleiche',
+		useCases: 'Einsatzbeispiele',
 		note: 'Hinweis',
 		warning: 'Achtung',
 		copy: 'Kopieren',
@@ -250,6 +257,14 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 			project: {
 				label: 'Das Projekt',
 				intro: 'Die Lizenz und was das Projekt mit deinen Daten macht.'
+			},
+			'use-cases': {
+				label: 'Einsatzbeispiele',
+				intro: 'Wie die Arbeit mit NeoDesk aussieht: beim IT-Dienstleister, in der IT-Abteilung einer Firma und mit einem Server zu Hause oder im Verein.'
+			},
+			compare: {
+				label: 'Vergleiche',
+				intro: 'NeoDesk neben anderen Lösungen für Fernwartung: für wen sich was eignet, die Fakten mit Quellen, was die andere Seite besser kann und wie du umziehst.'
 			}
 		}
 	}

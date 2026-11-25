@@ -70,6 +70,8 @@ export function siteFooter(o: ChromeOptions) {
     <p>${t.footer}</p>
     <nav aria-label="${esc(t.more)}">
       <a href="${esc(o.docs)}">${esc(t.docs)}</a>
+      <a href="${esc(o.docs)}compare/">${esc(t.compare)}</a>
+      <a href="${esc(o.docs)}use-cases/">${esc(t.useCases)}</a>
       <a href="/llms.txt">llms.txt</a>
       <a href="${esc(config.repo)}/blob/main/CHANGELOG.md" rel="noopener">${esc(t.changelog)}</a>
       <a href="${esc(config.repo)}/blob/main/SECURITY.md" rel="noopener">${esc(t.security)}</a>
