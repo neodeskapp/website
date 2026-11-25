@@ -31,7 +31,7 @@ Help with questions and bugs is free on the [NeoDesk Discord](https://discord.gg
 
 ## Trademark
 
-"RustDesk" is a trademark of the RustDesk Team. NeoDesk is an independent project that implements the RustDesk protocol for client compatibility. Its use of the name "RustDesk" is purely descriptive and does not imply affiliation with or endorsement by the RustDesk Team.
+RustDesk is made by [Purslane Tech Pte. Ltd.](https://rustdesk.com/terms) NeoDesk is not affiliated with or endorsed by RustDesk or Purslane Tech. NeoDesk is an independent project that implements the RustDesk protocol for client compatibility. Its use of the name "RustDesk" is purely descriptive.
 
 The RustDesk client is separate software under its own license.
 

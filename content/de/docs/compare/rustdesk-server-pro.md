@@ -149,8 +149,8 @@ wie vorher. Bei Server Pro gilt zusätzlich:
 - Die Tarife von Pro verlängern sich nicht von allein, du musst also nichts
   kündigen.
 
-„RustDesk“ ist eine Marke des RustDesk-Teams. NeoDesk ist nicht mit dem
-RustDesk-Team verbunden und wird nicht von ihm unterstützt; siehe
+RustDesk stammt von der Purslane Tech Pte. Ltd. NeoDesk ist weder mit RustDesk
+noch mit Purslane Tech verbunden und wird von ihnen nicht unterstützt; siehe
 [Lizenz](/docs/project/license#trademark).
 
 ## Quellen {#sources}
@@ -184,3 +184,6 @@ Alle Seiten wurden am 25. November 2026 gelesen.
   ein komplett abgeschotteter Betrieb wird nicht unterstützt.
 - [rustdesk.com, Blogbeitrag zum unbeaufsichtigten Zugriff](https://rustdesk.com/blog/rustdesk-unattended-access-setup/):
   „Server Pro is commercial, proprietary self-hosted server software.“
+- [rustdesk.com, Nutzungsbedingungen](https://rustdesk.com/terms): Die
+  Purslane Tech Pte. Ltd. betreibt die öffentlichen ID- und Relay-Server und
+  veröffentlicht Client und Server OSS unter einer Open-Source-Lizenz.

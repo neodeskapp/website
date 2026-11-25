@@ -139,8 +139,8 @@ these points in mind:
   [Let the clients back in](/docs/getting-started/migrate-from-rustdesk#let-the-clients-back-in).
 - Pro plans don't renew on their own, so nothing needs cancelling.
 
-"RustDesk" is a trademark of the RustDesk Team. NeoDesk is not affiliated with
-or endorsed by the RustDesk Team; see [License](/docs/project/license#trademark).
+RustDesk is made by Purslane Tech Pte. Ltd. NeoDesk is not affiliated with or
+endorsed by RustDesk or Purslane Tech; see [License](/docs/project/license#trademark).
 
 ## Sources
 
@@ -173,3 +173,6 @@ Every page below was read on 25 November 2026.
   air-gapped install isn't supported.
 - [rustdesk.com, blog post on unattended access](https://rustdesk.com/blog/rustdesk-unattended-access-setup/):
   "Server Pro is commercial, proprietary self-hosted server software."
+- [rustdesk.com, terms](https://rustdesk.com/terms): Purslane Tech Pte. Ltd.
+  runs the public ID and relay servers and releases the client and Server OSS
+  under an open source license.

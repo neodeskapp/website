@@ -147,7 +147,7 @@ export const BRAND: Record<string, BrandStrings> = {
 		],
 		rustdeskTitle: 'NeoDesk and RustDesk',
 		rustdesk: [
-			'"RustDesk" is a trademark of the RustDesk Team. NeoDesk is an independent project that implements the RustDesk protocol for client compatibility. Its use of the name RustDesk is descriptive and does not imply affiliation with or endorsement by the RustDesk Team.',
+			'RustDesk is made by Purslane Tech Pte. Ltd. NeoDesk is not affiliated with or endorsed by RustDesk or Purslane Tech. NeoDesk is an independent project that implements the RustDesk protocol for client compatibility, and its use of the name RustDesk is descriptive.',
 			'Use the name RustDesk only to say what NeoDesk works with: the RustDesk client, the RustDesk protocol.'
 		],
 		rustdeskDo: 'NeoDesk works with RustDesk clients. It is a RustDesk-compatible server.',
@@ -249,7 +249,7 @@ export const BRAND: Record<string, BrandStrings> = {
 		],
 		rustdeskTitle: 'NeoDesk und RustDesk',
 		rustdesk: [
-			'„RustDesk“ ist eine Marke des RustDesk-Teams. NeoDesk ist ein unabhängiges Projekt, das das RustDesk-Protokoll für die Kompatibilität mit den Clients umsetzt. Es nennt RustDesk nur beschreibend, und das bedeutet weder eine Verbindung zum RustDesk-Team noch dessen Unterstützung.',
+			'RustDesk stammt von der Purslane Tech Pte. Ltd. NeoDesk ist weder mit RustDesk noch mit Purslane Tech verbunden und wird von ihnen nicht unterstützt. NeoDesk ist ein unabhängiges Projekt, das das RustDesk-Protokoll für die Kompatibilität mit den Clients umsetzt, und nennt RustDesk nur beschreibend.',
 			'Nenne RustDesk nur, um zu sagen, womit NeoDesk funktioniert: dem RustDesk-Client, dem RustDesk-Protokoll.'
 		],
 		rustdeskDo: 'NeoDesk funktioniert mit RustDesk-Clients. Es ist ein RustDesk-kompatibler Server.',

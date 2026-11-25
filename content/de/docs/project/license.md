@@ -30,7 +30,7 @@ Hilfe bei Fragen und Fehlern gibt es kostenlos auf dem [NeoDesk-Discord](https:/
 
 ## Marke {#trademark}
 
-„RustDesk“ ist eine Marke des RustDesk-Teams. NeoDesk ist ein unabhängiges Projekt, das das RustDesk-Protokoll für die Kompatibilität mit den Clients umsetzt. Den Namen „RustDesk“ verwendet es rein beschreibend; das bedeutet weder eine Verbindung zum RustDesk-Team noch eine Billigung durch das RustDesk-Team.
+RustDesk stammt von der [Purslane Tech Pte. Ltd.](https://rustdesk.com/terms) NeoDesk ist weder mit RustDesk noch mit Purslane Tech verbunden und wird von ihnen nicht unterstützt. NeoDesk ist ein unabhängiges Projekt, das das RustDesk-Protokoll für die Kompatibilität mit den Clients umsetzt. Den Namen „RustDesk“ verwendet es rein beschreibend.
 
 Der RustDesk-Client ist eigenständige Software unter einer eigenen Lizenz.
 
