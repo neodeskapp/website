@@ -2,6 +2,7 @@
 title: The setup guide
 description: The checklist a new install shows its first admin on the overview, its eight steps in order, when each step ticks itself, and how to hide it.
 order: 1
+icon: checklist
 ---
 
 A new install opens the overview with a setup guide for its first admin. It is

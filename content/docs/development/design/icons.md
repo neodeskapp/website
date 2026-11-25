@@ -2,6 +2,7 @@
 title: Icons
 description: Material Symbols Outlined at the 20 px design, one icon for each meaning, the same in the console and the desktop client.
 order: 3
+icon: interests
 ---
 
 NeoDesk uses one icon set: Material Symbols Outlined, self-hosted, with no

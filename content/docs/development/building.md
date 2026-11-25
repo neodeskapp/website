@@ -2,6 +2,7 @@
 title: Building from source
 description: Build the neodesk-server binary with the web console built in, for your platform or another one, and the Docker images from a checkout.
 order: 2
+icon: construction
 ---
 
 NeoDesk is one Go program, `neodesk-server`, that runs the ID server, the relay, the client API and the web console. The console's pages are the web app in `web-ui` (SvelteKit). It is built once and then embedded in the binary, so a build has two steps: the web app with Node.js, then the server with Go. [Architecture](/docs/development/architecture) explains how the parts fit together.

@@ -2,6 +2,7 @@
 title: Hardening
 description: The settings and steps that make a NeoDesk server on the internet safer, from TLS for the console to who may start sessions, and what each one changes.
 order: 8
+icon: shield
 ---
 
 This page goes through the settings that make a server on the internet safer and says what each one changes. Some of them stop devices that worked before, so check each against how your devices connect before you turn it on.

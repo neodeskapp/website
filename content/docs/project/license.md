@@ -3,6 +3,7 @@ title: License
 description: NeoDesk's license, the AGPL-3.0, what it costs and where to get support, the trademark note and the third-party notices.
 order: 1
 related: /docs/project/privacy
+icon: gavel
 ---
 
 NeoDesk is free software under the GNU Affero General Public License, version 3 (AGPL-3.0). The [LICENSE file](https://github.com/neodeskapp/neodesk/blob/main/LICENSE) in the repository holds the full text and the notes this page sums up; where the two differ, the file counts. Neither is legal advice.

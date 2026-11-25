@@ -2,6 +2,7 @@
 title: Organizations
 description: Group people and devices per customer or site, share an address book with the members, and know what membership changes and what it does not.
 order: 6
+icon: corporate_fare
 ---
 
 An organization groups people and devices that belong together, for example one customer or one site. It has members, assigned devices, a shared address book for the RustDesk client and some stored settings.

@@ -2,6 +2,7 @@
 title: Architecture
 description: How the repository is laid out, what runs inside the one neodesk-server process, where the data lives, and the telemetry contract for NeoDesk's clients.
 order: 4
+icon: schema
 ---
 
 This page is for people who change NeoDesk's code. It explains where things are in the repository, what the server binary starts, how the web console and its web app fit into it, how the data is stored, and the contract between the server and NeoDesk's own desktop clients.

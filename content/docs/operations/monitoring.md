@@ -2,6 +2,7 @@
 title: Monitoring
 description: Health checks for an outside monitor, the Prometheus metrics and who may read them, where audit entries go, and how long the server keeps its records.
 order: 9
+icon: monitoring
 ---
 
 This page lists what an outside monitor can ask the server, who may read it, and where the audit entries end up. For the logs and quick checks by hand, see [Troubleshooting](/docs/operations/troubleshooting#where-the-logs-are).

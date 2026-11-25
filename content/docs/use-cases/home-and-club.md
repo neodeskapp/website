@@ -3,6 +3,7 @@ title: A remote desktop server at home or in a club
 description: Run NeoDesk with Docker on a small server or a Synology NAS, give it HTTPS with Let's Encrypt, and help your family or the members of a club.
 order: 3
 og: use-case
+icon: home
 ---
 
 You help your parents with their laptop, or you look after the few computers

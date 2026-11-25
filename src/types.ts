@@ -64,6 +64,8 @@ export interface Page {
 	product?: string;
 	/** Front matter `logo`: a file in public/img/compare, shown before the page's row in section lists */
 	logo?: string;
+	/** Front matter `icon`: a glyph in src/icons, shown before the page's row in section lists when it has no logo; translations take the English page's */
+	icon?: string;
 	/** For the release template: the version, from front matter `release` */
 	release?: string;
 	/** Front matter `seoTitle`: the whole <title>, when the page's title alone is not what people search for */

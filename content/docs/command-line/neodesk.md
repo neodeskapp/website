@@ -2,6 +2,7 @@
 title: The neodesk command line
 description: Where the neodesk command is, signing in with an API token, the first commands to run, tables or JSON, and the exit codes scripts can test for.
 order: 1
+icon: terminal
 ---
 
 `neodesk` does from a terminal what the web console does: devices, users,

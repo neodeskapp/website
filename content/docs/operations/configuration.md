@@ -2,6 +2,7 @@
 title: Configuration
 description: How the server reads its settings, where to set them for Docker, Linux and Windows, and the settings an operator changes most.
 order: 1
+icon: settings
 ---
 
 The server and the web console run in one process, and both read their settings from environment variables. This page shows where to set them for each install type and lists the ones you are most likely to change.

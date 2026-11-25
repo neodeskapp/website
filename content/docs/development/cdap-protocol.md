@@ -2,6 +2,7 @@
 title: CDAP protocol
 description: The WebSocket protocol between a device or a bridge and the server's CDAP gateway, message by message, as the server implements it.
 order: 13
+icon: cable
 ---
 
 CDAP is the server's protocol for devices that are not RustDesk clients: sensors, controllers, bridges to other systems and agents. A device opens a WebSocket to the gateway, signs in, sends a manifest with its values and controls, and then keeps the server up to date and answers commands. This page is for people who write such a device or bridge. Running the gateway and using the devices in the console is on [CDAP devices](/docs/console/cdap), and ready-made clients are on [CDAP SDKs and bridges](/docs/development/cdap-sdks).

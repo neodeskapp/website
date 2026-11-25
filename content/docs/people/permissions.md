@@ -2,6 +2,7 @@
 title: Permissions
 description: Change what a role may do, narrow console sections for one person or a user group with Panel access, and limit what they may do in remote sessions.
 order: 2
+icon: admin_panel_settings
 ---
 
 A role is a set of permissions that every account with that role has. Two places change what people may do: the **Roles and permissions** page changes a role for everyone who has it, and **Panel access** on the Users page narrows single parts of the console, and the client features of remote sessions, for one person or one user group.

@@ -2,6 +2,7 @@
 title: PostgreSQL
 description: Run NeoDesk on PostgreSQL instead of SQLite, move an existing install over, and back up the database.
 order: 4
+icon: database
 ---
 
 By default NeoDesk keeps its devices, accounts, settings and the console's data in one SQLite file. It can keep the same data in a PostgreSQL database instead. This page covers when that is worth it, how to start on PostgreSQL, how to move an install that already runs on SQLite, and how to back the database up.

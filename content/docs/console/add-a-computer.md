@@ -3,6 +3,7 @@ title: Add a computer
 description: Make an invite link that installs NeoDesk on a computer and joins it to your server, approved and in its folder.
 order: 3
 related: /docs/console/unattended-access, /docs/console/enrollment, /docs/getting-started/connect-a-client
+icon: add_to_queue
 ---
 
 An invite link sets up the NeoDesk client on a computer and joins it to your

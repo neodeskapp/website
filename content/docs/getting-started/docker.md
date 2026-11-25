@@ -5,6 +5,7 @@ order: 2
 seoTitle: Install NeoDesk with Docker: a RustDesk-compatible server
 related: /docs/getting-started/first-sign-in, /docs/operations/ports, /docs/operations/reverse-proxy-tls, /docs/operations/updating
 howto: requirements, install-with-the-script, get-the-admin-password, sign-in
+icon: deployed_code
 ---
 
 The Docker setup runs `neodesk-server` in one container: the ID server, the
