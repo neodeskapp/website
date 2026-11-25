@@ -251,6 +251,9 @@ export function checkButtonNames({ dist }: CheckInput) {
 export const TITLE_MAX = 60;
 export const DESCRIPTION_MAX = 155;
 
+/** The addresses of a srcset: "a.webp 650w, b.webp 1300w" gives a.webp and b.webp. */
+const srcsetUrls = (srcset: string) => srcset.split(',').map((c) => c.trim().split(/\s+/)[0]).filter(Boolean);
+
 /** The file a link in a built page points at, with its fragment, or null for an outside link. */
 function target(urls: Urls, href: string, fromRel: string): { file: string; hash: string } | null {
 	if (/^[a-z][\w+.-]*:/i.test(href) && !/^https?:/i.test(href)) return null;
@@ -318,8 +321,10 @@ export function checkSeo({ dist, urls }: CheckInput) {
 		const refs = [
 			...findAll(doc, (el) => el.tag === 'a' && 'href' in el.attrs).map((el) => ({ el, url: el.attrs.href, kind: 'link' })),
 			...findAll(doc, (el) => (el.tag === 'img' || el.tag === 'script') && !!el.attrs.src).map((el) => ({ el, url: el.attrs.src, kind: 'file' })),
-			...findAll(doc, (el) => el.tag === 'source' && !!el.attrs.srcset).map((el) => ({ el, url: el.attrs.srcset.split(/\s+/)[0], kind: 'file' })),
-			...findAll(doc, (el) => el.tag === 'link' && /stylesheet|icon|preload/.test(el.attrs.rel ?? '')).map((el) => ({ el, url: el.attrs.href, kind: 'file' }))
+			// Every candidate of a srcset (a source, or a preload's imagesrcset) must exist
+			...findAll(doc, (el) => el.tag === 'source' && !!el.attrs.srcset).flatMap((el) => srcsetUrls(el.attrs.srcset).map((url) => ({ el, url, kind: 'file' }))),
+			...findAll(doc, (el) => el.tag === 'link' && !!el.attrs.imagesrcset).flatMap((el) => srcsetUrls(el.attrs.imagesrcset).map((url) => ({ el, url, kind: 'file' }))),
+			...findAll(doc, (el) => el.tag === 'link' && /stylesheet|icon|preload/.test(el.attrs.rel ?? '') && !!el.attrs.href).map((el) => ({ el, url: el.attrs.href, kind: 'file' }))
 		];
 		for (const { el, url, kind } of refs) {
 			const to = target(urls, url, rel);

@@ -84,6 +84,17 @@ async function webpOf(file: string): Promise<Buffer> {
 	return out;
 }
 
+/** A screenshot of the home page's first screen as a WebP at quality 88, at a width; cached like webpOf. */
+async function heroWebp(file: string, width: number): Promise<Buffer> {
+	const data = fs.readFileSync(file);
+	const cached = path.join(CACHE, 'webp', `${hashOf(data)}-q88-${width}.webp`);
+	if (fs.existsSync(cached)) return fs.readFileSync(cached);
+	const out = await sharp(data).resize({ width }).webp({ quality: 88, effort: 5 }).toBuffer();
+	fs.mkdirSync(path.dirname(cached), { recursive: true });
+	fs.writeFileSync(cached, out);
+	return out;
+}
+
 /** The home page's screenshots as <picture> with a WebP source in front of the PNG. */
 function withWebp(html: string) {
 	return html.replace(/<img class="shot ([^"]*)" src="\/img\/([\w-]+)\.png"([^>]*)>/g, (_, cls, name, rest) => `<picture class="${cls}"><source type="image/webp" srcset="/img/${name}.webp"><img class="shot ${cls}" src="/img/${name}.png"${rest}></picture>`);
@@ -834,6 +845,14 @@ async function build() {
 		}
 	}
 	for (const f of fs.readdirSync(at('public/img')).filter((f) => f.endsWith('.png'))) write(`img/${f.replace(/\.png$/, '.webp')}`, await webpOf(at('public/img', f)));
+	// The home page's first screen: its screenshots as WebP of good quality rather than
+	// lossless, and at half their width for narrow screens, so the first screen loads fast
+	for (const f of fs.readdirSync(at('public/img')).filter((f) => /^hero-.+\.png$/.test(f))) {
+		const name = f.replace(/\.png$/, '');
+		const { width } = pngSize(at('public/img', f));
+		write(`img/${name}.webp`, await heroWebp(at('public/img', f), width));
+		write(`img/${name}-half.webp`, await heroWebp(at('public/img', f), Math.round(width / 2)));
+	}
 
 	// The home page of every language: the layout from src/home.html, the words from src/home.ts
 	// The ports clients need, from the table on the ports page

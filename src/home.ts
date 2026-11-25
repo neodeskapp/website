@@ -27,6 +27,9 @@ export interface HomeStrings {
 	clientLead: string;
 	clientBody: string;
 	overviewAlt: string;
+	/** The hero's two screenshots */
+	heroConsoleAlt: string;
+	heroClientAlt: string;
 	consoleTitle: string;
 	consoleLead: string;
 	devicesAlt: string;
@@ -65,6 +68,8 @@ export const HOME: Record<string, Partial<HomeStrings>> = {
 		clientTitle: 'Works with the <span class="lime">RustDesk client</span>',
 		clientLead: 'The stock RustDesk client works for remote sessions. Enter four values in its network settings: the ID server, the relay server, the API server and the key.',
 		clientBody: 'The console\'s overview page shows all four with a copy button, and Show QR puts them in one code for a phone. Add a computer, Pair with code, hardware inventory and client branding need the NeoDesk client. Quick support needs it only on the computer you help, where the person runs NeoDesk Quick Support; you connect from the browser or your desktop app.',
+		heroConsoleAlt: 'The device list of the NeoDesk web console: folders and groups, and a table of devices with ID, hostname, platform, last seen and status',
+		heroClientAlt: 'The NeoDesk desktop client: this computer\'s ID and one-time password, and a list of recent computers to connect to',
 		overviewAlt: 'The Client setup section of the console overview: the client server address, then the ID server, relay server, API server and key, each with a copy button, and the Show QR button',
 		consoleTitle: 'Every device in <span class="teal">one list</span>',
 		consoleLead: 'Search by ID, name, user or platform. Put devices in folders and groups, and give them your own tags.',
@@ -102,6 +107,8 @@ export const HOME: Record<string, Partial<HomeStrings>> = {
 		clientTitle: 'Funktioniert mit dem <span class="lime">RustDesk-Client</span>',
 		clientLead: 'Für Remote-Sitzungen reicht der normale RustDesk-Client. Trage in seinen Netzwerkeinstellungen vier Werte ein: ID-Server, Relay-Server, API-Server und Schlüssel.',
 		clientBody: 'Die Übersicht der Konsole zeigt alle vier mit einer Schaltfläche zum Kopieren, und „QR anzeigen“ packt sie für ein Handy in einen Code. „Computer hinzufügen“, „Mit Code koppeln“, das Hardware-Inventar und ein eigenes Branding des Clients brauchen den NeoDesk-Client. Die „Schnellhilfe“ braucht ihn nur auf dem Computer, dem du hilfst: Dort startet die Person die NeoDesk Schnellhilfe, und du verbindest dich im Browser oder in deiner Desktop-App.',
+		heroConsoleAlt: 'Die Geräteliste der NeoDesk-Web-Konsole: Ordner und Gruppen und eine Tabelle der Geräte mit ID, Hostname, Plattform, zuletzt gesehen und Status',
+		heroClientAlt: 'Der NeoDesk-Desktop-Client: ID und Einmalpasswort dieses Computers und eine Liste der letzten Computer zum Verbinden',
 		overviewAlt: 'Der Bereich Client-Einrichtung auf der Übersicht der Konsole: die Serveradresse für die Clients, darunter ID-Server, Relay-Server, API-Server und Schlüssel, jeder mit einer Schaltfläche zum Kopieren, und die Schaltfläche für den QR-Code',
 		consoleTitle: 'Alle Geräte in <span class="teal">einer Liste</span>',
 		consoleLead: 'Suche nach ID, Name, Benutzer oder Plattform. Sortiere Geräte in Ordner und Gruppen und vergib eigene Tags.',
