@@ -736,6 +736,15 @@
 		"move-from-teamviewer-to-neodesk",
 		"sources"
 	],
+	"compare/windows-remote-desktop": [
+		"who-each-one-suits",
+		"the-facts-side-by-side",
+		"what-windows-remote-desktop-does-better",
+		"what-neodesk-does-differently",
+		"license-and-cost",
+		"move-from-windows-remote-desktop-to-neodesk",
+		"sources"
+	],
 	"console/activity": [
 		"who-can-see-it",
 		"security-and-audit",
