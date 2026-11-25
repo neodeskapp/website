@@ -170,7 +170,8 @@ const groupCount = d.counts.groups;
 			description: 'Every command of the neodesk command line by group, the flags every command takes, its environment variables and its exit codes.',
 			order: 9,
 			fold: true,
-			quoted: true
+			quoted: true,
+			icon: 'menu_book'
 		}) +
 			`${summary}\n\nThis reference is made from the command table of the release ${d.version}: ${commands} commands in ${groupCount} groups. Each group has a page with its commands, their arguments and flags, the permission each needs and the console route it calls.\n\n${rest.join('\n\n')}`
 	);
