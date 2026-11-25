@@ -1,6 +1,6 @@
 ---
 title: neodesk devices
-description: 27 commands. Devices: list, details, notes, tags, bans, connection settings.
+description: 31 commands. Devices: list, details, notes, tags, bans, connection settings.
 order: 22
 quoted: true
 ---
@@ -21,7 +21,7 @@ neodesk devices access-policy <id> [flags]
 |---|---|
 | `<id>` | The device ID (see devices list) |
 
-Needs a signed-in account; only reads. Calls `GET /api/devices/{id}/access-policy`.
+Needs device.view; only reads. Calls `GET /api/devices/{id}/access-policy`.
 
 ## neodesk devices access-policy-delete
 
@@ -35,7 +35,7 @@ neodesk devices access-policy-delete <id> [flags]
 |---|---|
 | `<id>` | The device ID (see devices list) |
 
-Needs a signed-in account; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/devices/{id}/access-policy`.
+Needs device.edit; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/devices/{id}/access-policy`.
 
 ## neodesk devices access-policy-set
 
@@ -51,7 +51,7 @@ neodesk devices access-policy-set <id> [flags]
 |---|---|
 | `<id>` | The device ID (see devices list) |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `PUT /api/devices/{id}/access-policy`.
+Needs device.edit; changes something: needs a token with read and write access. Calls `PUT /api/devices/{id}/access-policy`.
 
 ## neodesk devices activity
 
@@ -83,7 +83,7 @@ neodesk devices availability <id> [flags]
 |---|---|
 | `--day DAY` | the day, like 2026-11-23 (default today) |
 
-Needs a signed-in account; only reads. Calls `GET /api/devices/{id}/availability`.
+Needs device.view; only reads. Calls `GET /api/devices/{id}/availability`.
 
 ## neodesk devices ban
 
@@ -141,7 +141,7 @@ Needs device.change_id; changes something: needs a token with read and write acc
 
 ## neodesk devices connect-password
 
-Show the one-time password to connect to a device.
+Show whether the device's organisation stored a device password (never the password).
 
 ```text quoted
 neodesk devices connect-password <id> [flags]
@@ -151,7 +151,7 @@ neodesk devices connect-password <id> [flags]
 |---|---|
 | `<id>` | The device ID (see devices list) |
 
-Needs device.connect; only reads; the answer holds secrets or private content. Calls `GET /api/devices/{id}/connect-password`.
+Needs device.connect; only reads. Calls `GET /api/devices/{id}/connect-password`.
 
 ## neodesk devices connection-mode
 
@@ -200,7 +200,7 @@ neodesk devices device-token <id> [flags]
 |---|---|
 | `<id>` | The device ID (see devices list) |
 
-Needs a signed-in account; changes something: needs a token with read and write access; the answer holds secrets or private content. Calls `POST /api/devices/{id}/device-token`.
+Needs device.edit; changes something: needs a token with read and write access; the answer holds secrets or private content. Calls `POST /api/devices/{id}/device-token`.
 
 ## neodesk devices events
 
@@ -232,7 +232,7 @@ neodesk devices get <id> [flags]
 |---|---|
 | `<id>` | The device ID (see devices list) |
 
-Needs a signed-in account; only reads. Calls `GET /api/devices/{id}`.
+Needs device.view; only reads. Calls `GET /api/devices/{id}`.
 
 ```bash quoted
 neodesk devices get 123456789
@@ -250,7 +250,7 @@ neodesk devices groups <id> [flags]
 |---|---|
 | `<id>` | The device ID (see devices list) |
 
-Needs a signed-in account; only reads. Calls `GET /api/devices/{id}/groups`.
+Needs device.view; only reads. Calls `GET /api/devices/{id}/groups`.
 
 ## neodesk devices groups-set
 
@@ -268,7 +268,7 @@ neodesk devices groups-set <id> --group-guids A,B [flags]
 |---|---|
 | `--group-guids A,B` | the device groups (required) |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `PUT /api/devices/{id}/groups`.
+Needs device.edit; changes something: needs a token with read and write access. Calls `PUT /api/devices/{id}/groups`.
 
 ## neodesk devices list
 
@@ -286,7 +286,7 @@ neodesk devices list [flags]
 | `--order asc\|desc` | asc or desc |
 | `--include-deleted` | list deleted devices too |
 
-Needs a signed-in account; only reads. Calls `GET /api/devices`.
+Needs device.view; only reads. Calls `GET /api/devices`.
 
 ```bash quoted
 neodesk devices list
@@ -324,7 +324,7 @@ neodesk devices rename <id> --name NAME [flags]
 |---|---|
 | `--name NAME` | the display name (required) |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/devices/{id}/rename`.
+Needs device.edit; changes something: needs a token with read and write access. Calls `POST /api/devices/{id}/rename`.
 
 ## neodesk devices restore
 
@@ -372,7 +372,75 @@ neodesk devices sessions <id> [flags]
 |---|---|
 | `--limit N` | how many, 1 to 200 (default 50) |
 
-Needs a signed-in account; only reads. Calls `GET /api/devices/{id}/connection-sessions`.
+Needs device.view; only reads. Calls `GET /api/devices/{id}/connection-sessions`.
+
+## neodesk devices signin
+
+Show whether sign-in details are saved for a device, for which account, and who saved them (never the password).
+
+```text quoted
+neodesk devices signin <id> [flags]
+```
+
+| Argument | What it is |
+|---|---|
+| `<id>` | The device ID (see devices list) |
+
+Needs device.signin_manage; only reads. Calls `GET /api/devices/{id}/signin`.
+
+## neodesk devices signin-auto
+
+Turn automatic sign-in at the device's lock screen on or off, or set what its sign-in screen asks for.
+
+```text quoted
+neodesk devices signin-auto <id> [flags]
+```
+
+| Argument | What it is |
+|---|---|
+| `<id>` | The device ID (see devices list) |
+
+| Flag | What it is |
+|---|---|
+| `--auto` | sign in by itself when a session opens on the lock screen |
+| `--form password\|name_password` | password: the screen shows the account and asks for its password; name_password: it asks for both |
+
+Needs device.signin_manage; changes something: needs a token with read and write access. Calls `PATCH /api/devices/{id}/signin`.
+
+## neodesk devices signin-clear
+
+Delete the sign-in details saved for a device.
+
+```text quoted
+neodesk devices signin-clear <id> [flags]
+```
+
+| Argument | What it is |
+|---|---|
+| `<id>` | The device ID (see devices list) |
+
+Needs device.signin_manage; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/devices/{id}/signin`.
+
+## neodesk devices signin-set
+
+Save or replace the account name and password the browser viewer types at a device's lock screen (stored encrypted, never shown again).
+
+```text quoted
+neodesk devices signin-set <id> --username USERNAME (--password-stdin | --password PASSWORD) [flags]
+```
+
+| Argument | What it is |
+|---|---|
+| `<id>` | The device ID (see devices list) |
+
+| Flag | What it is |
+|---|---|
+| `--username USERNAME` | the account: name, DOMAIN\name or name@domain (required) |
+| `--password-stdin` | read the password from standard input (its first line), so it stays out of the command line |
+| `--password PASSWORD` | the account's password; prefer --password-stdin (this or --password-stdin is required) |
+| `--form password\|name_password` | what the sign-in screen asks for (default password) |
+
+Needs device.signin_manage; changes something: needs a token with read and write access. Calls `PUT /api/devices/{id}/signin`.
 
 ## neodesk devices tags-set
 
@@ -390,7 +458,7 @@ neodesk devices tags-set <id> --tags A,B [flags]
 |---|---|
 | `--tags A,B` | the tags (required) |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `PUT /api/devices/{id}/tags`.
+Needs device.edit; changes something: needs a token with read and write access. Calls `PUT /api/devices/{id}/tags`.
 
 ```bash quoted
 neodesk devices tags-set 123456789 --tags office,printer
@@ -413,7 +481,7 @@ neodesk devices telemetry-command <id> --command COMMAND [flags]
 | `--command COMMAND` | the command (required) |
 | `--args JSON` | its arguments |
 
-Needs a signed-in account; changes something: needs a token with read and write access; runs something on a device or the server. Calls `POST /api/devices/{id}/telemetry/command`.
+Needs device.edit; changes something: needs a token with read and write access; runs something on a device or the server. Calls `POST /api/devices/{id}/telemetry/command`.
 
 ## neodesk devices telemetry-refresh
 
@@ -429,7 +497,7 @@ neodesk devices telemetry-refresh <id> [flags]
 |---|---|
 | `<id>` | The device ID (see devices list) |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/devices/{id}/telemetry/refresh`.
+Needs device.edit; changes something: needs a token with read and write access. Calls `POST /api/devices/{id}/telemetry/refresh`.
 
 ## neodesk devices unban
 
@@ -465,7 +533,7 @@ neodesk devices update <id> [flags]
 | `--display-name DISPLAY_NAME` | the name shown in the console |
 | `--user USER` | the user name |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `PATCH /api/devices/{id}`.
+Needs device.edit; changes something: needs a token with read and write access. Calls `PATCH /api/devices/{id}`.
 
 ```bash quoted
 neodesk devices update 123456789 --note "Front desk"

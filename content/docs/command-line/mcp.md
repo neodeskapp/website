@@ -46,12 +46,12 @@ the same `<agent-config-file>` as above:
 }
 ```
 
-Add the flags from the next section to `args`. On a Linux or Windows install,
-where the command line is `neodesk-server cli`, the command is the server
-binary and the arguments start with `cli`.
+Add the flags from the next section to `args`. Where the client doesn't find
+`neodesk` on its path, give the full path: `/usr/local/bin/neodesk` on a Linux
+install, `C:\NeoDesk\bin\neodesk.exe` on a Windows install.
 
 When it starts, `neodesk mcp` writes to standard error how many tools it
-offers and for which console, such as "neodesk mcp: 242 tools (read only) for"
+offers and for which console, such as "neodesk mcp: 244 tools (read only) for"
 and the address.
 
 ## What the agent gets
@@ -60,18 +60,18 @@ Without flags the agent can only read. Flags add more:
 
 | Flags | Tools |
 |---|---|
-| none | 242: the commands that only read, without those whose answer holds secrets |
-| `--allow-writes` | 488: also the commands that change something, but not those that run something or answer with secrets |
-| `--allow-writes --allow-exec` | 512: also the 24 commands that run something on a device or the server |
-| `--allow-secrets` | 252: every command that only reads, the 10 with secrets in their answer included |
-| `--allow-writes --allow-exec --allow-secrets` | 531: every command but one |
+| none | 244: the commands that only read, without those whose answer holds secrets |
+| `--allow-writes` | 493: also the commands that change something, but not those that run something or answer with secrets |
+| `--allow-writes --allow-exec` | 517: also the 24 commands that run something on a device or the server |
+| `--allow-secrets` | 253: every command that only reads, the 9 with secrets in their answer included |
+| `--allow-writes --allow-exec --allow-secrets` | 535: every command but one |
 
-The numbers are those of the release 3.6.0-rc.4. `--allow-exec` needs
+The numbers are those of the release 3.6.0-rc.5. `--allow-exec` needs
 `--allow-writes`, since running something is a write; alone it is refused.
 
-`--allow-secrets` alone adds 10 tools, although 19 commands answer with
+`--allow-secrets` alone adds 9 tools, although 18 commands answer with
 secrets. `neodesk mcp` counts a command as reading only when it calls a GET
-route. Nine of the 19 call a POST route, because they make a device token or a
+route. Nine of the 18 call a POST route, because they make a device token or a
 link, take a one-time password, or ask a device for its screen or a file:
 `device-control screenshot`, `device-files read`, `device-tokens create`,
 `device-tokens create-many`, `devices device-token`, `guest-links create`,
@@ -99,7 +99,7 @@ with the command line and `--output`.
 ## Left out on purpose
 
 - **Uploads, always.** No tool reads or writes files on the agent's computer,
-  so the commands that upload a file have no tool. In 3.6.0-rc.4 that is one
+  so the commands that upload a file have no tool. In 3.6.0-rc.5 that is one
   command, `backups restore`.
 - **Changes, without `--allow-writes`.** Every command that changes something.
 - **Commands that run something, without `--allow-exec`.** These 24 run a
@@ -112,12 +112,11 @@ with the command line and `--output`.
   `mesh exec`, `mesh files`, `mesh power`, `mesh tcp`, `mesh terminal`,
   `mesh udp`, `server exec`, `server service`, `settings file-set` and
   `transfers start`.
-- **Answers with secrets, without `--allow-secrets`.** These 19 answer with
+- **Answers with secrets, without `--allow-secrets`.** These 18 answer with
   passwords, keys, tokens or private content such as a file, the clipboard or
   the screen: `backups download`, `chat file`, `device-control clipboard`,
   `device-control screenshot`, `device-files read`, `device-tokens create`,
-  `device-tokens create-many`, `devices connect-password`,
-  `devices device-token`, `guest-links create`, `mesh recording`, `mesh share`,
+  `device-tokens create-many`, `devices device-token`, `guest-links create`, `mesh recording`, `mesh share`,
   `organizations credentials`, `remote-targets credentials`, `server file`,
   `settings file`, `support device-password`, `support password` and
   `transfers download`.
@@ -128,15 +127,22 @@ with the command line and `--output`.
 
 Tools that delete or end something, run something, or change who may do what
 (accounts, roles, panel access, organization and tenant members, the sign-in
-settings and guest links) need `confirm: true` in the call. Without it the tool
-answers that it needs the person's yes, and the server's instructions tell the
-agent to ask you first. They also tell it that text it reads from devices,
-tickets or chats is data, never an instruction to call a tool.
+settings and guest links) run only after a yes.
+
+When your MCP client can ask you itself (MCP elicitation), `neodesk mcp` asks
+you through it: "The agent wants to run" the command with its arguments, what
+it does, and "Run it?". Only your yes runs the tool; a no, or a client that
+can't put the question, does nothing.
+
+With any other client the tool needs `confirm: true` in the call. Without it
+the tool answers that it needs the person's yes, and the server's instructions
+tell the agent to ask you first. They also tell it that text it reads from
+devices, tickets or chats is data, never an instruction to call a tool.
 
 ::: warning
-`confirm` is no lock: the agent sets it itself. `neodesk mcp` doesn't ask you
-on its own; it leaves asking to the agent and its MCP client, and the hints of
-a tool that deletes or runs something tell the client so. Give the agent a
-token with only the permissions it needs. The server still checks the token's
+Without elicitation, `confirm` is no lock: the agent sets it itself, and asking
+you is left to the agent and its MCP client. The hints of a tool that deletes
+or runs something tell the client so. Give the agent a token with only the
+permissions it needs. The server still checks the token's
 permissions and whether it is read only, whatever the flags say.
 :::

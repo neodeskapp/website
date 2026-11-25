@@ -17,7 +17,7 @@ Show which devices follow their resource policy.
 neodesk resource-control compliance [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/panel/resource-control/compliance`.
+Needs server.config; only reads. Calls `GET /api/panel/resource-control/compliance`.
 
 ## neodesk resource-control default
 
@@ -27,7 +27,7 @@ Show the default resource policy.
 neodesk resource-control default [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/panel/resource-control/org-policy`.
+Needs server.config; only reads. Calls `GET /api/panel/resource-control/org-policy`.
 
 ## neodesk resource-control default-set
 
@@ -39,7 +39,7 @@ Give the request body with -f key=value (text), -F key=json (numbers, true or fa
 neodesk resource-control default-set [flags]
 ```
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `PUT /api/panel/resource-control/org-policy`.
+Needs server.config; changes something: needs a token with read and write access. Calls `PUT /api/panel/resource-control/org-policy`.
 
 ## neodesk resource-control devices
 
@@ -49,7 +49,7 @@ List devices with their resource policy.
 neodesk resource-control devices [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/panel/resource-control/devices`.
+Needs server.config; only reads. Calls `GET /api/panel/resource-control/devices`.
 
 ## neodesk resource-control disks-set
 
@@ -65,7 +65,7 @@ neodesk resource-control disks-set <deviceId> [flags]
 |---|---|
 | `<deviceId>` | The device ID |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/panel/resource-control/policies/{deviceId}/disks`.
+Needs server.config; changes something: needs a token with read and write access. Calls `POST /api/panel/resource-control/policies/{deviceId}/disks`.
 
 ## neodesk resource-control monitors-set
 
@@ -81,7 +81,7 @@ neodesk resource-control monitors-set <deviceId> [flags]
 |---|---|
 | `<deviceId>` | The device ID |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/panel/resource-control/policies/{deviceId}/monitors`.
+Needs server.config; changes something: needs a token with read and write access. Calls `POST /api/panel/resource-control/policies/{deviceId}/monitors`.
 
 ## neodesk resource-control optical-set
 
@@ -97,7 +97,7 @@ neodesk resource-control optical-set <deviceId> [flags]
 |---|---|
 | `<deviceId>` | The device ID |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/panel/resource-control/policies/{deviceId}/optical`.
+Needs server.config; changes something: needs a token with read and write access. Calls `POST /api/panel/resource-control/policies/{deviceId}/optical`.
 
 ## neodesk resource-control policy
 
@@ -111,7 +111,7 @@ neodesk resource-control policy <deviceId> [flags]
 |---|---|
 | `<deviceId>` | The device ID |
 
-Needs a signed-in account; only reads. Calls `GET /api/panel/resource-control/policies/{deviceId}`.
+Needs server.config; only reads. Calls `GET /api/panel/resource-control/policies/{deviceId}`.
 
 ## neodesk resource-control quotas-set
 
@@ -127,7 +127,7 @@ neodesk resource-control quotas-set <deviceId> [flags]
 |---|---|
 | `<deviceId>` | The device ID |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/panel/resource-control/policies/{deviceId}/quotas`.
+Needs server.config; changes something: needs a token with read and write access. Calls `POST /api/panel/resource-control/policies/{deviceId}/quotas`.
 
 ## neodesk resource-control usb-set
 
@@ -143,4 +143,4 @@ neodesk resource-control usb-set <deviceId> [flags]
 |---|---|
 | `<deviceId>` | The device ID |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/panel/resource-control/policies/{deviceId}/usb`.
+Needs server.config; changes something: needs a token with read and write access. Calls `POST /api/panel/resource-control/policies/{deviceId}/usb`.

@@ -39,11 +39,11 @@ neodesk billing clock-set [flags]
 
 | Flag | What it is |
 |---|---|
-| `--ntp-servers NTP_SERVERS` |  |
-| `--max-skew-ms MAX_SKEW_MS` |  |
-| `--require-synced-clock REQUIRE_SYNCED_CLOCK` |  |
-| `--trust-os-ntp TRUST_OS_NTP` |  |
-| `--billing-timezone BILLING_TIMEZONE` |  |
+| `--ntp-servers NTP_SERVERS` | NTP servers to check the clock against, comma separated (left out: pool.ntp.org, time.google.com and time.cloudflare.com) |
+| `--max-skew-ms N` | largest clock offset that still counts as synced, in milliseconds, 1 to 600000 (left out: 2000) |
+| `--require-synced-clock` | block billable sessions while the clock is not synced (left out: on) |
+| `--trust-os-ntp` | count the clock as synced when no NTP server answers but the system says it is synced (left out: on for Linux, off elsewhere) |
+| `--billing-timezone BILLING_TIMEZONE` | time zone of the billing months, a name like Europe/Berlin (left out: UTC) |
 
 Needs server.config; changes something: needs a token with read and write access. Calls `PUT /api/panel/billing/clock/settings`.
 
@@ -145,10 +145,10 @@ neodesk billing mail-settings-set [flags]
 
 | Flag | What it is |
 |---|---|
-| `--help-requests-enabled HELP_REQUESTS_ENABLED` |  |
-| `--notify-assigned-operators NOTIFY_ASSIGNED_OPERATORS` |  |
-| `--fallback-alert-email FALLBACK_ALERT_EMAIL` |  |
-| `--include-folder-in-subject INCLUDE_FOLDER_IN_SUBJECT` |  |
+| `--help-requests-enabled` | send a mail for each help request a device raises (left out: on) |
+| `--notify-assigned-operators` | mail the operators on the access lists of the device's folder and groups (left out: on) |
+| `--fallback-alert-email` | mail the alert address of the mail settings when no operator gets the mail (left out: on) |
+| `--include-folder-in-subject` | put the device's folder name in the mail subject (left out: on) |
 
 Needs billing.manage; changes something: needs a token with read and write access. Calls `PUT /api/panel/commercialization/email-config`.
 

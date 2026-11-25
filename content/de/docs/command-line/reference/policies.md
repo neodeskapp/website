@@ -61,7 +61,7 @@ neodesk policies connection-set <orgId> [flags]
 |---|---|
 | `<orgId>` | The organization ID |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `PUT /api/panel/policies/{orgId}/connection`.
+Needs org.edit; changes something: needs a token with read and write access. Calls `PUT /api/panel/policies/{orgId}/connection`.
 
 ## neodesk policies effective
 
@@ -92,7 +92,7 @@ neodesk policies features-set <orgId> [flags]
 |---|---|
 | `<orgId>` | The organization ID |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `PUT /api/panel/policies/{orgId}/features`.
+Needs org.edit; changes something: needs a token with read and write access. Calls `PUT /api/panel/policies/{orgId}/features`.
 
 ## neodesk policies get
 
@@ -122,7 +122,7 @@ neodesk policies network-set <orgId> [flags]
 |---|---|
 | `<orgId>` | The organization ID |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `PUT /api/panel/policies/{orgId}/network`.
+Needs org.edit; changes something: needs a token with read and write access. Calls `PUT /api/panel/policies/{orgId}/network`.
 
 ## neodesk policies security-set
 
@@ -138,7 +138,7 @@ neodesk policies security-set <orgId> [flags]
 |---|---|
 | `<orgId>` | The organization ID |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `PUT /api/panel/policies/{orgId}/security`.
+Needs org.edit; changes something: needs a token with read and write access. Calls `PUT /api/panel/policies/{orgId}/security`.
 
 ## neodesk policies update-set
 
@@ -154,4 +154,4 @@ neodesk policies update-set <orgId> [flags]
 |---|---|
 | `<orgId>` | The organization ID |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `PUT /api/panel/policies/{orgId}/update`.
+Needs org.edit; changes something: needs a token with read and write access. Calls `PUT /api/panel/policies/{orgId}/update`.

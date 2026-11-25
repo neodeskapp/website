@@ -21,7 +21,7 @@ neodesk inventory get <id> [flags]
 |---|---|
 | `<id>` | The ID |
 
-Needs a signed-in account; only reads. Calls `GET /api/inventory/{id}`.
+Needs device.view; only reads. Calls `GET /api/inventory/{id}`.
 
 ## neodesk inventory list
 
@@ -31,4 +31,4 @@ List the inventory of every device.
 neodesk inventory list [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/inventory`.
+Needs device.view; only reads. Calls `GET /api/inventory`.

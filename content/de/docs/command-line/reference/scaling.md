@@ -17,7 +17,7 @@ Show how many sessions the relays can take.
 neodesk scaling capacity [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/panel/scaling/capacity`.
+Needs server.config; only reads. Calls `GET /api/panel/scaling/capacity`.
 
 ## neodesk scaling relay
 
@@ -31,7 +31,7 @@ neodesk scaling relay <nodeId> [flags]
 |---|---|
 | `<nodeId>` | The node id |
 
-Needs a signed-in account; only reads. Calls `GET /api/panel/scaling/relays/{nodeId}`.
+Needs server.config; only reads. Calls `GET /api/panel/scaling/relays/{nodeId}`.
 
 ## neodesk scaling relay-create
 
@@ -43,13 +43,13 @@ neodesk scaling relay-create [flags]
 
 | Flag | What it is |
 |---|---|
-| `--name NAME` |  |
-| `--address ADDRESS` |  |
-| `--location LOCATION` |  |
-| `--max-sessions MAX_SESSIONS` |  |
-| `--max-bandwidth-mbps MAX_BANDWIDTH_MBPS` |  |
+| `--name NAME` | relay name, 1 to 80 letters, digits, spaces and . _ - # / ( ) |
+| `--address ADDRESS` | host:port the relay answers at, like relay.example.com:21117; each address once |
+| `--location LOCATION` | where the relay is, at most 80 characters |
+| `--max-sessions N` | most sessions at once, 1 to 100000 (left out: 50) |
+| `--max-bandwidth-mbps N` | most bandwidth, in Mbit/s, 1 to 1000000 (left out: 100) |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/panel/scaling/relays`.
+Needs server.config; changes something: needs a token with read and write access. Calls `POST /api/panel/scaling/relays`.
 
 ## neodesk scaling relay-delete
 
@@ -63,7 +63,7 @@ neodesk scaling relay-delete <nodeId> [flags]
 |---|---|
 | `<nodeId>` | The node id |
 
-Needs a signed-in account; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/panel/scaling/relays/{nodeId}`.
+Needs server.config; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/panel/scaling/relays/{nodeId}`.
 
 ## neodesk scaling relay-health
 
@@ -77,7 +77,7 @@ neodesk scaling relay-health <nodeId> [flags]
 |---|---|
 | `<nodeId>` | The node id |
 
-Needs a signed-in account; only reads. Calls `GET /api/panel/scaling/relays/{nodeId}/health`.
+Needs server.config; only reads. Calls `GET /api/panel/scaling/relays/{nodeId}/health`.
 
 ## neodesk scaling relay-metrics
 
@@ -91,7 +91,7 @@ neodesk scaling relay-metrics <nodeId> [flags]
 |---|---|
 | `<nodeId>` | The node id |
 
-Needs a signed-in account; only reads. Calls `GET /api/panel/scaling/relays/{nodeId}/metrics`.
+Needs server.config; only reads. Calls `GET /api/panel/scaling/relays/{nodeId}/metrics`.
 
 ## neodesk scaling relay-set
 
@@ -107,7 +107,7 @@ neodesk scaling relay-set <nodeId> [flags]
 |---|---|
 | `<nodeId>` | The node id |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `PUT /api/panel/scaling/relays/{nodeId}`.
+Needs server.config; changes something: needs a token with read and write access. Calls `PUT /api/panel/scaling/relays/{nodeId}`.
 
 ## neodesk scaling relays
 
@@ -117,7 +117,7 @@ List relay servers.
 neodesk scaling relays [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/panel/scaling/relays`.
+Needs server.config; only reads. Calls `GET /api/panel/scaling/relays`.
 
 ## neodesk scaling rule-create
 
@@ -129,15 +129,15 @@ neodesk scaling rule-create [flags]
 
 | Flag | What it is |
 |---|---|
-| `--name NAME` |  |
-| `--match-type MATCH_TYPE` |  |
-| `--match-value MATCH_VALUE` |  |
-| `--target-relay TARGET_RELAY` |  |
-| `--fallback FALLBACK` |  |
-| `--priority PRIORITY` |  |
-| `--enabled` |  |
+| `--name NAME` | rule name, 1 to 80 characters |
+| `--match-type subnet\|group\|tag\|country\|device_id` | what to match devices by |
+| `--match-value MATCH_VALUE` | what to match, at most 200 characters: a subnet like 192.168.1.0/24, a device group name, a tag, a country or a device ID |
+| `--target-relay TARGET_RELAY` | ID of the relay for the matching devices (see scaling relays) |
+| `--fallback FALLBACK` | where the devices go when that relay can't take them: master or nearest (left out: master) |
+| `--priority N` | order of the rules, 0 to 1000, lowest first (left out: 10) |
+| `--enabled` | turn the rule on or off (left out: on) |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/panel/scaling/rules`.
+Needs server.config; changes something: needs a token with read and write access. Calls `POST /api/panel/scaling/rules`.
 
 ## neodesk scaling rule-delete
 
@@ -151,7 +151,7 @@ neodesk scaling rule-delete <ruleId> [flags]
 |---|---|
 | `<ruleId>` | The rule id |
 
-Needs a signed-in account; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/panel/scaling/rules/{ruleId}`.
+Needs server.config; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/panel/scaling/rules/{ruleId}`.
 
 ## neodesk scaling rule-set
 
@@ -167,7 +167,7 @@ neodesk scaling rule-set <ruleId> [flags]
 |---|---|
 | `<ruleId>` | The rule id |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `PUT /api/panel/scaling/rules/{ruleId}`.
+Needs server.config; changes something: needs a token with read and write access. Calls `PUT /api/panel/scaling/rules/{ruleId}`.
 
 ## neodesk scaling rules
 
@@ -177,4 +177,4 @@ List relay rules.
 neodesk scaling rules [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/panel/scaling/rules`.
+Needs server.config; only reads. Calls `GET /api/panel/scaling/rules`.

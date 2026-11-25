@@ -64,6 +64,8 @@ device.ban“.
 | Geräte sperren und entsperren | `device.ban` |
 | Geräte-ID ändern | `device.change_id` |
 | Verbindungsmodus des Geräts ändern | `device.connection_mode` |
+| Gespeicherte Anmeldung verwenden | `device.signin_use` |
+| Gespeicherte Anmeldung verwalten | `device.signin_manage` |
 | RDP- und VNC-Ziele ansehen | `remote_target.view` |
 | Mit RDP- und VNC-Zielen verbinden | `remote_target.connect` |
 | RDP- und VNC-Ziele hinzufügen und bearbeiten | `remote_target.edit` |
@@ -120,6 +122,10 @@ Ein Token handelt als das Konto, das es erstellt hat, mit weniger Rechten:
 - Kein Token meldet sich an oder ab, ändert ein Passwort, einen zweiten Faktor
   oder eine Sitzung, ändert sein eigenes Konto oder Profil, zeigt den
   API-Schlüssel der Konsole ganz oder erstellt ein weiteres Token.
+- Kein Token nutzt eine [gespeicherte Anmeldung](/docs/console/saved-sign-in),
+  auch nicht mit **Gespeicherte Anmeldung verwenden**. Mit **Gespeicherte
+  Anmeldung verwalten** kann es eine speichern, ändern und löschen, das
+  Passwort aber nie zurücklesen.
 - Manches braucht ein volles Token, eines, das gerade jede Berechtigung seines
   Kontos hat: Prüfungen, die nach der Rolle des Kontos gehen, Änderungen an
   Konten, Rollen, Benutzergruppen, Bereichszugriff, Mitgliedern von
@@ -144,12 +150,6 @@ keinem Token mehr durch, bis das Fenster endet. Beide Grenzen antworten mit
 Das Audit-Protokoll hält fest, wann ein Token erstellt und widerrufen wird,
 jede Änderung, die ein Token macht, mit Route und Antwort, und, einmal pro
 Minute und Token, was die Konsole ihm verweigert hat.
-
-::: warning
-Gastlinks, Geräte-Tokens und Support-Passwörter, die ein Token erstellt hat,
-bleiben gültig, nachdem das Token widerrufen ist. Widerruf oder lösch sie auch
-auf ihren eigenen Seiten.
-:::
 
 ## Mit der Kommandozeile nutzen {#use-it-with-the-command-line}
 
@@ -244,6 +244,25 @@ Um ein Token zu widerrufen, öffne das Menü am Ende seiner Zeile und wähle
 „Skripte, die es nutzen, funktionieren sofort nicht mehr. Das lässt sich nicht
 rückgängig machen.“ Super-Admins können das Token jedes Kontos widerrufen,
 alle anderen nur ihre eigenen.
+
+### Was mit einem Token endet {#what-ends-with-a-token}
+
+Ein widerrufenes Token beendet auch, was es erstellt hat: Gastlinks,
+Geräte-Tokens, Schnellsupport-Sitzungen mit ihren Codes, Einladungen,
+Kopplungscodes, Gast-Desktop-Links und noch nicht genutzte Einladungen in
+Organisationen. Dasselbe passiert, wenn ein Token abläuft oder gelöscht wird.
+Der Dialog zum Widerrufen und die Tokenliste nennen, was beendet wurde, und
+das Audit-Protokoll hat einen Eintrag, der es zählt.
+
+Computer, die mit einem Token aufgenommen wurden, bleiben, wenn das Token
+widerrufen wird: die, die über seine Einladungen oder Kopplungscodes
+beigetreten sind, und die, die damit freigegeben wurden. Der Dialog zum
+Widerrufen listet sie auf, „Computer, die damit aufgenommen wurden, bleiben“,
+damit du sie auf der Seite Geräte prüfen kannst. Gelistet sind nur Computer,
+die ab 3.6.0-rc.5 aufgenommen wurden.
+
+Konten, die ein Token erstellt hat, bleiben ebenfalls, und auch die
+Registrierungstokens von Agent-Vorlagen, die sich noch nicht widerrufen lassen.
 
 Die Kommandozeile widerruft ein Token über seine ID, die 12 Zeichen nach
 `ndt_`, mit `neodesk api-tokens revoke <id>`; `neodesk logout --revoke`

@@ -23,7 +23,7 @@ neodesk remote-targets certificate-accept <id> [flags]
 
 | Flag | What it is |
 |---|---|
-| `--fingerprint FINGERPRINT` |  |
+| `--fingerprint FINGERPRINT` | SHA-256 of the target's TLS certificate, 64 hex characters without colons |
 
 Needs remote_target.connect; changes something: needs a token with read and write access. Calls `POST /api/remote-targets/{id}/certificate/accept`.
 
@@ -72,7 +72,7 @@ Needs remote_target.edit; changes something: needs a token with read and write a
 Save a remote target's sign-in (stored encrypted).
 
 ```text quoted
-neodesk remote-targets credentials-set <id> [flags]
+neodesk remote-targets credentials-set <id> (--password-stdin | --password PASSWORD) [flags]
 ```
 
 | Argument | What it is |
@@ -81,8 +81,9 @@ neodesk remote-targets credentials-set <id> [flags]
 
 | Flag | What it is |
 |---|---|
-| `--username USERNAME` |  |
-| `--password PASSWORD` |  |
+| `--username USERNAME` | user name to sign in to the target with, at most 256 characters (empty clears it) |
+| `--password-stdin` | read the password from standard input (its first line), so it stays out of the command line |
+| `--password PASSWORD` | password to sign in to the target with, stored encrypted, at most 4096 characters (this or --password-stdin is required) |
 
 Needs remote_target.edit; changes something: needs a token with read and write access. Calls `PUT /api/remote-targets/{id}/credentials`.
 
@@ -132,7 +133,7 @@ Show whether remote targets can be reached from here.
 neodesk remote-targets readiness [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/remote-targets/readiness`.
+Needs remote_target.view; only reads. Calls `GET /api/remote-targets/readiness`.
 
 ## neodesk remote-targets test
 

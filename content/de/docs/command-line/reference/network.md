@@ -34,7 +34,7 @@ neodesk network monitor-start [flags]
 
 | Flag | What it is |
 |---|---|
-| `--interval-ms N` |  |
+| `--interval-ms N` | milliseconds between checks, at least 1000 (left out: 60000); a running monitor keeps its interval |
 
 Needs server.config; changes something: needs a token with read and write access. Calls `POST /api/network/monitor/start`.
 
@@ -101,7 +101,7 @@ Show uptime and response times of the targets.
 neodesk network stats [flags]
 ```
 
-Needs audit.view; only reads. Calls `GET /api/network/stats`.
+Needs device.view; only reads. Calls `GET /api/network/stats`.
 
 ## neodesk network target
 
@@ -143,14 +143,14 @@ neodesk network target-create [flags]
 
 | Flag | What it is |
 |---|---|
-| `--name NAME` |  |
-| `--host HOST` |  |
-| `--port N` |  |
-| `--value-url VALUE_URL` |  |
-| `--check-type CHECK_TYPE` |  |
-| `--timeout-ms N` |  |
-| `--interval-ms N` |  |
-| `--enabled` |  |
+| `--name NAME` | target name |
+| `--host HOST` | host name or IP address to check; ping and tcp need it, http and https need it or --value-url |
+| `--port N` | the port, 1 to 65535 (left out: 80 for tcp and http, 443 for https) |
+| `--value-url VALUE_URL` | the URL for an http or https check; without it the URL is made from the host and port |
+| `--check-type ping\|tcp\|http\|https` | how to check the target |
+| `--timeout-ms N` | how long a check waits, in milliseconds, 1 to 60000 (left out: 5000) |
+| `--interval-ms N` | how often to check this target, in milliseconds (left out: 60000); never more often than the monitor runs |
+| `--enabled` | check this target or not (left out: on) |
 
 Needs server.config; changes something: needs a token with read and write access. Calls `POST /api/network/targets`.
 

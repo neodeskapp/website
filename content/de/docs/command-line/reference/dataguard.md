@@ -19,13 +19,13 @@ neodesk dataguard create [flags]
 
 | Flag | What it is |
 |---|---|
-| `--name NAME` |  |
-| `--description DESCRIPTION` |  |
-| `--policy-type POLICY_TYPE` |  |
-| `--action ACTION` |  |
-| `--scope SCOPE` |  |
-| `--enabled` |  |
-| `--rules RULES` |  |
+| `--name NAME` | policy name |
+| `--description DESCRIPTION` | what the policy is for |
+| `--policy-type POLICY_TYPE` | what the policy covers: usb, file_type, clipboard, screen_share or file_transfer |
+| `--action ACTION` | what happens on a match: block, log or allow (left out: log) |
+| `--scope SCOPE` | device IDs it applies to, comma separated; empty or all for every device |
+| `--enabled` | turn the policy on or off (left out: on) |
+| `--rules JSON` | conditions the device checks, a JSON array like [{"key":"file_ext","value":".exe,.bat"}] (left out: none) |
 
 Needs server.config; changes something: needs a token with read and write access. Calls `POST /api/dataguard/policies`.
 

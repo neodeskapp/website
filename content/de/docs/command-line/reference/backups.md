@@ -19,7 +19,7 @@ Give the request body with -f key=value (text), -F key=json (numbers, true or fa
 neodesk backups destination-test [flags]
 ```
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/settings/backup/destination/test`.
+Needs server.config; changes something: needs a token with read and write access. Calls `POST /api/settings/backup/destination/test`.
 
 ## neodesk backups download
 
@@ -31,7 +31,7 @@ The archive holds the databases with the accounts, their password hashes and the
 neodesk backups download [flags]
 ```
 
-Needs a signed-in account; only reads; the answer holds secrets or private content. Calls `GET /api/settings/backup`.
+Needs server.config; only reads; the answer holds secrets or private content. Calls `GET /api/settings/backup`.
 
 ```bash quoted
 neodesk backups download --output neodesk-backup.tar.gz
@@ -49,7 +49,7 @@ neodesk backups restore --file PATH [flags]
 |---|---|
 | `--file PATH` | the file to upload |
 
-Needs a signed-in account; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `POST /api/settings/restore`.
+Needs server.config; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `POST /api/settings/restore`.
 
 ```bash quoted
 neodesk backups restore --file neodesk-backup.tar.gz --yes
@@ -63,7 +63,7 @@ Show how many update backups are kept.
 neodesk backups retention [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/settings/backup/retention`.
+Needs server.config; only reads. Calls `GET /api/settings/backup/retention`.
 
 ## neodesk backups retention-set
 
@@ -77,7 +77,7 @@ neodesk backups retention-set --keep N [flags]
 |---|---|
 | `--keep N` | how many, 0 to 1000 (required) |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `PUT /api/settings/backup/retention`.
+Needs server.config; changes something: needs a token with read and write access. Calls `PUT /api/settings/backup/retention`.
 
 ## neodesk backups run
 
@@ -89,7 +89,7 @@ Give the request body with -f key=value (text), -F key=json (numbers, true or fa
 neodesk backups run [flags]
 ```
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/settings/backup/schedule/run`.
+Needs server.config; changes something: needs a token with read and write access. Calls `POST /api/settings/backup/schedule/run`.
 
 ```bash quoted
 neodesk backups run
@@ -104,7 +104,7 @@ Show the backup schedule and destination.
 neodesk backups schedule [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/settings/backup/schedule`.
+Needs server.config; only reads. Calls `GET /api/settings/backup/schedule`.
 
 ## neodesk backups schedule-set
 
@@ -122,7 +122,7 @@ neodesk backups schedule-set [flags]
 | `--destination-path DESTINATION_PATH` | the folder to write backups to |
 | `--keep N` | how many backups to keep |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `PUT /api/settings/backup/schedule`.
+Needs server.config; changes something: needs a token with read and write access. Calls `PUT /api/settings/backup/schedule`.
 
 ## neodesk backups schedule-status
 
@@ -132,7 +132,7 @@ Show the last and next scheduled backup.
 neodesk backups schedule-status [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/settings/backup/schedule/status`.
+Needs server.config; only reads. Calls `GET /api/settings/backup/schedule/status`.
 
 ## neodesk backups stats
 
@@ -142,4 +142,4 @@ Show what a full backup would hold and how big it is.
 neodesk backups stats [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/settings/backup/stats`.
+Needs server.config; only reads. Calls `GET /api/settings/backup/stats`.

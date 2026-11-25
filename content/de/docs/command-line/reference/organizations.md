@@ -21,7 +21,7 @@ neodesk organizations address-book <id> [flags]
 |---|---|
 | `<id>` | The ID |
 
-Needs a signed-in account; only reads. Calls `GET /api/panel/org/{id}/address-book`.
+Needs user.view; only reads. Calls `GET /api/panel/org/{id}/address-book`.
 
 ## neodesk organizations address-book-set
 
@@ -37,7 +37,7 @@ neodesk organizations address-book-set <id> [flags]
 |---|---|
 | `<id>` | The ID |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `PUT /api/panel/org/{id}/address-book`.
+Needs org.edit; changes something: needs a token with read and write access. Calls `PUT /api/panel/org/{id}/address-book`.
 
 ## neodesk organizations available-users
 
@@ -51,7 +51,7 @@ neodesk organizations available-users <id> [flags]
 |---|---|
 | `<id>` | The ID |
 
-Needs a signed-in account; only reads. Calls `GET /api/panel/org/{id}/available-users`.
+Needs org.manage_users; only reads. Calls `GET /api/panel/org/{id}/available-users`.
 
 ## neodesk organizations create
 
@@ -63,7 +63,7 @@ Give the request body with -f key=value (text), -F key=json (numbers, true or fa
 neodesk organizations create [flags]
 ```
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/panel/org`.
+Needs org.create; changes something: needs a token with read and write access. Calls `POST /api/panel/org`.
 
 ## neodesk organizations credential-delete
 
@@ -78,7 +78,7 @@ neodesk organizations credential-delete <id> <peerId> [flags]
 | `<id>` | The ID |
 | `<peerId>` | The peer id |
 
-Needs a signed-in account; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/panel/org/{id}/peer-credentials/{peerId}`.
+Needs org.edit; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/panel/org/{id}/peer-credentials/{peerId}`.
 
 ## neodesk organizations credential-set
 
@@ -95,7 +95,7 @@ neodesk organizations credential-set <id> <peerId> [flags]
 | `<id>` | The ID |
 | `<peerId>` | The peer id |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `PUT /api/panel/org/{id}/peer-credentials/{peerId}`.
+Needs org.edit; changes something: needs a token with read and write access. Calls `PUT /api/panel/org/{id}/peer-credentials/{peerId}`.
 
 ## neodesk organizations credentials
 
@@ -109,7 +109,7 @@ neodesk organizations credentials <id> [flags]
 |---|---|
 | `<id>` | The ID |
 
-Needs a signed-in account; only reads; the answer holds secrets or private content. Calls `GET /api/panel/org/{id}/peer-credentials`.
+Needs org.manage_devices; only reads; the answer holds secrets or private content. Calls `GET /api/panel/org/{id}/peer-credentials`.
 
 ## neodesk organizations delete
 
@@ -123,7 +123,7 @@ neodesk organizations delete <id> [flags]
 |---|---|
 | `<id>` | The ID |
 
-Needs a signed-in account; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/panel/org/{id}`.
+Needs org.delete; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/panel/org/{id}`.
 
 ## neodesk organizations device-add
 
@@ -139,9 +139,9 @@ neodesk organizations device-add <id> [flags]
 
 | Flag | What it is |
 |---|---|
-| `--device-id DEVICE_ID` |  |
+| `--device-id DEVICE_ID` | ID of the device to add; the server must know it |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/panel/org/{id}/devices`.
+Needs org.manage_devices; changes something: needs a token with read and write access. Calls `POST /api/panel/org/{id}/devices`.
 
 ## neodesk organizations device-groups
 
@@ -155,7 +155,7 @@ neodesk organizations device-groups <id> [flags]
 |---|---|
 | `<id>` | The ID |
 
-Needs a signed-in account; only reads. Calls `GET /api/panel/org/{id}/device-groups`.
+Needs user.view; only reads. Calls `GET /api/panel/org/{id}/device-groups`.
 
 ## neodesk organizations device-remove
 
@@ -170,7 +170,7 @@ neodesk organizations device-remove <id> <did> [flags]
 | `<id>` | The ID |
 | `<did>` | The did |
 
-Needs a signed-in account; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/panel/org/{id}/devices/{did}`.
+Needs org.manage_devices; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/panel/org/{id}/devices/{did}`.
 
 ## neodesk organizations devices
 
@@ -184,7 +184,7 @@ neodesk organizations devices <id> [flags]
 |---|---|
 | `<id>` | The ID |
 
-Needs a signed-in account; only reads. Calls `GET /api/panel/org/{id}/devices`.
+Needs user.view; only reads. Calls `GET /api/panel/org/{id}/devices`.
 
 ## neodesk organizations get
 
@@ -198,7 +198,7 @@ neodesk organizations get <id> [flags]
 |---|---|
 | `<id>` | The ID |
 
-Needs a signed-in account; only reads. Calls `GET /api/panel/org/{id}`.
+Needs user.view; only reads. Calls `GET /api/panel/org/{id}`.
 
 ## neodesk organizations invitation-delete
 
@@ -213,7 +213,7 @@ neodesk organizations invitation-delete <id> <invId> [flags]
 | `<id>` | The ID |
 | `<invId>` | The inv id |
 
-Needs a signed-in account; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/panel/org/{id}/invitations/{invId}`.
+Needs org.manage_users; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/panel/org/{id}/invitations/{invId}`.
 
 ## neodesk organizations invitations
 
@@ -227,7 +227,7 @@ neodesk organizations invitations <id> [flags]
 |---|---|
 | `<id>` | The ID |
 
-Needs a signed-in account; only reads. Calls `GET /api/panel/org/{id}/invitations`.
+Needs org.manage_users; only reads. Calls `GET /api/panel/org/{id}/invitations`.
 
 ## neodesk organizations invite
 
@@ -243,7 +243,7 @@ neodesk organizations invite <id> [flags]
 |---|---|
 | `<id>` | The ID |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/panel/org/{id}/invite`.
+Needs org.manage_users; changes something: needs a token with read and write access. Calls `POST /api/panel/org/{id}/invite`.
 
 ## neodesk organizations list
 
@@ -253,7 +253,7 @@ List organizations.
 neodesk organizations list [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/panel/org`.
+Needs user.view; only reads. Calls `GET /api/panel/org`.
 
 ## neodesk organizations member-add
 
@@ -269,7 +269,7 @@ neodesk organizations member-add <id> [flags]
 |---|---|
 | `<id>` | The ID |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/panel/org/{id}/members`.
+Needs org.manage_users; changes something: needs a token with read and write access. Calls `POST /api/panel/org/{id}/members`.
 
 ## neodesk organizations member-remove
 
@@ -284,7 +284,7 @@ neodesk organizations member-remove <id> <userId> [flags]
 | `<id>` | The ID |
 | `<userId>` | The user id |
 
-Needs a signed-in account; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/panel/org/{id}/members/{userId}`.
+Needs org.manage_users; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/panel/org/{id}/members/{userId}`.
 
 ## neodesk organizations settings
 
@@ -298,7 +298,7 @@ neodesk organizations settings <id> [flags]
 |---|---|
 | `<id>` | The ID |
 
-Needs a signed-in account; only reads. Calls `GET /api/panel/org/{id}/settings`.
+Needs user.view; only reads. Calls `GET /api/panel/org/{id}/settings`.
 
 ## neodesk organizations settings-set
 
@@ -314,7 +314,7 @@ neodesk organizations settings-set <id> [flags]
 |---|---|
 | `<id>` | The ID |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `PUT /api/panel/org/{id}/settings`.
+Needs org.edit; changes something: needs a token with read and write access. Calls `PUT /api/panel/org/{id}/settings`.
 
 ## neodesk organizations update
 
@@ -330,7 +330,7 @@ neodesk organizations update <id> [flags]
 |---|---|
 | `<id>` | The ID |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `PUT /api/panel/org/{id}`.
+Needs org.edit; changes something: needs a token with read and write access. Calls `PUT /api/panel/org/{id}`.
 
 ## neodesk organizations user-create
 
@@ -346,7 +346,7 @@ neodesk organizations user-create <id> [flags]
 |---|---|
 | `<id>` | The ID |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/panel/org/{id}/users`.
+Needs org.manage_users; changes something: needs a token with read and write access. Calls `POST /api/panel/org/{id}/users`.
 
 ## neodesk organizations user-delete
 
@@ -361,7 +361,7 @@ neodesk organizations user-delete <id> <uid> [flags]
 | `<id>` | The ID |
 | `<uid>` | The uid |
 
-Needs a signed-in account; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/panel/org/{id}/users/{uid}`.
+Needs org.manage_users; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/panel/org/{id}/users/{uid}`.
 
 ## neodesk organizations user-set
 
@@ -378,7 +378,7 @@ neodesk organizations user-set <id> <uid> [flags]
 | `<id>` | The ID |
 | `<uid>` | The uid |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `PUT /api/panel/org/{id}/users/{uid}`.
+Needs org.manage_users; changes something: needs a token with read and write access. Calls `PUT /api/panel/org/{id}/users/{uid}`.
 
 ## neodesk organizations users
 
@@ -392,4 +392,4 @@ neodesk organizations users <id> [flags]
 |---|---|
 | `<id>` | The ID |
 
-Needs a signed-in account; only reads. Calls `GET /api/panel/org/{id}/users`.
+Needs org.manage_users and user.view; only reads. Calls `GET /api/panel/org/{id}/users`.

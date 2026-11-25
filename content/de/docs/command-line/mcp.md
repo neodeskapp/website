@@ -48,12 +48,13 @@ vom Client ab. Mit demselben `<agent-config-file>` wie oben:
 }
 ```
 
-Die Flags aus dem nächsten Abschnitt kommen mit in `args`. Auf einer Linux-
-oder Windows-Installation, wo die Kommandozeile `neodesk-server cli` heißt, ist
-der Befehl das Server-Binary, und die Argumente beginnen mit `cli`.
+Die Flags aus dem nächsten Abschnitt kommen mit in `args`. Findet der Client
+`neodesk` nicht in seinem Pfad, gib den ganzen Pfad an: `/usr/local/bin/neodesk`
+auf einer Linux-Installation, `C:\NeoDesk\bin\neodesk.exe` auf einer
+Windows-Installation.
 
 Beim Start schreibt `neodesk mcp` auf die Standardfehlerausgabe, wie viele
-Werkzeuge es anbietet und für welche Konsole, etwa „neodesk mcp: 242 tools
+Werkzeuge es anbietet und für welche Konsole, etwa „neodesk mcp: 244 tools
 (read only) for“ und die Adresse.
 
 ## Was der Agent bekommt {#what-the-agent-gets}
@@ -62,19 +63,19 @@ Ohne Flags kann der Agent nur lesen. Flags geben mehr frei:
 
 | Flags | Werkzeuge |
 |---|---|
-| keine | 242: die Befehle, die nur lesen, ohne die, deren Antwort Geheimnisse enthält |
-| `--allow-writes` | 488: dazu die Befehle, die etwas ändern, aber nicht die, die etwas ausführen oder mit Geheimnissen antworten |
-| `--allow-writes --allow-exec` | 512: dazu die 24 Befehle, die etwas auf einem Gerät oder dem Server ausführen |
-| `--allow-secrets` | 252: jeder Befehl, der nur liest, auch die 10 mit Geheimnissen in der Antwort |
-| `--allow-writes --allow-exec --allow-secrets` | 531: jeder Befehl außer einem |
+| keine | 244: die Befehle, die nur lesen, ohne die, deren Antwort Geheimnisse enthält |
+| `--allow-writes` | 493: dazu die Befehle, die etwas ändern, aber nicht die, die etwas ausführen oder mit Geheimnissen antworten |
+| `--allow-writes --allow-exec` | 517: dazu die 24 Befehle, die etwas auf einem Gerät oder dem Server ausführen |
+| `--allow-secrets` | 253: jeder Befehl, der nur liest, auch die 9 mit Geheimnissen in der Antwort |
+| `--allow-writes --allow-exec --allow-secrets` | 535: jeder Befehl außer einem |
 
-Die Zahlen gelten für das Release 3.6.0-rc.4. `--allow-exec` braucht
+Die Zahlen gelten für das Release 3.6.0-rc.5. `--allow-exec` braucht
 `--allow-writes`, weil etwas auszuführen ein Schreiben ist; allein wird es
 abgelehnt.
 
-`--allow-secrets` allein gibt 10 Werkzeuge frei, obwohl 19 Befehle mit
+`--allow-secrets` allein gibt 9 Werkzeuge frei, obwohl 18 Befehle mit
 Geheimnissen antworten. `neodesk mcp` zählt einen Befehl nur dann als lesend,
-wenn er eine GET-Route aufruft. Neun der 19 rufen eine POST-Route auf, weil sie
+wenn er eine GET-Route aufruft. Neun der 18 rufen eine POST-Route auf, weil sie
 ein Geräte-Token oder einen Link erzeugen, ein Einmalpasswort abholen oder ein
 Gerät nach seinem Bildschirm oder einer Datei fragen:
 `device-control screenshot`, `device-files read`, `device-tokens create`,
@@ -106,7 +107,7 @@ Größe zurück; lade sie mit der Kommandozeile und `--output` herunter.
 
 - **Uploads, immer.** Kein Werkzeug liest oder schreibt Dateien auf dem
   Computer des Agenten, deshalb haben die Befehle, die eine Datei hochladen,
-  kein Werkzeug. In 3.6.0-rc.4 ist das ein Befehl, `backups restore`.
+  kein Werkzeug. In 3.6.0-rc.5 ist das ein Befehl, `backups restore`.
 - **Änderungen, ohne `--allow-writes`.** Jeder Befehl, der etwas ändert.
 - **Befehle, die etwas ausführen, ohne `--allow-exec`.** Diese 24 führen einen
   Befehl, ein Terminal, Eingaben, Dateien, Ein- und Ausschalten oder einen
@@ -118,12 +119,12 @@ Größe zurück; lade sie mit der Kommandozeile und `--output` herunter.
   `generator install-local`, `mesh exec`, `mesh files`, `mesh power`,
   `mesh tcp`, `mesh terminal`, `mesh udp`, `server exec`, `server service`,
   `settings file-set` und `transfers start`.
-- **Antworten mit Geheimnissen, ohne `--allow-secrets`.** Diese 19 antworten
+- **Antworten mit Geheimnissen, ohne `--allow-secrets`.** Diese 18 antworten
   mit Passwörtern, Schlüsseln, Tokens oder privaten Inhalten wie einer Datei,
   der Zwischenablage oder dem Bildschirm: `backups download`, `chat file`,
   `device-control clipboard`, `device-control screenshot`,
   `device-files read`, `device-tokens create`, `device-tokens create-many`,
-  `devices connect-password`, `devices device-token`, `guest-links create`,
+  `devices device-token`, `guest-links create`,
   `mesh recording`, `mesh share`, `organizations credentials`,
   `remote-targets credentials`, `server file`, `settings file`,
   `support device-password`, `support password` und `transfers download`.
@@ -134,17 +135,24 @@ Größe zurück; lade sie mit der Kommandozeile und `--output` herunter.
 
 Werkzeuge, die etwas löschen oder beenden, etwas ausführen oder ändern, wer was
 darf (Konten, Rollen, Bereichszugriff, Mitglieder von Organisationen und
-Mandanten, die Anmeldeeinstellungen und Gastlinks), brauchen `confirm: true`
-im Aufruf. Ohne das antwortet das Werkzeug, dass es das Ja der Person braucht,
-und die Anweisungen des Servers sagen dem Agenten, dich vorher zu fragen. Sie
-sagen ihm auch, dass Text, den er von Geräten, Tickets oder Chats liest, Daten
-sind und nie eine Anweisung, ein Werkzeug aufzurufen.
+Mandanten, die Anmeldeeinstellungen und Gastlinks), laufen erst nach einem Ja.
+
+Kann dein MCP-Client dich selbst fragen (MCP Elicitation), fragt `neodesk mcp`
+dich über ihn: „The agent wants to run“ mit dem Befehl und seinen Argumenten,
+was er tut, und „Run it?“. Nur dein Ja führt das Werkzeug aus; ein Nein oder
+ein Client, der die Frage nicht stellen kann, tut nichts.
+
+Bei jedem anderen Client braucht das Werkzeug `confirm: true` im Aufruf. Ohne
+das antwortet es, dass es das Ja der Person braucht, und die Anweisungen des
+Servers sagen dem Agenten, dich vorher zu fragen. Sie sagen ihm auch, dass
+Text, den er von Geräten, Tickets oder Chats liest, Daten sind und nie eine
+Anweisung, ein Werkzeug aufzurufen.
 
 ::: warning
-`confirm` ist kein Schloss: Der Agent setzt es selbst. `neodesk mcp` fragt dich
-nicht von sich aus; es überlässt das Fragen dem Agenten und seinem MCP-Client,
-und die Hinweise eines Werkzeugs, das etwas löscht oder ausführt, sagen das dem
-Client. Gib dem Agenten ein Token mit genau den Berechtigungen, die er braucht.
+Ohne Elicitation ist `confirm` kein Schloss: Der Agent setzt es selbst, und
+das Fragen bleibt dem Agenten und seinem MCP-Client überlassen. Die Hinweise
+eines Werkzeugs, das etwas löscht oder ausführt, sagen das dem Client. Gib dem
+Agenten ein Token mit genau den Berechtigungen, die er braucht.
 Der Server prüft die Berechtigungen des Tokens und ob es nur lesen darf, egal
 welche Flags gesetzt sind.
 :::

@@ -17,7 +17,7 @@ List CDAP alerts.
 neodesk cdap alerts [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/cdap/alerts`.
+Needs cdap.view; only reads. Calls `GET /api/cdap/alerts`.
 
 ## neodesk cdap command
 
@@ -33,10 +33,10 @@ neodesk cdap command <id> [flags]
 
 | Flag | What it is |
 |---|---|
-| `--widget-id WIDGET_ID` |  |
-| `--action ACTION` |  |
-| `--value VALUE` |  |
-| `--reason REASON` |  |
+| `--widget-id WIDGET_ID` | the widget's ID in the device's manifest |
+| `--action set\|trigger\|execute\|reset\|query` | what to do with the widget |
+| `--value JSON` | the value for the widget as JSON, like true for a toggle or 50 for a slider |
+| `--reason REASON` | why, sent to the device with the command |
 
 Needs cdap.command; changes something: needs a token with read and write access; runs something on a device or the server. Calls `POST /api/cdap/devices/{id}/command`.
 
@@ -52,7 +52,7 @@ neodesk cdap get <id> [flags]
 |---|---|
 | `<id>` | The ID |
 
-Needs a signed-in account; only reads. Calls `GET /api/cdap/devices/{id}`.
+Needs cdap.view; only reads. Calls `GET /api/cdap/devices/{id}`.
 
 ## neodesk cdap link
 
@@ -68,7 +68,7 @@ neodesk cdap link <id> [flags]
 
 | Flag | What it is |
 |---|---|
-| `--linked-peer-id LINKED_PEER_ID` |  |
+| `--linked-peer-id LINKED_PEER_ID` | ID of the desktop device to link; empty removes the link |
 
 Needs cdap.command; changes something: needs a token with read and write access. Calls `POST /api/cdap/devices/{id}/link`.
 
@@ -84,7 +84,7 @@ neodesk cdap linked <id> [flags]
 |---|---|
 | `<id>` | The ID |
 
-Needs a signed-in account; only reads. Calls `GET /api/cdap/devices/{id}/linked`.
+Needs cdap.view; only reads. Calls `GET /api/cdap/devices/{id}/linked`.
 
 ## neodesk cdap list
 
@@ -94,7 +94,7 @@ List CDAP devices.
 neodesk cdap list [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/cdap/devices`.
+Needs cdap.view; only reads. Calls `GET /api/cdap/devices`.
 
 ## neodesk cdap manifest
 
@@ -108,7 +108,7 @@ neodesk cdap manifest <id> [flags]
 |---|---|
 | `<id>` | The ID |
 
-Needs a signed-in account; only reads. Calls `GET /api/cdap/devices/{id}/manifest`.
+Needs cdap.view; only reads. Calls `GET /api/cdap/devices/{id}/manifest`.
 
 ## neodesk cdap state
 
@@ -122,7 +122,7 @@ neodesk cdap state <id> [flags]
 |---|---|
 | `<id>` | The ID |
 
-Needs a signed-in account; only reads. Calls `GET /api/cdap/devices/{id}/state`.
+Needs cdap.view; only reads. Calls `GET /api/cdap/devices/{id}/state`.
 
 ## neodesk cdap status
 
@@ -132,7 +132,7 @@ Show whether the CDAP gateway runs.
 neodesk cdap status [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/cdap/status`.
+Needs cdap.view; only reads. Calls `GET /api/cdap/status`.
 
 ## neodesk cdap toggle
 
@@ -144,6 +144,6 @@ neodesk cdap toggle [flags]
 
 | Flag | What it is |
 |---|---|
-| `--enabled` |  |
+| `--enabled` | turn the gateway on (true) or off (false); it takes effect after a restart |
 
 Needs server.config; changes something: needs a token with read and write access. Calls `POST /api/cdap/toggle`.

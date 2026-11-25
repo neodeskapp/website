@@ -17,7 +17,7 @@ Show whether the fleet tools are on.
 neodesk fleet availability [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/panel/fleet/availability`.
+Needs org.manage_devices; only reads. Calls `GET /api/panel/fleet/availability`.
 
 ## neodesk fleet compliance
 
@@ -27,7 +27,7 @@ List the compliance state of devices.
 neodesk fleet compliance [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/panel/fleet/compliance`.
+Needs org.manage_devices; only reads. Calls `GET /api/panel/fleet/compliance`.
 
 ## neodesk fleet compliance-device
 
@@ -41,7 +41,7 @@ neodesk fleet compliance-device <deviceId> [flags]
 |---|---|
 | `<deviceId>` | The device ID |
 
-Needs a signed-in account; only reads. Calls `GET /api/panel/fleet/compliance/{deviceId}`.
+Needs org.manage_devices; only reads. Calls `GET /api/panel/fleet/compliance/{deviceId}`.
 
 ## neodesk fleet remediate
 
@@ -57,7 +57,7 @@ neodesk fleet remediate <deviceId> [flags]
 |---|---|
 | `<deviceId>` | The device ID |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/panel/fleet/compliance/{deviceId}/remediate`.
+Needs org.manage_devices; changes something: needs a token with read and write access. Calls `POST /api/panel/fleet/compliance/{deviceId}/remediate`.
 
 ## neodesk fleet resource-create
 
@@ -73,7 +73,7 @@ neodesk fleet resource-create <orgId> [flags]
 |---|---|
 | `<orgId>` | The organization ID |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/panel/fleet/resources/{orgId}`.
+Needs org.manage_devices; changes something: needs a token with read and write access. Calls `POST /api/panel/fleet/resources/{orgId}`.
 
 ## neodesk fleet resource-delete
 
@@ -88,7 +88,7 @@ neodesk fleet resource-delete <orgId> <resourceId> [flags]
 | `<orgId>` | The organization ID |
 | `<resourceId>` | The resource id |
 
-Needs a signed-in account; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/panel/fleet/resources/{orgId}/{resourceId}`.
+Needs org.manage_devices; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/panel/fleet/resources/{orgId}/{resourceId}`.
 
 ## neodesk fleet resource-set
 
@@ -105,7 +105,7 @@ neodesk fleet resource-set <orgId> <resourceId> [flags]
 | `<orgId>` | The organization ID |
 | `<resourceId>` | The resource id |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `PUT /api/panel/fleet/resources/{orgId}/{resourceId}`.
+Needs org.manage_devices; changes something: needs a token with read and write access. Calls `PUT /api/panel/fleet/resources/{orgId}/{resourceId}`.
 
 ## neodesk fleet resources
 
@@ -119,7 +119,7 @@ neodesk fleet resources <orgId> [flags]
 |---|---|
 | `<orgId>` | The organization ID |
 
-Needs a signed-in account; only reads. Calls `GET /api/panel/fleet/resources/{orgId}`.
+Needs org.manage_devices; only reads. Calls `GET /api/panel/fleet/resources/{orgId}`.
 
 ## neodesk fleet scan
 
@@ -135,7 +135,7 @@ neodesk fleet scan <deviceId> [flags]
 |---|---|
 | `<deviceId>` | The device ID |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/panel/fleet/compliance/{deviceId}/scan`.
+Needs org.manage_devices; changes something: needs a token with read and write access. Calls `POST /api/panel/fleet/compliance/{deviceId}/scan`.
 
 ## neodesk fleet task
 
@@ -149,7 +149,7 @@ neodesk fleet task <taskId> [flags]
 |---|---|
 | `<taskId>` | The task id |
 
-Needs a signed-in account; only reads. Calls `GET /api/panel/fleet/tasks/{taskId}`.
+Needs org.manage_devices; only reads. Calls `GET /api/panel/fleet/tasks/{taskId}`.
 
 ## neodesk fleet task-create
 
@@ -161,7 +161,7 @@ Give the request body with -f key=value (text), -F key=json (numbers, true or fa
 neodesk fleet task-create [flags]
 ```
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/panel/fleet/tasks`.
+Needs org.manage_devices; changes something: needs a token with read and write access. Calls `POST /api/panel/fleet/tasks`.
 
 ## neodesk fleet task-delete
 
@@ -175,7 +175,7 @@ neodesk fleet task-delete <taskId> [flags]
 |---|---|
 | `<taskId>` | The task id |
 
-Needs a signed-in account; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/panel/fleet/tasks/{taskId}`.
+Needs org.manage_devices; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/panel/fleet/tasks/{taskId}`.
 
 ## neodesk fleet task-output
 
@@ -189,7 +189,7 @@ neodesk fleet task-output <taskId> [flags]
 |---|---|
 | `<taskId>` | The task id |
 
-Needs a signed-in account; only reads. Calls `GET /api/panel/fleet/tasks/{taskId}/output`.
+Needs org.manage_devices; only reads. Calls `GET /api/panel/fleet/tasks/{taskId}/output`.
 
 ## neodesk fleet task-retry
 
@@ -205,7 +205,7 @@ neodesk fleet task-retry <taskId> [flags]
 |---|---|
 | `<taskId>` | The task id |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/panel/fleet/tasks/{taskId}/retry`.
+Needs org.manage_devices; changes something: needs a token with read and write access. Calls `POST /api/panel/fleet/tasks/{taskId}/retry`.
 
 ## neodesk fleet task-set
 
@@ -221,7 +221,7 @@ neodesk fleet task-set <taskId> [flags]
 |---|---|
 | `<taskId>` | The task id |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `PUT /api/panel/fleet/tasks/{taskId}`.
+Needs org.manage_devices; changes something: needs a token with read and write access. Calls `PUT /api/panel/fleet/tasks/{taskId}`.
 
 ## neodesk fleet tasks
 
@@ -231,7 +231,7 @@ List fleet tasks.
 neodesk fleet tasks [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/panel/fleet/tasks`.
+Needs org.manage_devices; only reads. Calls `GET /api/panel/fleet/tasks`.
 
 ## neodesk fleet workflow
 
@@ -245,7 +245,7 @@ neodesk fleet workflow <workflowId> [flags]
 |---|---|
 | `<workflowId>` | The workflow id |
 
-Needs a signed-in account; only reads. Calls `GET /api/panel/fleet/workflows/{workflowId}`.
+Needs org.manage_devices; only reads. Calls `GET /api/panel/fleet/workflows/{workflowId}`.
 
 ## neodesk fleet workflow-create
 
@@ -257,7 +257,7 @@ Give the request body with -f key=value (text), -F key=json (numbers, true or fa
 neodesk fleet workflow-create [flags]
 ```
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/panel/fleet/workflows`.
+Needs org.manage_devices; changes something: needs a token with read and write access. Calls `POST /api/panel/fleet/workflows`.
 
 ## neodesk fleet workflow-delete
 
@@ -271,7 +271,7 @@ neodesk fleet workflow-delete <workflowId> [flags]
 |---|---|
 | `<workflowId>` | The workflow id |
 
-Needs a signed-in account; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/panel/fleet/workflows/{workflowId}`.
+Needs org.manage_devices; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/panel/fleet/workflows/{workflowId}`.
 
 ## neodesk fleet workflow-history
 
@@ -285,7 +285,7 @@ neodesk fleet workflow-history <workflowId> [flags]
 |---|---|
 | `<workflowId>` | The workflow id |
 
-Needs a signed-in account; only reads. Calls `GET /api/panel/fleet/workflows/{workflowId}/history`.
+Needs org.manage_devices; only reads. Calls `GET /api/panel/fleet/workflows/{workflowId}/history`.
 
 ## neodesk fleet workflow-run
 
@@ -301,7 +301,7 @@ neodesk fleet workflow-run <workflowId> [flags]
 |---|---|
 | `<workflowId>` | The workflow id |
 
-Needs a signed-in account; changes something: needs a token with read and write access; runs something on a device or the server. Calls `POST /api/panel/fleet/workflows/{workflowId}/execute`.
+Needs org.manage_devices; changes something: needs a token with read and write access; runs something on a device or the server. Calls `POST /api/panel/fleet/workflows/{workflowId}/execute`.
 
 ## neodesk fleet workflow-set
 
@@ -317,7 +317,7 @@ neodesk fleet workflow-set <workflowId> [flags]
 |---|---|
 | `<workflowId>` | The workflow id |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `PUT /api/panel/fleet/workflows/{workflowId}`.
+Needs org.manage_devices; changes something: needs a token with read and write access. Calls `PUT /api/panel/fleet/workflows/{workflowId}`.
 
 ## neodesk fleet workflows
 
@@ -327,4 +327,4 @@ List workflows.
 neodesk fleet workflows [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/panel/fleet/workflows`.
+Needs org.manage_devices; only reads. Calls `GET /api/panel/fleet/workflows`.

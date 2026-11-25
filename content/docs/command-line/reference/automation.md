@@ -23,7 +23,7 @@ neodesk automation alert-ack <id> [flags]
 |---|---|
 | `<id>` | The alert ID |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/automation/alerts/{id}/ack`.
+Needs server.config; changes something: needs a token with read and write access. Calls `POST /api/automation/alerts/{id}/ack`.
 
 ## neodesk automation alerts
 
@@ -33,7 +33,7 @@ List alerts. Filter with -q, like -q severity=critical.
 neodesk automation alerts [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/automation/alerts`.
+Needs server.config; only reads. Calls `GET /api/automation/alerts`.
 
 ## neodesk automation command
 
@@ -47,7 +47,7 @@ neodesk automation command <id> [flags]
 |---|---|
 | `<id>` | The ID |
 
-Needs a signed-in account; only reads. Calls `GET /api/automation/commands/{id}`.
+Needs device.connect and server.config; only reads. Calls `GET /api/automation/commands/{id}`.
 
 ## neodesk automation command-create
 
@@ -63,7 +63,7 @@ neodesk automation command-create --device DEVICE --type TYPE [flags]
 | `--type TYPE` | the kind of command (required) |
 | `--payload JSON` | its data |
 
-Needs a signed-in account; changes something: needs a token with read and write access; runs something on a device or the server. Calls `POST /api/automation/commands`.
+Needs device.connect and server.config; changes something: needs a token with read and write access; runs something on a device or the server. Calls `POST /api/automation/commands`.
 
 ## neodesk automation commands
 
@@ -73,7 +73,7 @@ List commands queued for devices.
 neodesk automation commands [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/automation/commands`.
+Needs device.connect and server.config; only reads. Calls `GET /api/automation/commands`.
 
 ## neodesk automation rule
 
@@ -87,7 +87,7 @@ neodesk automation rule <id> [flags]
 |---|---|
 | `<id>` | The ID |
 
-Needs a signed-in account; only reads. Calls `GET /api/automation/rules/{id}`.
+Needs server.config; only reads. Calls `GET /api/automation/rules/{id}`.
 
 ## neodesk automation rule-create
 
@@ -99,7 +99,7 @@ Give the request body with -f key=value (text), -F key=json (numbers, true or fa
 neodesk automation rule-create [flags]
 ```
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/automation/rules`.
+Needs server.config; changes something: needs a token with read and write access. Calls `POST /api/automation/rules`.
 
 ```bash quoted
 neodesk automation rule-create --data @rule.json
@@ -117,7 +117,7 @@ neodesk automation rule-delete <id> [flags]
 |---|---|
 | `<id>` | The ID |
 
-Needs a signed-in account; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/automation/rules/{id}`.
+Needs server.config; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/automation/rules/{id}`.
 
 ## neodesk automation rule-update
 
@@ -133,7 +133,7 @@ neodesk automation rule-update <id> [flags]
 |---|---|
 | `<id>` | The ID |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `PATCH /api/automation/rules/{id}`.
+Needs server.config; changes something: needs a token with read and write access. Calls `PATCH /api/automation/rules/{id}`.
 
 ## neodesk automation rules
 
@@ -143,7 +143,7 @@ List alert rules.
 neodesk automation rules [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/automation/rules`.
+Needs server.config; only reads. Calls `GET /api/automation/rules`.
 
 ## neodesk automation smtp
 
@@ -153,7 +153,7 @@ Show the mail settings for alerts.
 neodesk automation smtp [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/automation/smtp`.
+Needs server.config; only reads. Calls `GET /api/automation/smtp`.
 
 ## neodesk automation smtp-set
 
@@ -173,7 +173,7 @@ neodesk automation smtp-set --host HOST [flags]
 | `--from FROM` | sender |
 | `--alert-email ALERT_EMAIL` | where alerts go |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `PUT /api/automation/smtp`.
+Needs server.config; changes something: needs a token with read and write access. Calls `PUT /api/automation/smtp`.
 
 ## neodesk automation smtp-test
 
@@ -185,4 +185,4 @@ Give the request body with -f key=value (text), -F key=json (numbers, true or fa
 neodesk automation smtp-test [flags]
 ```
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/automation/smtp/test`.
+Needs server.config; changes something: needs a token with read and write access. Calls `POST /api/automation/smtp/test`.

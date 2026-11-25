@@ -19,7 +19,7 @@ Give the request body with -f key=value (text), -F key=json (numbers, true or fa
 neodesk pairing activate [flags]
 ```
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/agent-pairing/activate`.
+Needs enrollment.approve; changes something: needs a token with read and write access. Calls `POST /api/agent-pairing/activate`.
 
 ## neodesk pairing create
 

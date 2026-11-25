@@ -27,7 +27,7 @@ Show whether agent releases are signed and checked.
 neodesk agents release-signing [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/agent-releases/signing-status`.
+Needs enrollment.manage; only reads. Calls `GET /api/agent-releases/signing-status`.
 
 ## neodesk agents releases
 
@@ -37,7 +37,7 @@ List the NeoDesk agent releases this server keeps.
 neodesk agents releases [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/agent-releases`.
+Needs enrollment.manage; only reads. Calls `GET /api/agent-releases`.
 
 ## neodesk agents releases-sync
 
@@ -49,7 +49,7 @@ Give the request body with -f key=value (text), -F key=json (numbers, true or fa
 neodesk agents releases-sync [flags]
 ```
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/agent-releases/sync`.
+Needs enrollment.manage; changes something: needs a token with read and write access. Calls `POST /api/agent-releases/sync`.
 
 ## neodesk agents template-create
 
@@ -61,7 +61,7 @@ Give the request body with -f key=value (text), -F key=json (numbers, true or fa
 neodesk agents template-create [flags]
 ```
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/agent-templates`.
+Needs enrollment.manage; changes something: needs a token with read and write access. Calls `POST /api/agent-templates`.
 
 ## neodesk agents template-delete
 
@@ -75,7 +75,7 @@ neodesk agents template-delete <id> [flags]
 |---|---|
 | `<id>` | The ID |
 
-Needs a signed-in account; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/agent-templates/{id}`.
+Needs enrollment.manage; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/agent-templates/{id}`.
 
 ## neodesk agents templates
 
@@ -85,4 +85,4 @@ List agent templates.
 neodesk agents templates [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/agent-templates`.
+Needs enrollment.manage; only reads. Calls `GET /api/agent-templates`.

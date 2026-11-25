@@ -49,7 +49,7 @@ neodesk tenants device-add <id> [flags]
 
 | Flag | What it is |
 |---|---|
-| `--device-ids DEVICE_IDS` |  |
+| `--device-ids A,B` | devices to add, by ID, comma separated; the server must know each |
 
 Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/tenants/{id}/devices`.
 
@@ -150,7 +150,7 @@ neodesk tenants user-add <id> [flags]
 
 | Flag | What it is |
 |---|---|
-| `--user-id USER_ID` |  |
+| `--user-id N` | the account's number ID |
 
 Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/tenants/{id}/users`.
 

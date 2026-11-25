@@ -58,6 +58,8 @@ Needs a signed-in account; only reads. Calls `GET /api/panel/api-tokens/permissi
 
 Revoke an API token at once. Scripts that use it stop working.
 
+What was made with the token ends with it: guest links, device tokens, support sessions, invites, pairing codes, guest desktop links and organization invitations. The answer counts them under ended; api-tokens list shows what is still open under ends_with_it. The same happens when a token expires. The computers it let in (joined through its invites or pairing codes, or approved with it) stay; api-tokens list names them under let_in.
+
 ```text quoted
 neodesk api-tokens revoke <id> [flags]
 ```

@@ -21,7 +21,7 @@ neodesk device-groups delete <guid> [flags]
 |---|---|
 | `<guid>` | The group's GUID |
 
-Needs a signed-in account; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/device-groups/{guid}`.
+Needs device.edit; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/device-groups/{guid}`.
 
 ## neodesk device-groups list
 
@@ -31,7 +31,7 @@ List device groups.
 neodesk device-groups list [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/device-groups`.
+Needs device.view; only reads. Calls `GET /api/device-groups`.
 
 ## neodesk device-groups save
 
@@ -48,4 +48,4 @@ neodesk device-groups save [flags]
 | `--note NOTE` | a note |
 | `--tag-filter TAG_FILTER` | devices with this tag join by themselves |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/device-groups`.
+Needs device.edit; changes something: needs a token with read and write access. Calls `POST /api/device-groups`.

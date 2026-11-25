@@ -73,10 +73,10 @@ neodesk transfers start [flags]
 
 | Flag | What it is |
 |---|---|
-| `--direction DIRECTION` |  |
-| `--device-id DEVICE_ID` |  |
-| `--filename FILENAME` |  |
-| `--size SIZE` |  |
-| `--mime-type MIME_TYPE` |  |
+| `--direction upload\|download` | upload (console to device) or download (device to console) |
+| `--device-id DEVICE_ID` | the device's ID |
+| `--filename FILENAME` | the file's name; only its last part is kept |
+| `--size N` | file size in bytes, at most 4 GiB (left out: unknown) |
+| `--mime-type MIME_TYPE` | the file's content type, at most 255 characters (left out: application/octet-stream) |
 
 Needs device.connect; changes something: needs a token with read and write access; runs something on a device or the server. Calls `POST /api/files/transfer`.

@@ -62,6 +62,8 @@ device.ban".
 | Ban and unban devices | `device.ban` |
 | Change device ID | `device.change_id` |
 | Change device connection mode | `device.connection_mode` |
+| Use saved sign-in | `device.signin_use` |
+| Manage saved sign-in | `device.signin_manage` |
 | View RDP and VNC targets | `remote_target.view` |
 | Connect to RDP and VNC targets | `remote_target.connect` |
 | Add and edit RDP and VNC targets | `remote_target.edit` |
@@ -117,6 +119,9 @@ A token acts as the account that made it, with less:
 - No token signs in or out, changes a password, a second factor or a session,
   changes its own account or profile, shows the console's API key in full, or
   makes another token.
+- No token uses a [saved sign-in](/docs/console/saved-sign-in), even with
+  **Use saved sign-in**. With **Manage saved sign-in** it can save, change and
+  clear one, but never read the password back.
 - Some things need a full token, one that carries every permission its account
   has right now: checks that go by the account's role, changes to accounts,
   roles, user groups, panel access, organization and tenant members, and the
@@ -138,11 +143,6 @@ until that window ends. Both limits answer 429 with a `Retry-After` header.
 The audit log records when a token is made and revoked, every change a token
 makes, with its route and answer, and, once a minute per token, what the
 console refused it.
-
-::: warning
-Guest links, device tokens and support passwords that a token made stay valid
-after the token is revoked. Revoke or delete them on their own pages too.
-:::
 
 ## Use it with the command line
 
@@ -232,6 +232,22 @@ To revoke a token, open the menu at the end of its row and choose **Revoke**.
 The console names the token and asks once more: "Scripts that use it stop
 working right away. This can't be undone." Super admins can revoke any
 account's token, everyone else only their own.
+
+### What ends with a token
+
+Revoking a token also ends what the token made: guest links, device tokens,
+quick support sessions with their codes, invites, pairing codes, guest desktop
+links and organization invitations that weren't used yet. The same happens
+when a token expires or is deleted. The revoke dialog and the token list name
+what ended, and the audit log has one entry that counts it.
+
+Computers let in with a token stay when the token is revoked: those that joined
+through its invites or pairing codes, and those approved with it. The revoke
+dialog lists them, "Computers let in with it stay", so you can check them on
+the Devices page. Only computers let in from 3.6.0-rc.5 on are listed.
+
+Accounts a token made stay too, and so do the enrollment tokens of agent
+templates, which can't be revoked yet.
 
 The command line revokes a token by its ID, the 12 characters after `ndt_`, as
 `neodesk api-tokens revoke <id>`; `neodesk logout --revoke` revokes the token it

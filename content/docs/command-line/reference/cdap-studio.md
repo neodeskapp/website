@@ -19,9 +19,9 @@ neodesk cdap-studio create [flags]
 
 | Flag | What it is |
 |---|---|
-| `--name NAME` |  |
-| `--description DESCRIPTION` |  |
-| `--flow-json FLOW_JSON` |  |
+| `--name NAME` | flow name, at most 100 characters |
+| `--description DESCRIPTION` | what the flow does, at most 500 characters |
+| `--flow-json FLOW_JSON` | the flow as JSON text, like {"nodes":[],"wires":[]} (left out: {}) |
 
 Needs the operator role, and a token with all of its account's permissions; changes something: needs a token with read and write access. Calls `POST /api/cdap-studio/flows`.
 

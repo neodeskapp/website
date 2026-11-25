@@ -27,7 +27,7 @@ List the Docker containers on the machine.
 neodesk server containers [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/docker/containers`.
+Needs server.config; only reads. Calls `GET /api/docker/containers`.
 
 ## neodesk server database
 
@@ -37,7 +37,7 @@ Show the database: size and rows per table.
 neodesk server database [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/database/stats`.
+Needs server.config; only reads. Calls `GET /api/database/stats`.
 
 ## neodesk server exec
 
@@ -51,7 +51,7 @@ neodesk server exec --command COMMAND [flags]
 |---|---|
 | `--command COMMAND` | the command: uptime, df, free and the like (required) |
 
-Needs a signed-in account; changes something: needs a token with read and write access; runs something on a device or the server. Calls `POST /api/system/exec`.
+Needs server.config; changes something: needs a token with read and write access; runs something on a device or the server. Calls `POST /api/system/exec`.
 
 ## neodesk server file
 
@@ -65,7 +65,7 @@ neodesk server file [flags]
 |---|---|
 | `--path PATH` | the file |
 
-Needs a signed-in account; only reads; the answer holds secrets or private content. Calls `GET /api/server-management/files/read`.
+Needs server.config; only reads; the answer holds secrets or private content. Calls `GET /api/server-management/files/read`.
 
 ## neodesk server files
 
@@ -79,7 +79,7 @@ neodesk server files [flags]
 |---|---|
 | `--path PATH` | the folder |
 
-Needs a signed-in account; only reads. Calls `GET /api/server-management/files`.
+Needs server.config; only reads. Calls `GET /api/server-management/files`.
 
 ## neodesk server health
 
@@ -113,7 +113,7 @@ neodesk server logs [flags]
 |---|---|
 | `--limit N` | how many lines (default 50) |
 
-Needs a signed-in account; only reads. Calls `GET /api/logs/recent`.
+Needs server.config; only reads. Calls `GET /api/logs/recent`.
 
 ## neodesk server machine
 
@@ -123,7 +123,7 @@ Show the machine the server runs on.
 neodesk server machine [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/server-management/info`.
+Needs server.config; only reads. Calls `GET /api/server-management/info`.
 
 ## neodesk server resources
 
@@ -133,7 +133,7 @@ Show CPU, memory and disk use.
 neodesk server resources [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/server-management/resources`.
+Needs server.config; only reads. Calls `GET /api/server-management/resources`.
 
 ## neodesk server service
 
@@ -150,7 +150,7 @@ neodesk server service <name> <action> [flags]
 | `<name>` | The service (see server services) |
 | `<action>` | start, stop or restart |
 
-Needs a signed-in account; changes something: needs a token with read and write access; runs something on a device or the server. Calls `POST /api/server-management/services/{name}/{action}`.
+Needs server.config; changes something: needs a token with read and write access; runs something on a device or the server. Calls `POST /api/server-management/services/{name}/{action}`.
 
 ## neodesk server services
 
@@ -160,7 +160,7 @@ List the system services NeoDesk uses.
 neodesk server services [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/server-management/services`.
+Needs server.config; only reads. Calls `GET /api/server-management/services`.
 
 ## neodesk server speed-test
 
@@ -174,7 +174,7 @@ neodesk server speed-test [flags]
 |---|---|
 | `--size N` | megabytes (default 1) |
 
-Needs a signed-in account; only reads. Calls `GET /api/speed-test`.
+Needs metrics.view; only reads. Calls `GET /api/speed-test`.
 
 ## neodesk server system
 
@@ -184,4 +184,4 @@ Show the machine: system, memory, disks, processes.
 neodesk server system [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/system/info`.
+Needs metrics.view; only reads. Calls `GET /api/system/info`.

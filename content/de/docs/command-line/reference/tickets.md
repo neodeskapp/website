@@ -107,7 +107,7 @@ neodesk tickets create --title TITLE [flags]
 | `--device DEVICE` | the device it is about |
 | `--assigned-to ASSIGNED_TO` | the user name of who handles it |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/tickets`.
+Needs device.edit; changes something: needs a token with read and write access. Calls `POST /api/tickets`.
 
 ## neodesk tickets delete
 
@@ -121,7 +121,7 @@ neodesk tickets delete <id> [flags]
 |---|---|
 | `<id>` | The ticket number (see tickets list) |
 
-Needs server.config; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/tickets/{id}`.
+Needs device.edit; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/tickets/{id}`.
 
 ## neodesk tickets get
 
@@ -135,7 +135,7 @@ neodesk tickets get <id> [flags]
 |---|---|
 | `<id>` | The ticket number (see tickets list) |
 
-Needs audit.view; only reads. Calls `GET /api/tickets/{id}`.
+Needs device.view; only reads. Calls `GET /api/tickets/{id}`.
 
 ## neodesk tickets list
 
@@ -145,7 +145,7 @@ List tickets. Filter with -q, like -q status=open.
 neodesk tickets list [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/tickets`.
+Needs device.view; only reads. Calls `GET /api/tickets`.
 
 ## neodesk tickets stats
 
@@ -155,7 +155,7 @@ Count tickets by status and priority.
 neodesk tickets stats [flags]
 ```
 
-Needs audit.view; only reads. Calls `GET /api/tickets/stats`.
+Needs device.view; only reads. Calls `GET /api/tickets/stats`.
 
 ## neodesk tickets update
 
@@ -179,4 +179,4 @@ neodesk tickets update <id> [flags]
 | `--description DESCRIPTION` | new description |
 | `--device DEVICE` | the device it is about |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `PATCH /api/tickets/{id}`.
+Needs device.edit; changes something: needs a token with read and write access. Calls `PATCH /api/tickets/{id}`.

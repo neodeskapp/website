@@ -31,7 +31,7 @@ List the activity agents reported, per device.
 neodesk activity list [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/activity`.
+Needs audit.view; only reads. Calls `GET /api/activity`.
 
 ## neodesk activity top
 

@@ -14,26 +14,27 @@ nennt jeden Befehl.
 ## Wo du sie findest {#where-to-find-it}
 
 Die Kommandozeile steckt im Server-Binary. Sie läuft, wenn das Programm
-`neodesk` heißt, oder als `neodesk-server cli` unter jedem Namen.
+`neodesk` heißt, oder als `neodesk-server cli` unter jedem Namen. Jede
+Installation hat sie als `neodesk`:
 
-Im Docker-Image heißt der Befehl `neodesk`. Führ ihn im Container aus:
+- **Linux:** eine Kopie des Server-Binarys in `/usr/local/bin`, die jeder
+  Benutzer auf dem Server ausführen darf. Ohne API-Token kann sie nichts tun.
+  Der eigene Verwalter des Installers ist `sudo neodesk-setup`.
+- **Windows:** `C:\NeoDesk\bin\neodesk.exe`, im Path des Rechners. Öffne nach
+  der Installation oder dem Update ein neues Terminal, damit es den Befehl
+  findet.
+- **Docker:** im Container.
+
+Unter Linux und Windows:
+
+```bash
+neodesk --help
+```
+
+Unter Docker, im Ordner der Installation:
 
 ```bash
 docker compose exec neodesk neodesk --help
-```
-
-Auf einer Linux-Installation ist `neodesk` der eigene Verwalter des
-Installers, `/usr/local/sbin/neodesk`, nimm deshalb das Server-Binary mit
-`cli`. Sein Ordner ist nur für root und den Dienst offen:
-
-```bash
-sudo /opt/neodesk/neodesk-server cli --help
-```
-
-Auf einer Windows-Installation:
-
-```powershell
-& 'C:\NeoDesk\neodesk-server.exe' cli --help
 ```
 
 Für deinen eigenen Computer lade das Server-Binary für sein System von den
@@ -42,8 +43,30 @@ auf amd64, arm64 und armv7 oder Windows auf amd64. Speicher es als `neodesk`,
 unter Windows als `neodesk.exe`, und mach es unter Linux ausführbar. Für macOS
 gibt es keinen Build.
 
-Die Beispiele unten schreiben `neodesk`. Auf einer Linux- oder
-Windows-Installation setz den Befehl von oben an seine Stelle.
+### Auf einem Linux-Server {#on-a-linux-server}
+
+Bei Installationen vor 3.6.0-rc.5 war der Installer selbst `neodesk`. Seine
+Optionen gehen auf der Kommandozeile weiter und landen bei `neodesk-setup`.
+So landet `sudo neodesk --update` bei `sudo neodesk-setup --update`, und ein
+bloßes `sudo neodesk` in einem Terminal öffnet das Menü des Installers. Ohne
+Terminal, etwa in cron oder in einem Skript über ssh, zeigt ein bloßes
+`neodesk` die Hilfe der Kommandozeile.
+
+Auf einem Computer, auf dem auch der NeoDesk-Desktop-Client läuft, gibt
+`neodesk` die eigenen Optionen des Clients, etwa `--join`, `--service`,
+`--password` und `--connect`, an den Client unter `/usr/bin/neodesk` weiter,
+ebenso einen Beitritts- oder Support-Link, der allein dasteht. `--config` und
+`--version` bleiben bei der Kommandozeile, `--update`, `--uninstall` und
+`--relay` beim Installer.
+
+Die Kopie in `/usr/local/bin` ändert sich nur, wenn der Installer läuft. Nach
+einem Update aus der Konsole zeigt deren Update-Seite **Auch die Befehlszeile
+aktualisieren**, und die Kommandozeile meldet auf der Standardfehlerausgabe, dass
+sie älter ist als der Server. Aktualisier sie mit:
+
+```bash
+sudo neodesk-setup --update
+```
 
 ## Anmelden {#sign-in}
 
@@ -84,12 +107,18 @@ Weiterleitungen.
 Die Skripte für Linux und Windows geben der Konsole auf Port 5443 ein
 selbstsigniertes Zertifikat, das die Kommandozeile ablehnt (Exit-Code 9), bis
 du ihm vertraust. Gib ihr die Zertifikatsdatei mit `--ca-cert`, und `login`
-speichert sie mit der Adresse. Mit der Adresse deines Servers statt
-`<server-address>`, auf dem Linux-Server:
+speichert sie mit der Adresse. Auf dem Linux-Server ist die Datei
+`/opt/neodesk/ssl/neodesk.crt`, in einem Ordner, den nur root und der Dienst
+öffnen dürfen. Kopier sie deshalb zuerst in deinen Home-Ordner:
 
 ```bash
-sudo /opt/neodesk/neodesk-server cli login --url https://<server-address>:5443 \
-  --ca-cert /opt/neodesk/ssl/neodesk.crt
+sudo cat /opt/neodesk/ssl/neodesk.crt > ~/neodesk.crt
+```
+
+Dann melde dich an, mit der Adresse deines Servers statt `<server-address>`:
+
+```bash
+neodesk login --url https://<server-address>:5443 --ca-cert ~/neodesk.crt
 ```
 
 Unter Windows ist die Datei `C:\NeoDesk\ssl\neodesk.crt`. Auf einem anderen
@@ -103,8 +132,11 @@ Einfaches `http://` geht nur zum selben Rechner, `localhost` oder
 geht dann unverschlüsselt durchs Netz. Unter Docker, auf dem Server selbst:
 
 ```bash
-docker compose exec neodesk neodesk login --url http://127.0.0.1:5000
+docker compose exec neodesk neodesk login --url http://127.0.0.1:3375
 ```
+
+Im Container ist die Konsole auf 3375, egal unter welchem Port des Hosts du
+sie veröffentlichst.
 
 Diese Anmeldung liegt im Container und ist weg, wenn der Container neu
 angelegt wird, etwa bei einem Update.

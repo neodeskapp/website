@@ -91,7 +91,7 @@ List console accounts with their role and status.
 neodesk users list [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/users`.
+Needs user.view; only reads. Calls `GET /api/users`.
 
 ```bash quoted
 neodesk users list

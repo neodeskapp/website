@@ -182,7 +182,7 @@ neodesk settings enrollment-set [flags]
 |---|---|
 | `--mode open\|managed\|locked` | open, managed or locked |
 
-Needs enrollment.manage; changes something: needs a token with read and write access. Calls `PUT /api/settings/enrollment`.
+Needs server.config and enrollment.manage; changes something: needs a token with read and write access. Calls `PUT /api/settings/enrollment`.
 
 ## neodesk settings file
 

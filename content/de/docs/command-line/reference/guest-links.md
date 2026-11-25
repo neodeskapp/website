@@ -19,11 +19,11 @@ neodesk guest-links create [flags]
 
 | Flag | What it is |
 |---|---|
-| `--peer-ids PEER_IDS` |  |
-| `--ttl-minutes TTL_MINUTES` |  |
-| `--view-only VIEW_ONLY` |  |
-| `--label LABEL` |  |
-| `--max-uses N` |  |
+| `--peer-ids A,B` | the devices the link opens, by ID, comma separated |
+| `--ttl-minutes N` | minutes the link works, at most 1440 (left out: 60) |
+| `--view-only` | watch only, no control; for mesh and CDAP devices only |
+| `--label LABEL` | a name for the link |
+| `--max-uses N` | how many times the link may be used (left out or 0: no limit) |
 
 Needs guest.create; changes something: needs a token with read and write access; the answer holds secrets or private content. Calls `POST /api/guest/access-links`.
 

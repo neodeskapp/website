@@ -7,12 +7,11 @@ quoted: true
 
 Every route of the console has a command, or is here with the reason. `neodesk api` still sends any request.
 
-A development helper of the web console.
-
-- `GET /dev/mock-remote.js`
-
 A page or file of the web console: open it in a browser.
 
+- `GET /_ui/immutable/{rest...}`
+- `GET /app`
+- `GET /app/{rest...}`
 - `GET /branding/favicon.svg`
 - `GET /console-boot.js`
 - `GET /css/branding.css`
@@ -22,6 +21,7 @@ A page or file of the web console: open it in a browser.
 - `GET /remote-dashboard`
 - `GET /remote-desktop/{deviceId}`
 - `GET /tenants`
+- `GET /{rest...}`
 
 An upload for the web console's editor (pictures, fonts, chat files); use the console.
 
@@ -104,16 +104,6 @@ Called by NeoDesk agents and clients with a device token, not by people.
 - `POST /api/tickets/nd`
 - `PUT /api/nd/smtp`
 
-Listed in the contract suite but no longer served: the console answers 404.
-
-- `GET /_ui/immutable/{rest...}`
-- `GET /api/settings/backup/smb`
-- `GET /app`
-- `GET /app/{rest...}`
-- `GET /{rest...}`
-- `POST /api/settings/backup/smb/test`
-- `PUT /api/settings/backup/smb`
-
 Making API tokens needs a browser session: a token never makes another token.
 
 - `POST /api/panel/api-tokens`
@@ -124,6 +114,10 @@ Part of the remote viewer, which runs in the browser.
 - `GET /api/remote/session/{deviceId}`
 - `GET /api/remote/viewer/{deviceId}`
 - `POST /api/mesh/devices/{id}/desktop`
+
+Saved sign-in is used by a person in the browser viewer for the session it holds; the console refuses API tokens there.
+
+- `POST /api/devices/{id}/signin/use`
 
 Signing in and out, second factors, passwords and sessions happen in the browser; API tokens cannot use them.
 
@@ -194,6 +188,10 @@ The RustDesk client API: desktop clients call it with their own sign-in.
 - `POST /api/sysinfo_ver`
 - `POST /api/user-groups`
 - `PUT /api/strategies/{guid}/status`
+
+The browser viewer's answer to a device's password question; it needs the device's question from an open session.
+
+- `POST /api/devices/{id}/connect-password/answer`
 
 The same route at the /api/nd address the old console also served; the command line uses the main address.
 

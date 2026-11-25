@@ -8,7 +8,7 @@ quoted: true
 
 The command line of NeoDesk: every action of the web console, on top of API tokens.
 
-This reference is made from the command table of the release 3.6.0-rc.4: 532 commands in 59 groups. Each group has a page with its commands, their arguments and flags, the permission each needs and the console route it calls.
+This reference is made from the command table of the release 3.6.0-rc.5: 536 commands in 59 groups. Each group has a page with its commands, their arguments and flags, the permission each needs and the console route it calls.
 
 ```bash quoted
 neodesk <group> <action> [arguments] [flags]
@@ -16,7 +16,7 @@ neodesk <group> --help
 neodesk login --url https://desk.example.com
 ```
 
-The command line is the server binary: called `neodesk` (the Docker images have that name), or `neodesk-server cli`. Sign in once with an API token. Make one in the console: account menu, API tokens. A token can do only what its permissions and its account allow, and a read-only token only reads.
+The command line is the server binary under the name `neodesk`: the installers put it on the PATH, and the Docker images have it. `neodesk-server cli` works too. On Linux hosts the installer's menu and options are `neodesk-setup`; `sudo neodesk` without arguments and the installer's options, such as `neodesk --update`, reach it too. Where the NeoDesk desktop client is installed too, its options, such as `--join` and `--service`, and a join or support link on its own go to it (`/usr/bin/neodesk`). Sign in once with an API token. Make one in the console: account menu, API tokens. A token can do only what its permissions and its account allow, and a read-only token only reads.
 
 ## API tokens
 
@@ -57,7 +57,7 @@ For an AI agent, `neodesk mcp` serves the commands as MCP tools: read only, with
 | [device-files](/docs/command-line/reference/device-files) | Files on a device with a NeoDesk agent | 6 |
 | [device-groups](/docs/command-line/reference/device-groups) | Device groups (manual and by tag) | 3 |
 | [device-tokens](/docs/command-line/reference/device-tokens) | Tokens that let a new device join without approval | 6 |
-| [devices](/docs/command-line/reference/devices) | Devices: list, details, notes, tags, bans, connection settings | 27 |
+| [devices](/docs/command-line/reference/devices) | Devices: list, details, notes, tags, bans, connection settings | 31 |
 | [enrollment](/docs/command-line/reference/enrollment) | Who may join, and devices waiting for approval | 7 |
 | [fleet](/docs/command-line/reference/fleet) | Fleet tasks, workflows, compliance and resources | 23 |
 | [folders](/docs/command-line/reference/folders) | Folders that sort devices | 6 |

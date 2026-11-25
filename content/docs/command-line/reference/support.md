@@ -23,7 +23,7 @@ neodesk support create [flags]
 | `--email EMAIL` | mail the link to this address |
 | `--send-email` | mail it |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/support/sessions`.
+Needs device.connect; changes something: needs a token with read and write access. Calls `POST /api/support/sessions`.
 
 ## neodesk support device-password
 
@@ -39,7 +39,7 @@ neodesk support device-password <id> [flags]
 |---|---|
 | `<id>` | The device ID (see devices list) |
 
-Needs a signed-in account; changes something: needs a token with read and write access; the answer holds secrets or private content. Calls `POST /api/support/devices/{id}/password`.
+Needs device.connect; changes something: needs a token with read and write access; the answer holds secrets or private content. Calls `POST /api/support/devices/{id}/password`.
 
 ## neodesk support end
 
@@ -53,7 +53,7 @@ neodesk support end <id> [flags]
 |---|---|
 | `<id>` | The session ID (see support list) |
 
-Needs a signed-in account; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/support/sessions/{id}`.
+Needs device.connect; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/support/sessions/{id}`.
 
 ## neodesk support get
 
@@ -67,7 +67,7 @@ neodesk support get <id> [flags]
 |---|---|
 | `<id>` | The session ID (see support list) |
 
-Needs a signed-in account; only reads. Calls `GET /api/support/sessions/{id}`.
+Needs device.connect; only reads. Calls `GET /api/support/sessions/{id}`.
 
 ## neodesk support list
 
@@ -77,7 +77,7 @@ List quick support sessions.
 neodesk support list [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/support/sessions`.
+Needs device.connect; only reads. Calls `GET /api/support/sessions`.
 
 ## neodesk support mail
 
@@ -97,7 +97,7 @@ neodesk support mail <id> (--code-stdin | --code CODE) --to TO [flags]
 | `--code CODE` | the support code (this or --code-stdin is required) |
 | `--to TO` | the address (required) |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/support/sessions/{id}/mail`.
+Needs device.connect; changes something: needs a token with read and write access. Calls `POST /api/support/sessions/{id}/mail`.
 
 ## neodesk support password
 
@@ -113,4 +113,4 @@ neodesk support password <id> [flags]
 |---|---|
 | `<id>` | The session ID (see support list) |
 
-Needs a signed-in account; changes something: needs a token with read and write access; the answer holds secrets or private content. Calls `POST /api/support/sessions/{id}/password`.
+Needs device.connect; changes something: needs a token with read and write access; the answer holds secrets or private content. Calls `POST /api/support/sessions/{id}/password`.

@@ -13,26 +13,26 @@ own computer. This page gets you started; the
 ## Where to find it
 
 The command line is part of the server binary. It runs when the program is
-called `neodesk`, or as `neodesk-server cli` under any name.
+called `neodesk`, or as `neodesk-server cli` under any name. Every install
+has it as `neodesk`:
 
-In the Docker image the command is `neodesk`. Run it in the container:
+- **Linux:** a copy of the server binary in `/usr/local/bin` that every user
+  on the server can run. It needs an API token to do anything. The installer's
+  own manager is `sudo neodesk-setup`.
+- **Windows:** `C:\NeoDesk\bin\neodesk.exe`, on the machine's Path. Open a new
+  terminal after the install or update so it finds it.
+- **Docker:** in the container.
+
+On Linux and Windows:
+
+```bash
+neodesk --help
+```
+
+In Docker, in the install's folder:
 
 ```bash
 docker compose exec neodesk neodesk --help
-```
-
-On a Linux install, `neodesk` is the installer's own manager,
-`/usr/local/sbin/neodesk`, so use the server binary with `cli`. Its folder is
-open to root and the service only:
-
-```bash
-sudo /opt/neodesk/neodesk-server cli --help
-```
-
-On a Windows install:
-
-```powershell
-& 'C:\NeoDesk\neodesk-server.exe' cli --help
 ```
 
 On your own computer, download the server binary for its system from the
@@ -41,8 +41,29 @@ amd64, arm64 and armv7, or Windows on amd64. Save it as `neodesk`, or
 `neodesk.exe` on Windows, and on Linux make it executable. There is no build
 for macOS.
 
-The examples below write `neodesk`. On a Linux or Windows install, put the
-command above in its place.
+### On a Linux server
+
+Installs from before 3.6.0-rc.5 had the installer itself as `neodesk`. Its
+options still work on the command line and go to `neodesk-setup`:
+`sudo neodesk --update` runs `sudo neodesk-setup --update`, and a bare
+`sudo neodesk` on a terminal opens the installer's menu. Without a terminal,
+as in cron or a script over ssh, a bare `neodesk` prints the command line's
+help.
+
+On a computer that also has the NeoDesk desktop client, `neodesk` hands the
+client's own options, such as `--join`, `--service`, `--password` and
+`--connect`, to the client at `/usr/bin/neodesk`, and so does a join or
+support link given on its own. `--config` and `--version` stay the command
+line's, and `--update`, `--uninstall` and `--relay` the installer's.
+
+The copy in `/usr/local/bin` changes only when the installer runs. After the
+console updated itself, its update screen shows **Update the command line
+too**, and the command line says on standard error that it is older than the
+server. Update it with:
+
+```bash
+sudo neodesk-setup --update
+```
 
 ## Sign in
 
@@ -81,12 +102,18 @@ The command line checks the console's certificate and follows no redirects.
 The Linux and Windows scripts give the console a self-signed certificate on
 port 5443, which the command line refuses (exit code 9) until you trust it.
 Give it the certificate file with `--ca-cert`, and `login` saves it with the
-address. With your server's address in place of `<server-address>`, on the
-Linux server:
+address. On the Linux server the file is `/opt/neodesk/ssl/neodesk.crt`, in a
+folder only root and the service may open, so copy it into your home folder
+first:
 
 ```bash
-sudo /opt/neodesk/neodesk-server cli login --url https://<server-address>:5443 \
-  --ca-cert /opt/neodesk/ssl/neodesk.crt
+sudo cat /opt/neodesk/ssl/neodesk.crt > ~/neodesk.crt
+```
+
+Then sign in, with your server's address in place of `<server-address>`:
+
+```bash
+neodesk login --url https://<server-address>:5443 --ca-cert ~/neodesk.crt
 ```
 
 On Windows the file is `C:\NeoDesk\ssl\neodesk.crt`. On another computer, copy
@@ -99,8 +126,11 @@ another machine it needs `--allow-http`, and the token then crosses the network
 unencrypted. In Docker, on the server itself:
 
 ```bash
-docker compose exec neodesk neodesk login --url http://127.0.0.1:5000
+docker compose exec neodesk neodesk login --url http://127.0.0.1:3375
 ```
+
+Inside the container the console is on 3375, whichever host port you publish
+it on.
 
 That sign-in is saved inside the container, so it is gone when the container
 is made new, as at an update.

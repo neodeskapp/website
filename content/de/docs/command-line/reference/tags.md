@@ -21,7 +21,7 @@ neodesk tags delete --tag TAG [flags]
 |---|---|
 | `--tag TAG` | the tag (required) |
 
-Needs a signed-in account; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `POST /api/tags/delete`.
+Needs device.edit; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `POST /api/tags/delete`.
 
 ## neodesk tags list
 
@@ -31,7 +31,7 @@ List the tags in use, with how many devices have each.
 neodesk tags list [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/tags`.
+Needs device.view; only reads. Calls `GET /api/tags`.
 
 ## neodesk tags rename
 
@@ -46,4 +46,4 @@ neodesk tags rename --from FROM --to TO [flags]
 | `--from FROM` | the old tag (required) |
 | `--to TO` | the new tag (required) |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/tags/rename`.
+Needs device.edit; changes something: needs a token with read and write access. Calls `POST /api/tags/rename`.

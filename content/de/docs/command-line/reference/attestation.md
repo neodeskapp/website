@@ -19,7 +19,7 @@ Give the request body with -f key=value (text), -F key=json (numbers, true or fa
 neodesk attestation abort [flags]
 ```
 
-Needs a signed-in account; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `POST /api/server-attestation/abort`.
+Needs server.attestation; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `POST /api/server-attestation/abort`.
 
 ## neodesk attestation badge
 
@@ -29,7 +29,7 @@ Show the settings of the performance badge.
 neodesk attestation badge [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/server-attestation/badge-config`.
+Needs server.attestation; only reads. Calls `GET /api/server-attestation/badge-config`.
 
 ## neodesk attestation badge-set
 
@@ -41,7 +41,7 @@ Give the request body with -f key=value (text), -F key=json (numbers, true or fa
 neodesk attestation badge-set [flags]
 ```
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `PUT /api/server-attestation/badge-config`.
+Needs server.attestation; changes something: needs a token with read and write access. Calls `PUT /api/server-attestation/badge-config`.
 
 ## neodesk attestation result
 
@@ -51,7 +51,7 @@ Show the result of the last performance test.
 neodesk attestation result [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/server-attestation/result`.
+Needs server.attestation; only reads. Calls `GET /api/server-attestation/result`.
 
 ## neodesk attestation run
 
@@ -63,7 +63,7 @@ Give the request body with -f key=value (text), -F key=json (numbers, true or fa
 neodesk attestation run [flags]
 ```
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/server-attestation/run`.
+Needs server.attestation; changes something: needs a token with read and write access. Calls `POST /api/server-attestation/run`.
 
 ## neodesk attestation status
 
@@ -73,4 +73,4 @@ Show how far the running performance test got.
 neodesk attestation status [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/server-attestation/status`.
+Needs server.attestation; only reads. Calls `GET /api/server-attestation/status`.

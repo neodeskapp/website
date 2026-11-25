@@ -11,7 +11,7 @@ Die Befehle stehen hier auf Englisch, so wie die Kommandozeile sie mit `neodesk 
 
 ## neodesk strategies assign
 
-Give a strategy to devices, accounts or user groups.
+Give a strategy to devices, accounts or device groups.
 
 ```text quoted
 neodesk strategies assign <guid> [flags]
@@ -23,11 +23,11 @@ neodesk strategies assign <guid> [flags]
 
 | Flag | What it is |
 |---|---|
-| `--peers PEERS` |  |
-| `--users USERS` |  |
-| `--groups GROUPS` |  |
+| `--peers A,B` | devices to give the strategy, by ID, comma separated |
+| `--users A,B` | accounts to give the strategy, by user name, comma separated |
+| `--groups A,B` | device groups to give the strategy, by name, comma separated |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/panel/strategies/{guid}/assign`.
+Needs device.edit; changes something: needs a token with read and write access. Calls `POST /api/panel/strategies/{guid}/assign`.
 
 ## neodesk strategies create
 
@@ -39,7 +39,7 @@ Give the request body with -f key=value (text), -F key=json (numbers, true or fa
 neodesk strategies create [flags]
 ```
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/panel/strategies`.
+Needs device.edit; changes something: needs a token with read and write access. Calls `POST /api/panel/strategies`.
 
 ## neodesk strategies delete
 
@@ -53,7 +53,7 @@ neodesk strategies delete <guid> [flags]
 |---|---|
 | `<guid>` | The group's GUID |
 
-Needs a signed-in account; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/panel/strategies/{guid}`.
+Needs device.edit; changes something: needs a token with read and write access; deletes or ends something for good, so it asks first unless --yes is given. Calls `DELETE /api/panel/strategies/{guid}`.
 
 ## neodesk strategies get
 
@@ -67,7 +67,7 @@ neodesk strategies get <guid> [flags]
 |---|---|
 | `<guid>` | The group's GUID |
 
-Needs a signed-in account; only reads. Calls `GET /api/panel/strategies/{guid}`.
+Needs device.view; only reads. Calls `GET /api/panel/strategies/{guid}`.
 
 ## neodesk strategies list
 
@@ -77,11 +77,11 @@ List strategies.
 neodesk strategies list [flags]
 ```
 
-Needs a signed-in account; only reads. Calls `GET /api/panel/strategies`.
+Needs device.view; only reads. Calls `GET /api/panel/strategies`.
 
 ## neodesk strategies unassign
 
-Take strategies away from devices, accounts or user groups.
+Take strategies away from devices, accounts or device groups.
 
 ```text quoted
 neodesk strategies unassign [flags]
@@ -89,11 +89,11 @@ neodesk strategies unassign [flags]
 
 | Flag | What it is |
 |---|---|
-| `--peers PEERS` |  |
-| `--users USERS` |  |
-| `--groups GROUPS` |  |
+| `--peers A,B` | devices to take their strategy from, by ID, comma separated |
+| `--users A,B` | accounts to take their strategy from, by user name, comma separated |
+| `--groups A,B` | device groups to take their strategy from, by name, comma separated |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `POST /api/panel/strategies/unassign`.
+Needs device.edit; changes something: needs a token with read and write access. Calls `POST /api/panel/strategies/unassign`.
 
 ## neodesk strategies update
 
@@ -109,4 +109,4 @@ neodesk strategies update <guid> [flags]
 |---|---|
 | `<guid>` | The group's GUID |
 
-Needs a signed-in account; changes something: needs a token with read and write access. Calls `PATCH /api/panel/strategies/{guid}`.
+Needs device.edit; changes something: needs a token with read and write access. Calls `PATCH /api/panel/strategies/{guid}`.

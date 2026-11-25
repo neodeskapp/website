@@ -53,8 +53,8 @@ neodesk branding font-download [flags]
 
 | Flag | What it is |
 |---|---|
-| `--family FAMILY` |  |
-| `--weights WEIGHTS` |  |
+| `--family FAMILY` | the Google Fonts family to install, like Inter |
+| `--weights A,B` | weights to install, comma separated, like 400,700 (left out: 400, 500, 600 and 700) |
 
 Needs branding.edit; changes something: needs a token with read and write access. Calls `POST /api/settings/fonts/download`.
 
@@ -120,7 +120,7 @@ neodesk branding profile-copy <id> [flags]
 
 | Flag | What it is |
 |---|---|
-| `--name NAME` |  |
+| `--name NAME` | name of the copy (left out: the name with "(copy)" after it) |
 
 Needs branding.edit; changes something: needs a token with read and write access. Calls `POST /api/settings/branding/profiles/{id}/duplicate`.
 
@@ -134,9 +134,9 @@ neodesk branding profile-create [flags]
 
 | Flag | What it is |
 |---|---|
-| `--name NAME` |  |
-| `--description DESCRIPTION` |  |
-| `--branding BRANDING` |  |
+| `--name NAME` | profile name, at most 80 characters, not in use yet |
+| `--description DESCRIPTION` | what the profile is for, at most 200 characters |
+| `--branding JSON` | the settings to save, a JSON object like the data of branding show (left out: the current settings) |
 
 Needs branding.edit; changes something: needs a token with read and write access. Calls `POST /api/settings/branding/profiles`.
 
@@ -168,9 +168,9 @@ neodesk branding profile-set <id> [flags]
 
 | Flag | What it is |
 |---|---|
-| `--name NAME` |  |
-| `--description DESCRIPTION` |  |
-| `--branding BRANDING` |  |
+| `--name NAME` | new name, at most 80 characters (left out: kept) |
+| `--description DESCRIPTION` | new description, at most 200 characters (left out: kept) |
+| `--branding JSON` | new settings, a JSON object like the data of branding show (left out: kept) |
 
 Needs branding.edit; changes something: needs a token with read and write access. Calls `PUT /api/settings/branding/profiles/{id}`.
 
