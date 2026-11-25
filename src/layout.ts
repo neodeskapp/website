@@ -1,11 +1,15 @@
 // The HTML around the docs: one frame, and the kinds of page inside it.
 import type { Page, Pager, Section, Shared } from './types.ts';
 import { DEFAULT_LOCALE, fill } from './i18n.ts';
+import { siteHeader, siteFooter } from './chrome.ts';
 
 export const esc = (s: unknown) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 const SEARCH_ICON =
 	'<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M12.8 12.8 17 17"/></svg>';
+
+const CONTENTS_ICON =
+	'<svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 5h9M8 10h9M8 15h9M3.5 5h.01M3.5 10h.01M3.5 15h.01" stroke-width="2.2"/></svg>';
 
 /** The button that opens search. Its words are hidden on small screens, so it carries an aria-label. */
 const searchButton = (t: Shared['t'], wide = false) =>
@@ -53,15 +57,6 @@ export function socialTags(o: { type: string; siteName: string; title: string; d
 			: []),
 		'<meta name="twitter:card" content="summary_large_image">'
 	].join('\n');
-}
-
-/** Links to the same page in the other languages; nothing while a page has one language only. */
-export function languageSwitch(shared: Pick<Shared, 'versions' | 'locale' | 't'>, p: string) {
-	const others = shared.versions(p).filter((l) => l.code !== shared.locale.code);
-	if (!others.length) return '';
-	return `<nav class="lang-switch" aria-label="${esc(shared.t.language)}">${others
-		.map((l) => `<a href="${esc(`${l.prefix}${p}`)}" hreflang="${l.code}" lang="${l.code}">${esc(l.label)}</a>`)
-		.join('')}</nav>`;
 }
 
 /**
@@ -117,6 +112,17 @@ function frame(o: FrameOptions) {
 	const own = inLocale(o, o.path);
 	const canonical = `${siteUrl}${own}`;
 	const docsHome = inLocale(o, '/docs/');
+	// The docs add the button that opens the sidebar on narrow screens, and search
+	const tools = `<button type="button" class="menu-button" aria-controls="sidebar" aria-expanded="false" aria-label="${esc(t.contents)}">${CONTENTS_ICON}</button>${searchButton(t)}`;
+	const chrome = {
+		config,
+		t,
+		locale,
+		home: inLocale(o, '/'),
+		docs: docsHome,
+		languages: noindex ? [] : o.versions(o.path).filter((l) => l.code !== locale.code).map((l) => ({ locale: l, href: `${l.prefix}${o.path}` })),
+		tools
+	};
 	return `<!doctype html>
 <html lang="${locale.code}">
 <head>
@@ -134,7 +140,7 @@ ${markdown ? `<link rel="alternate" type="text/markdown" href="${esc(markdown)}"
 ${o.display ? '<link rel="preload" href="/fonts/FunnelDisplay-latin.woff2" as="font" type="font/woff2" crossorigin>\n' : ''}<link rel="preload" href="/fonts/IBMPlexSans-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="${assets['site.css']}">
 <link rel="stylesheet" href="${assets['docs.css']}">
-<noscript><style>.copy, .search-button, .menu-button { display: none !important; } @media (max-width: 860px) { .layout { display: flex !important; flex-direction: column; } .sidebar { display: block; position: static; order: 2; border-top: 1px solid var(--rule); } .top-docs, .top-links { display: inline-block; } }</style></noscript>
+<noscript><style>.copy, .search-button, .menu-button { display: none !important; } @media (max-width: 860px) { .layout { display: flex !important; flex-direction: column; } .sidebar { display: block; position: static; order: 2; border-top: 1px solid var(--rule); } }</style></noscript>
 ${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, '\\u003c')}</script>` : ''}
 <script src="${assets['docs.js']}" defer></script>
 <script defer src="https://stats.neode.sk/script.js" data-website-id="dfeff665-7d84-4338-adc7-dbae4e24d1a3" data-domains="neode.sk" data-do-not-track="true" data-exclude-search="true" data-exclude-hash="true"></script>
@@ -142,19 +148,7 @@ ${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd).replace(
 <body>
 <a class="skip" href="#content">${esc(t.skip)}</a>
 
-<header class="top">
-  <button type="button" class="menu-button" aria-controls="sidebar" aria-expanded="false" data-close="${esc(t.close)}">${esc(t.menu)}</button>
-  <a class="logo" href="${inLocale(o, '/')}" aria-label="${esc(fill(t.homeLabel, { name: config.name }))}">
-    <img class="only-dark" src="/img/logo-on-dark.svg" alt="${esc(config.name)}" width="118" height="28">
-    <img class="only-light" src="/img/logo-on-light.svg" alt="${esc(config.name)}" width="118" height="28">
-  </a>
-  <a class="top-docs" href="${docsHome}">${esc(t.docs)}</a>
-  ${searchButton(t)}
-${noindex || !languageSwitch(o, o.path) ? '' : `  ${languageSwitch(o, o.path)}\n`}  <nav class="top-links" aria-label="${esc(t.site)}">
-    <a href="${esc(config.discord)}" rel="noopener">Discord</a>
-    <a href="${esc(config.repo)}" rel="noopener">GitHub</a>
-  </nav>
-</header>
+${siteHeader(chrome)}
 
 <div class="layout${toc ? '' : ' no-toc'}">
   <nav id="sidebar" class="sidebar" aria-label="${esc(t.documentation)}">
@@ -166,17 +160,7 @@ ${main}
   ${toc}
 </div>
 
-<footer class="foot">
-  <p>${t.footer}</p>
-  <nav aria-label="${esc(t.more)}">
-    <a href="${docsHome}">${esc(t.docs)}</a>
-    <a href="/llms.txt">llms.txt</a>
-    <a href="${esc(config.repo)}/blob/main/CHANGELOG.md" rel="noopener">${esc(t.changelog)}</a>
-    <a href="${esc(config.repo)}/blob/main/SECURITY.md" rel="noopener">${esc(t.security)}</a>
-    <a href="${esc(config.discord)}" rel="noopener">Discord</a>
-    <a href="${esc(config.repo)}" rel="noopener">GitHub</a>
-  </nav>
-</footer>
+${siteFooter(chrome)}
 
 <dialog class="search" aria-label="${esc(t.searchDocs)}" data-index="${inLocale(o, '/docs/search.json')}" data-results="${esc(t.resultsCount)}" data-nothing="${esc(t.nothingFound)}" data-failed="${esc(t.searchFailed)}">
   <div class="search-field">

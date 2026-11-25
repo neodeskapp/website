@@ -29,11 +29,13 @@ src/home.html        the landing page; its install tabs come from src/install.ts
 src/install.ts       the install commands of the landing page and llms.txt
 src/og.ts            the link preview images
 src/layout.ts        the frame around every docs page, and the docs index
+src/chrome.ts        the header and footer of every page, home page included
+src/chrome.css       their styles; the build puts them in front of site.css and into the home page
 src/checks.ts        the checks on the built site
 src/types.ts         the shapes the build passes around
 src/site.css         fonts, colours and base styles
 src/docs.css         the docs layout
-src/docs.js          search, copy buttons, "On this page", the menu on phones
+src/docs.js          search, copy buttons, "On this page", the sidebar panel on phones
 public/              copied to dist/ as is (web fonts, images, favicon)
 fonts/               the TrueType fonts the build itself uses, not served
 site.config.ts       site address, repository, sections and their order

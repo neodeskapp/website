@@ -14,6 +14,7 @@
 <link rel="preload" href="/fonts/FunnelDisplay-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/IBMPlexSans-latin.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+{{CHROME_CSS}}
 @font-face {
   font-family: "Funnel Display";
   src: url("/fonts/FunnelDisplay-latin.woff2") format("woff2");
@@ -49,7 +50,6 @@
   --term: #0b0c0c;
   --term-text: #e4e7e7;
   --term-accent: #58a6ff;
-  --edge: max(clamp(20px, 5vw, 72px), calc((100vw - 1320px) / 2));
   --display: "Funnel Display", "IBM Plex Sans", system-ui, sans-serif;
   --sans: "IBM Plex Sans", system-ui, "Segoe UI", sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
@@ -120,18 +120,6 @@ code, .mono { font-family: var(--mono); font-size: 0.92em; }
 
 .page { position: relative; z-index: 1; overflow-x: clip; }
 
-.top {
-  display: flex;
-  align-items: center;
-  gap: 12px 28px;
-  padding: 22px var(--edge);
-}
-.top .logo { margin-right: auto; }
-.top .logo img { height: 28px; width: auto; }
-.top nav { display: flex; gap: 26px; font-size: 15px; }
-.top nav a { text-decoration: none; font-weight: 500; padding: 6px 0; }
-.top nav a:hover { text-decoration: underline; }
-
 /* A scene: text on the left edge, a figure with the shapes on the right */
 .row {
   display: grid;
@@ -172,8 +160,8 @@ code, .mono { font-family: var(--mono); font-size: 0.92em; }
 .hero {
   grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
   padding-top: clamp(28px, 4vw, 56px);
-  min-height: calc(100vh - 76px);
-  min-height: calc(100svh - 76px);
+  min-height: calc(100vh - var(--top));
+  min-height: calc(100svh - var(--top));
 }
 .hero h1 {
   font-family: var(--display);
@@ -262,22 +250,6 @@ code, .mono { font-family: var(--mono); font-size: 0.92em; }
 .data { grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); padding-bottom: clamp(110px, 14vw, 200px); }
 .data .display { font-size: clamp(50px, 8.4vw, 128px); line-height: 0.9; letter-spacing: -0.048em; max-width: 11ch; }
 
-footer {
-  border-top: 1px solid var(--rule);
-  background: var(--bg);
-  padding: 28px var(--edge) clamp(32px, 4vw, 56px);
-}
-.fine {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 12px 40px;
-  font-size: 15px;
-  color: var(--muted);
-}
-.fine nav { display: flex; flex-wrap: wrap; gap: 8px 24px; }
-.wordmark { display: block; width: 100%; margin-top: clamp(56px, 8vw, 120px); }
-
 @media (prefers-reduced-motion: no-preference) {
   html { scroll-behavior: smooth; }
   .tabs button { transition: color 120ms, border-color 120ms; }
@@ -311,18 +283,7 @@ footer {
 
 <div class="page" id="top">
 
-  <header class="top">
-    <a class="logo" href="#top" aria-label="{{t:logoLabel}}">
-      <img class="only-dark" src="/img/logo-on-dark.svg" alt="NeoDesk" width="118" height="28">
-      <img class="only-light" src="/img/logo-on-light.svg" alt="NeoDesk" width="118" height="28">
-    </a>
-    {{LANGUAGES}}
-    <nav aria-label="{{t:navMain}}">
-      <a href="{{PREFIX}}/docs/">{{t:docs}}</a>
-      <a href="https://discord.gg/nwERSawufr" rel="noopener">Discord</a>
-      <a href="https://github.com/neodeskapp/neodesk">GitHub</a>
-    </nav>
-  </header>
+{{HEADER}}
 
   <main>
 
@@ -437,20 +398,7 @@ footer {
 
   </main>
 
-  <footer>
-    <div class="fine">
-      <p>{{t:footer}}</p>
-      <nav aria-label="{{t:more}}">
-        <a href="{{PREFIX}}/docs/">{{t:docs}}</a>
-        <a href="https://github.com/neodeskapp/neodesk/blob/main/CHANGELOG.md">{{t:changelog}}</a>
-        <a href="https://github.com/neodeskapp/neodesk/blob/main/SECURITY.md">{{t:security}}</a>
-        <a href="https://discord.gg/nwERSawufr" rel="noopener">Discord</a>
-        <a href="https://github.com/neodeskapp/neodesk">GitHub</a>
-      </nav>
-    </div>
-    <img class="wordmark only-dark" src="/img/logo-on-dark.svg" alt="" width="562" height="133">
-    <img class="wordmark only-light" src="/img/logo-on-light.svg" alt="" width="562" height="133">
-  </footer>
+{{FOOTER}}
 </div>
 
 <script>
@@ -517,6 +465,12 @@ footer {
     });
   });
   pick('docker', false);
+
+  /* The header's menu on narrow screens closes with Escape */
+  var siteMenu = document.querySelector('.top-menu');
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && siteMenu && siteMenu.open) { siteMenu.open = false; siteMenu.querySelector('summary').focus(); }
+  });
 
   /* The travelling mark. Every figure carries its own square and circle; on wide
      screens one fixed pair takes their place and moves from figure to figure as

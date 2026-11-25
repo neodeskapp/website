@@ -11,7 +11,8 @@ import type { StateBlock, StateCore, Token, RendererRule } from 'markdown-it';
 import hljs from 'highlight.js';
 import sharp from 'sharp';
 import config from './site.config.ts';
-import { docsIndexPage, docPage, sectionPage, notFoundPage, contactSheetPage, hreflangLinks, languageSwitch, socialTags, esc } from './src/layout.ts';
+import { docsIndexPage, docPage, sectionPage, notFoundPage, contactSheetPage, hreflangLinks, socialTags, esc } from './src/layout.ts';
+import { siteHeader, siteFooter } from './src/chrome.ts';
 import type { PreviewItem } from './src/layout.ts';
 import { render as renderPreview } from './src/og.ts';
 import type { OgData, OgTemplate } from './src/og.ts';
@@ -624,9 +625,11 @@ async function build() {
 	copyDir(at('public'), DIST);
 
 	// Styles and scripts, with a hash in the address so a new build is never served from cache
+	// The header and footer styles (src/chrome.css) go in front of site.css, and into the home page
+	const chromeCss = read(at('src/chrome.css'));
 	const assets: Record<string, string> = {};
 	for (const name of ['site.css', 'docs.css', 'docs.js']) {
-		const data = fs.readFileSync(at('src', name));
+		const data = name === 'site.css' ? Buffer.from(`${chromeCss}\n${read(at('src', name))}`) : fs.readFileSync(at('src', name));
 		assets[name] = `/assets/${name}?v=${hashOf(data)}`;
 		write(`assets/${name}`, data);
 	}
@@ -833,7 +836,18 @@ async function build() {
 			isAccessibleForFree: true
 		};
 		const { tabs, panels } = installMarkup(locale, h);
+		const chrome = {
+			config,
+			t: site.t,
+			locale,
+			home: `${locale.prefix}/`,
+			docs: `${locale.prefix}/docs/`,
+			languages: versions('/').filter((l) => l.code !== locale.code).map((l) => ({ locale: l, href: `${l.prefix}/` }))
+		};
 		const page = homeTemplate
+			.replace('{{CHROME_CSS}}', chromeCss.trim())
+			.replace('{{HEADER}}', siteHeader(chrome))
+			.replace('{{FOOTER}}', siteFooter(chrome))
 			.replace(/\{\{t:(\w+)\}\}/g, (m, key: keyof HomeStrings) => h[key] ?? m)
 			.replace('{{CLIENT_PORTS}}', portList)
 			.replace('{{INSTALL_TABS}}', tabs)
@@ -848,8 +862,7 @@ async function build() {
 			.replaceAll('{{VERSION}}', version)
 			.replaceAll('{{SITE_URL}}', SITE_URL)
 			.replace('{{ROBOTS}}', PRODUCTION ? '' : '<meta name="robots" content="noindex">\n')
-			.replace('{{HREFLANG}}', hreflangLinks(home, '/'))
-			.replace(/^ *\{\{LANGUAGES\}\}\n/m, languageSwitch(home, '/') ? `    ${languageSwitch(home, '/')}\n` : '');
+			.replace('{{HREFLANG}}', hreflangLinks(home, '/'));
 		for (const m of page.matchAll(/\{\{[\w:]+\}\}/g)) problems.push(`src/home.html: ${m[0]} was not filled in for ${locale.label}`);
 		write(`${locale.prefix.replace(/^\//, '')}${locale.prefix ? '/' : ''}index.html`, page);
 	}

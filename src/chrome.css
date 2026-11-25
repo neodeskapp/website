@@ -1,0 +1,85 @@
+/* The header and the footer of every page (src/chrome.ts), and the page edge they share
+   with the content. The build puts this file in front of site.css and into the home
+   page's own styles, so both read the same rules. */
+:root {
+  /* The left and right edge of everything: 16 px on a phone, up to 56 px, and a centred
+     column of 1400 px on wide screens */
+  --edge: max(16px, min(4vw, 56px), calc((100vw - 1400px) / 2));
+  --top: 64px;
+}
+
+.top {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: var(--top);
+  padding: 0 var(--edge);
+  border-bottom: 1px solid var(--rule);
+  background: var(--bg);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.4;
+}
+.top .logo { display: block; flex: none; }
+.top .logo img { display: block; width: 118px; height: 28px; }
+.top-tools { display: flex; flex: 1 1 auto; align-items: center; justify-content: flex-end; gap: 8px; min-width: 0; }
+.top-nav { display: flex; flex: none; align-items: center; gap: 24px; margin-left: 16px; }
+.top-nav a, .top-menu-panel a { font-weight: 500; text-decoration: none; }
+.top-nav a { padding: 8px 0; }
+.top-nav a:hover, .top-menu-panel a:hover { text-decoration: underline; }
+.top-nav .top-lang { padding-left: 24px; border-left: 1px solid var(--rule); color: var(--muted); }
+.top-nav .top-lang:hover { color: var(--text); }
+
+/* Narrow screens: the entries go into a menu that opens without scripts */
+.top-menu { display: none; position: static; flex: none; }
+.top-menu summary {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+.top-menu summary::-webkit-details-marker { display: none; }
+.top-menu summary:hover { border-color: var(--muted); }
+.top-menu[open] summary { border-color: var(--text); }
+.top-menu-panel {
+  position: absolute;
+  top: calc(100% + 1px);
+  right: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 8px var(--edge) 16px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--bg);
+}
+.top-menu-panel a { display: flex; align-items: center; min-height: 48px; border-bottom: 1px solid var(--rule); }
+.top-menu-panel a:last-child { border-bottom: 0; }
+.top-menu-panel .top-lang { color: var(--muted); }
+
+@media (max-width: 719px) {
+  .top-nav { display: none; }
+  .top-menu { display: block; }
+}
+
+/* Footer */
+.foot {
+  padding: 28px var(--edge) clamp(32px, 4vw, 56px);
+  border-top: 1px solid var(--rule);
+  background: var(--bg);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.foot-line { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 40px; }
+.foot-line p { margin: 0; }
+.foot-line nav { display: flex; flex-wrap: wrap; gap: 8px 24px; }
+.foot-line a { padding: 4px 0; }
+.foot .wordmark { display: block; width: 100%; height: auto; margin-top: clamp(56px, 8vw, 120px); }

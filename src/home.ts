@@ -12,9 +12,6 @@ export interface HomeStrings {
 	description: string;
 	/** The description in the home page's structured data; English uses config.summary */
 	summary?: string;
-	logoLabel: string;
-	navMain: string;
-	docs: string;
 	heroTitle: string;
 	heroLead: string;
 	install: string;
@@ -41,10 +38,6 @@ export interface HomeStrings {
 	detailAlt: string;
 	dataTitle: string;
 	dataLead: string;
-	footer: string;
-	more: string;
-	changelog: string;
-	security: string;
 	copy: string;
 	copied: string;
 	/** The install tabs, built from src/install.ts; {os} is the tab's name, {href} the docs page */
@@ -58,9 +51,6 @@ export const HOME: Record<string, Partial<HomeStrings>> = {
 	en: {
 		title: 'NeoDesk, your own remote desktop server',
 		description: 'NeoDesk is a self-hosted, RustDesk-compatible server written in Go, with a web console for the devices you look after.',
-		logoLabel: 'NeoDesk home',
-		navMain: 'Main',
-		docs: 'Docs',
 		heroTitle: 'Your <span class="blue">own</span> remote desktop server',
 		heroLead: 'A RustDesk-compatible server written in Go, with a web console for the devices you look after.',
 		install: 'Install',
@@ -85,10 +75,6 @@ export const HOME: Record<string, Partial<HomeStrings>> = {
 		detailAlt: 'A device opened in the console: its current load and identity, with tabs for hardware, metrics, live data, tags and notes, and actions, and a Connect button',
 		dataTitle: 'Your data stays on <span class="blue">your server</span>',
 		dataLead: 'NeoDesk sends no analytics, crash reports or usage data to its developers. The code is licensed under AGPL-3.0. Read the <a class="teal" href="{{PREFIX}}/docs/project/privacy">privacy notes</a> and the <a class="teal" href="{{PREFIX}}/docs/project/license">license</a>.',
-		footer: 'NeoDesk works with RustDesk clients. Open source under AGPL-3.0.',
-		more: 'More',
-		changelog: 'Changelog',
-		security: 'Security',
 		copy: 'Copy',
 		copied: 'Copied',
 		installOn: 'Install on',
@@ -101,9 +87,6 @@ export const HOME: Record<string, Partial<HomeStrings>> = {
 		description: 'NeoDesk ist ein selbst gehosteter, RustDesk-kompatibler Server in Go, mit einer Web-Konsole für die Geräte, die du betreust.',
 		summary:
 			'NeoDesk ist ein Remote-Desktop-Server, den du selbst betreibst. Er spricht das RustDesk-Protokoll, deshalb verbindet sich der normale RustDesk-Client mit ihm. Ein einziges Go-Binary stellt den ID-Server, das Relay, die Client-API und eine Web-Konsole für die Geräte bereit, die du betreust. NeoDesk ist Open Source unter der AGPL-3.0.',
-		logoLabel: 'NeoDesk Startseite',
-		navMain: 'Hauptmenü',
-		docs: 'Doku',
 		heroTitle: 'Dein <span class="blue">eigener</span> Remote-Desktop-Server',
 		heroLead: 'Ein RustDesk-kompatibler Server in Go, mit einer Web-Konsole für die Geräte, die du betreust.',
 		install: 'Installieren',
@@ -128,10 +111,6 @@ export const HOME: Record<string, Partial<HomeStrings>> = {
 		detailAlt: 'Ein Gerät in der Konsole: seine aktuelle Auslastung und Identität, mit Tabs für Hardware, Metriken, Live-Daten, Tags und Notizen sowie Aktionen, und die Schaltfläche Verbinden',
 		dataTitle: 'Deine Daten bleiben auf <span class="blue">deinem Server</span>',
 		dataLead: 'NeoDesk schickt seinen Entwicklern keine Analysedaten, keine Absturzberichte und keine Nutzungsdaten. Der Code steht unter der AGPL-3.0. Mehr dazu in den <a class="teal" href="{{PREFIX}}/docs/project/privacy">Hinweisen zum Datenschutz</a> und in der <a class="teal" href="{{PREFIX}}/docs/project/license">Lizenz</a>.',
-		footer: 'NeoDesk funktioniert mit RustDesk-Clients. Open Source unter der AGPL-3.0.',
-		more: 'Mehr',
-		changelog: 'Changelog',
-		security: 'Sicherheit',
 		copy: 'Kopieren',
 		copied: 'Kopiert',
 		installOn: 'Installieren auf',

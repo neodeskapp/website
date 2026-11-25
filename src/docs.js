@@ -65,16 +65,25 @@
   });
 
   /* ---- Menu on small screens ---- */
+  /* The sidebar opens as a panel under the header, which does not stay at the top,
+     so the panel starts where the header ends at that moment. The site menu (a
+     <details> in the header) and the panel close each other. */
   var menu = $('.menu-button');
-  var menuLabel = menu ? menu.textContent : '';
+  var siteMenu = $('.top-menu');
+  var header = $('header.top');
   function setMenu(open) {
+    if (open && header) doc.documentElement.style.setProperty('--panel-top', Math.max(0, header.getBoundingClientRect().bottom) + 'px');
     doc.documentElement.classList.toggle('menu-open', open);
-    if (menu) {
-      menu.setAttribute('aria-expanded', open ? 'true' : 'false');
-      menu.textContent = open ? menu.getAttribute('data-close') || 'Close' : menuLabel;
-    }
+    if (menu) menu.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (open && siteMenu) siteMenu.open = false;
   }
   if (menu) menu.addEventListener('click', function () { setMenu(menu.getAttribute('aria-expanded') !== 'true'); });
+  if (siteMenu) siteMenu.addEventListener('toggle', function () { if (siteMenu.open) setMenu(false); });
+  doc.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    if (siteMenu && siteMenu.open) { siteMenu.open = false; $('summary', siteMenu).focus(); }
+    if (menu && menu.getAttribute('aria-expanded') === 'true') { setMenu(false); menu.focus(); }
+  });
 
   /* ---- Keep the current page visible in a long sidebar ---- */
   var here = $('.sidebar li a[aria-current="page"]');

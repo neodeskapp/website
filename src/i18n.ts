@@ -32,6 +32,8 @@ export const localeOfPath = (urlPath: string) => LOCALES.find((l) => l.prefix &&
 export interface Strings {
 	skip: string;
 	menu: string;
+	/** The button that opens the docs' sidebar on narrow screens */
+	contents: string;
 	close: string;
 	docs: string;
 	documentation: string;
@@ -92,6 +94,7 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 	en: {
 		skip: 'Skip to the content',
 		menu: 'Menu',
+		contents: 'Contents',
 		close: 'Close',
 		docs: 'Docs',
 		documentation: 'Documentation',
@@ -140,6 +143,7 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 	de: {
 		skip: 'Zum Inhalt springen',
 		menu: 'Menü',
+		contents: 'Inhalt',
 		close: 'Schließen',
 		docs: 'Doku',
 		documentation: 'Dokumentation',
