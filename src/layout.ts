@@ -215,13 +215,20 @@ function pageHead(shared: Shared, title: string, markdownPath: string) {
     </div>`;
 }
 
-/** The logo or the icon in front of a row, and the classes that lay the row out around it */
+/**
+ * The logo or the icon in front of a row, and the classes that lay the row out around it.
+ * SVG logos are transparent and stand alone; a raster logo has its own background, so it gets a box.
+ */
 const rowClass = (p: Page) => {
 	const c = [p.parent && 'child', (p.logo || p.icon) && 'tile'].filter(Boolean);
 	return c.length ? ` class="${c.join(' ')}"` : '';
 };
 const rowTile = (p: Page) =>
-	p.logo ? `<img src="/img/compare/${esc(p.logo)}" alt="" width="40" height="40" loading="lazy">` : p.icon ? `<span class="row-icon">${iconSvg(p.icon)}</span>` : '';
+	p.logo
+		? `<img${p.logo.endsWith('.svg') ? '' : ' class="boxed"'} src="/img/compare/${esc(p.logo)}" alt="" width="32" height="32" loading="lazy">`
+		: p.icon
+			? `<span class="row-icon">${iconSvg(p.icon)}</span>`
+			: '';
 
 function rows(shared: Shared, items: Page[]) {
 	return `<ul class="rows">
