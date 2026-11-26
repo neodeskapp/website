@@ -563,7 +563,7 @@ function installMarkup(locale: Locale, h: HomeStrings) {
 	const panels = INSTALLS.map(
 		(m) => `        <div class="term" role="tabpanel" id="install-${m.id}" aria-labelledby="tab-${m.id}" data-os="${m.id}">
           <div class="term-bar"><span class="term-os">${esc(m.tab)}</span><button type="button" class="term-copy" aria-label="${esc(fill(h.copyCommands, { os: m.tab }))}">${esc(h.copy)}</button></div>
-          <pre class="term-lines" tabindex="0" aria-label="${esc(fill(h.commands, { os: m.tab }))}">${m.lines.map((l) => `<code>${esc(l)}</code>`).join('\n')}</pre>
+          <pre class="term-lines">${m.lines.map((l) => `<code>${esc(l)}</code>`).join('\n')}</pre>
         </div>`
 	).join('\n');
 	return { tabs: `${tabs}\n${notes}`, panels };

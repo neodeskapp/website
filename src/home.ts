@@ -53,7 +53,6 @@ export interface HomeStrings {
 	installOn: string;
 	docsPageHas: string;
 	copyCommands: string;
-	commands: string;
 }
 
 export const HOME: Record<string, Partial<HomeStrings>> = {
@@ -93,8 +92,7 @@ export const HOME: Record<string, Partial<HomeStrings>> = {
 		copyFailed: "Couldn't copy",
 		installOn: 'Install on',
 		docsPageHas: '<a class="teal" href="{href}">The docs page</a> has every option.',
-		copyCommands: 'Copy the {os} install commands',
-		commands: '{os} install commands'
+		copyCommands: 'Copy the {os} install commands'
 	},
 	de: {
 		title: 'NeoDesk: eigener Remote-Desktop-Server, RustDesk-kompatibel',
@@ -134,8 +132,7 @@ export const HOME: Record<string, Partial<HomeStrings>> = {
 		copyFailed: 'Kopieren fehlgeschlagen',
 		installOn: 'Installieren auf',
 		docsPageHas: '<a class="teal" href="{href}">Auf der Doku-Seite</a> stehen alle Optionen.',
-		copyCommands: 'Die Installationsbefehle für {os} kopieren',
-		commands: 'Installationsbefehle für {os}'
+		copyCommands: 'Die Installationsbefehle für {os} kopieren'
 	}
 };
 
