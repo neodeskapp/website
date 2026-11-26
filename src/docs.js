@@ -360,9 +360,8 @@
     var i = options().indexOf(option);
     if (option && i !== selected) select(i);
   });
+  // Only Ctrl+K or Cmd+K: a shortcut of one character would fire on dictated text too
   doc.addEventListener('keydown', function (e) {
-    var typing = /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable;
     if ((e.key === 'k' || e.key === 'K') && (e.ctrlKey || e.metaKey) && !e.altKey) { e.preventDefault(); open(); }
-    else if (e.key === '/' && !typing && !e.ctrlKey && !e.metaKey && !e.altKey) { e.preventDefault(); open(); }
   });
 })();
