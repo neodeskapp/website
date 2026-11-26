@@ -396,6 +396,7 @@
   font-size: 18px;
   outline: none;
 }
+.search-field input::placeholder { color: var(--muted); opacity: 1; }
 .search-field input::-webkit-search-cancel-button { display: none; }
 .search-close { appearance: none; min-height: 40px; padding: 0 12px; border: 0; background: none; color: var(--muted); font-size: 14px; cursor: pointer; }
 .search-close:hover { color: var(--text); text-decoration: underline; }
