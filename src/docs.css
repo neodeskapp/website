@@ -161,7 +161,8 @@
 .article h1.display {
   font-family: var(--display);
   font-weight: 700;
-  font-size: clamp(44px, 6vw, 76px);
+  /* 44 px from about 400 px wide; less on the narrowest phones, so the word fits */
+  font-size: clamp(34px, max(6vw, min(11vw, 44px)), 76px);
   line-height: 0.95;
   letter-spacing: -0.045em;
 }

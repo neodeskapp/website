@@ -16,7 +16,7 @@
 }
 .dl-hero .dl-mark { justify-self: end; width: clamp(240px, 30vw, 440px); }
 .dl-start { min-width: 0; }
-.dl h1.display { margin: 0 0 18px; font-size: clamp(44px, 5.4vw, 84px); line-height: 0.92; letter-spacing: -0.048em; }
+.dl h1.display { margin: 0 0 18px; font-size: clamp(34px, max(5.4vw, min(11vw, 44px)), 84px); line-height: 0.92; letter-spacing: -0.048em; }
 .dl .lead { margin-bottom: 36px; max-width: 46ch; }
 
 .dl-rec { max-width: 640px; }

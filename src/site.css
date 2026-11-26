@@ -74,6 +74,8 @@ body {
   line-height: 1.65;
 }
 img { max-width: 100%; height: auto; }
+/* A long word in a heading breaks rather than run off a phone's screen */
+h1, h2, h3, h4 { overflow-wrap: break-word; hyphens: auto; }
 a { color: inherit; text-underline-offset: 3px; text-decoration-thickness: 1px; }
 button { font: inherit; color: inherit; }
 a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-visible {
