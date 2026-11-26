@@ -336,7 +336,9 @@
   dialog.addEventListener('click', function (e) { if (e.target === dialog) dialog.close(); });
   input.addEventListener('input', function () { if (items) render(); });
   input.addEventListener('keydown', function (e) {
-    if (e.key === 'ArrowDown') { e.preventDefault(); select(selected + 1); }
+    // Escape closes at once; a search field would first clear itself
+    if (e.key === 'Escape') { e.preventDefault(); dialog.close(); }
+    else if (e.key === 'ArrowDown') { e.preventDefault(); select(selected + 1); }
     else if (e.key === 'ArrowUp') { e.preventDefault(); select(selected - 1); }
     else if (e.key === 'Home' && e.ctrlKey) { e.preventDefault(); select(0); }
     else if (e.key === 'End' && e.ctrlKey) { e.preventDefault(); select(-1); }
