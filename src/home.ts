@@ -47,6 +47,8 @@ export interface HomeStrings {
 	questionsTitle: string;
 	copy: string;
 	copied: string;
+	/** What the copy button says when the browser didn't let it copy */
+	copyFailed: string;
 	/** The install tabs, built from src/install.ts; {os} is the tab's name, {href} the docs page */
 	installOn: string;
 	docsPageHas: string;
@@ -88,6 +90,7 @@ export const HOME: Record<string, Partial<HomeStrings>> = {
 		questionsTitle: 'Questions',
 		copy: 'Copy',
 		copied: 'Copied',
+		copyFailed: "Couldn't copy",
 		installOn: 'Install on',
 		docsPageHas: '<a class="teal" href="{href}">The docs page</a> has every option.',
 		copyCommands: 'Copy the {os} install commands',
@@ -128,6 +131,7 @@ export const HOME: Record<string, Partial<HomeStrings>> = {
 		questionsTitle: 'Fragen und Antworten',
 		copy: 'Kopieren',
 		copied: 'Kopiert',
+		copyFailed: 'Kopieren fehlgeschlagen',
 		installOn: 'Installieren auf',
 		docsPageHas: '<a class="teal" href="{href}">Auf der Doku-Seite</a> stehen alle Optionen.',
 		copyCommands: 'Die Installationsbefehle für {os} kopieren',

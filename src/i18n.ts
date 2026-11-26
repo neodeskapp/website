@@ -48,6 +48,8 @@ export interface Strings {
 	updated: string;
 	copyMarkdown: string;
 	copied: string;
+	/** What a copy button says when the browser didn't let it copy */
+	copyFailed: string;
 	editOnGitHub: string;
 	previous: string;
 	next: string;
@@ -133,6 +135,7 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		updated: 'Updated',
 		copyMarkdown: 'Copy as Markdown',
 		copied: 'Copied',
+		copyFailed: "Couldn't copy",
 		editOnGitHub: 'Edit on GitHub',
 		previous: 'Previous',
 		next: 'Next',
@@ -199,6 +202,7 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		updated: 'Geändert am',
 		copyMarkdown: 'Als Markdown kopieren',
 		copied: 'Kopiert',
+		copyFailed: 'Kopieren fehlgeschlagen',
 		editOnGitHub: 'Auf GitHub bearbeiten',
 		previous: 'Zurück',
 		next: 'Weiter',

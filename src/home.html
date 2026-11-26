@@ -444,28 +444,39 @@ code, .mono { font-family: var(--mono); font-size: 0.92em; }
 
 {{FOOTER}}
 </div>
+<p class="vh" role="status" id="copy-said"></p>
 
 <script>
 (function () {
   var root = document.documentElement;
 
-  /* Copy */
+  /* Copy: the button shows the outcome for a moment, and the status says it */
+  var copyStatus = document.getElementById('copy-said');
   function copyText(text, btn) {
-    function done() {
-      btn.textContent = '{{t:copied}}';
+    // The button's aria-label follows what it shows, so its name holds the visible word
+    function show(word) {
+      var aria = btn.getAttribute('data-aria') || btn.getAttribute('aria-label');
+      btn.setAttribute('data-aria', aria);
+      btn.textContent = word;
+      btn.setAttribute('aria-label', word);
+      copyStatus.textContent = '';
+      setTimeout(function () { copyStatus.textContent = word; }, 50);
       clearTimeout(btn._t);
-      btn._t = setTimeout(function () { btn.textContent = '{{t:copy}}'; }, 1600);
+      btn._t = setTimeout(function () { btn.textContent = '{{t:copy}}'; btn.setAttribute('aria-label', aria); }, 1600);
     }
+    function done() { show('{{t:copied}}'); }
     function fallback() {
       var ta = document.createElement('textarea');
+      var ok = false;
       ta.value = text;
       ta.setAttribute('readonly', '');
       ta.style.position = 'fixed';
       ta.style.opacity = '0';
       document.body.appendChild(ta);
       ta.select();
-      try { if (document.execCommand('copy')) done(); } catch (e) {}
+      try { ok = document.execCommand('copy'); } catch (e) {}
       document.body.removeChild(ta);
+      show(ok ? '{{t:copied}}' : '{{t:copyFailed}}');
     }
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(done, fallback);

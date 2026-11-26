@@ -95,6 +95,7 @@ export interface DownloadStrings {
 	copy: string;
 	copyCode: string;
 	copied: string;
+	copyFailed: string;
 }
 
 export const DOWNLOAD: Record<string, DownloadStrings> = {
@@ -188,7 +189,8 @@ export const DOWNLOAD: Record<string, DownloadStrings> = {
 		help: 'Ask on the <a href="{discord}" rel="noopener">NeoDesk Discord</a> or in the <a href="{discussions}" rel="noopener">discussions on GitHub</a>.',
 		copy: 'Copy',
 		copyCode: 'Copy these commands',
-		copied: 'Copied'
+		copied: 'Copied',
+		copyFailed: "Couldn't copy"
 	},
 	de: {
 		title: 'NeoDesk herunterladen',
@@ -280,7 +282,8 @@ export const DOWNLOAD: Record<string, DownloadStrings> = {
 		help: 'Frag auf dem <a href="{discord}" rel="noopener">NeoDesk-Discord</a> oder in den <a href="{discussions}" rel="noopener">Diskussionen auf GitHub</a>.',
 		copy: 'Kopieren',
 		copyCode: 'Diese Befehle kopieren',
-		copied: 'Kopiert'
+		copied: 'Kopiert',
+		copyFailed: 'Kopieren fehlgeschlagen'
 	}
 };
 
@@ -517,7 +520,7 @@ ${rows}
 			.join('\n');
 
 	const codeBlock = (lines: string[]) =>
-		`<div class="code"><button type="button" class="copy" aria-label="${esc(d.copyCode)}" data-copied="${esc(d.copied)}">${esc(d.copy)}</button><pre tabindex="0"><code>${lines.map(esc).join('\n')}</code></pre></div>`;
+		`<div class="code"><button type="button" class="copy" aria-label="${esc(d.copyCode)}" data-copied="${esc(d.copied)}" data-failed="${esc(d.copyFailed)}">${esc(d.copy)}</button><pre tabindex="0"><code>${lines.map(esc).join('\n')}</code></pre></div>`;
 	const repo = r
 		? `      <section class="dl-os dl-repo" id="repository" aria-labelledby="repository-title">
         <h3 id="repository-title">${esc(d.repoTitle)}</h3>

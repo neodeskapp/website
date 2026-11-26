@@ -10,31 +10,58 @@
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   };
 
-  /* ---- Copy buttons ---- */
-  function copyText(text, done) {
+  /* ---- Copy buttons ----
+     A copy shows "Copied" on the button and says it in a status for screen readers;
+     a copy the browser refuses says so the same way. */
+  var copyStatus = doc.createElement('p');
+  copyStatus.className = 'vh';
+  copyStatus.setAttribute('role', 'status');
+  doc.body.appendChild(copyStatus);
+  function sayCopy(text) {
+    // Emptied first, so the same words are said again on the next copy
+    copyStatus.textContent = '';
+    setTimeout(function () { copyStatus.textContent = text; }, 50);
+  }
+  function copyText(text, done, failed) {
     function fallback() {
       var ta = doc.createElement('textarea');
+      var ok = false;
       ta.value = text;
       ta.setAttribute('readonly', '');
       ta.style.position = 'fixed';
       ta.style.opacity = '0';
       doc.body.appendChild(ta);
       ta.select();
-      try { if (doc.execCommand('copy')) done(); } catch (e) { /* nothing more to try */ }
+      try { ok = doc.execCommand('copy'); } catch (e) { /* nothing more to try */ }
       doc.body.removeChild(ta);
+      if (ok) done();
+      else if (failed) failed();
     }
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback);
     else fallback();
   }
+  // Shows a word on a copy button for a moment; its aria-label follows, so its name holds what it shows
+  function flash(btn, text) {
+    var label = btn.getAttribute('data-label') || btn.textContent;
+    var aria = btn.hasAttribute('data-aria') ? btn.getAttribute('data-aria') : btn.getAttribute('aria-label');
+    btn.setAttribute('data-label', label);
+    if (aria !== null) btn.setAttribute('data-aria', aria);
+    btn.textContent = text;
+    if (aria !== null) btn.setAttribute('aria-label', text);
+    sayCopy(text);
+    clearTimeout(btn._t);
+    btn._t = setTimeout(function () {
+      btn.textContent = label;
+      if (aria !== null) btn.setAttribute('aria-label', aria);
+    }, 1600);
+  }
   doc.addEventListener('click', function (e) {
     var btn = e.target.closest && e.target.closest('.copy');
     if (!btn) return;
-    var label = btn.getAttribute('data-label') || btn.textContent;
-    btn.setAttribute('data-label', label);
     copyText($('code', btn.parentNode).textContent, function () {
-      btn.textContent = btn.getAttribute('data-copied') || 'Copied';
-      clearTimeout(btn._t);
-      btn._t = setTimeout(function () { btn.textContent = label; }, 1600);
+      flash(btn, btn.getAttribute('data-copied') || 'Copied');
+    }, function () {
+      flash(btn, btn.getAttribute('data-failed') || "Couldn't copy");
     });
   });
 
@@ -51,9 +78,10 @@
     }).then(function (text) {
       copyText(text, function () {
         link.textContent = link.getAttribute('data-copied') || label;
+        sayCopy(link.textContent);
         clearTimeout(link._t);
         link._t = setTimeout(function () { link.textContent = label; }, 1600);
-      });
+      }, function () { location.href = link.href; });
     }).catch(function () { location.href = link.href; });
   });
 

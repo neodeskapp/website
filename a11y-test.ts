@@ -324,7 +324,7 @@ const CHECKS: Record<string, () => Promise<void>> = {
 			await f.page.click('[data-test-target]');
 			await f.page.waitForTimeout(300);
 			const statusText = await f.page.evaluate(() => Array.from(document.querySelectorAll('[role="status"], [aria-live="polite"]')).map((el) => el.textContent!.trim()).join('|'));
-			report(/couldn|nicht kopier/i.test(statusText), `copy: ${p} says when the copy failed`, statusText);
+			report(/couldn|fehlgeschlagen/i.test(statusText), `copy: ${p} says when the copy failed`, statusText);
 			await f.context.close();
 		}
 	},

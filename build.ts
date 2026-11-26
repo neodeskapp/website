@@ -465,7 +465,7 @@ function makeMarkdown(page: Page, usedShots: Set<string>, t: Strings, linkTo: (h
 		const output = lang === 'plaintext';
 		return (
 			`<div class="code${output ? ' code-output' : ''}">` +
-			(output ? '' : `<button type="button" class="copy" aria-label="${esc(t.copyCode)}" data-copied="${esc(t.copied)}">${esc(t.copy)}</button>`) +
+			(output ? '' : `<button type="button" class="copy" aria-label="${esc(t.copyCode)}" data-copied="${esc(t.copied)}" data-failed="${esc(t.copyFailed)}">${esc(t.copy)}</button>`) +
 			`<pre tabindex="0"><code>${html}</code></pre></div>\n`
 		);
 	};
