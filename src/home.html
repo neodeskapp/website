@@ -449,14 +449,16 @@ code, .mono { font-family: var(--mono); font-size: 0.92em; }
 
 {{FOOTER}}
 </div>
-<p class="vh" role="status" id="copy-said"></p>
+<p class="vh" role="status" id="copy-said" data-copy="{{t:copy}}" data-copied="{{t:copied}}" data-failed="{{t:copyFailed}}"></p>
 
 <script>
 (function () {
   var root = document.documentElement;
 
   /* Copy: the button shows the outcome for a moment, and the status says it */
+  // The words come from the status's data attributes, so a quote in them can't break the script
   var copyStatus = document.getElementById('copy-said');
+  var words = copyStatus.dataset;
   function copyText(text, btn) {
     // The button's aria-label follows what it shows, so its name holds the visible word
     function show(word) {
@@ -467,9 +469,9 @@ code, .mono { font-family: var(--mono); font-size: 0.92em; }
       copyStatus.textContent = '';
       setTimeout(function () { copyStatus.textContent = word; }, 50);
       clearTimeout(btn._t);
-      btn._t = setTimeout(function () { btn.textContent = '{{t:copy}}'; btn.setAttribute('aria-label', aria); }, 1600);
+      btn._t = setTimeout(function () { btn.textContent = words.copy; btn.setAttribute('aria-label', aria); }, 1600);
     }
-    function done() { show('{{t:copied}}'); }
+    function done() { show(words.copied); }
     function fallback() {
       var ta = document.createElement('textarea');
       var ok = false;
@@ -481,7 +483,7 @@ code, .mono { font-family: var(--mono); font-size: 0.92em; }
       ta.select();
       try { ok = document.execCommand('copy'); } catch (e) {}
       document.body.removeChild(ta);
-      show(ok ? '{{t:copied}}' : '{{t:copyFailed}}');
+      show(ok ? words.copied : words.failed);
     }
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(done, fallback);
