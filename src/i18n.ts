@@ -95,6 +95,8 @@ export interface Strings {
 	copyCode: string;
 	/** The hidden name of an empty first header cell, over a table's row labels */
 	tableTopic: string;
+	/** Hidden words after a screenshot's description in its link: ", full size" */
+	fullSize: string;
 	/** The names of a code block, a command's output and a table a reader can scroll sideways */
 	codeBlock: string;
 	outputBlock: string;
@@ -179,6 +181,7 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		copy: 'Copy',
 		copyCode: 'Copy this code',
 		tableTopic: 'Topic',
+		fullSize: ', full size',
 		codeBlock: 'Code',
 		outputBlock: 'Output',
 		tableBlock: 'Table',
@@ -251,6 +254,7 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		copy: 'Kopieren',
 		copyCode: 'Diesen Code kopieren',
 		tableTopic: 'Thema',
+		fullSize: ', in voller Größe',
 		codeBlock: 'Code',
 		outputBlock: 'Ausgabe',
 		tableBlock: 'Tabelle',

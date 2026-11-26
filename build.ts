@@ -438,7 +438,7 @@ function makeMarkdown(page: Page, usedShots: Set<string>, t: Strings, linkTo: (h
 			`<source media="(prefers-color-scheme: dark)" type="image/webp" srcset="${shot(`${name}-dark.webp`)}">` +
 			`<source media="(prefers-color-scheme: dark)" srcset="${shot(`${name}-dark.png`)}">` +
 			`<source type="image/webp" srcset="${shot(`${name}-light.webp`)}">` +
-			`<img src="${shot(`${name}-light.png`)}" alt="${esc(alt)}" width="${width}" height="${height}" loading="lazy" decoding="async"></picture></a>`
+			`<img src="${shot(`${name}-light.png`)}" alt="${esc(alt)}" width="${width}" height="${height}" loading="lazy" decoding="async"></picture><span class="vh">${esc(t.fullSize)}</span></a>`
 		);
 	};
 
