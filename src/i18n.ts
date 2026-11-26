@@ -47,6 +47,8 @@ export interface Strings {
 	onThisPage: string;
 	updated: string;
 	copyMarkdown: string;
+	/** The name of the link next to a heading: "Link to this section: {title}" */
+	linkToSection: string;
 	copied: string;
 	/** What a copy button says when the browser didn't let it copy */
 	copyFailed: string;
@@ -140,6 +142,7 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		copyMarkdown: 'Copy as Markdown',
 		copied: 'Copied',
 		copyFailed: "Couldn't copy",
+		linkToSection: 'Link to this section: {title}',
 		editOnGitHub: 'Edit on GitHub',
 		previous: 'Previous',
 		next: 'Next',
@@ -210,6 +213,7 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		copyMarkdown: 'Als Markdown kopieren',
 		copied: 'Kopiert',
 		copyFailed: 'Kopieren fehlgeschlagen',
+		linkToSection: 'Link zu diesem Abschnitt: {title}',
 		editOnGitHub: 'Auf GitHub bearbeiten',
 		previous: 'Zurück',
 		next: 'Weiter',

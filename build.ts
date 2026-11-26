@@ -380,8 +380,9 @@ function makeMarkdown(page: Page, usedShots: Set<string>, t: Strings, linkTo: (h
 	md.renderer.rules.note_open = (tokens: Token[], i: number) =>
 		`<div class="note note-${tokens[i].meta}" role="note"><p class="note-label">${tokens[i].meta === 'warning' ? t.warning : t.note}</p>\n`;
 
-	// Heading ids, the "On this page" list, and a link on each heading. A heading may end
-	// in {#id} to fix its id and {alias=old-id} to keep an old id working after a rename.
+	// Heading ids, the "On this page" list, and a link to each heading next to it. A
+	// heading may end in {#id} to fix its id and {alias=old-id} to keep an old id working
+	// after a rename.
 	md.core.ruler.push('headings', (state: StateCore) => {
 		const t = state.tokens;
 		for (let i = 0; i < t.length; i++) {
@@ -395,14 +396,8 @@ function makeMarkdown(page: Page, usedShots: Set<string>, t: Strings, linkTo: (h
 			if (level === 1) continue;
 			const id = attrs.id ?? slug(text);
 			t[i].attrSet('id', id);
-			t[i].meta = { aliases: attrs.aliases };
+			t[i].meta = { aliases: attrs.aliases, id, text, level };
 			page.headings.push({ level, id, aliases: attrs.aliases, text, line: t[i].map?.[0] ?? 0 });
-			const a = new state.Token('link_open', 'a', 1);
-			a.attrSet('href', `#${id}`);
-			a.attrSet('class', 'anchor');
-			a.meta = { anchor: true };
-			children.unshift(a);
-			children.push(new state.Token('link_close', 'a', -1));
 		}
 	});
 
@@ -412,12 +407,10 @@ function makeMarkdown(page: Page, usedShots: Set<string>, t: Strings, linkTo: (h
 	md.renderer.rules.link_open = (tokens, i, opts, env, self) => {
 		const token = tokens[i];
 		const href = token.attrGet('href') ?? '';
-		if (!token.meta?.anchor) {
-			page.links.push(href);
-			if (/^https?:\/\//.test(href)) token.attrSet('rel', 'noopener');
-			else if (href.startsWith('/docs')) token.attrSet('href', url(linkTo(href)));
-			else if (href.startsWith('/')) token.attrSet('href', url(href));
-		}
+		page.links.push(href);
+		if (/^https?:\/\//.test(href)) token.attrSet('rel', 'noopener');
+		else if (href.startsWith('/docs')) token.attrSet('href', url(linkTo(href)));
+		else if (href.startsWith('/')) token.attrSet('href', url(href));
 		return defaultLinkOpen(tokens, i, opts, env, self);
 	};
 
@@ -475,9 +468,19 @@ function makeMarkdown(page: Page, usedShots: Set<string>, t: Strings, linkTo: (h
 		for (const p of checkCommands(state.tokens, { quotedPage: page.quoted })) problems.push(`${page.rel}:${p.line + page.bodyLine - 1}: ${p.message}`);
 	});
 
-	// The old ids of a renamed heading, as empty targets right before it
-	md.renderer.rules.heading_open = (tokens, i, opts, env, self) =>
-		(tokens[i].meta?.aliases ?? []).map((a: string) => `<span id="${esc(a)}" class="anchor-alias"></span>`).join('') + self.renderToken(tokens, i, opts);
+	// The old ids of a renamed heading, as empty targets right before it. A heading with
+	// an id sits in a row with a link to it after it; the heading itself is no link, so its
+	// name stays its text.
+	md.renderer.rules.heading_open = (tokens, i, opts, env, self) => {
+		const meta = tokens[i].meta;
+		const aliases = (meta?.aliases ?? []).map((a: string) => `<span id="${esc(a)}" class="anchor-alias"></span>`).join('');
+		return aliases + (meta?.id ? `<div class="heading heading-${meta.level}">` : '') + self.renderToken(tokens, i, opts);
+	};
+	md.renderer.rules.heading_close = (tokens, i, opts, env, self) => {
+		const meta = tokens[i - 2]?.meta;
+		const close = self.renderToken(tokens, i, opts);
+		return meta?.id ? `${close.trimEnd()}<a class="anchor" href="#${esc(meta.id)}" aria-label="${esc(fill(t.linkToSection, { title: meta.text }))}"></a></div>\n` : close;
+	};
 
 	md.renderer.rules.table_open = () => '<div class="table-wrap"><table>\n';
 	md.renderer.rules.table_close = () => '</table></div>\n';

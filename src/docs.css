@@ -207,9 +207,15 @@
 .prose h2 { margin: 52px 0 16px; padding-top: 28px; border-top: 1px solid var(--rule); font-size: 26px; font-weight: 600; letter-spacing: -0.01em; }
 .prose h3 { margin: 36px 0 12px; font-size: 20px; font-weight: 600; }
 .prose h4 { margin: 28px 0 10px; font-size: 17px; font-weight: 600; }
-.prose .anchor { color: inherit; text-decoration: none; }
-.prose .anchor::after { content: " #"; color: var(--muted); opacity: 0; }
-.prose .anchor:hover::after, .prose .anchor:focus-visible::after { opacity: 1; }
+/* A heading and the link to it in one row; the row carries the heading's spacing */
+.prose .heading { display: flex; align-items: baseline; gap: 0 0.4em; }
+.prose .heading > h2, .prose .heading > h3, .prose .heading > h4 { margin: 0; padding: 0; border: 0; }
+.prose .heading-2 { margin: 52px 0 16px; padding-top: 28px; border-top: 1px solid var(--rule); }
+.prose .heading-3 { margin: 36px 0 12px; }
+.prose .heading-4 { margin: 28px 0 10px; }
+.prose .anchor { flex: none; color: var(--muted); text-decoration: none; opacity: 0; }
+.prose .anchor::after { content: "#"; }
+.prose .heading:hover .anchor, .prose .anchor:focus-visible { opacity: 1; }
 .prose strong { font-weight: 600; }
 .prose hr { border: 0; border-top: 1px solid var(--rule); margin: 40px 0; }
 .prose blockquote { margin: 0 0 18px; padding-left: 18px; border-left: 3px solid var(--rule); color: var(--muted); }
