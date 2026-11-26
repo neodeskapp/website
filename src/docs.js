@@ -95,18 +95,36 @@
   /* ---- Menu on small screens ---- */
   /* The sidebar opens as a panel under the header, which does not stay at the top,
      so the panel starts where the header ends at that moment. The site menu (a
-     <details> in the header) and the panel close each other. */
+     <details> in the header) and the panel close each other. While the panel is open
+     it is modal: the page behind it is inert and Tab goes round the panel and its
+     button. */
   var menu = $('.menu-button');
   var siteMenu = $('.top-menu');
   var header = $('header.top');
+  var panel = $('#sidebar');
+  var BEHIND = ['.skip', 'header.top .logo', '.top-tools .search-button', '.top-nav', '.top-menu', '#content', '.layout > .toc', 'footer.foot'];
   function setMenu(open) {
     if (open && header) doc.documentElement.style.setProperty('--panel-top', Math.max(0, header.getBoundingClientRect().bottom) + 'px');
     doc.documentElement.classList.toggle('menu-open', open);
     if (menu) menu.setAttribute('aria-expanded', open ? 'true' : 'false');
     if (open && siteMenu) siteMenu.open = false;
+    if (!menu || !panel) return;
+    BEHIND.forEach(function (sel) { $$(sel).forEach(function (el) { el.inert = open; }); });
   }
   if (menu) menu.addEventListener('click', function () { setMenu(menu.getAttribute('aria-expanded') !== 'true'); });
   if (siteMenu) siteMenu.addEventListener('toggle', function () { if (siteMenu.open) setMenu(false); });
+  // The panel is the sidebar again on a wider screen, so it closes
+  var narrow = window.matchMedia('(max-width: 860px)');
+  if (narrow.addEventListener) narrow.addEventListener('change', function () { if (!narrow.matches) setMenu(false); });
+  doc.addEventListener('keydown', function (e) {
+    if (e.key !== 'Tab' || !menu || !panel || menu.getAttribute('aria-expanded') !== 'true') return;
+    var stops = [menu].concat($$('a', panel));
+    var at = stops.indexOf(doc.activeElement);
+    var to = e.shiftKey ? (at <= 0 ? stops.length - 1 : -1) : (at === stops.length - 1 || at === -1 ? 0 : -1);
+    if (to < 0) return;
+    e.preventDefault();
+    stops[to].focus();
+  });
   doc.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
     if (siteMenu && siteMenu.open) { siteMenu.open = false; $('summary', siteMenu).focus(); }
