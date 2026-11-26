@@ -24,6 +24,8 @@
   --text: #e4e7e7;
   --muted: #a3abad;
   --rule: #2c3131;
+  /* The edge of a control, such as a button with an icon: 3:1 on the background */
+  --control: #6a7474;
   --hover: #1c1f1f;
   --blue: #58a6ff;
   --lime: #a3e635;
@@ -45,6 +47,7 @@
     --text: #1b1e1f;
     --muted: #566064;
     --rule: #dde1e2;
+    --control: #7e888b;
     --hover: #f3f5f5;
     --blue: #1f6feb;
     --lime: #3d7a06;
@@ -71,6 +74,8 @@ body {
   line-height: 1.65;
 }
 img { max-width: 100%; height: auto; }
+/* A long word in a heading breaks rather than run off a phone's screen */
+h1, h2, h3, h4 { overflow-wrap: break-word; hyphens: auto; }
 a { color: inherit; text-underline-offset: 3px; text-decoration-thickness: 1px; }
 button { font: inherit; color: inherit; }
 a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-visible {
@@ -80,3 +85,4 @@ a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-vis
 @media (prefers-reduced-motion: no-preference) {
   html { scroll-behavior: smooth; }
 }
+

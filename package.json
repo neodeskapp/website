@@ -8,7 +8,8 @@
     "typecheck": "tsc -p tsconfig.json",
     "test": "node --test test/download.test.ts",
     "test:search": "node search-test.ts",
-    "test:download": "node download-test.ts"
+    "test:download": "node download-test.ts",
+    "test:a11y": "node a11y-test.ts"
   },
   "dependencies": {
     "@resvg/resvg-js": "^2.6.2",

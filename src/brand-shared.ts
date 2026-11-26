@@ -101,7 +101,7 @@ ${items.map((v) => `      <li><b>${v.rule}</b>${v.note ? `<p>${v.note}</p>` : ''
 
 /** A plain table: a head row and rows of cells, which are HTML. */
 export function table(head: string[], rows: string[][], cls = '') {
-	return `    <div class="table-wrap" tabindex="0"><table${cls ? ` class="${cls}"` : ''}>
+	return `    <div class="table-wrap"><table${cls ? ` class="${cls}"` : ''}>
       <thead><tr>${head.map((h) => `<th>${h}</th>`).join('')}</tr></thead>
       <tbody>
 ${rows.map((r) => `        <tr>${r.map((c) => `<td>${c}</td>`).join('')}</tr>`).join('\n')}

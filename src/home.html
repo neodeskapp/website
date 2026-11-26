@@ -42,6 +42,7 @@
   --text: #e4e7e7;
   --muted: #a3abad;
   --rule: #2c3131;
+  --control: #6a7474;
   --sq: #58a6ff;
   --ci: #a3e635;
   --ov: #3fd0c4;
@@ -51,6 +52,8 @@
   --on-blue: #0c1b1e;
   --term: #0b0c0c;
   --term-text: #e4e7e7;
+  /* The terminal stays dark in light mode, so its muted text keeps the dark value */
+  --term-muted: #a3abad;
   --term-accent: #58a6ff;
   --display: "Funnel Display", "IBM Plex Sans", system-ui, sans-serif;
   --sans: "IBM Plex Sans", system-ui, "Segoe UI", sans-serif;
@@ -64,6 +67,7 @@
     --text: #1b1e1f;
     --muted: #566064;
     --rule: #dde1e2;
+    --control: #7e888b;
     --sq: #1f6feb;
     --ci: #4d8f06;
     --ov: #0f9e96;
@@ -90,6 +94,7 @@ body {
   line-height: 1.6;
 }
 h1, h2, h3, p, figure, ul { margin: 0; }
+h1, h2, h3 { overflow-wrap: break-word; hyphens: auto; }
 img { max-width: 100%; height: auto; }
 a { color: inherit; text-underline-offset: 3px; text-decoration-thickness: 1px; }
 a:hover { text-decoration-thickness: 2px; }
@@ -185,6 +190,9 @@ code, .mono { font-family: var(--mono); font-size: 0.92em; }
   text-decoration: none;
 }
 .btn:hover { text-decoration: underline; text-decoration-thickness: 2px; }
+@media (forced-colors: active) {
+  .btn, .skip { border: 2px solid ButtonText; }
+}
 .link-strong { font-weight: 600; text-decoration-color: var(--ci); text-decoration-thickness: 2px; }
 .fig-mark { aspect-ratio: 1; }
 .fig-mark .deco { inset: 0; width: 100%; height: 100%; transform: none; }
@@ -216,7 +224,7 @@ code, .mono { font-family: var(--mono); font-size: 0.92em; }
 .term { border-radius: 4px; background: var(--term); color: var(--term-text); }
 .term + .term { margin-top: 16px; }
 .term-bar { display: flex; align-items: center; justify-content: space-between; min-height: 46px; padding: 6px 8px 0 24px; }
-.term-os { font-size: 14px; font-weight: 600; color: var(--muted); }
+.term-os { font-size: 14px; font-weight: 600; color: var(--term-muted); }
 .term-bar button {
   appearance: none;
   background: none;
@@ -300,10 +308,11 @@ code, .mono { font-family: var(--mono); font-size: 0.92em; }
 </svg>
 
 <div class="page" id="top">
+<a class="skip" href="#content">{{t:skip}}</a>
 
 {{HEADER}}
 
-  <main>
+  <main id="content">
 
     <section class="row hero" aria-labelledby="hero-title">
       <div class="copy">
@@ -440,28 +449,41 @@ code, .mono { font-family: var(--mono); font-size: 0.92em; }
 
 {{FOOTER}}
 </div>
+<p class="vh" role="status" id="copy-said" data-copy="{{t:copy}}" data-copied="{{t:copied}}" data-failed="{{t:copyFailed}}"></p>
 
 <script>
 (function () {
   var root = document.documentElement;
 
-  /* Copy */
+  /* Copy: the button shows the outcome for a moment, and the status says it */
+  // The words come from the status's data attributes, so a quote in them can't break the script
+  var copyStatus = document.getElementById('copy-said');
+  var words = copyStatus.dataset;
   function copyText(text, btn) {
-    function done() {
-      btn.textContent = '{{t:copied}}';
+    // The button's aria-label follows what it shows, so its name holds the visible word
+    function show(word) {
+      var aria = btn.getAttribute('data-aria') || btn.getAttribute('aria-label');
+      btn.setAttribute('data-aria', aria);
+      btn.textContent = word;
+      btn.setAttribute('aria-label', word);
+      copyStatus.textContent = '';
+      setTimeout(function () { copyStatus.textContent = word; }, 50);
       clearTimeout(btn._t);
-      btn._t = setTimeout(function () { btn.textContent = '{{t:copy}}'; }, 1600);
+      btn._t = setTimeout(function () { btn.textContent = words.copy; btn.setAttribute('aria-label', aria); }, 1600);
     }
+    function done() { show(words.copied); }
     function fallback() {
       var ta = document.createElement('textarea');
+      var ok = false;
       ta.value = text;
       ta.setAttribute('readonly', '');
       ta.style.position = 'fixed';
       ta.style.opacity = '0';
       document.body.appendChild(ta);
       ta.select();
-      try { if (document.execCommand('copy')) done(); } catch (e) {}
+      try { ok = document.execCommand('copy'); } catch (e) {}
       document.body.removeChild(ta);
+      show(ok ? words.copied : words.failed);
     }
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(done, fallback);

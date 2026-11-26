@@ -244,7 +244,7 @@ ${f.sans.weights.map(([w, name, use]) => `      <li><span class="type-weight-sam
     </ul>
     <h3 id="sizes-in-the-console">${f.sans.scaleTitle}</h3>
     <p>${f.sans.scaleLead}</p>
-    <div class="table-wrap" tabindex="0"><table class="type-scale">
+    <div class="table-wrap"><table class="type-scale">
       <thead><tr><th>${h.size}</th><th>${h.token}</th><th>${h.sample}</th><th>${h.use}</th></tr></thead>
       <tbody>
 ${f.sans.scale.map(([size, token, use]) => `        <tr><td>${size}</td><td><code>${token}</code></td><td><span style="font-size:${size.replace(' ', '')};font-weight:${/xl|md/.test(token) ? 600 : 400}">${f.sans.scaleSample}</span></td><td>${use}</td></tr>`).join('\n')}

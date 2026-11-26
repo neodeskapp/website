@@ -31,6 +31,7 @@ import type { Page, Section, Shared, Pager } from './src/types.ts';
 import { LOCALES, DEFAULT_LOCALE, missingStrings, stringsOf, fill } from './src/i18n.ts';
 import type { Locale, Strings } from './src/i18n.ts';
 import { checkOldNames, checkConsolePort, checkVersion, checkWithoutScripts, checkButtonNames, checkIndexing, checkLocales, checkTranslations, checkLlms, checkStructuredData, checkMarkdownLinks, checkSeo, checkPreviews } from './src/checks.ts';
+import { checkSkipLinks, checkHeadingLinks, checkAriaLabels, checkLabelInName, checkTablesAndRegions, checkLinkNames, checkBreadcrumbs } from './src/checks.ts';
 import { checkCommands } from './src/commands.ts';
 import { AGENT_TOOLS } from './src/agents.ts';
 import { INSTALLS, blocksOf, clientPorts, protocolsOf, PORTS_PAGE } from './src/install.ts';
@@ -380,8 +381,9 @@ function makeMarkdown(page: Page, usedShots: Set<string>, t: Strings, linkTo: (h
 	md.renderer.rules.note_open = (tokens: Token[], i: number) =>
 		`<div class="note note-${tokens[i].meta}" role="note"><p class="note-label">${tokens[i].meta === 'warning' ? t.warning : t.note}</p>\n`;
 
-	// Heading ids, the "On this page" list, and a link on each heading. A heading may end
-	// in {#id} to fix its id and {alias=old-id} to keep an old id working after a rename.
+	// Heading ids, the "On this page" list, and a link to each heading next to it. A
+	// heading may end in {#id} to fix its id and {alias=old-id} to keep an old id working
+	// after a rename.
 	md.core.ruler.push('headings', (state: StateCore) => {
 		const t = state.tokens;
 		for (let i = 0; i < t.length; i++) {
@@ -395,14 +397,8 @@ function makeMarkdown(page: Page, usedShots: Set<string>, t: Strings, linkTo: (h
 			if (level === 1) continue;
 			const id = attrs.id ?? slug(text);
 			t[i].attrSet('id', id);
-			t[i].meta = { aliases: attrs.aliases };
+			t[i].meta = { aliases: attrs.aliases, id, text, level };
 			page.headings.push({ level, id, aliases: attrs.aliases, text, line: t[i].map?.[0] ?? 0 });
-			const a = new state.Token('link_open', 'a', 1);
-			a.attrSet('href', `#${id}`);
-			a.attrSet('class', 'anchor');
-			a.meta = { anchor: true };
-			children.unshift(a);
-			children.push(new state.Token('link_close', 'a', -1));
 		}
 	});
 
@@ -412,12 +408,10 @@ function makeMarkdown(page: Page, usedShots: Set<string>, t: Strings, linkTo: (h
 	md.renderer.rules.link_open = (tokens, i, opts, env, self) => {
 		const token = tokens[i];
 		const href = token.attrGet('href') ?? '';
-		if (!token.meta?.anchor) {
-			page.links.push(href);
-			if (/^https?:\/\//.test(href)) token.attrSet('rel', 'noopener');
-			else if (href.startsWith('/docs')) token.attrSet('href', url(linkTo(href)));
-			else if (href.startsWith('/')) token.attrSet('href', url(href));
-		}
+		page.links.push(href);
+		if (/^https?:\/\//.test(href)) token.attrSet('rel', 'noopener');
+		else if (href.startsWith('/docs')) token.attrSet('href', url(linkTo(href)));
+		else if (href.startsWith('/')) token.attrSet('href', url(href));
 		return defaultLinkOpen(tokens, i, opts, env, self);
 	};
 
@@ -445,7 +439,7 @@ function makeMarkdown(page: Page, usedShots: Set<string>, t: Strings, linkTo: (h
 			`<source media="(prefers-color-scheme: dark)" type="image/webp" srcset="${shot(`${name}-dark.webp`)}">` +
 			`<source media="(prefers-color-scheme: dark)" srcset="${shot(`${name}-dark.png`)}">` +
 			`<source type="image/webp" srcset="${shot(`${name}-light.webp`)}">` +
-			`<img src="${shot(`${name}-light.png`)}" alt="${esc(alt)}" width="${width}" height="${height}" loading="lazy" decoding="async"></picture></a>`
+			`<img src="${shot(`${name}-light.png`)}" alt="${esc(alt)}" width="${width}" height="${height}" loading="lazy" decoding="async"></picture><span class="vh">${esc(t.fullSize)}</span></a>`
 		);
 	};
 
@@ -465,8 +459,8 @@ function makeMarkdown(page: Page, usedShots: Set<string>, t: Strings, linkTo: (h
 		const output = lang === 'plaintext';
 		return (
 			`<div class="code${output ? ' code-output' : ''}">` +
-			(output ? '' : `<button type="button" class="copy" aria-label="${esc(t.copyCode)}" data-copied="${esc(t.copied)}">${esc(t.copy)}</button>`) +
-			`<pre tabindex="0"><code>${html}</code></pre></div>\n`
+			(output ? '' : `<button type="button" class="copy" aria-label="${esc(t.copyCode)}" data-copied="${esc(t.copied)}" data-failed="${esc(t.copyFailed)}">${esc(t.copy)}</button>`) +
+			`<pre aria-label="${esc(output ? t.outputBlock : info ? `${t.codeBlock}, ${info}` : t.codeBlock)}"><code>${html}</code></pre></div>\n`
 		);
 	};
 
@@ -475,12 +469,24 @@ function makeMarkdown(page: Page, usedShots: Set<string>, t: Strings, linkTo: (h
 		for (const p of checkCommands(state.tokens, { quotedPage: page.quoted })) problems.push(`${page.rel}:${p.line + page.bodyLine - 1}: ${p.message}`);
 	});
 
-	// The old ids of a renamed heading, as empty targets right before it
-	md.renderer.rules.heading_open = (tokens, i, opts, env, self) =>
-		(tokens[i].meta?.aliases ?? []).map((a: string) => `<span id="${esc(a)}" class="anchor-alias"></span>`).join('') + self.renderToken(tokens, i, opts);
+	// The old ids of a renamed heading, as empty targets right before it. A heading with
+	// an id sits in a row with a link to it after it; the heading itself is no link, so its
+	// name stays its text.
+	md.renderer.rules.heading_open = (tokens, i, opts, env, self) => {
+		const meta = tokens[i].meta;
+		const aliases = (meta?.aliases ?? []).map((a: string) => `<span id="${esc(a)}" class="anchor-alias"></span>`).join('');
+		return aliases + (meta?.id ? `<div class="heading heading-${meta.level}">` : '') + self.renderToken(tokens, i, opts);
+	};
+	md.renderer.rules.heading_close = (tokens, i, opts, env, self) => {
+		const meta = tokens[i - 2]?.meta;
+		const close = self.renderToken(tokens, i, opts);
+		return meta?.id ? `${close.trimEnd()}<a class="anchor" href="#${esc(meta.id)}" aria-label="${esc(fill(t.linkToSection, { title: meta.text }))}"></a></div>\n` : close;
+	};
 
-	md.renderer.rules.table_open = () => '<div class="table-wrap" tabindex="0"><table>\n';
+	md.renderer.rules.table_open = () => '<div class="table-wrap"><table>\n';
 	md.renderer.rules.table_close = () => '</table></div>\n';
+	// An empty corner cell gets a hidden name, so every header cell says what it heads
+	md.renderer.rules.th_open = (tokens, i, opts, env, self) => self.renderToken(tokens, i, opts) + (tokens[i + 1]?.content.trim() ? '' : `<span class="vh">${esc(t.tableTopic)}</span>`);
 	return md;
 }
 
@@ -563,7 +569,7 @@ function installMarkup(locale: Locale, h: HomeStrings) {
 	const panels = INSTALLS.map(
 		(m) => `        <div class="term" role="tabpanel" id="install-${m.id}" aria-labelledby="tab-${m.id}" data-os="${m.id}">
           <div class="term-bar"><span class="term-os">${esc(m.tab)}</span><button type="button" class="term-copy" aria-label="${esc(fill(h.copyCommands, { os: m.tab }))}">${esc(h.copy)}</button></div>
-          <pre class="term-lines" tabindex="0" aria-label="${esc(fill(h.commands, { os: m.tab }))}">${m.lines.map((l) => `<code>${esc(l)}</code>`).join('\n')}</pre>
+          <pre class="term-lines">${m.lines.map((l) => `<code>${esc(l)}</code>`).join('\n')}</pre>
         </div>`
 	).join('\n');
 	return { tabs: `${tabs}\n${notes}`, panels };
@@ -1147,6 +1153,14 @@ async function build() {
 		...checkVersion(checked),
 		...checkWithoutScripts(checked),
 		...checkButtonNames(checked),
+		// Accessibility of the markup; a11y-test.ts checks what needs a browser
+		...checkSkipLinks(checked),
+		...checkHeadingLinks(checked),
+		...checkAriaLabels(checked),
+		...checkLabelInName(checked),
+		...checkTablesAndRegions(checked),
+		...checkLinkNames(checked),
+		...checkBreadcrumbs(checked),
 		...checkIndexing(checked),
 		...checkLocales(checked),
 		// A sample content folder (DOCS_DIR) has no translations

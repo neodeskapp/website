@@ -80,27 +80,22 @@ for (const [start, cases] of Object.entries(CASES)) {
 		await page.keyboard.press('Control+K');
 		await page.fill('#search-input', query);
 		try {
-			await page.waitForFunction(() => !!document.querySelector('#search-results li[role="option"]'), undefined, { timeout: 8000 });
+			await page.waitForFunction(() => !!document.querySelector('#search-results [role="option"]'), undefined, { timeout: 8000 });
 		} catch {
 			/* nothing found: reported below */
 		}
-		const top = await page.evaluate(() => Array.from(document.querySelectorAll('#search-results li[role="option"] a')).slice(0, 3).map((a) => (a as HTMLAnchorElement).href));
+		const top = await page.evaluate(() => Array.from(document.querySelectorAll('#search-results [role="option"]')).slice(0, 3).map((o) => new URL(o.getAttribute('data-href')!, location.href).href));
 		const ok = top[0] === urls.url(want);
 		if (!ok) failed++;
 		console.log(`${ok ? 'ok  ' : 'FAIL'} ${start.startsWith('/de') ? 'de' : 'en'} "${query}" -> ${top[0] ?? 'nothing'}${ok ? '' : `\n     want ${urls.url(want)}\n     then ${top.slice(1).join(', ')}`}`);
 		await page.fill('#search-input', '');
 		await page.keyboard.press('Escape');
 	}
-	// The logo: a right-click, and Shift+F10 on the focused logo, open the brand page in the
-	// page's language; a left click goes home
+	// The logo: a right-click opens the brand page in the page's language; a left click goes home
 	const brand = urls.url(start.startsWith('/de') ? '/de/brand/' : '/brand/');
 	const home = urls.url(start.startsWith('/de') ? '/de/' : '/');
 	const ways: [string, () => Promise<void>, string][] = [
 		['right-click', () => page.click('header .logo', { button: 'right' }), brand],
-		['Shift+F10', async () => {
-			await page.focus('header .logo');
-			await page.keyboard.press('Shift+F10');
-		}, brand],
 		['left click', () => page.click('header .logo'), home]
 	];
 	for (const [way, act, want] of ways) {

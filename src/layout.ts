@@ -3,6 +3,7 @@ import { SITE_PAGES, sitePageTitles } from './pages.ts';
 import type { SitePageSlug } from './pages.ts';
 import type { Page, Pager, Section, Shared } from './types.ts';
 import { DEFAULT_LOCALE, fill } from './i18n.ts';
+import type { Strings } from './i18n.ts';
 import { siteHeader, siteFooter } from './chrome.ts';
 import { plain } from './search.ts';
 import { iconSvg } from './icons.ts';
@@ -15,13 +16,13 @@ const SEARCH_ICON =
 const CONTENTS_ICON =
 	'<svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 5h9M8 10h9M8 15h9M3.5 5h.01M3.5 10h.01M3.5 15h.01" stroke-width="2.2"/></svg>';
 
-/** The button that opens search. Its words are hidden on small screens, so it carries an aria-label. */
 /**
  * Search. It is a link to the list of all pages, which is the search without scripts;
- * docs.js opens the search dialog on a click instead.
+ * docs.js opens the search dialog on a click instead. Its words are its name; on small
+ * screens they are hidden visually only. The shortcut next to them is no part of it.
  */
 const searchButton = (shared: Shared, wide = false) =>
-	`<a class="search-button${wide ? ' search-button-wide' : ''}" href="${inLocale(shared, '/docs/all/')}" aria-haspopup="dialog" aria-label="${esc(shared.t.searchDocs)}">${SEARCH_ICON}<span>${esc(shared.t.searchDocs)}</span><kbd>${esc(shared.t.searchKey)}</kbd></a>`;
+	`<a class="search-button${wide ? ' search-button-wide' : ''}" href="${inLocale(shared, '/docs/all/')}" aria-haspopup="dialog">${SEARCH_ICON}<span>${esc(shared.t.searchDocs)}</span><kbd aria-hidden="true">${esc(shared.t.searchKey)}</kbd></a>`;
 
 const formatDate =(iso: string, dateLocale: string) =>
 	new Date(iso).toLocaleDateString(dateLocale, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
@@ -122,8 +123,37 @@ interface FrameOptions extends Shared {
 	bare?: boolean;
 }
 
+/**
+ * Code blocks and tables that may scroll sideways become regions a keyboard can reach
+ * and scroll: each gets tabindex, role="region" and a name, its own aria-label or the
+ * text of the nearest heading before it, with a number when a page has that name twice.
+ * docs.js keeps that only on the blocks that scroll at the current width, so the others
+ * are no extra tab stops.
+ */
+export function scrollRegions(html: string, t: Pick<Strings, 'codeBlock' | 'tableBlock'>) {
+	let heading = '';
+	const used = new Map<string, number>();
+	return html.replace(/<h([2-4])\b[^>]*\bid="[^"]+"[^>]*>([\s\S]*?)<\/h\1>|<pre\b([^>]*)>|<div class="table-wrap"([^>]*)>/g, (m, _level, text: string | undefined, preAttrs: string | undefined, tableAttrs: string | undefined) => {
+		if (text !== undefined) {
+			heading = text.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+			return m;
+		}
+		let attrs = (preAttrs ?? tableAttrs ?? '').replace(/\s*tabindex="[^"]*"/, '');
+		if (/\brole=/.test(attrs)) return m;
+		const own = attrs.match(/\saria-label="([^"]*)"/);
+		attrs = attrs.replace(/\saria-label="[^"]*"/, '');
+		let name = own ? own[1] : heading || esc(preAttrs !== undefined ? t.codeBlock : t.tableBlock);
+		const n = (used.get(name) ?? 0) + 1;
+		used.set(name, n);
+		if (n > 1) name = `${name} (${n})`;
+		const region = ` tabindex="0" role="region" aria-label="${name}" data-scroll`;
+		return preAttrs !== undefined ? `<pre${attrs}${region}>` : `<div class="table-wrap"${attrs}${region}>`;
+	});
+}
+
 function frame(o: FrameOptions) {
-	const { config, assets, production, locale, t, title, description, current, main, toc = '', markdown, jsonLd, type = 'website', noindex = false } = o;
+	const { config, assets, production, locale, t, title, description, current, toc = '', markdown, jsonLd, type = 'website', noindex = false } = o;
+	const main = scrollRegions(o.main, t);
 	const full = o.fullTitle ?? fill(t.pageTitle, { title, name: config.name });
 	const own = logical(o, o.path);
 	const canonical = o.urls.url(own);
@@ -192,11 +222,12 @@ ${siteFooter(chrome)}
 ${docsHost && !o.plain ? `<dialog class="search" aria-label="${esc(t.searchDocs)}" data-index="${inLocale(o, '/docs/search.json')}" data-base="${esc(o.urls.url('/docs/'))}" data-groups="${esc([t.groupPages, t.groupSections, t.groupCommands, t.groupSettings].join('|'))}" data-results="${esc(t.resultsCount)}" data-nothing="${esc(t.nothingFound)}" data-failed="${esc(t.searchFailed)}">
   <div class="search-field">
     ${SEARCH_ICON}
-    <input type="search" id="search-input" placeholder="${esc(t.searchDocs)}" aria-label="${esc(t.searchDocs)}" autocomplete="off" spellcheck="false" aria-controls="search-results">
+    <input type="search" id="search-input" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="search-results" placeholder="${esc(t.searchDocs)}" aria-label="${esc(t.searchDocs)}" autocomplete="off" spellcheck="false">
     <button type="button" class="search-close">${esc(t.close)}</button>
   </div>
-  <ul id="search-results" role="listbox" aria-label="${esc(t.results)}"></ul>
-  <p class="search-status" role="status" aria-live="polite">${esc(t.searchHint)}</p>
+  <div id="search-results" role="listbox" aria-label="${esc(t.results)}"></div>
+  <p class="search-status">${esc(t.searchHint)}</p>
+  <p class="search-said vh" role="status"></p>
 </dialog>` : ''}
 </body>
 </html>
@@ -241,6 +272,10 @@ ${unfolded(items)
     </ul>`;
 }
 
+/** The breadcrumb above a page: a named navigation, its separators hidden from screen readers. */
+const crumbNav = (shared: Shared, crumbs: { name: string; path: string }[]) =>
+	`<nav class="crumb-path" aria-label="${esc(shared.t.breadcrumb)}">${crumbs.map((c) => `<a href="${inLocale(shared, c.path)}">${esc(c.name)}</a>`).join('<span aria-hidden="true"> / </span>')}</nav>`;
+
 const crumbList = (shared: Shared, crumbs: { name: string; path: string }[]) => ({
 	'@context': 'https://schema.org',
 	'@type': 'BreadcrumbList',
@@ -282,7 +317,7 @@ ${sections
  */
 export function allPagesPage(shared: Shared) {
 	const { sections, t } = shared;
-	const main = `    <div class="crumb"><span><a href="${inLocale(shared, '/docs/')}">${esc(t.docs)}</a></span></div>
+	const main = `    <div class="crumb">${crumbNav(shared, [{ name: t.docs, path: '/docs/' }])}</div>
     ${pageHead(shared, t.allPages, '/docs/all.md')}
     <p class="lead">${esc(t.allPagesLead)}</p>
 ${sections
@@ -312,7 +347,7 @@ ${s.items.map((p) => `        <li${p.parent ? ' class="child"' : ''}><a href="${
 
 export function sectionPage(shared: Shared & { section: Section }) {
 	const { section, t } = shared;
-	const main = `    <div class="crumb"><span><a href="${inLocale(shared, '/docs/')}">${esc(t.docs)}</a></span></div>
+	const main = `    <div class="crumb">${crumbNav(shared, [{ name: t.docs, path: '/docs/' }])}</div>
     ${pageHead(shared, section.label, `/docs/${section.slug}.md`)}
     <p class="lead">${esc(section.intro)}</p>
     ${rows(shared, section.items)}`;
@@ -352,7 +387,10 @@ ${tocItems.map((h) => `      <li${h.level === 3 ? ' class="sub"' : ''}><a href="
 		.join('\n        ');
 	const pagerLink = (p: Pager | null, cls: string) => (p ? `<a class="${cls}" href="${p.href}"><span>${esc(p.label)}</span>${esc(p.title)}</a>` : '<span></span>');
 	const main = `    <div class="crumb">
-      <span><a href="${inLocale(shared, '/docs/')}">${esc(t.docs)}</a> / <a href="${inLocale(shared, `/docs/${page.section}/`)}">${esc(sectionLabel)}</a></span>
+      ${crumbNav(shared, [
+				{ name: t.docs, path: '/docs/' },
+				{ name: sectionLabel, path: `/docs/${page.section}/` }
+			])}
       <span class="crumb-actions">
         ${actions}
       </span>

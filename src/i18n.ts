@@ -45,9 +45,15 @@ export interface Strings {
 	more: string;
 	language: string;
 	onThisPage: string;
+	/** The name of the breadcrumb above a docs page */
+	breadcrumb: string;
 	updated: string;
 	copyMarkdown: string;
+	/** The name of the link next to a heading: "Link to this section: {title}" */
+	linkToSection: string;
 	copied: string;
+	/** What a copy button says when the browser didn't let it copy */
+	copyFailed: string;
 	editOnGitHub: string;
 	previous: string;
 	next: string;
@@ -89,6 +95,14 @@ export interface Strings {
 	/** The copy button of a code block, its label for screen readers, and what it says after a copy */
 	copy: string;
 	copyCode: string;
+	/** The hidden name of an empty first header cell, over a table's row labels */
+	tableTopic: string;
+	/** Hidden words after a screenshot's description in its link: ", full size" */
+	fullSize: string;
+	/** The names of a code block, a command's output and a table a reader can scroll sideways */
+	codeBlock: string;
+	outputBlock: string;
+	tableBlock: string;
 	/** "{name} home", the logo's label */
 	homeLabel: string;
 	/** "{count} results", under the search field */
@@ -132,7 +146,10 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		onThisPage: 'On this page',
 		updated: 'Updated',
 		copyMarkdown: 'Copy as Markdown',
+		breadcrumb: 'Breadcrumb',
 		copied: 'Copied',
+		copyFailed: "Couldn't copy",
+		linkToSection: 'Link to this section: {title}',
 		editOnGitHub: 'Edit on GitHub',
 		previous: 'Previous',
 		next: 'Next',
@@ -166,6 +183,11 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		warning: 'Warning',
 		copy: 'Copy',
 		copyCode: 'Copy this code',
+		tableTopic: 'Topic',
+		fullSize: ', full size',
+		codeBlock: 'Code',
+		outputBlock: 'Output',
+		tableBlock: 'Table',
 		homeLabel: '{name} home',
 		resultsCount: '{count} results',
 		nothingFound: 'Nothing found for "{query}". Try fewer or other words.',
@@ -198,7 +220,10 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		onThisPage: 'Auf dieser Seite',
 		updated: 'Geändert am',
 		copyMarkdown: 'Als Markdown kopieren',
+		breadcrumb: 'Navigationspfad',
 		copied: 'Kopiert',
+		copyFailed: 'Kopieren fehlgeschlagen',
+		linkToSection: 'Link zu diesem Abschnitt: {title}',
 		editOnGitHub: 'Auf GitHub bearbeiten',
 		previous: 'Zurück',
 		next: 'Weiter',
@@ -232,6 +257,11 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		warning: 'Achtung',
 		copy: 'Kopieren',
 		copyCode: 'Diesen Code kopieren',
+		tableTopic: 'Thema',
+		fullSize: ', in voller Größe',
+		codeBlock: 'Code',
+		outputBlock: 'Ausgabe',
+		tableBlock: 'Tabelle',
 		homeLabel: '{name} Startseite',
 		resultsCount: '{count} Ergebnisse',
 		nothingFound: 'Nichts gefunden für „{query}“. Versuch es mit weniger oder anderen Wörtern.',

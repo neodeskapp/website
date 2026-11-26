@@ -40,6 +40,7 @@ src/client-release.json  the client release the last build read from GitHub, the
 src/detect.ts        which file the download page recommends for the visitor's system
 test/                unit tests of the release choice and the detection (npm test)
 download-test.ts     checks the download page in a headless browser
+a11y-test.ts         checks accessibility in a headless browser: axe-core, keyboard, screen reader states
 src/zip.ts           writes the zip of the logo files
 public/brand/files/  the owner's logo files, copied unchanged from .ui-rework/brand
 src/checks.ts        the checks on the built site
@@ -112,9 +113,9 @@ build packs the folder into `/brand/neodesk-logo.zip`, the same bytes for the
 same files. The examples of what not to do are the real logo file with CSS on
 top (`src/brand.css`).
 
-A right-click on the logo in the header, or the context menu key or Shift+F10
-while it has focus, opens the brand page in the page's language; a left click
-still goes home. The script for it is part of the header in `src/chrome.ts`.
+A right-click on the logo in the header opens the brand page in the page's
+language; a left click still goes home. The context menu key and Shift+F10 keep
+the browser's menu. The script for it is part of the header in `src/chrome.ts`.
 
 ## The download page
 
@@ -423,6 +424,26 @@ the logo opens the brand page. It answers every request from
 as for that build; with `LIVE=1` it searches the deployed site at that
 address instead. It needs Playwright, as `shots.ts` does. The queries are in
 `CASES` in `search-test.ts`.
+
+## Testing accessibility
+
+The pages aim at WCAG 2.2 AA. The build checks the markup: a skip link on every
+page, headings that aren't links to themselves, aria-label only where it names
+something, names that hold the visible label, named header cells, breadcrumbs
+and scroll regions, and file and screenshot links that say what they open.
+`npm run test:a11y` runs `a11y-test.ts` on the built
+site in a headless Chromium: axe-core on sample pages at 320 and 1280 px in
+light and dark, and what axe can't see, such as the search dialog as a
+combobox with its result count announced once, copy buttons that say they
+copied, the sidebar panel on phones keeping focus, reflow at 320 px with text
+spacing, target sizes and forced colours. Give it names of checks to run only
+those (`node a11y-test.ts search sidebar`). Like `search-test.ts` it answers
+every request from `dist/`; it needs Playwright and axe-core (`AXE_FILE`, the
+path of `axe.min.js`, or the axe-core package).
+
+The light theme's code blue (#1f6feb on the code background #f4f6f6, 4.27:1)
+stays as the brand has it; the accessibility statement names it, and the test
+leaves out exactly that pair.
 
 ## Writing a docs page
 
