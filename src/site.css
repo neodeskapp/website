@@ -85,3 +85,10 @@ a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-vis
 @media (prefers-reduced-motion: no-preference) {
   html { scroll-behavior: smooth; }
 }
+/* Forced colours drop backgrounds: filled buttons keep a border, and the markers of the
+   current page and the selected result stay visible */
+@media (forced-colors: active) {
+  .dl-btn, .nf-btn, .skip { border: 2px solid ButtonText; }
+  .sidebar li a, .toc li a, #search-results [role="option"] { border-left-color: Canvas; }
+  .sidebar li a[aria-current="page"], .toc li a.active, #search-results [aria-selected="true"] { border-left-color: Highlight; }
+}
