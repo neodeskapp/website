@@ -91,16 +91,11 @@ for (const [start, cases] of Object.entries(CASES)) {
 		await page.fill('#search-input', '');
 		await page.keyboard.press('Escape');
 	}
-	// The logo: a right-click, and Shift+F10 on the focused logo, open the brand page in the
-	// page's language; a left click goes home
+	// The logo: a right-click opens the brand page in the page's language; a left click goes home
 	const brand = urls.url(start.startsWith('/de') ? '/de/brand/' : '/brand/');
 	const home = urls.url(start.startsWith('/de') ? '/de/' : '/');
 	const ways: [string, () => Promise<void>, string][] = [
 		['right-click', () => page.click('header .logo', { button: 'right' }), brand],
-		['Shift+F10', async () => {
-			await page.focus('header .logo');
-			await page.keyboard.press('Shift+F10');
-		}, brand],
 		['left click', () => page.click('header .logo'), home]
 	];
 	for (const [way, act, want] of ways) {

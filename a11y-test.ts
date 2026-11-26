@@ -511,6 +511,14 @@ const CHECKS: Record<string, () => Promise<void>> = {
 		});
 		await page.waitForTimeout(400);
 		report(!prevented.some(Boolean) && page.url() === before, 'logo: the context menu key and Shift+F10 keep the browser menu', `${JSON.stringify(prevented)} ${page.url()}`);
+		// The same with the keys pressed, which also fires the contextmenu event
+		for (const key of ['Shift+F10', 'ContextMenu']) {
+			await page.focus('header .logo');
+			await page.keyboard.press(key);
+			await page.waitForTimeout(400);
+			report(page.url() === before, `logo: pressing ${key} on the logo stays on the page`, page.url());
+			if (page.url() !== before) await page.goto(before);
+		}
 		await context.close();
 	}
 };

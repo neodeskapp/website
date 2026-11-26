@@ -29,12 +29,13 @@ export interface ChromeOptions {
 }
 
 /**
- * A right-click on the logo, or the context menu key or Shift+F10 while it has focus,
- * opens the brand page instead of the browser's menu. A left click still goes home, and
- * nothing else on the page changes.
+ * A right-click on the logo opens the brand page instead of the browser's menu. A left
+ * click still goes home, and nothing else on the page changes. The keyboard's menu key
+ * and Shift+F10 keep the browser's menu, so keyboard users can still copy the link or
+ * open it in a new tab.
  */
 const LOGO_SCRIPT =
-	"(function(){var a=document.querySelector('header.top .logo');if(!a)return;function go(e){e.preventDefault();location.href=a.getAttribute('data-brand');}a.addEventListener('contextmenu',go);a.addEventListener('keydown',function(e){if(e.key==='ContextMenu'||(e.key==='F10'&&e.shiftKey))go(e);});})();";
+	"(function(){var a=document.querySelector('header.top .logo');if(!a)return;a.addEventListener('contextmenu',function(e){if(e.button!==2)return;e.preventDefault();location.href=a.getAttribute('data-brand');});})();";
 
 /** The entries of the header, in their order: Docs, Download, Compare, Use cases, Support, Discord, GitHub, then the other languages. */
 function entries(o: ChromeOptions) {

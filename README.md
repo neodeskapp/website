@@ -113,9 +113,9 @@ build packs the folder into `/brand/neodesk-logo.zip`, the same bytes for the
 same files. The examples of what not to do are the real logo file with CSS on
 top (`src/brand.css`).
 
-A right-click on the logo in the header, or the context menu key or Shift+F10
-while it has focus, opens the brand page in the page's language; a left click
-still goes home. The script for it is part of the header in `src/chrome.ts`.
+A right-click on the logo in the header opens the brand page in the page's
+language; a left click still goes home. The context menu key and Shift+F10 keep
+the browser's menu. The script for it is part of the header in `src/chrome.ts`.
 
 ## The download page
 
