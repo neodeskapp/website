@@ -31,6 +31,7 @@ import type { Page, Section, Shared, Pager } from './src/types.ts';
 import { LOCALES, DEFAULT_LOCALE, missingStrings, stringsOf, fill } from './src/i18n.ts';
 import type { Locale, Strings } from './src/i18n.ts';
 import { checkOldNames, checkConsolePort, checkVersion, checkWithoutScripts, checkButtonNames, checkIndexing, checkLocales, checkTranslations, checkLlms, checkStructuredData, checkMarkdownLinks, checkSeo, checkPreviews } from './src/checks.ts';
+import { checkSkipLinks, checkHeadingLinks, checkAriaLabels, checkLabelInName, checkTablesAndRegions, checkLinkNames, checkBreadcrumbs } from './src/checks.ts';
 import { checkCommands } from './src/commands.ts';
 import { AGENT_TOOLS } from './src/agents.ts';
 import { INSTALLS, blocksOf, clientPorts, protocolsOf, PORTS_PAGE } from './src/install.ts';
@@ -1152,6 +1153,14 @@ async function build() {
 		...checkVersion(checked),
 		...checkWithoutScripts(checked),
 		...checkButtonNames(checked),
+		// Accessibility of the markup; a11y-test.ts checks what needs a browser
+		...checkSkipLinks(checked),
+		...checkHeadingLinks(checked),
+		...checkAriaLabels(checked),
+		...checkLabelInName(checked),
+		...checkTablesAndRegions(checked),
+		...checkLinkNames(checked),
+		...checkBreadcrumbs(checked),
 		...checkIndexing(checked),
 		...checkLocales(checked),
 		// A sample content folder (DOCS_DIR) has no translations

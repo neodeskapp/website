@@ -2,7 +2,8 @@
 // the build fails when any check finds one.
 import fs from 'node:fs';
 import path from 'node:path';
-import { parse, find, findAll, byTag, isHidden, textOf, decode } from './html.ts';
+import { parse, find, findAll, byTag, isHidden, isEl, textOf, decode } from './html.ts';
+import type { El } from './html.ts';
 import { LOCALES } from './i18n.ts';
 import type { Urls } from './urls.ts';
 
@@ -655,6 +656,129 @@ export function checkIndexing({ dist, urls, production, aiCrawlers }: CheckInput
 		const wanted = !production || NOINDEX_PAGES.has(rel);
 		if (noindex && !wanted) problems.push(`${rel}: says noindex on the production site`);
 		if (!noindex && wanted) problems.push(`${rel}: has no noindex${production ? '' : ', and this build is not for the production address'}`);
+	}
+	return problems;
+}
+
+/* ---------- accessibility of the markup ---------- */
+
+// Classes that hide text visually but keep it for screen readers
+const VISUALLY_HIDDEN = /(^|\s)(vh|dl-vh)(\s|$)/;
+// Elements that take an aria-label only with a role that can be named
+const UNNAMEABLE = new Set(['div', 'span', 'pre', 'p', 'code', 'b', 'i', 'em', 'strong', 'small', 'kbd', 'li', 'dt', 'dd', 'figcaption', 'blockquote']);
+const hasClass = (el: El, cls: string) => (el.attrs.class ?? '').split(/\s+/).includes(cls);
+
+/** The text a sighted reader sees: no aria-hidden parts, no visually hidden spans; elements are separated by a space. */
+function visibleText(el: El): string {
+	if (el.tag === 'script' || el.tag === 'style' || el.tag === 'template' || 'hidden' in el.attrs || el.attrs['aria-hidden'] === 'true' || VISUALLY_HIDDEN.test(el.attrs.class ?? '')) return '';
+	return el.children.map((c) => (isEl(c) ? ` ${visibleText(c)} ` : c)).join('');
+}
+/** An element's accessible name, roughly: aria-label, or its text with image alts and visually hidden spans. */
+function nameOf(el: El): string {
+	if (el.attrs['aria-label']) return squash(el.attrs['aria-label']);
+	const walk = (e: El): string => {
+		if (e.tag === 'script' || e.tag === 'style' || 'hidden' in e.attrs || e.attrs['aria-hidden'] === 'true') return '';
+		if (e.tag === 'img') return ` ${e.attrs.alt ?? ''} `;
+		return e.children.map((c) => (isEl(c) ? ` ${walk(c)} ` : c)).join('');
+	};
+	return squash(walk(el));
+}
+const pagesOf = (dist: string) =>
+	listFiles(dist)
+		.filter((f) => f.endsWith('.html'))
+		.map((rel) => ({ rel, doc: parse(fs.readFileSync(path.join(dist, rel), 'utf8')) }));
+
+/** Every page starts with a link that skips to its <main>. */
+export function checkSkipLinks({ dist }: CheckInput) {
+	const problems: string[] = [];
+	for (const { rel, doc } of pagesOf(dist)) {
+		const body = find(doc, byTag('body'));
+		const first = body && find(body, (el) => (el.tag === 'a' && !!el.attrs.href) || el.tag === 'button' || el.tag === 'summary' || (el.attrs.tabindex !== undefined && el.attrs.tabindex !== '-1'));
+		const href = first?.attrs.href ?? '';
+		const target = href.startsWith('#') ? find(doc, (el) => el.attrs.id === href.slice(1)) : null;
+		if (!target || target.tag !== 'main') problems.push(`${rel}: the first link is not a skip link to <main>`);
+	}
+	return problems;
+}
+
+/** No heading is a link to itself: the link to a section sits next to its heading, with a name of its own. */
+export function checkHeadingLinks({ dist }: CheckInput) {
+	const problems: string[] = [];
+	for (const { rel, doc } of pagesOf(dist)) {
+		for (const h of findAll(doc, (el) => /^h[1-6]$/.test(el.tag) && !!el.attrs.id)) {
+			if (find(h, (el) => el.tag === 'a' && el.attrs.href === `#${h.attrs.id}`)) problems.push(`${rel}:${h.line}: heading "${squash(textOf(h))}" is a link to itself`);
+		}
+		for (const a of findAll(doc, (el) => el.tag === 'a' && hasClass(el, 'anchor') && !el.attrs['aria-label'])) problems.push(`${rel}:${a.line}: a link to a section without an aria-label`);
+	}
+	return problems;
+}
+
+/** aria-label only where it names something: on a <pre>, <div> or <span> without a role screen readers ignore it. */
+export function checkAriaLabels({ dist }: CheckInput) {
+	const problems: string[] = [];
+	for (const { rel, doc } of pagesOf(dist)) {
+		for (const el of findAll(doc, (e) => !!e.attrs['aria-label'] && !e.attrs.role && UNNAMEABLE.has(e.tag))) problems.push(`${rel}:${el.line}: aria-label on a <${el.tag}> without a role`);
+	}
+	return problems;
+}
+
+/** The visible label of a link or button is part of its name (WCAG 2.5.3), so speech input can use what it shows. */
+export function checkLabelInName({ dist }: CheckInput) {
+	const problems: string[] = [];
+	const norm = (s: string) => squash(s).toLowerCase();
+	for (const { rel, doc } of pagesOf(dist)) {
+		for (const el of findAll(doc, (e) => (e.tag === 'a' || e.tag === 'button') && !!e.attrs['aria-label'])) {
+			const shown = norm(visibleText(el));
+			if (shown && !norm(el.attrs['aria-label']).includes(shown)) problems.push(`${rel}:${el.line}: the name "${el.attrs['aria-label']}" leaves out the visible label "${shown}"`);
+		}
+	}
+	return problems;
+}
+
+/** Every header cell has a name, and a block a reader can focus to scroll is a named region. */
+export function checkTablesAndRegions({ dist }: CheckInput) {
+	const problems: string[] = [];
+	for (const { rel, doc } of pagesOf(dist)) {
+		for (const th of findAll(doc, byTag('th'))) if (!nameOf(th)) problems.push(`${rel}:${th.line}: an empty table header cell`);
+		for (const el of findAll(doc, (e) => (e.tag === 'pre' || hasClass(e, 'table-wrap')) && e.attrs.tabindex !== undefined)) {
+			const by = el.attrs['aria-labelledby'];
+			const named = !!el.attrs['aria-label'] || (!!by && !!find(doc, (e) => e.attrs.id === by && !!squash(textOf(e))));
+			if (el.attrs.role !== 'region' || !named) problems.push(`${rel}:${el.line}: a focusable <${el.tag}> that is not a named region`);
+		}
+	}
+	return problems;
+}
+
+/**
+ * Links say where they go: a screenshot link says it opens the full image, and the links
+ * that download a file have names of their own, so "SVG" alone is never two files.
+ */
+export function checkLinkNames({ dist }: CheckInput) {
+	const problems: string[] = [];
+	for (const { rel, doc } of pagesOf(dist)) {
+		for (const a of findAll(doc, (el) => el.tag === 'a' && hasClass(el, 'shot'))) {
+			if (!findAll(a, (el) => VISUALLY_HIDDEN.test(el.attrs.class ?? '') && !!squash(textOf(el))).length) problems.push(`${rel}:${a.line}: a screenshot link that does not say it opens the full image`);
+		}
+		const byName = new Map<string, Set<string>>();
+		for (const a of findAll(doc, (el) => el.tag === 'a' && !!el.attrs.href && 'download' in el.attrs && !isHidden(el))) {
+			const name = nameOf(a).toLowerCase();
+			if (!name) continue;
+			if (!byName.has(name)) byName.set(name, new Set());
+			byName.get(name)!.add(a.attrs.href);
+		}
+		for (const [name, hrefs] of byName) if (hrefs.size > 1) problems.push(`${rel}: ${hrefs.size} download links named "${name}" get different files`);
+	}
+	return problems;
+}
+
+/** The breadcrumb above a page is a named <nav>. */
+export function checkBreadcrumbs({ dist }: CheckInput) {
+	const problems: string[] = [];
+	for (const { rel, doc } of pagesOf(dist)) {
+		for (const c of findAll(doc, (el) => hasClass(el, 'crumb'))) {
+			const nav = find(c, byTag('nav'));
+			if (!nav || !nav.attrs['aria-label'] || !find(nav, byTag('a'))) problems.push(`${rel}:${c.line}: the breadcrumb is not a named <nav>`);
+		}
 	}
 	return problems;
 }

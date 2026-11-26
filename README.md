@@ -427,7 +427,11 @@ address instead. It needs Playwright, as `shots.ts` does. The queries are in
 
 ## Testing accessibility
 
-The pages aim at WCAG 2.2 AA. `npm run test:a11y` runs `a11y-test.ts` on the built
+The pages aim at WCAG 2.2 AA. The build checks the markup: a skip link on every
+page, headings that aren't links to themselves, aria-label only where it names
+something, names that hold the visible label, named header cells, breadcrumbs
+and scroll regions, and file and screenshot links that say what they open.
+`npm run test:a11y` runs `a11y-test.ts` on the built
 site in a headless Chromium: axe-core on sample pages at 320 and 1280 px in
 light and dark, and what axe can't see, such as the search dialog as a
 combobox with its result count announced once, copy buttons that say they
