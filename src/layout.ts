@@ -126,20 +126,28 @@ interface FrameOptions extends Shared {
 /**
  * Code blocks and tables that may scroll sideways become regions a keyboard can reach
  * and scroll: each gets tabindex, role="region" and a name, its own aria-label or the
- * nearest heading before it. docs.js keeps that only on the blocks that scroll at the
- * current width, so the others are no extra tab stops.
+ * text of the nearest heading before it, with a number when a page has that name twice.
+ * docs.js keeps that only on the blocks that scroll at the current width, so the others
+ * are no extra tab stops.
  */
 export function scrollRegions(html: string, t: Pick<Strings, 'codeBlock' | 'tableBlock'>) {
 	let heading = '';
-	return html.replace(/<h[2-4]\b[^>]*\bid="([^"]+)"[^>]*>|<pre\b([^>]*)>|<div class="table-wrap"([^>]*)>/g, (m, id: string | undefined, preAttrs: string | undefined, tableAttrs: string | undefined) => {
-		if (id) {
-			heading = id;
+	const used = new Map<string, number>();
+	return html.replace(/<h([2-4])\b[^>]*\bid="[^"]+"[^>]*>([\s\S]*?)<\/h\1>|<pre\b([^>]*)>|<div class="table-wrap"([^>]*)>/g, (m, _level, text: string | undefined, preAttrs: string | undefined, tableAttrs: string | undefined) => {
+		if (text !== undefined) {
+			heading = text.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
 			return m;
 		}
-		const attrs = (preAttrs ?? tableAttrs ?? '').replace(/\s*tabindex="[^"]*"/, '');
+		let attrs = (preAttrs ?? tableAttrs ?? '').replace(/\s*tabindex="[^"]*"/, '');
 		if (/\brole=/.test(attrs)) return m;
-		const name = /\baria-label=/.test(attrs) ? '' : heading ? ` aria-labelledby="${heading}"` : ` aria-label="${esc(preAttrs !== undefined ? t.codeBlock : t.tableBlock)}"`;
-		return preAttrs !== undefined ? `<pre${attrs} tabindex="0" role="region"${name} data-scroll>` : `<div class="table-wrap"${attrs} tabindex="0" role="region"${name} data-scroll>`;
+		const own = attrs.match(/\saria-label="([^"]*)"/);
+		attrs = attrs.replace(/\saria-label="[^"]*"/, '');
+		let name = own ? own[1] : heading || esc(preAttrs !== undefined ? t.codeBlock : t.tableBlock);
+		const n = (used.get(name) ?? 0) + 1;
+		used.set(name, n);
+		if (n > 1) name = `${name} (${n})`;
+		const region = ` tabindex="0" role="region" aria-label="${name}" data-scroll`;
+		return preAttrs !== undefined ? `<pre${attrs}${region}>` : `<div class="table-wrap"${attrs}${region}>`;
 	});
 }
 
