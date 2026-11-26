@@ -24,6 +24,8 @@
   --text: #e4e7e7;
   --muted: #a3abad;
   --rule: #2c3131;
+  /* The edge of a control, such as a button with an icon: 3:1 on the background */
+  --control: #6a7474;
   --hover: #1c1f1f;
   --blue: #58a6ff;
   --lime: #a3e635;
@@ -45,6 +47,7 @@
     --text: #1b1e1f;
     --muted: #566064;
     --rule: #dde1e2;
+    --control: #7e888b;
     --hover: #f3f5f5;
     --blue: #1f6feb;
     --lime: #3d7a06;
