@@ -91,6 +91,7 @@
      a block that starts to scroll, after a resize or when its <details> opens, becomes
      one again. */
   var scrollers = $$('[data-scroll]');
+  function markScrollers() { scrollers.forEach(markScroller); }
   var NAMES = ['aria-label', 'aria-labelledby'];
   function markScroller(el) {
     var scrolls = el.scrollWidth > el.clientWidth + 1;
@@ -112,6 +113,9 @@
   if (scrollers.length && window.ResizeObserver) {
     var watch = new ResizeObserver(function (entries) { entries.forEach(function (en) { markScroller(en.target); }); });
     scrollers.forEach(function (el) { markScroller(el); watch.observe(el); });
+    // The web fonts change how wide a line is without changing the block's size
+    if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(markScrollers);
+    window.addEventListener('load', markScrollers);
   }
 
   /* ---- A screenshot opens in the theme it is shown in ---- */
