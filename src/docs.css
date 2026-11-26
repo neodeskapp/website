@@ -1,17 +1,5 @@
 /* The docs: top bar, sidebar, article, "On this page", search. */
 
-.skip {
-  position: absolute;
-  left: 12px;
-  top: -60px;
-  z-index: 30;
-  padding: 10px 14px;
-  border-radius: 4px;
-  background: var(--blue);
-  color: var(--on-blue);
-  font-weight: 600;
-}
-.skip:focus { top: 12px; }
 
 /* The docs' controls in the header: the sidebar button on narrow screens, and search */
 .menu-button {

@@ -8,6 +8,20 @@
   --top: 64px;
 }
 
+/* The link that skips the header, shown when it has focus */
+.skip {
+  position: absolute;
+  left: 12px;
+  top: -60px;
+  z-index: 30;
+  padding: 10px 14px;
+  border-radius: 4px;
+  background: var(--blue);
+  color: var(--on-blue);
+  font-weight: 600;
+}
+.skip:focus { top: 12px; }
+
 /* Text for screen readers only */
 .vh { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 

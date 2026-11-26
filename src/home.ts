@@ -45,6 +45,8 @@ export interface HomeStrings {
 	dataLead: string;
 	/** The heading over the short answers (src/answers.ts) */
 	questionsTitle: string;
+	/** The link that skips the header */
+	skip: string;
 	copy: string;
 	copied: string;
 	/** What the copy button says when the browser didn't let it copy */
@@ -87,6 +89,7 @@ export const HOME: Record<string, Partial<HomeStrings>> = {
 		dataTitle: 'Your data stays on <span class="blue">your server</span>',
 		dataLead: 'NeoDesk sends no analytics, crash reports or usage data to its developers. The code is licensed under AGPL-3.0. Read the <a class="teal" href="{{PREFIX}}/docs/project/privacy">privacy notes</a> and the <a class="teal" href="{{PREFIX}}/docs/project/license">license</a>.',
 		questionsTitle: 'Questions',
+		skip: 'Skip to the content',
 		copy: 'Copy',
 		copied: 'Copied',
 		copyFailed: "Couldn't copy",
@@ -127,6 +130,7 @@ export const HOME: Record<string, Partial<HomeStrings>> = {
 		dataTitle: 'Deine Daten bleiben auf <span class="blue">deinem Server</span>',
 		dataLead: 'NeoDesk schickt seinen Entwicklern keine Analysedaten, keine Absturzberichte und keine Nutzungsdaten. Der Code steht unter der AGPL-3.0. Mehr dazu in den <a class="teal" href="{{PREFIX}}/docs/project/privacy">Hinweisen zum Datenschutz</a> und in der <a class="teal" href="{{PREFIX}}/docs/project/license">Lizenz</a>.',
 		questionsTitle: 'Fragen und Antworten',
+		skip: 'Zum Inhalt springen',
 		copy: 'Kopieren',
 		copied: 'Kopiert',
 		copyFailed: 'Kopieren fehlgeschlagen',
