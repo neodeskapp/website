@@ -59,8 +59,8 @@ Letzte Prüfung: 26. November 2026.
 | Was | Wen es betrifft | Geplant |
 |---|---|---|
 | Der Desktop-Client gibt Screenreadern unter Windows gar keine Informationen. | Screenreader-Nutzende | Februar 2027 |
-| Im Desktop-Client lassen sich mehrere Bedienelemente (Titelleiste, Tabs, Einstellungsseiten, Dateilisten) nicht mit der Tastatur erreichen. | Wer mit Tastatur oder Schalter bedient | Februar 2027 |
-| Der Desktop-Client folgt nicht der Textgröße des Systems und nicht den Kontrastdesigns von Windows. | Menschen mit Sehbehinderung | März 2027 |
+| Im Desktop-Client 1.5 lassen sich mehrere Bedienelemente (Titelleiste, Tabs, Einstellungsseiten, Dateilisten, die Verbindungsanfrage) nicht mit der Tastatur erreichen, und eine Sitzung hält die Tastatur fest. | Wer mit Tastatur oder Schalter bedient | Behoben für die nächste Version des Clients, sobald in unserem Labor geprüft |
+| Der Desktop-Client 1.5 folgt nicht der Textgröße des Systems und nicht der Einstellung für hohen Kontrast. | Menschen mit Sehbehinderung | Behoben für die nächste Version des Clients, sobald in unserem Labor geprüft |
 | Auf der Website zeigen Codebeispiele Schlüsselwörter und den Kopierknopf in einem Blau, das im hellen Modus 4.27:1 statt 4.5:1 erreicht. | Menschen mit Sehbehinderung | Offen |
 | Die Mails wurden im Browser geprüft, nicht in echten Mailprogrammen wie Outlook und Gmail und nicht in deren dunklem Modus. | Wer Mails mit Screenreader oder im dunklen Modus liest | Januar 2027 |
 
@@ -70,8 +70,9 @@ Verbindungsstand, wer verbunden ist, Aufzeichnung und Privatsphäre, Chat,
 Dateiübertragung und die Zwischenablage. Wer mit Screenreader den Inhalt
 des entfernten Bildschirms braucht, kann auf dem entfernten Computer einen
 Screenreader starten und den Ton der Sitzung einschalten. Der entfernte
-Bildschirm hält die Tastatur nie fest: F8, oder Strg+Alt+Umschalt+K auf
-Tastaturen ohne Funktionstasten, gibt sie zurück.
+Bildschirm hält die Tastatur nie fest. Im Browser gibt F8 oder
+Strg+Alt+Umschalt+G sie zurück, im Desktop-Client Strg+Alt+Umschalt+G
+(Befehl+Wahl+Umschalt+G auf dem Mac).
 
 ## Ein Problem melden
 

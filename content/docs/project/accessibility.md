@@ -59,8 +59,8 @@ Last check: 26 November 2026.
 | What | Who it affects | Planned |
 |---|---|---|
 | The desktop client on Windows gives screen readers no information at all. | Screen reader users | February 2027 |
-| In the desktop client, several controls (title bar, tabs, settings pages, file lists) can't be reached with the keyboard. | Keyboard and switch users | February 2027 |
-| The desktop client ignores the system's text size and Windows contrast themes. | People with low vision | March 2027 |
+| In the desktop client 1.5, several controls (title bar, tabs, settings pages, file lists, the connection request) can't be reached with the keyboard, and a remote session keeps the keyboard. | Keyboard and switch users | Fixed for the next client release, once checked in our lab |
+| The desktop client 1.5 ignores the system's text size and high contrast setting. | People with low vision | Fixed for the next client release, once checked in our lab |
 | On the website, code examples show keywords and the copy button in a blue that reaches 4.27:1 in light mode instead of 4.5:1. | People with low vision | Open |
 | Mails were checked in a browser, not in real mail programs such as Outlook and Gmail, and not in their dark modes. | People who read mail with a screen reader or in dark mode | January 2027 |
 
@@ -69,8 +69,9 @@ out by NeoDesk. Everything around it can: the controls, the connection
 state, who is connected, recording and privacy, chat, file transfer and the
 clipboard. A screen reader user who needs the content of the remote screen
 can run a screen reader on the remote computer and turn on the session's
-sound. The remote screen never traps the keyboard: F8, or Ctrl+Alt+Shift+K
-on keyboards without function keys, gives it back.
+sound. The remote screen never traps the keyboard. In the browser, F8 or
+Ctrl+Alt+Shift+G gives it back; in the desktop client, Ctrl+Alt+Shift+G
+(Command+Option+Shift+G on a Mac).
 
 ## Report a problem
 

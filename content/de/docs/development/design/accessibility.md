@@ -24,7 +24,8 @@ bekommt jede neue Ansicht auch die Prüfungen von Hand weiter unten.
   und Leertaste lösen aus, Pfeiltasten bewegen innerhalb einer Gruppe
   (Tabs, Menüs, Optionsgruppen, Listen), Escape schließt. Nichts hält die
   Tastatur fest. Der entfernte Bildschirm bekommt jede Taste, deshalb gibt
-  F8 oder Strg+Alt+Umschalt+K die Tastatur immer zurück.
+  Strg+Alt+Umschalt+G die Tastatur immer zurück, im Browser und im Client
+  (im Browser auch F8).
 - Der Fokus ist immer sichtbar (der 2-px-Ring, 3:1 zu seiner Umgebung) und
   nie unter der oberen Leiste, der Speicherleiste, der Navigation auf dem
   Telefon oder einer fixierten Tabellenspalte versteckt.
@@ -132,5 +133,5 @@ Sprachausgabe und NVDA unter Windows, Orca unter Linux.
 - [ ] Tabellen sagen ihre Beschriftung, die Zahl der Zeilen und Spalten
       und welche Spalte sortiert ist.
 - [ ] Auf dem entfernten Bildschirm gehen die Tasten an den entfernten
-      Computer, und F8 oder Strg+Alt+Umschalt+K gibt sie zurück; das wird
+      Computer, und F8 oder Strg+Alt+Umschalt+G gibt sie zurück; das wird
       gesagt.

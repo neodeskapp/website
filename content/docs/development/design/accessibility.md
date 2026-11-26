@@ -23,7 +23,8 @@ manual checks below.
 - Everything works with the keyboard alone: Tab and Shift+Tab move, Enter
   and Space act, arrow keys move inside a group (tabs, menus, radio groups,
   lists), Escape closes. Nothing traps the keyboard. The remote screen keeps
-  every key, so F8 or Ctrl+Alt+Shift+K always gives the keyboard back.
+  every key, so Ctrl+Alt+Shift+G always gives the keyboard back, in the
+  browser and in the client (F8 too in the browser).
 - Focus is always visible (the 2 px ring, 3:1 against what is around it)
   and never hidden under the top bar, the save bar, the phone navigation or
   a pinned table column.
@@ -122,4 +123,4 @@ Orca on Linux.
 - [ ] Tables say their caption, the number of rows and columns, and which
       column is sorted.
 - [ ] On the remote screen, keys go to the remote computer, and F8 or
-      Ctrl+Alt+Shift+K gives them back, which is said.
+      Ctrl+Alt+Shift+G gives them back, which is said.
