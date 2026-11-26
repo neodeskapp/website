@@ -16,13 +16,13 @@ const SEARCH_ICON =
 const CONTENTS_ICON =
 	'<svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 5h9M8 10h9M8 15h9M3.5 5h.01M3.5 10h.01M3.5 15h.01" stroke-width="2.2"/></svg>';
 
-/** The button that opens search. Its words are hidden on small screens, so it carries an aria-label. */
 /**
  * Search. It is a link to the list of all pages, which is the search without scripts;
- * docs.js opens the search dialog on a click instead.
+ * docs.js opens the search dialog on a click instead. Its words are its name; on small
+ * screens they are hidden visually only. The shortcut next to them is no part of it.
  */
 const searchButton = (shared: Shared, wide = false) =>
-	`<a class="search-button${wide ? ' search-button-wide' : ''}" href="${inLocale(shared, '/docs/all/')}" aria-haspopup="dialog" aria-label="${esc(shared.t.searchDocs)}">${SEARCH_ICON}<span>${esc(shared.t.searchDocs)}</span><kbd>${esc(shared.t.searchKey)}</kbd></a>`;
+	`<a class="search-button${wide ? ' search-button-wide' : ''}" href="${inLocale(shared, '/docs/all/')}" aria-haspopup="dialog">${SEARCH_ICON}<span>${esc(shared.t.searchDocs)}</span><kbd aria-hidden="true">${esc(shared.t.searchKey)}</kbd></a>`;
 
 const formatDate =(iso: string, dateLocale: string) =>
 	new Date(iso).toLocaleDateString(dateLocale, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
