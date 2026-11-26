@@ -264,6 +264,10 @@ ${unfolded(items)
     </ul>`;
 }
 
+/** The breadcrumb above a page: a named navigation, its separators hidden from screen readers. */
+const crumbNav = (shared: Shared, crumbs: { name: string; path: string }[]) =>
+	`<nav class="crumb-path" aria-label="${esc(shared.t.breadcrumb)}">${crumbs.map((c) => `<a href="${inLocale(shared, c.path)}">${esc(c.name)}</a>`).join('<span aria-hidden="true"> / </span>')}</nav>`;
+
 const crumbList = (shared: Shared, crumbs: { name: string; path: string }[]) => ({
 	'@context': 'https://schema.org',
 	'@type': 'BreadcrumbList',
@@ -305,7 +309,7 @@ ${sections
  */
 export function allPagesPage(shared: Shared) {
 	const { sections, t } = shared;
-	const main = `    <div class="crumb"><span><a href="${inLocale(shared, '/docs/')}">${esc(t.docs)}</a></span></div>
+	const main = `    <div class="crumb">${crumbNav(shared, [{ name: t.docs, path: '/docs/' }])}</div>
     ${pageHead(shared, t.allPages, '/docs/all.md')}
     <p class="lead">${esc(t.allPagesLead)}</p>
 ${sections
@@ -335,7 +339,7 @@ ${s.items.map((p) => `        <li${p.parent ? ' class="child"' : ''}><a href="${
 
 export function sectionPage(shared: Shared & { section: Section }) {
 	const { section, t } = shared;
-	const main = `    <div class="crumb"><span><a href="${inLocale(shared, '/docs/')}">${esc(t.docs)}</a></span></div>
+	const main = `    <div class="crumb">${crumbNav(shared, [{ name: t.docs, path: '/docs/' }])}</div>
     ${pageHead(shared, section.label, `/docs/${section.slug}.md`)}
     <p class="lead">${esc(section.intro)}</p>
     ${rows(shared, section.items)}`;
@@ -375,7 +379,10 @@ ${tocItems.map((h) => `      <li${h.level === 3 ? ' class="sub"' : ''}><a href="
 		.join('\n        ');
 	const pagerLink = (p: Pager | null, cls: string) => (p ? `<a class="${cls}" href="${p.href}"><span>${esc(p.label)}</span>${esc(p.title)}</a>` : '<span></span>');
 	const main = `    <div class="crumb">
-      <span><a href="${inLocale(shared, '/docs/')}">${esc(t.docs)}</a> / <a href="${inLocale(shared, `/docs/${page.section}/`)}">${esc(sectionLabel)}</a></span>
+      ${crumbNav(shared, [
+				{ name: t.docs, path: '/docs/' },
+				{ name: sectionLabel, path: `/docs/${page.section}/` }
+			])}
       <span class="crumb-actions">
         ${actions}
       </span>

@@ -45,6 +45,8 @@ export interface Strings {
 	more: string;
 	language: string;
 	onThisPage: string;
+	/** The name of the breadcrumb above a docs page */
+	breadcrumb: string;
 	updated: string;
 	copyMarkdown: string;
 	/** The name of the link next to a heading: "Link to this section: {title}" */
@@ -144,6 +146,7 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		onThisPage: 'On this page',
 		updated: 'Updated',
 		copyMarkdown: 'Copy as Markdown',
+		breadcrumb: 'Breadcrumb',
 		copied: 'Copied',
 		copyFailed: "Couldn't copy",
 		linkToSection: 'Link to this section: {title}',
@@ -217,6 +220,7 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		onThisPage: 'Auf dieser Seite',
 		updated: 'Geändert am',
 		copyMarkdown: 'Als Markdown kopieren',
+		breadcrumb: 'Navigationspfad',
 		copied: 'Kopiert',
 		copyFailed: 'Kopieren fehlgeschlagen',
 		linkToSection: 'Link zu diesem Abschnitt: {title}',
