@@ -70,8 +70,7 @@ export interface DownloadStrings {
 	osNote: Partial<Record<ClientOs, string>>;
 	kinds: Record<FileKind | 'linuxPortable' | 'macPortable', { title: string; text: string }>;
 	sha: string;
-	/** "{arch}, {size}: {file}", the accessible name of a file's link */
-	fileLabel: string;
+
 	repoTitle: string;
 	repoText: string;
 	/** While there is no final release */
@@ -162,7 +161,6 @@ export const DOWNLOAD: Record<string, DownloadStrings> = {
 			linuxPortable: { title: 'Portable', text: 'NeoDesk without installing: unpack the archive and run it.' }
 		},
 		sha: 'SHA-256',
-		fileLabel: '{arch}, {size}: {file}',
 		repoTitle: 'Package repository',
 		repoText: 'On Linux, the signed repository at pkg.neode.sk keeps NeoDesk up to date with your system\'s updates, for x64 and ARM64.',
 		repoTesting: 'Its stable suite stays empty until the client\'s first final release. Until then the commands below use the testing suite, which has the release candidates.',
@@ -255,7 +253,6 @@ export const DOWNLOAD: Record<string, DownloadStrings> = {
 			linuxPortable: { title: 'Portabel', text: 'NeoDesk ohne Installation: Archiv entpacken und starten.' }
 		},
 		sha: 'SHA-256',
-		fileLabel: '{arch}, {size}: {file}',
 		repoTitle: 'Paket-Repository',
 		repoText: 'Unter Linux hält das signierte Repository auf pkg.neode.sk NeoDesk mit den normalen Updates deines Systems aktuell, für x64 und ARM64.',
 		repoTesting: 'Seine Suite stable bleibt bis zum ersten finalen Release des Clients leer. Bis dahin nehmen die Befehle unten die Suite testing, die die Release Candidates hat.',
@@ -505,7 +502,7 @@ ${d.scamAfter.map((s) => `          <li>${s}</li>`).join('\n')}
 						const sums = files.filter((f) => f.sha256);
 						return `          <li class="dl-row">
             <div class="dl-row-text"><h4>${esc(k.title)} <span class="dl-ext">${esc(extOf(files[0]))}</span></h4><p>${esc(k.text)}</p></div>
-            <div class="dl-row-get">${files.map((f) => `<a class="dl-get" href="${esc(f.url)}" aria-label="${esc(fill(d.fileLabel, { arch: archOf(f), size: size(f), file: f.name }))}">${esc(archOf(f))}<span>${size(f)}</span></a>`).join('')}</div>
+            <div class="dl-row-get">${files.map((f) => `<a class="dl-get" href="${esc(f.url)}">${esc(archOf(f))} <span>${size(f)}</span><span class="dl-vh">, ${esc(f.name)}</span></a>`).join('')}</div>
 ${sums.length ? `            <details class="dl-sha"><summary>${esc(d.sha)}</summary>${sums.map((f) => `<p><span>${esc(archOf(f))}</span><code>${f.sha256}</code></p>`).join('')}</details>\n` : ''}          </li>`;
 					})
 					.filter(Boolean)
