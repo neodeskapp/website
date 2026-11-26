@@ -5,8 +5,10 @@ order: 6
 ---
 
 NeoDesk zielt in Konsole, Desktop-Client, Website und Mails auf WCAG 2.2
-Stufe AA. Das deckt auch EN 301 549 und die BITV 2.0 ab. Wo AAA wenig kostet
-(7:1 für Fließtext, 44 px große Ziele, keine Zeitlimits), machen wir es. Die
+Stufe AA. EN 301 549 und die BITV 2.0 bauen auf diesen Kriterien auf und
+stellen eigene Anforderungen dazu, die wir noch nicht geprüft haben. Wo AAA
+wenig kostet (7:1 für Fließtext, 44 px große Ziele, keine Zeitlimits),
+machen wir es. Die
 [Erklärung zur Barrierefreiheit](/docs/project/accessibility) sagt, was
 heute erfüllt ist und was noch nicht.
 
@@ -79,14 +81,16 @@ Im Desktop-Client nimm die gemeinsamen Widgets in
 
 ## Testen
 
-In der CI, bei jedem Pull Request:
+Die Prüfungen der Konsole laufen in der CI bei jedem Pull Request. Auf der
+Website laufen die Prüfungen des Markups bei jedem Build; den Test im
+Headless-Browser startest du von Hand, er braucht Playwright und axe-core:
 
 ```sh
 # Kontrast jedes Farbpaars in jeder Palette, die Lint-Regel, die Komponenten
 cd web-ui && npx vitest run tests/unit/contrast.test.ts tests/unit/lint-named-icon-control.test.ts tests/unit/ui
 # axe auf jeder Seite, hell und dunkel, 320 und 1280 px; Aufgaben nur mit Tastatur; Fokus nicht verdeckt; Kontrastdesigns
 npx playwright test e2e/a11y-routes.spec.ts e2e/a11y-tasks.spec.ts e2e/a11y-focus-obscured.spec.ts e2e/a11y-forced-colors.spec.ts
-# Die Website: Build-Prüfungen und der Test im Headless-Browser
+# Die Website: Build-Prüfungen, dann der Test im Headless-Browser
 npm run build && npm run test:a11y
 ```
 

@@ -14,8 +14,9 @@ its documentation, and the mails the server sends.
 ## Standard and status
 
 We measure against the Web Content Accessibility Guidelines (WCAG) 2.2,
-level AA. That also covers the European standard EN 301 549 and the German
-BITV 2.0.
+level AA. The European standard EN 301 549 and the German BITV 2.0 use these
+criteria for web content and add requirements of their own, which we have not
+checked yet.
 
 - **Web console:** partly conforms. The parts that don't yet are listed
   below.
@@ -23,17 +24,21 @@ BITV 2.0.
   nothing from it. We are fixing this first.
 - **Website and documentation:** partly conforms. One colour pair is below
   the limit.
-- **Mails:** conform, as far as we could test without real mail programs.
+- **Mails:** no problems found so far, but only checked in a browser, not in
+  real mail programs.
 
 ## How we tested
 
 Last check: 26 November 2026.
 
 - **Automated:** axe-core 4.14 on every page of the console, signed in and
-  signed out, in light and dark, at 320 and 1280 pixels wide; on every
-  template of the website at 320, 768 and 1280 pixels; on all 24 mails in
-  light and dark. These checks run on every change to the code and stop it
-  when they find a problem.
+  signed out, in light and dark, at 320 and 1280 pixels wide, and on all 24
+  mails in light and dark. These checks run on every change to the console's
+  code and stop it when they find a problem. On the website, axe-core checks
+  sample pages of each kind in light and dark at 320 and 1280 pixels in a
+  test we run by hand, and every build checks the markup (skip link,
+  headings, the names of links, buttons, tables and scrolling areas) and
+  stops when it finds a problem.
 - **Contrast:** every colour pair the console uses, in every built-in theme
   and contrast mode, computed from the design tokens.
 - **Keyboard:** the main tasks of the console, done with the keyboard
@@ -59,8 +64,8 @@ Last check: 26 November 2026.
 | What | Who it affects | Planned |
 |---|---|---|
 | The desktop client on Windows gives screen readers no information at all. | Screen reader users | February 2027 |
-| In the desktop client 1.5, several controls (title bar, tabs, settings pages, file lists, the connection request) can't be reached with the keyboard, and a remote session keeps the keyboard. | Keyboard and switch users | Fixed for the next client release, once checked in our lab |
-| The desktop client 1.5 ignores the system's text size and high contrast setting. | People with low vision | Fixed for the next client release, once checked in our lab |
+| In the desktop client 1.5, several controls (title bar, tabs, settings pages, file lists, the connection request) can't be reached with the keyboard, and a remote session keeps the keyboard. | Keyboard and switch users | A fix for the next client release is in review; it ships once checked in our lab |
+| The desktop client 1.5 ignores the system's text size and high contrast setting. | People with low vision | A fix for the next client release is in review; it ships once checked in our lab |
 | On the website, code examples show keywords and the copy button in a blue that reaches 4.27:1 in light mode instead of 4.5:1. | People with low vision | Open |
 | Mails were checked in a browser, not in real mail programs such as Outlook and Gmail, and not in their dark modes. | People who read mail with a screen reader or in dark mode | January 2027 |
 
@@ -69,9 +74,10 @@ out by NeoDesk. Everything around it can: the controls, the connection
 state, who is connected, recording and privacy, chat, file transfer and the
 clipboard. A screen reader user who needs the content of the remote screen
 can run a screen reader on the remote computer and turn on the session's
-sound. The remote screen never traps the keyboard. In the browser, F8 or
-Ctrl+Alt+Shift+G gives it back; in the desktop client, Ctrl+Alt+Shift+G
-(Command+Option+Shift+G on a Mac).
+sound. In the browser the remote screen never traps the keyboard: F8 or
+Ctrl+Alt+Shift+G gives it back. The desktop client 1.5 still keeps it (see
+the table); the fix for the next client release gives it back with
+Ctrl+Alt+Shift+G (Command+Option+Shift+G on a Mac).
 
 ## Report a problem
 

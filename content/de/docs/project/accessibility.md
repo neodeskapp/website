@@ -13,24 +13,31 @@ mit ihrer Dokumentation und die Mails, die der Server verschickt.
 ## Standard und Stand
 
 Wir messen an den Web Content Accessibility Guidelines (WCAG) 2.2, Stufe
-AA. Das deckt auch die europäische Norm EN 301 549 und die BITV 2.0 ab.
+AA. Die europäische Norm EN 301 549 und die BITV 2.0 nehmen diese Kriterien
+für Webinhalte und stellen eigene Anforderungen dazu, die wir noch nicht
+geprüft haben.
 
 - **Webkonsole:** teilweise erfüllt. Was noch fehlt, steht unten.
 - **Desktop-Client:** noch nicht erfüllt. Unter Windows bekommen
   Screenreader nichts von ihm. Das beheben wir zuerst.
 - **Website und Dokumentation:** teilweise erfüllt. Ein Farbpaar liegt
   unter der Grenze.
-- **Mails:** erfüllt, soweit wir ohne echte Mailprogramme testen konnten.
+- **Mails:** bisher keine Probleme gefunden, aber nur im Browser geprüft,
+  nicht in echten Mailprogrammen.
 
 ## Wie wir getestet haben
 
 Letzte Prüfung: 26. November 2026.
 
 - **Automatisch:** axe-core 4.14 auf jeder Seite der Konsole, angemeldet
-  und abgemeldet, hell und dunkel, 320 und 1280 Pixel breit; auf jeder
-  Vorlage der Website bei 320, 768 und 1280 Pixeln; auf allen 24 Mails hell
-  und dunkel. Diese Prüfungen laufen bei jeder Änderung am Code und halten
-  sie auf, wenn sie ein Problem finden.
+  und abgemeldet, hell und dunkel, 320 und 1280 Pixel breit, und auf allen
+  24 Mails hell und dunkel. Diese Prüfungen laufen bei jeder Änderung am Code
+  der Konsole und halten sie auf, wenn sie ein Problem finden. Auf der
+  Website prüft axe-core Beispielseiten jeder Art hell und dunkel bei 320
+  und 1280 Pixeln in einem Test, den wir von Hand starten, und jeder Build
+  prüft das Markup (Link zum Überspringen, Überschriften, die Namen von
+  Links, Knöpfen, Tabellen und scrollbaren Bereichen) und hält an, wenn er
+  ein Problem findet.
 - **Kontrast:** jedes Farbpaar der Konsole, in jedem eingebauten Design und
   Kontrastmodus, aus den Design-Tokens berechnet.
 - **Tastatur:** die wichtigsten Aufgaben der Konsole, allein mit der
@@ -59,8 +66,8 @@ Letzte Prüfung: 26. November 2026.
 | Was | Wen es betrifft | Geplant |
 |---|---|---|
 | Der Desktop-Client gibt Screenreadern unter Windows gar keine Informationen. | Screenreader-Nutzende | Februar 2027 |
-| Im Desktop-Client 1.5 lassen sich mehrere Bedienelemente (Titelleiste, Tabs, Einstellungsseiten, Dateilisten, die Verbindungsanfrage) nicht mit der Tastatur erreichen, und eine Sitzung hält die Tastatur fest. | Wer mit Tastatur oder Schalter bedient | Behoben für die nächste Version des Clients, sobald in unserem Labor geprüft |
-| Der Desktop-Client 1.5 folgt nicht der Textgröße des Systems und nicht der Einstellung für hohen Kontrast. | Menschen mit Sehbehinderung | Behoben für die nächste Version des Clients, sobald in unserem Labor geprüft |
+| Im Desktop-Client 1.5 lassen sich mehrere Bedienelemente (Titelleiste, Tabs, Einstellungsseiten, Dateilisten, die Verbindungsanfrage) nicht mit der Tastatur erreichen, und eine Sitzung hält die Tastatur fest. | Wer mit Tastatur oder Schalter bedient | Eine Korrektur für die nächste Version des Clients ist in Prüfung; sie erscheint, sobald sie in unserem Labor geprüft ist |
+| Der Desktop-Client 1.5 folgt nicht der Textgröße des Systems und nicht der Einstellung für hohen Kontrast. | Menschen mit Sehbehinderung | Eine Korrektur für die nächste Version des Clients ist in Prüfung; sie erscheint, sobald sie in unserem Labor geprüft ist |
 | Auf der Website zeigen Codebeispiele Schlüsselwörter und den Kopierknopf in einem Blau, das im hellen Modus 4.27:1 statt 4.5:1 erreicht. | Menschen mit Sehbehinderung | Offen |
 | Die Mails wurden im Browser geprüft, nicht in echten Mailprogrammen wie Outlook und Gmail und nicht in deren dunklem Modus. | Wer Mails mit Screenreader oder im dunklen Modus liest | Januar 2027 |
 
@@ -69,10 +76,11 @@ NeoDesk nicht vorlesen. Alles drumherum schon: die Bedienelemente, der
 Verbindungsstand, wer verbunden ist, Aufzeichnung und Privatsphäre, Chat,
 Dateiübertragung und die Zwischenablage. Wer mit Screenreader den Inhalt
 des entfernten Bildschirms braucht, kann auf dem entfernten Computer einen
-Screenreader starten und den Ton der Sitzung einschalten. Der entfernte
-Bildschirm hält die Tastatur nie fest. Im Browser gibt F8 oder
-Strg+Alt+Umschalt+G sie zurück, im Desktop-Client Strg+Alt+Umschalt+G
-(Befehl+Wahl+Umschalt+G auf dem Mac).
+Screenreader starten und den Ton der Sitzung einschalten. Im Browser hält
+der entfernte Bildschirm die Tastatur nie fest: F8 oder Strg+Alt+Umschalt+G
+gibt sie zurück. Der Desktop-Client 1.5 hält sie noch fest (siehe Tabelle);
+die Korrektur für die nächste Version des Clients gibt sie mit
+Strg+Alt+Umschalt+G zurück (Befehl+Wahl+Umschalt+G auf dem Mac).
 
 ## Ein Problem melden
 

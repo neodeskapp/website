@@ -6,7 +6,8 @@ icon: checklist
 ---
 
 NeoDesk aims at WCAG 2.2 level AA in the console, the desktop client, the
-website and the mails. That also covers EN 301 549 and the German BITV 2.0.
+website and the mails. EN 301 549 and the German BITV 2.0 build on these
+criteria and add requirements of their own, which we have not checked yet.
 Where AAA costs little (7:1 for body text, 44 px targets, no time limits) we
 do it. The [accessibility statement](/docs/project/accessibility) says what
 conforms today and what doesn't yet.
@@ -74,14 +75,16 @@ a control.
 
 ## How to test
 
-In CI, on every pull request:
+The console's checks run in CI on every pull request. On the website, the
+build runs the markup checks every time; the headless test is run by hand
+and needs Playwright and axe-core:
 
 ```sh
 # Contrast of every colour pair in every palette, the lint rule, the components
 cd web-ui && npx vitest run tests/unit/contrast.test.ts tests/unit/lint-named-icon-control.test.ts tests/unit/ui
 # axe on every page, light and dark, 320 and 1280 px; keyboard-only tasks; focus not hidden; forced colours
 npx playwright test e2e/a11y-routes.spec.ts e2e/a11y-tasks.spec.ts e2e/a11y-focus-obscured.spec.ts e2e/a11y-forced-colors.spec.ts
-# The website: build checks and the headless accessibility test
+# The website: build checks, then the headless accessibility test
 npm run build && npm run test:a11y
 ```
 
