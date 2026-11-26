@@ -3,6 +3,7 @@ import { SITE_PAGES, sitePageTitles } from './pages.ts';
 import type { SitePageSlug } from './pages.ts';
 import type { Page, Pager, Section, Shared } from './types.ts';
 import { DEFAULT_LOCALE, fill } from './i18n.ts';
+import type { Strings } from './i18n.ts';
 import { siteHeader, siteFooter } from './chrome.ts';
 import { plain } from './search.ts';
 import { iconSvg } from './icons.ts';
@@ -122,8 +123,29 @@ interface FrameOptions extends Shared {
 	bare?: boolean;
 }
 
+/**
+ * Code blocks and tables that may scroll sideways become regions a keyboard can reach
+ * and scroll: each gets tabindex, role="region" and a name, its own aria-label or the
+ * nearest heading before it. docs.js keeps that only on the blocks that scroll at the
+ * current width, so the others are no extra tab stops.
+ */
+export function scrollRegions(html: string, t: Pick<Strings, 'codeBlock' | 'tableBlock'>) {
+	let heading = '';
+	return html.replace(/<h[2-4]\b[^>]*\bid="([^"]+)"[^>]*>|<pre\b([^>]*)>|<div class="table-wrap"([^>]*)>/g, (m, id: string | undefined, preAttrs: string | undefined, tableAttrs: string | undefined) => {
+		if (id) {
+			heading = id;
+			return m;
+		}
+		const attrs = (preAttrs ?? tableAttrs ?? '').replace(/\s*tabindex="[^"]*"/, '');
+		if (/\brole=/.test(attrs)) return m;
+		const name = /\baria-label=/.test(attrs) ? '' : heading ? ` aria-labelledby="${heading}"` : ` aria-label="${esc(preAttrs !== undefined ? t.codeBlock : t.tableBlock)}"`;
+		return preAttrs !== undefined ? `<pre${attrs} tabindex="0" role="region"${name} data-scroll>` : `<div class="table-wrap"${attrs} tabindex="0" role="region"${name} data-scroll>`;
+	});
+}
+
 function frame(o: FrameOptions) {
-	const { config, assets, production, locale, t, title, description, current, main, toc = '', markdown, jsonLd, type = 'website', noindex = false } = o;
+	const { config, assets, production, locale, t, title, description, current, toc = '', markdown, jsonLd, type = 'website', noindex = false } = o;
+	const main = scrollRegions(o.main, t);
 	const full = o.fullTitle ?? fill(t.pageTitle, { title, name: config.name });
 	const own = logical(o, o.path);
 	const canonical = o.urls.url(own);

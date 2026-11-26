@@ -85,6 +85,35 @@
     }).catch(function () { location.href = link.href; });
   });
 
+  /* ---- Code blocks and tables that scroll sideways ----
+     The build makes each a named region a keyboard can reach (src/layout.ts). Only the
+     ones that scroll at the current width stay one, so the others are no tab stops;
+     a block that starts to scroll, after a resize or when its <details> opens, becomes
+     one again. */
+  var scrollers = $$('[data-scroll]');
+  var NAMES = ['aria-label', 'aria-labelledby'];
+  function markScroller(el) {
+    var scrolls = el.scrollWidth > el.clientWidth + 1;
+    if (scrolls === el.hasAttribute('role')) return;
+    if (scrolls) {
+      el.setAttribute('tabindex', '0');
+      el.setAttribute('role', 'region');
+      NAMES.forEach(function (n) { if (el.hasAttribute('data-' + n)) el.setAttribute(n, el.getAttribute('data-' + n)); });
+    } else {
+      el.removeAttribute('tabindex');
+      el.removeAttribute('role');
+      NAMES.forEach(function (n) {
+        if (!el.hasAttribute(n)) return;
+        el.setAttribute('data-' + n, el.getAttribute(n));
+        el.removeAttribute(n);
+      });
+    }
+  }
+  if (scrollers.length && window.ResizeObserver) {
+    var watch = new ResizeObserver(function (entries) { entries.forEach(function (en) { markScroller(en.target); }); });
+    scrollers.forEach(function (el) { markScroller(el); watch.observe(el); });
+  }
+
   /* ---- A screenshot opens in the theme it is shown in ---- */
   var dark = window.matchMedia('(prefers-color-scheme: dark)');
   doc.addEventListener('click', function (e) {

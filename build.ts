@@ -466,7 +466,7 @@ function makeMarkdown(page: Page, usedShots: Set<string>, t: Strings, linkTo: (h
 		return (
 			`<div class="code${output ? ' code-output' : ''}">` +
 			(output ? '' : `<button type="button" class="copy" aria-label="${esc(t.copyCode)}" data-copied="${esc(t.copied)}" data-failed="${esc(t.copyFailed)}">${esc(t.copy)}</button>`) +
-			`<pre tabindex="0"><code>${html}</code></pre></div>\n`
+			`<pre aria-label="${esc(output ? t.outputBlock : info ? `${t.codeBlock}, ${info}` : t.codeBlock)}"><code>${html}</code></pre></div>\n`
 		);
 	};
 
@@ -479,7 +479,7 @@ function makeMarkdown(page: Page, usedShots: Set<string>, t: Strings, linkTo: (h
 	md.renderer.rules.heading_open = (tokens, i, opts, env, self) =>
 		(tokens[i].meta?.aliases ?? []).map((a: string) => `<span id="${esc(a)}" class="anchor-alias"></span>`).join('') + self.renderToken(tokens, i, opts);
 
-	md.renderer.rules.table_open = () => '<div class="table-wrap" tabindex="0"><table>\n';
+	md.renderer.rules.table_open = () => '<div class="table-wrap"><table>\n';
 	md.renderer.rules.table_close = () => '</table></div>\n';
 	return md;
 }

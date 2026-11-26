@@ -519,13 +519,13 @@ ${rows}
 			})
 			.join('\n');
 
-	const codeBlock = (lines: string[]) =>
-		`<div class="code"><button type="button" class="copy" aria-label="${esc(d.copyCode)}" data-copied="${esc(d.copied)}" data-failed="${esc(d.copyFailed)}">${esc(d.copy)}</button><pre tabindex="0"><code>${lines.map(esc).join('\n')}</code></pre></div>`;
+	const codeBlock = (lines: string[], label: string) =>
+		`<div class="code"><button type="button" class="copy" aria-label="${esc(d.copyCode)}" data-copied="${esc(d.copied)}" data-failed="${esc(d.copyFailed)}">${esc(d.copy)}</button><pre aria-label="${esc(label)}"><code>${lines.map(esc).join('\n')}</code></pre></div>`;
 	const repo = r
 		? `      <section class="dl-os dl-repo" id="repository" aria-labelledby="repository-title">
         <h3 id="repository-title">${esc(d.repoTitle)}</h3>
         <p>${esc(d.repoText)}${r.prerelease ? ` ${esc(d.repoTesting)}` : ''}</p>
-${(['deb', 'rpm', 'suse'] as const).map((fam) => `        <details class="dl-cmds"><summary>${esc(d.repoFamilies[fam])}</summary>${codeBlock(repoCommands(suiteOf(r))[fam])}</details>`).join('\n')}
+${(['deb', 'rpm', 'suse'] as const).map((fam) => `        <details class="dl-cmds"><summary>${esc(d.repoFamilies[fam])}</summary>${codeBlock(repoCommands(suiteOf(r))[fam], d.repoFamilies[fam])}</details>`).join('\n')}
         <p>${fill(d.repoMore, { docs: links.docs('/docs/getting-started/connect-a-client#install-from-the-package-repository') })}</p>
       </section>`
 		: '';
