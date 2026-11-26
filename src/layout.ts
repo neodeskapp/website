@@ -192,11 +192,12 @@ ${siteFooter(chrome)}
 ${docsHost && !o.plain ? `<dialog class="search" aria-label="${esc(t.searchDocs)}" data-index="${inLocale(o, '/docs/search.json')}" data-base="${esc(o.urls.url('/docs/'))}" data-groups="${esc([t.groupPages, t.groupSections, t.groupCommands, t.groupSettings].join('|'))}" data-results="${esc(t.resultsCount)}" data-nothing="${esc(t.nothingFound)}" data-failed="${esc(t.searchFailed)}">
   <div class="search-field">
     ${SEARCH_ICON}
-    <input type="search" id="search-input" placeholder="${esc(t.searchDocs)}" aria-label="${esc(t.searchDocs)}" autocomplete="off" spellcheck="false" aria-controls="search-results">
+    <input type="search" id="search-input" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="search-results" placeholder="${esc(t.searchDocs)}" aria-label="${esc(t.searchDocs)}" autocomplete="off" spellcheck="false">
     <button type="button" class="search-close">${esc(t.close)}</button>
   </div>
-  <ul id="search-results" role="listbox" aria-label="${esc(t.results)}"></ul>
-  <p class="search-status" role="status" aria-live="polite">${esc(t.searchHint)}</p>
+  <div id="search-results" role="listbox" aria-label="${esc(t.results)}"></div>
+  <p class="search-status">${esc(t.searchHint)}</p>
+  <p class="search-said vh" role="status"></p>
 </dialog>` : ''}
 </body>
 </html>

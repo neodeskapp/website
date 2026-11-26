@@ -80,11 +80,11 @@ for (const [start, cases] of Object.entries(CASES)) {
 		await page.keyboard.press('Control+K');
 		await page.fill('#search-input', query);
 		try {
-			await page.waitForFunction(() => !!document.querySelector('#search-results li[role="option"]'), undefined, { timeout: 8000 });
+			await page.waitForFunction(() => !!document.querySelector('#search-results [role="option"]'), undefined, { timeout: 8000 });
 		} catch {
 			/* nothing found: reported below */
 		}
-		const top = await page.evaluate(() => Array.from(document.querySelectorAll('#search-results li[role="option"] a')).slice(0, 3).map((a) => (a as HTMLAnchorElement).href));
+		const top = await page.evaluate(() => Array.from(document.querySelectorAll('#search-results [role="option"]')).slice(0, 3).map((o) => new URL(o.getAttribute('data-href')!, location.href).href));
 		const ok = top[0] === urls.url(want);
 		if (!ok) failed++;
 		console.log(`${ok ? 'ok  ' : 'FAIL'} ${start.startsWith('/de') ? 'de' : 'en'} "${query}" -> ${top[0] ?? 'nothing'}${ok ? '' : `\n     want ${urls.url(want)}\n     then ${top.slice(1).join(', ')}`}`);

@@ -119,13 +119,19 @@
   /* ---- Search ----
      The index (src/search.ts) is loaded the first time search opens, gzipped where the
      browser can unpack it. Results come in groups: pages, sections, commands, settings.
-     Without scripts the search button is a link to the list of all pages. */
+     Without scripts the search button is a link to the list of all pages.
+     The field is a combobox and the results a listbox, as in the ARIA pattern: the
+     arrow keys move the selection, Enter opens it, and focus stays in the field. The
+     line under the results shows the hint or that nothing was found; a hidden status
+     says the number of results once the reader stops typing. */
   var dialog = $('dialog.search');
   if (!dialog || !dialog.showModal) return;
   var input = $('#search-input');
   var list = $('#search-results');
   var status = $('.search-status');
+  var spoken = $('.search-said');
   var hint = status.textContent;
+  var speakTimer = null;
   var said = function (name, fallback) { return dialog.getAttribute('data-' + name) || fallback; };
   var base = said('base', '/');
   var groupNames = said('groups', 'Pages|Sections|Commands|Settings').split('|');
@@ -243,7 +249,7 @@
     return groups.map(function (k) { return { kind: k, results: byKind[k], terms: terms }; });
   }
 
-  function options() { return $$('li[role="option"]', list); }
+  function options() { return $$('[role="option"]', list); }
   function select(i) {
     var all = options();
     selected = all.length ? (i + all.length) % all.length : -1;
@@ -254,36 +260,55 @@
     } else input.removeAttribute('aria-activedescendant');
   }
 
+  // The status is said once the reader has stopped typing, not on every key
+  function speak(text) {
+    clearTimeout(speakTimer);
+    speakTimer = setTimeout(function () { if (spoken.textContent !== text) spoken.textContent = text; }, 400);
+  }
+
   function render() {
     var q = input.value;
     if (!q.trim()) {
       list.innerHTML = '';
       status.textContent = hint;
       status.hidden = false;
-      selected = -1;
+      input.setAttribute('aria-expanded', 'false');
+      clearTimeout(speakTimer);
+      select(-1);
       return;
     }
     var groups = search(q);
     var n = 0;
     list.innerHTML = groups.map(function (g, gi) {
-      var head = '<li role="presentation" class="result-group" id="result-group-' + gi + '">' + escapeHtml(groupNames[g.kind] || '') + '</li>';
-      return head + g.results.map(function (r) {
+      var head = '<div class="result-group" id="result-group-' + gi + '">' + escapeHtml(groupNames[g.kind] || '') + '</div>';
+      return '<div role="group" aria-labelledby="result-group-' + gi + '">' + head + g.results.map(function (r) {
         var it = r.it;
         var page = pages[it.page];
         var code = it.kind === 2 || it.kind === 3;
         var name = '<span class="result-name' + (code ? ' result-code' : '') + '">' + escapeHtml(it.label) + '</span>';
         var where = it.kind === 0 ? page.section : page.title;
         var text = it.kind === 0 && !count(it.textLower, g.terms) ? escapeHtml(it.text) : excerpt(it.text, g.terms);
-        return '<li role="option" id="result-' + (n++) + '" aria-selected="false" aria-describedby="result-group-' + gi + '"><a href="' + escapeHtml(it.href) + '">' +
+        return '<div role="option" id="result-' + (n++) + '" aria-selected="false" data-href="' + escapeHtml(it.href) + '">' +
           '<span class="result-title">' + name + '<small>' + escapeHtml(where) + '</small></span>' +
-          (text ? '<p class="result-text">' + text + '</p>' : '') + '</a></li>';
-      }).join('');
+          (text ? '<span class="result-text">' + text + '</span>' : '') + '</div>';
+      }).join('') + '</div>';
     }).join('');
+    var nothing = said('nothing', 'Nothing found for "{query}". Try fewer or other words.').replace('{query}', q.trim());
     status.hidden = n > 0;
-    status.textContent = n
-      ? said('results', '{count} results').replace('{count}', n)
-      : said('nothing', 'Nothing found for "{query}". Try fewer or other words.').replace('{query}', q.trim());
+    status.textContent = n ? '' : nothing;
+    input.setAttribute('aria-expanded', n ? 'true' : 'false');
+    speak(n ? said('results', '{count} results').replace('{count}', n) : nothing);
     select(n ? 0 : -1);
+  }
+
+  // Opens a result: in this tab, or in a new one with Ctrl or Cmd or the middle button
+  function go(option, newTab) {
+    var href = option && option.getAttribute('data-href');
+    if (!href) return;
+    if (newTab) { window.open(href, '_blank', 'noopener'); return; }
+    // A result on this page only moves to its heading, so close the dialog too
+    dialog.close();
+    location.href = href;
   }
 
   function open() {
@@ -291,7 +316,11 @@
     if (siteMenu) siteMenu.open = false;
     if (!dialog.open) dialog.showModal();
     input.select();
-    load().then(render, function () { status.hidden = false; status.textContent = said('failed', 'The search index could not be loaded.'); });
+    load().then(render, function () {
+      status.hidden = false;
+      status.textContent = said('failed', 'The search index could not be loaded.');
+      speak(status.textContent);
+    });
   }
 
   $$('.search-button').forEach(function (b) {
@@ -312,13 +341,22 @@
     else if (e.key === 'Home' && e.ctrlKey) { e.preventDefault(); select(0); }
     else if (e.key === 'End' && e.ctrlKey) { e.preventDefault(); select(-1); }
     else if (e.key === 'Enter') {
-      var link = $('li[aria-selected="true"] a', list);
-      if (link) { e.preventDefault(); link.click(); }
+      var option = $('[aria-selected="true"]', list);
+      if (option) { e.preventDefault(); go(option, e.ctrlKey || e.metaKey); }
     }
   });
   list.addEventListener('click', function (e) {
-    // A result on this page only moves to its heading, so close the dialog too
-    if (e.target.closest('a')) dialog.close();
+    var option = e.target.closest('[role="option"]');
+    if (option) go(option, e.ctrlKey || e.metaKey || e.shiftKey);
+  });
+  list.addEventListener('auxclick', function (e) {
+    var option = e.target.closest('[role="option"]');
+    if (option && e.button === 1) go(option, true);
+  });
+  list.addEventListener('mousemove', function (e) {
+    var option = e.target.closest('[role="option"]');
+    var i = options().indexOf(option);
+    if (option && i !== selected) select(i);
   });
   doc.addEventListener('keydown', function (e) {
     var typing = /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable;
