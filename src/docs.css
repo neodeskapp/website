@@ -385,6 +385,9 @@
 .search[open] { display: flex; flex-direction: column; }
 .search::backdrop { background: var(--backdrop); }
 .search-field { display: flex; align-items: center; gap: 12px; padding: 0 8px 0 18px; border-bottom: 1px solid var(--rule); color: var(--muted); }
+/* The field itself has no outline, so the row around it shows the focus */
+.search-field:focus-within { outline: 2px solid var(--blue); outline-offset: -2px; }
+.search-field:has(.search-close:focus-visible) { outline: none; }
 .search-field input {
   flex: 1;
   min-width: 0;
