@@ -130,7 +130,10 @@ const F = '/brand/files';
 function logoMain(code: string, prefix: string, zipBytes: number) {
 	const b = LOGO[code] ?? LOGO.en;
 	const g = GUIDE[code] ?? GUIDE.en;
-	const pngs = (stem: string, sizes: string[]) => sizes.map((s) => `<a href="${F}/png/${stem}-${s}.png" download>PNG ${s.replace('h', ' px high').replace(/^(\d+)$/, '$1 px')}</a>`).join(', ');
+	// A file link reads like its neighbours ("SVG", "PNG 64 px high"); a hidden prefix
+	// names the logo, so a screen reader's list of links tells the files apart
+	const file = (label: string, href: string, text: string) => `<a href="${href}" download><span class="vh">${esc(label)}, </span>${text}</a>`;
+	const pngs = (label: string, stem: string, sizes: string[]) => sizes.map((s) => file(label, `${F}/png/${stem}-${s}.png`, `PNG ${s.replace('h', ' px high').replace(/^(\d+)$/, '$1 px')}`)).join(', ');
 	const tile = (theme: 'dark' | 'light', img: string, w: number, h: number, alt: string, links: string) => `
         <figure class="brand-tile">
           <div class="brand-bg brand-${theme}"><img src="${img}" width="${w}" height="${h}" alt="${esc(alt)}"></div>
@@ -150,16 +153,16 @@ function logoMain(code: string, prefix: string, zipBytes: number) {
     <h2 id="logo-files">${b.logoTitle}</h2>
     <p>${b.logoLead}</p>
     <h3>${b.fullLogo}</h3>
-    <div class="brand-grid">${tile('dark', `${F}/svg/logo-on-dark.svg`, 236, 56, `${b.fullLogo}, ${b.onDark}`, `<a href="${F}/svg/logo-on-dark.svg" download>SVG</a>, ${pngs('logo-on-dark', ['64h', '128h', '256h', '914x542'])}`)}${tile('light', `${F}/svg/logo-on-light.svg`, 236, 56, `${b.fullLogo}, ${b.onLight}`, `<a href="${F}/svg/logo-on-light.svg" download>SVG</a>, ${pngs('logo-on-light', ['64h', '128h', '256h', '914x542'])}`)}
+    <div class="brand-grid">${tile('dark', `${F}/svg/logo-on-dark.svg`, 236, 56, `${b.fullLogo}, ${b.onDark}`, `${file(`${b.fullLogo}, ${b.onDark}`, `${F}/svg/logo-on-dark.svg`, 'SVG')}, ${pngs(`${b.fullLogo}, ${b.onDark}`, 'logo-on-dark', ['64h', '128h', '256h', '914x542'])}`)}${tile('light', `${F}/svg/logo-on-light.svg`, 236, 56, `${b.fullLogo}, ${b.onLight}`, `${file(`${b.fullLogo}, ${b.onLight}`, `${F}/svg/logo-on-light.svg`, 'SVG')}, ${pngs(`${b.fullLogo}, ${b.onLight}`, 'logo-on-light', ['64h', '128h', '256h', '914x542'])}`)}
     </div>
     <h3>${b.mark}</h3>
-    <div class="brand-grid">${tile('dark', `${F}/svg/mark-on-dark.svg`, 72, 72, `${b.mark}, ${b.onDark}`, `<a href="${F}/svg/mark-on-dark.svg" download>SVG</a>, ${pngs('mark-on-dark', ['64', '128', '256', '512'])}`)}${tile('light', `${F}/svg/mark-on-light.svg`, 72, 72, `${b.mark}, ${b.onLight}`, `<a href="${F}/svg/mark-on-light.svg" download>SVG</a>, ${pngs('mark-on-light', ['64', '128', '256', '512'])}`)}
+    <div class="brand-grid">${tile('dark', `${F}/svg/mark-on-dark.svg`, 72, 72, `${b.mark}, ${b.onDark}`, `${file(`${b.mark}, ${b.onDark}`, `${F}/svg/mark-on-dark.svg`, 'SVG')}, ${pngs(`${b.mark}, ${b.onDark}`, 'mark-on-dark', ['64', '128', '256', '512'])}`)}${tile('light', `${F}/svg/mark-on-light.svg`, 72, 72, `${b.mark}, ${b.onLight}`, `${file(`${b.mark}, ${b.onLight}`, `${F}/svg/mark-on-light.svg`, 'SVG')}, ${pngs(`${b.mark}, ${b.onLight}`, 'mark-on-light', ['64', '128', '256', '512'])}`)}
     </div>
     <h3>${b.appIcon}</h3>
     <div class="brand-grid">
         <figure class="brand-tile">
           <div class="brand-bg brand-plain"><img src="${F}/svg/app-icon.svg" width="72" height="72" alt="${esc(b.appIcon)}"></div>
-          <figcaption><a href="${F}/svg/app-icon.svg" download>SVG</a>, <a href="${F}/svg/favicon.svg" download>favicon SVG</a>, ${pngs('app-icon', ['16', '32', '64', '128', '256', '512', '1024'])}, <a href="${F}/png/favicon.ico" download>favicon.ico</a>, <a href="${F}/png/app-icon.ico" download>ICO</a>, <a href="${F}/png/app-icon.icns" download>ICNS</a></figcaption>
+          <figcaption>${file(b.appIcon, `${F}/svg/app-icon.svg`, 'SVG')}, ${file(b.appIcon, `${F}/svg/favicon.svg`, 'favicon SVG')}, ${pngs(b.appIcon, 'app-icon', ['16', '32', '64', '128', '256', '512', '1024'])}, ${file(b.appIcon, `${F}/png/favicon.ico`, 'favicon.ico')}, ${file(b.appIcon, `${F}/png/app-icon.ico`, 'ICO')}, ${file(b.appIcon, `${F}/png/app-icon.icns`, 'ICNS')}</figcaption>
         </figure>
     </div>
     <p class="brand-zip"><a class="btn-link" href="/brand/neodesk-logo.zip" download>${b.zip}</a> <span>(${Math.round(zipBytes / 1024)} KB)</span><br>${b.zipNote}</p>
