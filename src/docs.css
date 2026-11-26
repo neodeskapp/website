@@ -118,6 +118,8 @@
   font-size: 14px;
   color: var(--muted);
 }
+/* At least 24 px high, so the small links are easy to hit on a phone */
+.crumb a, .md-link { display: inline-flex; align-items: center; min-height: 24px; }
 .crumb a { text-decoration: none; }
 .crumb a:hover { color: var(--text); text-decoration: underline; }
 .crumb-actions { display: flex; flex-wrap: wrap; gap: 4px 20px; }
