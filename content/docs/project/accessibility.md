@@ -18,18 +18,22 @@ level AA. The European standard EN 301 549 and the German BITV 2.0 use these
 criteria for web content and add requirements of their own, which we have not
 checked yet.
 
-- **Web console:** partly conforms. The parts that don't yet are listed
-  below.
+- **Web console:** partially conforms, not fully reviewed. The parts that
+  don't yet are listed below.
 - **Desktop client:** does not conform yet. On Windows, screen readers get
   nothing from it. We are fixing this first.
-- **Website and documentation:** partly conforms. One colour pair is below
-  the limit.
-- **Mails:** no problems found so far, but only checked in a browser, not in
-  real mail programs.
+- **Website and documentation:** partially conforms, not fully reviewed. One
+  colour pair is below the limit.
+- **Mails:** partially conforms, not fully reviewed. They were only checked
+  in a browser, not in real mail programs.
+
+A full manual review against every WCAG 2.2 A and AA success criterion and
+tests with screen readers are still open.
 
 ## How we tested
 
-Last check: 26 November 2026.
+Last check: 26 November 2026. The checks of the console and the desktop
+client belong to the changes for their next releases, which are in review.
 
 - **Automated:** axe-core 4.14 on every page of the console, signed in and
   signed out, in light and dark, at 320 and 1280 pixels wide, and on all 24
@@ -46,13 +50,8 @@ Last check: 26 November 2026.
   computer with an invite, answer a help request, send a chat message,
   change a setting and learn it was saved, create a user, read and act on a
   sign-in error, sign in with a pasted two-factor code.
-- **By hand:** a review of the console, the website and the mails against
-  each WCAG 2.2 A and AA success criterion, with 200 % zoom, a 320 pixel
-  wide window, wider text spacing, forced colours as in Windows contrast
-  themes, and reduced motion.
 - **Desktop client:** Flutter's accessibility checks (tap targets, labels,
-  text contrast) on the screens that can be tested without a server, and a
-  review of its code.
+  text contrast) on the screens that can be tested without a server.
 - **Screen readers: not yet.** We have not yet tested with NVDA, JAWS,
   Narrator, VoiceOver, TalkBack or Orca. These tests are planned in our lab.
   We have no way to test VoiceOver on iOS and TalkBack yet. Until these
@@ -61,13 +60,13 @@ Last check: 26 November 2026.
 
 ## What doesn't work yet
 
-| What | Who it affects | Planned |
+| What | Who it affects | Status |
 |---|---|---|
-| The desktop client on Windows gives screen readers no information at all. | Screen reader users | February 2027 |
+| The desktop client on Windows gives screen readers no information at all. | Screen reader users | Open |
 | In the desktop client 1.5, several controls (title bar, tabs, settings pages, file lists, the connection request) can't be reached with the keyboard, and a remote session keeps the keyboard. | Keyboard and switch users | A fix for the next client release is in review; it ships once checked in our lab |
 | The desktop client 1.5 ignores the system's text size and high contrast setting. | People with low vision | A fix for the next client release is in review; it ships once checked in our lab |
 | On the website, code examples show keywords and the copy button in a blue that reaches 4.27:1 in light mode instead of 4.5:1. | People with low vision | Open |
-| Mails were checked in a browser, not in real mail programs such as Outlook and Gmail, and not in their dark modes. | People who read mail with a screen reader or in dark mode | January 2027 |
+| Mails were checked in a browser, not in real mail programs such as Outlook and Gmail, and not in their dark modes. | People who read mail with a screen reader or in dark mode | Open |
 
 The picture of a remote computer is a picture. Its content can't be read
 out by NeoDesk. Everything around it can: the controls, the connection
