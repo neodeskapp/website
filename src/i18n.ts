@@ -93,6 +93,8 @@ export interface Strings {
 	/** The copy button of a code block, its label for screen readers, and what it says after a copy */
 	copy: string;
 	copyCode: string;
+	/** The hidden name of an empty first header cell, over a table's row labels */
+	tableTopic: string;
 	/** The names of a code block, a command's output and a table a reader can scroll sideways */
 	codeBlock: string;
 	outputBlock: string;
@@ -176,6 +178,7 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		warning: 'Warning',
 		copy: 'Copy',
 		copyCode: 'Copy this code',
+		tableTopic: 'Topic',
 		codeBlock: 'Code',
 		outputBlock: 'Output',
 		tableBlock: 'Table',
@@ -247,6 +250,7 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 		warning: 'Achtung',
 		copy: 'Kopieren',
 		copyCode: 'Diesen Code kopieren',
+		tableTopic: 'Thema',
 		codeBlock: 'Code',
 		outputBlock: 'Ausgabe',
 		tableBlock: 'Tabelle',

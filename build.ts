@@ -484,6 +484,8 @@ function makeMarkdown(page: Page, usedShots: Set<string>, t: Strings, linkTo: (h
 
 	md.renderer.rules.table_open = () => '<div class="table-wrap"><table>\n';
 	md.renderer.rules.table_close = () => '</table></div>\n';
+	// An empty corner cell gets a hidden name, so every header cell says what it heads
+	md.renderer.rules.th_open = (tokens, i, opts, env, self) => self.renderToken(tokens, i, opts) + (tokens[i + 1]?.content.trim() ? '' : `<span class="vh">${esc(t.tableTopic)}</span>`);
 	return md;
 }
 
