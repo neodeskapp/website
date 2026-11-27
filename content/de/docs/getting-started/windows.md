@@ -13,14 +13,27 @@ Kopie von sich selbst in `C:\NeoDesk` ab. Damit aktualisierst und reparierst
 du die Installation später und legst Backups an. Diese Seite beschreibt die
 erste Installation.
 
+::: note
+Die Unterstützung für Windows ist experimentell, und das Skript sagt das beim
+Start. Linux ist die Hauptplattform: Hast du die Wahl, installiere mit
+[Docker](/docs/getting-started/docker) oder unter [Linux](/docs/getting-started/linux).
+Probleme meldest du auf [GitHub](https://github.com/neodeskapp/neodesk/issues).
+:::
+
 ## Voraussetzungen {#requirements}
 
 - 64-Bit-Windows.
 - PowerShell, als Administrator ausgeführt. Sonst bricht das Skript ab.
-- Zugriff auf github.com, wo die Releases liegen.
+- Zugriff auf neode.sk für den ersten Download und auf github.com,
+  api.github.com und release-assets.githubusercontent.com, wo die Releases
+  liegen. Für die öffentliche IP-Adresse des Rechners fragt das Skript
+  ipv4.icanhazip.com, ifconfig.me und icanhazip.com. Gib diese Hosts frei, wenn
+  ein Proxy oder eine Firewall nur bestimmte Hosts durchlässt.
 - [NSSM](https://nssm.cc), wenn du einen Windows-Dienst willst. Das Skript
   findet es im `PATH` oder als `tools\nssm.exe` neben dem Skript. Es
-  installiert NSSM nicht. Ohne NSSM läuft der Server als geplante Aufgabe.
+  installiert NSSM nicht. Ohne NSSM läuft der Server als geplante Aufgabe unter
+  SYSTEM, dem Konto mit den meisten Rechten unter Windows, statt unter einem
+  eigenen Konto.
 - Nur um den Server aus dem Repository zu bauen (`-FromSource`): git und
   Node.js 22.17 oder neuer mit npm im `PATH`. Fehlt der Befehl `go`, lädt das
   Skript Go 1.26.11 nach `C:\Go` herunter und trägt es in den System-`PATH`
@@ -28,19 +41,47 @@ erste Installation.
 
 ## Installieren {#install}
 
-Öffne PowerShell als Administrator, lade das Skript herunter und führe es aus:
+Öffne PowerShell als Administrator, lade das Skript in deinen Temp-Ordner und
+führe es aus:
 
 ```powershell
-Invoke-WebRequest https://neode.sk/neodesk.ps1 -OutFile neodesk.ps1 -UseBasicParsing
-.\neodesk.ps1
+Invoke-WebRequest https://neode.sk/neodesk.ps1 -OutFile $env:TEMP\neodesk.ps1 -UseBasicParsing
+& $env:TEMP\neodesk.ps1
 ```
 
-Verweigert PowerShell das, weil das Ausführen von Skripten auf diesem System
-deaktiviert ist, erlaube Skripte nur für dieses Fenster und führe das Skript
-erneut aus:
+Die Installation legt eine eigene Kopie in `C:\NeoDesk` ab, die heruntergeladene
+Datei kannst du danach löschen.
+
+### Wenn PowerShell das Skript verweigert {#when-powershell-refuses-the-script}
+
+Die Ausführungsrichtlinie von Windows entscheidet, ob ein Skript laufen darf:
+
+- „Die Ausführung von Skripts ist auf diesem System deaktiviert“: der Standard
+  unter Windows 10 und 11. Erlaube Skripte nur für dieses Fenster und führe das
+  Skript erneut aus:
+
+  ```powershell
+  Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+  ```
+
+- „ist nicht digital signiert“: Die Datei kam aus einem Browser, der Downloads
+  aus dem Internet markiert. Entferne die Markierung und führe es erneut aus:
+
+  ```powershell
+  Unblock-File $env:TEMP\neodesk.ps1
+  ```
+
+- Eine Gruppenrichtlinie, die nur signierte Skripte erlaubt: Das Skript ist
+  nicht signiert und läuft auf diesem Rechner nicht, und `-Scope Process`
+  hebt die Richtlinie nicht auf.
+
+`Set-ExecutionPolicy -Scope Process` gilt nur, bis du das Fenster schließt. Für
+die Befehle, die du später ausführst, startest du das Skript über `powershell`
+mit der Richtlinie für diesen einen Lauf, wie es die Befehle auf dieser Seite
+tun:
 
 ```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+powershell -NoProfile -ExecutionPolicy Bypass -File C:\NeoDesk\neodesk.ps1
 ```
 
 Das Skript öffnet sein Menü. Bewege dich mit den Pfeiltasten und wähle
@@ -81,8 +122,10 @@ gültige Signatur ab.
 3. **Verbindungsstrategie.** „P2P first“, der empfohlene Standard, versucht
    eine direkte Verbindung zwischen den beiden Computern, bevor es das Relay
    nutzt. „Relay only“ schickt jede Sitzung über das Relay.
-4. **HTTPS, am Ende.** Ob HTTPS jetzt eingerichtet werden soll. Antworte mit
-   `n`, um die unten beschriebenen Standardwerte zu behalten.
+4. **HTTPS, am Ende.** „Would you like to configure HTTPS Enterprise now?“
+   Antworte mit `n`: Die Installation hat HTTPS mit einem selbstsignierten
+   Zertifikat schon eingeschaltet. Kopiere das Admin-Passwort, bevor du
+   antwortest, denn `y` leert den Bildschirm, und Enter ganz am Ende auch.
 
 ### Was das Skript macht {#what-the-script-does}
 
@@ -152,11 +195,17 @@ Password: <password>
 ```
 
 Das Passwort besteht aus 16 zufälligen Buchstaben und Ziffern. Kopiere es
-jetzt. Das Skript zeigt es nur einmal und entfernt es aus der env-Datei,
-sobald der Server gestartet ist. Geht es verloren, starte
-`C:\NeoDesk\neodesk.ps1` und wähle **Reset admin password**. Das erzeugt ein
-neues zufälliges Passwort oder setzt eines, das du eintippst, mit mindestens 8
-Zeichen.
+jetzt. Das Skript zeigt es nur einmal, über der Zusammenfassung, und entfernt
+es aus der env-Datei, sobald der Server gestartet ist. Geht es verloren, öffne
+das Menü des Skripts und wähle **Reset admin password**:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File C:\NeoDesk\neodesk.ps1
+```
+
+Das erzeugt ein neues zufälliges Passwort für das Konto `admin` oder setzt
+eines, das du eintippst, mit mindestens 8 Zeichen. Für ein anderes Konto siehe
+[Admin-Passwort vergessen](/docs/operations/troubleshooting#forgot-the-admin-password).
 
 ## Adresse für die erste Anmeldung {#first-sign-in-address}
 
@@ -168,6 +217,24 @@ Zertifikat einer frischen Installation ist die Konsole unter
 `https://<server-address>:5443` erreichbar, und `http://<server-address>:3375`
 führt dorthin. Dein Browser warnt wegen des Zertifikats, weil keine Stelle,
 der er vertraut, es signiert hat.
+
+Der einfache Port schickt den Browser immer an die Adresse, die die
+Installation gespeichert hat: die öffentliche IP-Adresse, außer du hast eine
+andere Relay-Adresse gewählt. Hinter einem Router ohne Hairpin-NAT funktioniert
+diese Adresse in deinem eigenen Netzwerk nicht. Öffne stattdessen direkt die
+LAN-Adresse über HTTPS, `https://<lan-address>:5443`. Das Zertifikat deckt die
+öffentliche Adresse, die LAN-Adresse und `localhost` ab. Für einen Hostnamen
+setzt du ihn im selben Fenster, bevor du das Skript startest, mit dem Namen
+statt `<host-name>`:
+
+```powershell
+$env:SSL_DOMAIN = '<host-name>'
+```
+
+Für ein Zertifikat, dem Browser vertrauen, stellst du einen Reverse Proxy mit
+TLS davor oder bringst dein eigenes Zertifikat mit: Wähle im Menü des Skripts
+**Configure SSL certificates**, dann **Custom certificate**. Ein Zertifikat
+von Let's Encrypt holt das Skript unter Windows nicht.
 
 Halte die Konsole vom Internet fern, außer ein Reverse Proxy mit TLS steht
 davor, siehe [Reverse Proxy und TLS](/docs/operations/reverse-proxy-tls). Ist
@@ -212,18 +279,31 @@ Modus, den du in der Konsole wählst, bleibt nach einem Neustart erhalten. Was
 die Modi bewirken, steht unter
 [Beitrittsanfragen](/docs/console/enrollment).
 
-## Später: aktualisieren und deinstallieren {#later-update-and-uninstall}
+## Später: aktualisieren, Diagnose und deinstallieren {#later-update-and-uninstall}
 
 ```powershell
-& 'C:\NeoDesk\neodesk.ps1' -Update
-& 'C:\NeoDesk\neodesk.ps1' -Uninstall
+powershell -NoProfile -ExecutionPolicy Bypass -File C:\NeoDesk\neodesk.ps1 -Update
+powershell -NoProfile -ExecutionPolicy Bypass -File C:\NeoDesk\neodesk.ps1 -Uninstall
 ```
+
+Ohne Parameter öffnet das Skript sein Menü. **Diagnostics** zeigt dort den
+Serverprozess, die Datenbank, die Ports und ob die API und die Konsole
+antworten.
 
 `-Uninstall` stoppt und entfernt den Dienst oder die geplante Aufgabe. Es
 fragt, ob es vorher ein Backup machen soll und ob es `C:\NeoDesk` und
 `C:\NeoDeskConsole` löschen soll. Mit zusätzlich `-Auto` macht es das Backup
 und behält beide Ordner; mit zusätzlich `-Purge` löscht es sie. Updates
 beschreibt [Aktualisieren](/docs/operations/updating).
+
+Nach einer Deinstallation bleibt, auch mit `-Purge`:
+
+- Die Firewall-Regeln, deren Name mit `NeoDesk - ` beginnt. Du entfernst sie
+  mit `Remove-NetFirewallRule -DisplayName "NeoDesk - *"`.
+- `C:\NeoDesk-Backups`, mit der Datenbank, dem Schlüsselpaar und dem
+  API-Schlüssel jedes Backups. Lösche den Ordner von Hand, wenn du ihn nicht
+  mehr brauchst.
+- `C:\NeoDesk\bin` im `Path` des Rechners, wenn du `C:\NeoDesk` behältst.
 
 ## Aus dem Repository bauen {#build-from-the-repository}
 

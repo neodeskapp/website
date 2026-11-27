@@ -78,7 +78,10 @@ nächsten Update prüft der installierte Server die Signatur selbst.
 
 1. **Datenbank.** SQLite, der Standard, oder PostgreSQL. Für PostgreSQL fragt
    das Skript nach Host, Port, Datenbank, Benutzer und Passwort, installiert
-   PostgreSQL auf diesem Rechner und legt Benutzer und Datenbank an. Siehe
+   PostgreSQL auf diesem Rechner und legt Benutzer und Datenbank an. Lass den
+   Host beim Standard: Das Skript installiert PostgreSQL immer hier, egal
+   welchen Host du eintippst. Für eine Datenbank auf einem anderen Server
+   installierst du stattdessen mit `--pg-uri`, siehe unten und
    [PostgreSQL](/docs/operations/postgresql).
 2. **Relay-Adresse.** Die Adresse, die Clients für das Relay bekommen: die
    öffentliche IP-Adresse des Servers (der Standard), seine LAN-Adresse für
@@ -160,6 +163,20 @@ sudo ADMIN_PASSWORD='<admin-password>' bash neodesk.sh --auto
 
 `sudo bash neodesk.sh --help` listet alle Flags und Variablen.
 
+Das selbstsignierte Zertifikat deckt die öffentliche Adresse des Servers, seine
+LAN-Adresse und `localhost` ab. Ein Hostname, den du als Relay-Adresse
+eintippst, steht nicht darin. Für einen Hostnamen im Zertifikat, an den der
+HTTP-Port der Konsole Browser auch schickt, setzt du `SSL_DOMAIN`, mit dem
+Namen statt `<host-name>`:
+
+```bash
+sudo SSL_DOMAIN='<host-name>' bash neodesk.sh
+```
+
+Jeder Lauf des Skripts schreibt ein eigenes Log,
+`/tmp/neodesk_<date>_<time>.log`. Schlägt eine Installation fehl, steht am Ende
+dieser Datei, warum.
+
 ## Admin-Zugangsdaten {#admin-credentials}
 
 Während der Installation gibt das Skript das Konto aus, mit dem du dich
@@ -211,6 +228,12 @@ wegen des Zertifikats, weil keine Stelle, der er vertraut, es signiert hat.
 Die RustDesk-Zeilen sind das, was Clients brauchen, siehe
 [Einen RustDesk-Client verbinden](/docs/getting-started/connect-a-client).
 
+Der einfache Port 3375 schickt den Browser immer an die Adresse in dieser
+Zeile, meist die öffentliche IP-Adresse. Hinter einem Router ohne Hairpin-NAT
+funktioniert diese Adresse in deinem eigenen Netzwerk nicht. Öffne stattdessen
+direkt die LAN-Adresse über HTTPS, `https://<lan-address>:5443`; das
+Zertifikat deckt sie ab.
+
 Weiter geht es mit [Die erste Anmeldung](/docs/getting-started/first-sign-in).
 
 ## Dateien und der Dienst {#files-and-the-service}
@@ -254,7 +277,15 @@ das Menü.
 `--uninstall` macht ein Backup, entfernt dann den Dienst und behält die Daten.
 Es listet, was auf dem Rechner übrig bleibt. `--uninstall --purge` löscht
 außerdem `/opt/neodesk`, `/opt/NeoDeskConsole` und die Befehle `neodesk-setup`
-und `neodesk`.
+und `neodesk`. Die Backups in `/opt/neodesk-backups` bleiben. Bei einer
+Installation mit PostgreSQL bleiben auch die Datenbank und PostgreSQL, selbst
+wenn die Liste sie nicht nennt. So löschst du die Datenbank und ihren Benutzer
+(`neodesk`, außer du hast andere Namen gewählt):
+
+```bash
+sudo -u postgres dropdb neodesk
+sudo -u postgres dropuser neodesk
+```
 
 ## Aus dem Repository bauen {#build-from-the-repository}
 

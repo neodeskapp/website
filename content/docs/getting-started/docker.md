@@ -35,11 +35,11 @@ curl -fsSL https://neode.sk/install.sh | sudo bash
 ```
 
 This saves `neodesk-docker.sh` in `/opt/neodesk/docker` and runs it there.
-When ufw or firewalld is active, it then opens 3375, 5443, 21115 to 21119, 21121
-and 21122 over TCP and 21116 over UDP. It opens 21122, the CDAP gateway's
-port, whether the gateway is on or off. With `--domain` it opens 80 and 443
-instead of 3375 and 5443. To read the script before it runs, download it
-and start it yourself:
+When ufw or firewalld is active, it then opens 3375, 21115 to 21119, 21121
+and 21122 over TCP and 21116 over UDP, and 5443 only when `HTTPS_ENABLED=true`
+is set. It opens 21122, the CDAP gateway's port, whether the gateway is on or
+off. With `--domain` it opens 80 and 443 instead of the console's ports. To read
+the script before it runs, download it and start it yourself:
 
 ```bash
 curl -fsSL https://neode.sk/neodesk-docker.sh -o neodesk-docker.sh
@@ -76,7 +76,7 @@ Run the script again later to update the install; see
 | `--dir <path>` | Installs into this folder instead of `/opt/neodesk/docker`. |
 | `--no-install-docker` | Stops with an error when Docker is missing instead of installing it. |
 | `--domain <domain>` | Serves the console over HTTPS at this DNS name, with a certificate from Let's Encrypt. See [HTTPS with Let's Encrypt](#https-with-lets-encrypt). |
-| `--email <email-address>` | The address Let's Encrypt sends notices about the certificate to. Needed with `--domain`. |
+| `--email <email-address>` | The contact address of your Let's Encrypt account. Needed with `--domain`. |
 | `--letsencrypt-staging` | Gets the certificate from Let's Encrypt's staging server, which browsers don't trust. For a test run. |
 | `--no-traefik` | Takes HTTPS with Let's Encrypt out again. |
 
@@ -142,7 +142,8 @@ docker compose up -d
 ```
 
 Docker pulls the image and starts the container. Its health check asks the API and
-the console whether they answer, and the status turns to healthy:
+the console whether they answer, and the status turns to healthy. That takes up
+to a minute and a half after the start, even when the console answers sooner:
 
 ```bash
 docker compose ps
@@ -205,7 +206,7 @@ and the command says so and how to set a new password. On an install made with
 the script, this prints a new random one:
 
 ```bash
-sudo bash neodesk-docker.sh reset-password
+sudo bash /opt/neodesk/docker/neodesk-docker.sh reset-password
 ```
 
 On an install with the compose file, choose the new password yourself: type it
@@ -266,7 +267,9 @@ It needs:
   an IP address or a name without a dot.
 - Ports 80 and 443, free on the host and reachable from the internet. Let's
   Encrypt checks the name over port 80.
-- An email address, which Let's Encrypt sends notices about the certificate to.
+- An email address for your Let's Encrypt account. Let's Encrypt no longer
+  sends expiry notices to it, and it refuses addresses at `example.com`, so
+  don't copy the address from the examples.
 
 For a new install, put the DNS name in place of `<domain>` and your email
 address in place of `<email-address>`:
@@ -286,11 +289,41 @@ sudo bash neodesk-docker.sh --domain <domain> --email <email-address>
 The script stops when another program has port 80 or 443, and warns when the
 name doesn't point at this server yet. It then waits up to two minutes for the
 certificate, and the summary shows the console at `https://<domain>`. When the
-certificate hasn't come by then, it warns, and Traefik keeps trying. Traefik's
-log, in `/opt/neodesk/docker`, says why:
+certificate hasn't come by then, it warns. Traefik's log, in
+`/opt/neodesk/docker`, says why; look for the lines with `ERR`:
 
 ```bash
 docker compose logs traefik
+```
+
+### When the certificate doesn't come {#when-the-certificate-doesnt-come}
+
+After a failed attempt, Traefik can wait a long time before it tries again.
+Once DNS points at the server and ports 80 and 443 are open, restart Traefik
+in `/opt/neodesk/docker`, and it gets the certificate within seconds:
+
+```bash
+docker compose restart traefik
+```
+
+Changing the domain needs the same push. A run of the script with a new
+`--domain` writes the name into `.env`, but the running Traefik keeps serving
+the old name. After the script, or after you change `NEODESK_DOMAIN` by hand,
+recreate Traefik:
+
+```bash
+docker compose up -d --force-recreate traefik
+```
+
+A run without `--letsencrypt-staging` after a staging run keeps the staging
+certificate, which browsers don't trust, until shortly before it expires. To get
+a trusted one, take Traefik out, delete its certificate volume and turn HTTPS on
+again, with your values in place of `<domain>` and `<email-address>`:
+
+```bash
+sudo bash neodesk-docker.sh --no-traefik
+sudo docker volume rm neodesk-traefik-letsencrypt
+sudo bash neodesk-docker.sh --domain <domain> --email <email-address>
 ```
 
 ### What it changes
@@ -334,6 +367,9 @@ Then recreate the containers:
 ```bash
 docker compose up -d
 ```
+
+When you change `NEODESK_DOMAIN` later, `docker compose up -d` doesn't pick up
+the new name; use `docker compose up -d --force-recreate traefik`.
 
 ### When not to use it
 

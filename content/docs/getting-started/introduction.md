@@ -90,15 +90,32 @@ There are three ways to install it. Each installs the same server.
 |--------|------------------------|
 | [Docker](/docs/getting-started/docker) | Docker with Compose 2.24 or newer, and access to `ghcr.io`, where the image is published. The install script installs Docker when it is missing. |
 | [Linux](/docs/getting-started/linux) | Root access, systemd, and apt-get, dnf, yum or pacman. A 64-bit x86, arm64 or armv7 processor, and access to github.com, where the releases are. |
-| [Windows](/docs/getting-started/windows) | 64-bit Windows, PowerShell run as Administrator, and access to github.com. NSSM is optional and turns the server into a Windows service; without it the server runs as a scheduled task. |
+| [Windows](/docs/getting-started/windows) | 64-bit Windows, PowerShell run as Administrator, and access to github.com. NSSM is optional and turns the server into a Windows service; without it the server runs as a scheduled task. Windows support is experimental. |
 
 None of them needs Go or Node.js on the machine: Docker runs the published
 image, and the Linux and Windows scripts download a release. Only a build from
 the repository with the Linux or Windows script needs them; the install pages
 say how.
 
-Docker is the shortest path: one command installs it, see
-[Install with the script](/docs/getting-started/docker#install-with-the-script).
+### Which one to pick {#which-one-to-pick}
+
+- **Docker**, on any Linux server or a NAS that runs Docker. It is the shortest
+  path: one command installs it, see
+  [Install with the script](/docs/getting-started/docker#install-with-the-script).
+  The console speaks plain HTTP on port 3375. Give `--domain` and the script
+  adds HTTPS with a Let's Encrypt certificate. On a Synology NAS, follow
+  [Docker on a Synology NAS](/docs/getting-started/docker/synology).
+- **Linux**, on a Linux server or VM where you don't want Docker. The server
+  runs as a systemd service. The console gets HTTPS on port 5443 with a
+  self-signed certificate, which the browser warns about until you replace it.
+- **Windows**, on a Windows server when you have no Linux machine. It works
+  like the Linux install, HTTPS on 5443 included, but Windows support is
+  experimental: the script says so when it starts, and Linux is the main
+  platform.
+
+All three install the same server with the same console. Remote desktop in the
+browser shows every device only over HTTPS, see
+[Remote desktop in the browser](/docs/console/remote-in-browser#https-for-every-device).
 
 Whichever method you pick, the clients must reach the server on 21115 to 21117
 and 21121 over TCP and on 21116 over UDP. If your devices

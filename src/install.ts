@@ -49,12 +49,12 @@ export const INSTALLS: InstallMethod[] = [
 		docs: '/docs/getting-started/windows',
 		lang: 'powershell',
 		lines: [
-			'Invoke-WebRequest https://neode.sk/neodesk.ps1 -OutFile neodesk.ps1 -UseBasicParsing',
-			'.\\neodesk.ps1'
+			'Invoke-WebRequest https://neode.sk/neodesk.ps1 -OutFile $env:TEMP\\neodesk.ps1 -UseBasicParsing',
+			'& $env:TEMP\\neodesk.ps1'
 		],
 		note: {
-			en: 'Run it in PowerShell as Administrator and choose Fresh installation in the menu. The script downloads the newest release and runs it as the Windows service NeoDeskServer, or as a scheduled task when NSSM is missing. It shows the admin password once.',
-			de: 'Führe es in PowerShell als Administrator aus und wähle im Menü Fresh installation. Das Skript lädt das neueste Release herunter und betreibt es als Windows-Dienst NeoDeskServer, oder als geplante Aufgabe, wenn NSSM fehlt. Das Admin-Passwort zeigt es nur einmal an.'
+			en: 'Run it in PowerShell as Administrator and choose Fresh installation in the menu. The script downloads the newest release and runs it as the Windows service NeoDeskServer, or as a scheduled task when NSSM is missing. Windows support is experimental. It shows the admin password once.',
+			de: 'Führe es in PowerShell als Administrator aus und wähle im Menü Fresh installation. Das Skript lädt das neueste Release herunter und betreibt es als Windows-Dienst NeoDeskServer, oder als geplante Aufgabe, wenn NSSM fehlt. Die Unterstützung für Windows ist experimentell. Das Admin-Passwort zeigt es nur einmal an.'
 		}
 	}
 ];
