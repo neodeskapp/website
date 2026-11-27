@@ -1203,7 +1203,8 @@
 		"when-not-to-use-it",
 		"turn-it-off",
 		"when-the-certificate-doesnt-come",
-		"the-host-firewall"
+		"the-host-firewall",
+		"ipv6"
 	],
 	"getting-started/docker/synology": [
 		"before-you-start",

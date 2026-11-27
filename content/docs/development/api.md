@@ -14,7 +14,7 @@ The NeoDesk server has one HTTP API. The web console, RustDesk clients and your 
 | Linux and Windows | `http://<server-address>:21114` |
 | Docker | `http://<server-address>:21121` |
 
-On Linux and Windows the console answers the RustDesk client API on 21121 and passes only the client paths on to 21114 (see [The client API](#the-client-api)), so everything else on this page needs 21114. Call it from the server itself, or open the port in the firewall for the machines that need it. See [The API port on Linux and Windows](/docs/operations/ports#the-api-port-on-linux-and-windows).
+On Linux and Windows the console answers the RustDesk client API on 21121 and passes only the client paths on to 21114 (see [The client API](#the-client-api)), so everything else on this page needs 21114. There, callers from other hosts get only the client API; the rest answers 404. Call it from the server itself, or put the addresses of the machines that need it into `API_ALLOW_FROM`, comma-separated IPs and CIDR ranges, and restart the server. See [The API port on Linux and Windows](/docs/operations/ports#the-api-port-on-linux-and-windows).
 
 The API speaks plain HTTP. With `TLS_API=Y` and a certificate in `TLS_CERT` and `TLS_KEY` it serves HTTPS instead; for a certificate clients trust, put a reverse proxy in front as shown in [HTTPS for the client API](/docs/operations/reverse-proxy-tls#https-for-the-client-api). With `FORCE_HTTPS=Y` the API refuses plain HTTP with 403, unless a trusted proxy reports `X-Forwarded-Proto: https`.
 

@@ -24,10 +24,10 @@ sudo bash /opt/neodesk/docker/neodesk-docker.sh --domain <domain>
 
 Nimm stattdessen einen eigenen Proxy, wenn ein anderer Webserver auf dem Host schon die Ports 80 und 443 belegt, oder wenn der Server aus dem Internet nicht auf Port 80 erreichbar ist, über den Let's Encrypt den Namen prüft.
 
-Standardmäßig hat das Compose-Netz kein IPv6, deshalb reicht Docker Besucher, die über IPv6 kommen, über seinen eigenen Proxy an Traefik weiter. Die Konsole sieht dann jeden von ihnen als das Gateway des Docker-Netzes, etwa `172.18.0.1`: Das Aktivitätsprotokoll zeigt diese Adresse, und die Anmeldelimits zählen alle Besucher über IPv6 als einen. Besucher über IPv4 behalten ihre eigene Adresse. Mit Docker Engine 27 oder neuer gibt `NEODESK_IPV6=true` in der Datei `.env` dem Netz IPv6, und auch Besucher über IPv6 behalten ihre eigene Adresse. Ältere Versionen von Docker Compose brauchen vor der Änderung `docker compose down`; starte die Installation danach wieder:
+Eine neue Installation ab Docker Engine 27 bekommt ein IPv6-Netz für ihre Container (`NEODESK_IPV6=true` in `.env`), Traefik und die Konsole sehen Besucher über IPv6 also mit ihrer eigenen Adresse, wie über IPv4. Ohne dieses Netz (eine ältere Engine, `--no-ipv6` oder eine Installation von vor der Einstellung) reicht Docker Besucher über IPv6 über seinen eigenen Proxy an Traefik weiter, und die Konsole sieht jeden von ihnen als das Gateway des Docker-Netzes, etwa `172.18.0.1`: Das Aktivitätsprotokoll zeigt diese Adresse, und die Anmeldelimits zählen alle Besucher über IPv6 als einen. Zum Umstellen setzt du `NEODESK_IPV6=true` in `.env` und legst das Netz neu an:
 
 ```bash
-docker compose up -d
+cd /opt/neodesk/docker && docker compose down && docker compose up -d
 ```
 
 ## An welchen Port der Proxy weiterleitet {#which-port-the-proxy-forwards-to}

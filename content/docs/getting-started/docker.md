@@ -52,6 +52,10 @@ What the script does:
   When neither answers, it uses the LAN address and warns.
 - When ufw or firewalld is active, it opens the ports there before the
   container starts, see [The host firewall](#the-host-firewall).
+- On Docker Engine 27 or newer it gives the containers' network IPv6
+  (`NEODESK_IPV6=true` in `.env`), so the console sees IPv6 visitors' own
+  addresses. On an older engine, or where Docker can't make an IPv6 network,
+  the network stays IPv4 and the script says why. See [IPv6](#ipv6).
 - It pulls the image, starts the container and waits up to three minutes until
   the API and the console answer.
 - It prints the console's address, the admin password, the four values for
@@ -77,8 +81,33 @@ A later run closes the rules for ports the install no longer serves, so
 `--no-traefik` closes 80 and 443, and `uninstall` closes all of them.
 `--skip-firewall` leaves ufw and firewalld as they are.
 
-The rules matter for IPv6: Docker publishes IPv4 ports past ufw and firewalld,
-but IPv6 visitors come in through the host firewall, which decides.
+Docker publishes IPv4 ports past ufw and firewalld, so a port closed there
+still answers over IPv4. With the IPv6 network it does the same on IPv6. Only
+an install without it (`NEODESK_IPV6=false`, `--no-ipv6`, an older engine, or
+an install from before the setting) sends IPv6 visitors through the host
+firewall, which then decides. To keep a port closed, don't publish it, or bind
+it to one address as `NEODESK_CONSOLE_BIND` does for the console.
+
+### IPv6 {#ipv6}
+
+With `NEODESK_IPV6=true` the containers' network has IPv6, and the server sees
+each IPv6 visitor's own address, in the activity log and in sign-in lockouts.
+Without it, IPv6 visitors reach the container through Docker's proxy and show up
+as the network's gateway, such as `172.18.0.1`, and sign-in limits count them as
+one visitor.
+
+The script decides once, for a new install: on Docker Engine 27 or newer it
+turns IPv6 on, unless you give `--no-ipv6`; on an older engine or a host without
+IPv6 it stays off. `.env` keeps the answer, so later runs leave it alone, and an
+install from before the setting stays on IPv4. A compose file you set up by hand
+is IPv4 only until you set the variable.
+
+To switch an install later, set `NEODESK_IPV6=true` or `false` in `.env`, then
+make the network again:
+
+```bash
+cd /opt/neodesk/docker && docker compose down && docker compose up -d
+```
 
 ### Options
 
@@ -92,6 +121,7 @@ but IPv6 visitors come in through the host firewall, which decides.
 | `--dir <path>` | Installs into this folder instead of `/opt/neodesk/docker`. |
 | `--no-install-docker` | Stops with an error when Docker is missing instead of installing it. |
 | `--skip-firewall` | Leaves ufw and firewalld as they are, see [The host firewall](#the-host-firewall). |
+| `--no-ipv6` | Keeps a new install's network on IPv4, see [IPv6](#ipv6). |
 | `--import-keys <folder>` | Uses the key pair of a RustDesk server, `id_ed25519` and `id_ed25519.pub` in that folder, instead of a new one, so its clients keep working. See [Migrate from a RustDesk server](/docs/getting-started/migrate-from-rustdesk). |
 | `--domain <domain>` | Serves the console over HTTPS at this DNS name, with a certificate from Let's Encrypt. See [HTTPS with Let's Encrypt](#https-with-lets-encrypt). |
 | `--email <email-address>` | Optional: the contact address of your Let's Encrypt account. |
@@ -115,9 +145,9 @@ curl -fsSL https://neode.sk/install.sh | sudo bash -s -- --relay-mode local
 The two installers name two of these options differently: `install.sh` takes
 `--relay-servers` and `--version` where `neodesk-docker.sh` takes `--relay` and
 `--tag`, and passes them on under the script's names. Its other options here
-are `--relay-mode`, `--admin-password`, `--skip-firewall`, `--import-keys`,
-`--domain`, `--email`, `--letsencrypt-staging` and `--no-traefik`. This lists
-them all:
+are `--relay-mode`, `--admin-password`, `--skip-firewall`, `--no-ipv6`,
+`--import-keys`, `--domain`, `--email`, `--letsencrypt-staging` and
+`--no-traefik`. This lists them all:
 
 ```bash
 curl -fsSL https://neode.sk/install.sh | sudo bash -s -- --help
@@ -192,7 +222,7 @@ docker compose up -d
 | `NEODESK_CONSOLE_PORT` | The host port of the console, 3375 by default. Up to 3.6.0-rc.4 it was 5000. |
 | `NEODESK_CONSOLE_HTTPS_PORT` | The host port of the console's HTTPS, 5443 by default. The install checks that it is free, also while HTTPS is off. |
 | `NEODESK_CONSOLE_BIND` | The host address the console is published on, for example `127.0.0.1` (or `[::1]` for IPv6) behind a reverse proxy on the same machine. Without it, the console answers on every IPv4 and IPv6 address. |
-| `NEODESK_IPV6` | `true` gives the containers' network IPv6, so the activity log and sign-in lockouts see IPv6 visitors' own addresses instead of the network's gateway, such as `172.18.0.1`. Needs Docker Engine 27 or newer; older Docker Compose versions need `docker compose down` before it changes. |
+| `NEODESK_IPV6` | `true` gives the containers' network IPv6, so the activity log and sign-in lockouts see IPv6 visitors' own addresses instead of the network's gateway, such as `172.18.0.1`. Needs Docker Engine 27 or newer. The install script sets it for a new install; without it the network is IPv4 only. After a change, run `docker compose down` before `docker compose up -d`, see [IPv6](#ipv6). |
 | `ADMIN_PASSWORD` | The admin's password at the first start. |
 | `TRUST_PROXY` | `1` when the console is behind one reverse proxy. |
 

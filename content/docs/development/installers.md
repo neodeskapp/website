@@ -13,7 +13,7 @@ The repository has four install scripts, in its `install/` folder next to the th
 |--------|---------|--------------|
 | `install.sh` | Linux | The one-line installer. By default it fetches `neodesk-docker.sh` and installs with Docker; `--native` fetches `neodesk.sh` and runs it with `--auto`. |
 | `neodesk.sh` | Linux | Installs `neodesk-server` as the systemd service `neodesk-server`, and updates, repairs, backs up, diagnoses and removes it. |
-| `neodesk.ps1` | Windows | The same on Windows, with the service `NeoDeskServer`, or a scheduled task of that name. |
+| `neodesk.ps1` | Windows | The same on Windows, with the Windows service `NeoDeskServer`, which `neodesk-server.exe` is itself. |
 | `neodesk-docker.sh` | Linux with Docker | Runs the published image `ghcr.io/neodeskapp/neodesk` in one container, with `docker-compose.yml` and `.env` in `/opt/neodesk/docker`. |
 
 Every release carries the four scripts and the three compose files as files of its own, listed in the release's `SHA256SUMS`, which `SHA256SUMS.sig` signs with the release key. The public install commands fetch them from neode.sk, which leads to the newest release that has them. No script takes its files from the `main` branch any more.
@@ -67,7 +67,7 @@ Rules for every change:
 
 - Never overwrite a value in an existing env file with a template value.
 - Never remove a database, keys, volumes or firewall rules without a confirmation or a purge flag.
-- Never give a sudoers rule that runs a script from the repository as root. A restart from the console ends the `neodesk-server` process, and the supervisor the installer names in `NEODESK_SUPERVISOR` starts it again: the systemd unit on Linux, NSSM or the scheduled task on Windows, Docker's restart policy in the image.
+- Never give a sudoers rule that runs a script from the repository as root. A restart from the console ends the `neodesk-server` process, and the supervisor the installer names in `NEODESK_SUPERVISOR` starts it again: the systemd unit on Linux, the Windows service's recovery settings on Windows, Docker's restart policy in the image.
 - Never report success after a partial update just because the process restarted.
 
 ### Configuration commands
@@ -129,7 +129,7 @@ These run in Installer CI without changing the machine they run on. The [local g
 | `scripts/test-native-installer.sh` | `neodesk.sh`'s watchdog for long Go commands and its recovery of a broken clone. |
 | `scripts/test-postgresql-hba.sh` | The PostgreSQL `pg_hba.conf` setup. |
 | `scripts/test-docker-installer.sh` | `neodesk-docker.sh`'s functions, with stand-ins for `docker`, `curl`, `ss` and `id`, followed by `scripts/test-docker-entrypoint.sh` for the image's start scripts, the Dockerfiles and the compose files. |
-| `scripts/test-windows-installer.ps1` | `neodesk.ps1`'s service and task set-up, with stand-ins for scheduled tasks, `icacls` and NSSM. It runs under PowerShell on Linux too. |
+| `scripts/test-windows-installer.ps1` | `neodesk.ps1`'s service set-up, also the move of an older install's NSSM service or scheduled task to the service, with stand-ins for the service manager, scheduled tasks and `icacls`. It runs under PowerShell on Linux too. |
 | `scripts/check-supervisor-env.sh` | The systemd unit and the image name their supervisor. |
 | `scripts/check-go-toolchain-pins.sh` | The Go versions of the installers and the Docker builds match `go.mod`. |
 | PowerShell parse | `neodesk.ps1` parses without errors. |

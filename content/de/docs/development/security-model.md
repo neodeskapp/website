@@ -11,7 +11,7 @@ Diese Seite beschreibt das Sicherheitsdesign so, wie der Code es umsetzt, für a
 | Grenze | Wer sie überschreitet | Was sie schützt |
 |---|---|---|
 | Internet zum ID-Server und Relay (21115 bis 21119) | RustDesk-Clients | Geräteidentität, der Schlüsselaustausch über TCP, optionales TLS, die Registrierung, die Prüfung, wer eine Sitzung starten darf, Rate Limits |
-| Internet zur Client-API (21121) und Skripte zur API (21114 unter Linux und Windows) | RustDesk-Clients, Skripte | Anmelde-Tokens, API-Schlüssel in einem Header, Geräte-Tokens, Rate Limits |
+| Internet zur Client-API (21121, und 21114 für Clients ohne API-Server-Einstellung) und Skripte zur API (21114 unter Linux und Windows) | RustDesk-Clients, Skripte | Anmelde-Tokens, API-Schlüssel in einem Header, Geräte-Tokens, Rate Limits. Unter Linux und Windows gibt 21114 anderen Rechnern nur die Client-API; die ganze API bekommen dieser Rechner und die Adressen in `API_ALLOW_FROM` |
 | Browser zur Konsole (3375 oder 5443) | Menschen | Das Sitzungs-Cookie, der CSRF-Token, Rollen und Berechtigungen, TLS von der Konsole oder einem Reverse Proxy |
 | Einladungs- und Schnellhilfe-Links der Konsole | Jeder mit einem Link, der NeoDesk-Client | Ein Code, der für begrenzte Zeit und begrenzt oft gilt, ein Rate Limit pro Adresse, siehe [Beitritts- und Support-Codes](#join-and-support-codes) |
 | Konsole zum API-Server | Die Konsole | Nichts geht über ein Netzwerk: Die Konsole ruft den Handler des API-Servers im selben Prozess auf, unter dem API-Schlüssel der Konsole |
