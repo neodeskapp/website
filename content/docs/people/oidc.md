@@ -84,9 +84,11 @@ Behind a reverse proxy the console sees the proxy's address unless it is told to
 
 To stop one person from signing in by single sign-on, disable their account on the Users page (see [Disable an account](/docs/people/users-and-roles#disable-an-account)). Deleting it is not enough while **Auto-create users** is on, because the next sign-in makes a new account.
 
-## Single sign-on in the RustDesk client
+## Single sign-on in the client {alias=single-sign-on-in-the-rustdesk-client}
 
-With single sign-on on, the server offers it to RustDesk clients as a second way to sign in, named after the **Button text**, or SSO without one. The client opens the provider in the computer's browser. After the sign-in there, the browser shows "Sign-in successful" and "You can close this window and return to RustDesk.", and the client is signed in.
+The simplest way for single sign-on accounts into the desktop app is **Sign in with NeoDesk**: it opens the console in the browser, the person signs in there through the provider and clicks **Allow**. That needs nothing more at the provider; see [Sign in through the browser](/docs/getting-started/connect-a-client#sign-in-through-the-browser).
+
+With single sign-on on, the server also offers the provider itself to the client, named after the **Button text**, or SSO without one. In the NeoDesk client it is below the password form; **Sign in with NeoDesk** stays first. If the **Button text** is `NeoDesk`, the client shows the provider as `NeoDesk SSO`, so the two can't be mixed up. The client opens the provider in the computer's browser. After the sign-in there, the browser shows "Sign-in successful" and "You can close this window and return to RustDesk.", and the client is signed in.
 
 The client uses the same settings, the same **Redirect URL** and the same accounts as the console, so you register nothing more at the provider. What it needs:
 

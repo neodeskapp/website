@@ -31,7 +31,7 @@ The code changes every 30 seconds, and the server accepts only the code of the c
 
 You have five minutes after the password for the code. After five wrong codes, or when the time is up, the page says "Session expired. Sign in again." Click **Back to sign-in** and start with the password again. Wrong codes also count as failed sign-ins, so many of them lock the account for a while (see [failed sign-ins](/docs/people/users-and-roles#sessions-and-failed-sign-ins)).
 
-The RustDesk client asks for the code too when you sign in to it with an account that has two-factor sign-in on.
+The RustDesk client asks for the code too when you sign in to it with a password and an account that has two-factor sign-in on. With **Sign in with NeoDesk** the client asks for nothing: you sign in to the console in the browser, with the code there, and allow the client (see [Sign in through the browser](/docs/getting-started/connect-a-client#sign-in-through-the-browser)).
 
 ## Use a recovery code
 

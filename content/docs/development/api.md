@@ -217,7 +217,7 @@ RustDesk clients use these paths for sign-in and the address book. On Linux and 
 | Method and path | What it does |
 |---|---|
 | `POST /api/login` | Signs in, see below |
-| `GET /api/login-options` | The sign-in methods: `[""]` for a password, plus an entry per single sign-on provider |
+| `GET /api/login-options` | The sign-in methods: `""` for a password, then a `common-oidc/` entry that lists `NeoDesk`, the sign-in through the console in the browser, and the single sign-on provider when one is on |
 | `POST /api/logout` | Ends the session of the Bearer token |
 | `GET /api/currentUser` | The signed-in account |
 | `GET /api/ab`, `POST /api/ab` | Reads or saves the address book |

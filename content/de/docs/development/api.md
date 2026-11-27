@@ -216,7 +216,7 @@ RustDesk-Clients nutzen diese Pfade für die Anmeldung und das Adressbuch. Unter
 | Methode und Pfad | Was sie macht |
 |---|---|
 | `POST /api/login` | Meldet an, siehe unten |
-| `GET /api/login-options` | Die Anmeldemethoden: `[""]` für ein Passwort, dazu ein Eintrag je Single-Sign-on-Anbieter |
+| `GET /api/login-options` | Die Anmeldemethoden: `""` für ein Passwort, dann ein Eintrag `common-oidc/`, der `NeoDesk` nennt, die Anmeldung über die Konsole im Browser, und den Single-Sign-on-Anbieter, wenn einer eingeschaltet ist |
 | `POST /api/logout` | Beendet die Sitzung des Bearer-Tokens |
 | `GET /api/currentUser` | Das angemeldete Konto |
 | `GET /api/ab`, `POST /api/ab` | Liest oder speichert das Adressbuch |

@@ -30,7 +30,7 @@ Der Code wechselt alle 30 Sekunden, und der Server nimmt nur den Code der aktuel
 
 Nach dem Passwort hast du fünf Minuten Zeit für den Code. Nach fünf falschen Codes oder wenn die Zeit um ist, zeigt die Seite „Sitzung abgelaufen. Melde dich erneut an.“ Klicke auf **Zurück zur Anmeldung** und fang wieder mit dem Passwort an. Falsche Codes zählen auch als fehlgeschlagene Anmeldungen, viele davon sperren das Konto also eine Zeit lang (siehe [fehlgeschlagene Anmeldungen](/docs/people/users-and-roles#sessions-and-failed-sign-ins)).
 
-Auch der RustDesk-Client fragt nach dem Code, wenn du dich dort mit einem Konto anmeldest, bei dem die Zwei-Faktor-Anmeldung eingeschaltet ist.
+Auch der RustDesk-Client fragt nach dem Code, wenn du dich dort mit Passwort und einem Konto anmeldest, bei dem die Zwei-Faktor-Anmeldung eingeschaltet ist. Mit **Mit NeoDesk anmelden** fragt der Client nach nichts: Du meldest dich im Browser bei der Konsole an, dort mit dem Code, und erlaubst den Client (siehe [Über den Browser anmelden](/docs/getting-started/connect-a-client#sign-in-through-the-browser)).
 
 ## Einen Wiederherstellungscode verwenden {#use-a-recovery-code}
 
