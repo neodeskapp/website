@@ -116,10 +116,9 @@ refuses a release without a valid one.
 3. **Connection strategy.** P2P first, the recommended default, tries a direct
    connection between the two computers before it uses the relay. Relay only
    sends every session through the relay.
-4. **HTTPS, at the end.** "Would you like to configure HTTPS Enterprise now?"
-   Answer `n`: the install has turned on HTTPS with a self-signed certificate
-   already. Copy the admin password before you answer, because answering `y`
-   clears the screen, and so does pressing Enter at the very end.
+
+It asks nothing about HTTPS: the install turns on HTTPS with a self-signed
+certificate by itself.
 
 ### What the script does
 
@@ -132,13 +131,18 @@ refuses a release without a valid one.
   plain HTTP, because RustDesk clients refuse a self-signed certificate.
 - Sets the join mode of a new install to **Managed**, so new RustDesk
   clients wait for approval.
+- Limits `C:\NeoDesk`, `C:\NeoDeskConsole` and `C:\NeoDesk-Backups` to
+  Administrators, SYSTEM and `NT SERVICE\NeoDeskServer`, because they hold the
+  server's keys and settings. Other users of the machine can't read them.
 - Registers `NeoDeskServer`. With NSSM it is a service that starts with
   Windows and runs under its own low-privilege account,
   `NT SERVICE\NeoDeskServer`. Without NSSM it is a scheduled task that runs as
-  SYSTEM at startup.
+  SYSTEM at startup. The summary's **Runs as** line says which one you have.
 - Opens these ports in Windows Firewall, for every network profile: 21115, 21116
   for TCP and UDP, 21117, 21121, 21122 for CDAP device agents unless the env
-  file sets `CDAP_ENABLED=N`, and the console's 3375 and 5443.
+  file sets `CDAP_ENABLED=N`, and the console's 3375 and 5443. When
+  `TRUST_PROXY` says a reverse proxy is in front, it closes the console's two
+  rules again.
 - Starts the server and waits until the API, the console and the ports 21116 and
   21117 answer.
 - Saves itself as `C:\NeoDesk\neodesk.ps1`.
@@ -163,7 +167,7 @@ what it does:
 | `-RelayMode local` | Uses the machine's LAN address for the relay. |
 | `-PgUri <uri>` | Uses this existing PostgreSQL database instead of SQLite. |
 | `-Minimal` | Installs the server with the web console turned off. |
-| `-RunAsRoot` | Runs the service as LocalSystem instead of its own account. |
+| `-RunAsRoot` | With NSSM, runs the service as LocalSystem instead of its own account. The scheduled task runs as SYSTEM anyway. |
 | `-Channel dev`, `-FromSource`, `-Binary <path>` | Where the server comes from, see above. |
 
 To start with your own admin password, set it in the same window first. Put
@@ -174,61 +178,78 @@ $env:ADMIN_PASSWORD = '<admin-password>'
 .\neodesk.ps1 -Auto
 ```
 
-`.\neodesk.ps1 -Help` lists every parameter and variable.
+`.\neodesk.ps1 -Help`, or `Get-Help .\neodesk.ps1 -Full`, lists every parameter
+and variable.
 
 ## Admin credentials
 
-During the install the script prints the account to sign in with:
+The summary at the end shows the account to sign in with:
 
 ```text
-PANEL LOGIN CREDENTIALS
-Login:    admin
-Password: <password>
+  First sign-in: user admin, password <password>
+                 Copy the password now: it is not shown again.
 ```
 
-The password is 16 random letters and digits. Copy it now. The script shows it
-once, above the summary, and removes it from the env file when the server has
-started. If you lose it, open the script's menu and choose
-**Reset admin password**:
+The password is 16 random letters and digits. Copy it now. The script removes it
+from the env file when the server has started, and an interactive install ends
+with "Copy the admin password above, then press Enter" before anything clears
+the screen.
+
+If you lose it, this gives the account `admin` a new password, the one in
+`ADMIN_PASSWORD` or a random one, and shows it once:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File C:\NeoDesk\neodesk.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File "C:\NeoDesk\neodesk.ps1" -ResetPassword
 ```
 
-It generates a new random password for the account `admin`, or sets one you
-type, with at least 8 characters. For another account, see
+**Reset admin password** in the script's menu also lets you type one, with at
+least 8 characters. When the admin has lost the phone and the recovery codes of
+two-factor sign-in too, use `-ResetTwoFactor` instead: it also turns off the
+account's two-factor sign-in. See
+[If the only admin is locked out](/docs/people/two-factor#if-the-only-admin-is-locked-out).
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File "C:\NeoDesk\neodesk.ps1" -ResetTwoFactor
+```
+
+For another account, see
 [Forgot the admin password](/docs/operations/troubleshooting#forgot-the-admin-password).
 
 ## First sign-in address
 
-At the end the script prints what you need next: the **Web console** line with the
-console's address, then the ID server, relay server, API server and key for
-RustDesk clients, and the ports a firewall outside this machine has to let
-through. With the self-signed certificate of a fresh install, the console is at
-`https://<server-address>:5443`, and `http://<server-address>:3375` leads there. Your browser
-warns about the certificate because nobody it trusts signed it.
+At the end the script prints what you need next: the ports a firewall outside
+this machine has to let through, then the **Web console** line with the
+console's address, **On your LAN** with its address in your own network, the
+first sign-in, the ID server, relay server, API server and key for RustDesk
+clients, how the server runs, and the commands for later. With the self-signed
+certificate of a fresh install, the console is at
+`https://<server-address>:5443`, and `http://<server-address>:3375` leads there.
+Your browser warns about the certificate because nobody it trusts signed it.
 
-The plain port always sends the browser to the address the install saved: the
-public IP address, unless you chose another relay address. Behind a router
-without hairpin NAT that address doesn't work from inside your network. Open the
-LAN address over HTTPS directly instead, `https://<lan-address>:5443`. The
-certificate covers the public address, the LAN address and `localhost`. To add a
-host name, set it in the same window before you run the script, with the name
-in place of `<host-name>`:
+From inside your network, use the **On your LAN** address:
+`http://<lan-address>:3375` leads to `https://<lan-address>:5443`. On the
+machine itself, `http://localhost:3375` leads to `https://localhost:5443`. Any
+other name on the plain port goes to the address the install saved, the public
+IP address unless you chose another relay address. The certificate covers the
+public address, the LAN address and `localhost`. To add a host name, set it in
+the same window before you run the script, with the name in place of
+`<host-name>`:
 
 ```powershell
 $env:SSL_DOMAIN = '<host-name>'
 ```
 
 For a certificate that browsers trust, put a reverse proxy with TLS in front, or
-bring your own certificate: in the script's menu choose
-**Configure SSL certificates**, then **Custom certificate**. The script can't
-get a Let's Encrypt certificate on Windows.
+bring your own certificate: get one with an ACME client or from your certificate
+authority, then in the script's menu choose **Configure SSL certificates**, then
+**Custom certificate**. The script doesn't get Let's Encrypt certificates on
+Windows itself.
 
 Keep the console away from the internet unless a reverse proxy with TLS is in
-front of it, see [Reverse proxy and TLS](/docs/operations/reverse-proxy-tls). If
-this machine is reachable from the internet, remove the two rules the script made
-for the console's ports:
+front of it, see [Reverse proxy and TLS](/docs/operations/reverse-proxy-tls).
+With `TRUST_PROXY` set for the proxy, the script closes the console's firewall
+rules itself. If this machine is reachable from the internet without a proxy,
+remove the two rules the script made for the console's ports:
 
 ```powershell
 Remove-NetFirewallRule -DisplayName "NeoDesk - NeoDesk web console", "NeoDesk - NeoDesk web console HTTPS"
@@ -244,8 +265,14 @@ Then continue with [First sign-in](/docs/getting-started/first-sign-in).
 | `C:\NeoDeskConsole` | The settings file `.env` and the console's `data\` folder |
 | `C:\NeoDesk-Backups` | Backups the script makes, for example before an update |
 
+Only Administrators, SYSTEM and the service account `NT SERVICE\NeoDeskServer`
+can open the three folders. An install made by an older script gets these
+rights at its next update, or with `-RepairPermissions`. The command line
+`neodesk` reads the API key in `C:\NeoDesk`, so run it in a window started as
+administrator.
+
 The server writes its log to `C:\NeoDesk\logs\server.log`, as a service and as
-a scheduled task.
+a scheduled task. A log over 10 MB becomes `server.log.1` at the next start.
 
 With NSSM, manage it like any service:
 
@@ -255,12 +282,17 @@ Restart-Service NeoDeskServer
 ```
 
 Without NSSM, the scheduled task runs `C:\NeoDesk\start-neodesk-server.cmd`,
-which starts the server again whenever it exits:
+which starts the server again whenever it exits. To restart it, stop the
+server; the task starts it again:
 
 ```powershell
 Get-ScheduledTask -TaskName NeoDeskServer
-Start-ScheduledTask -TaskName NeoDeskServer
+Stop-Process -Name neodesk-server -Force
 ```
+
+To move an install from the scheduled task to the service, put `nssm.exe` on
+the `Path` or into `C:\NeoDesk\tools`, then run the script's menu and choose
+**Repair installation**, then **Repair services**, or run `-Update`.
 
 The env file sets **Managed** only as the first join mode. A mode you pick in
 the console stays after a restart. See [Join requests](/docs/console/enrollment) for
@@ -268,27 +300,22 @@ what the modes do.
 
 ## Later: update, diagnostics and uninstall {#later-update-and-uninstall}
 
+Run these in a PowerShell or cmd window started as administrator:
+
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File C:\NeoDesk\neodesk.ps1 -Update
-powershell -NoProfile -ExecutionPolicy Bypass -File C:\NeoDesk\neodesk.ps1 -Uninstall
+powershell -NoProfile -ExecutionPolicy Bypass -File "C:\NeoDesk\neodesk.ps1" -Update
+powershell -NoProfile -ExecutionPolicy Bypass -File "C:\NeoDesk\neodesk.ps1" -Uninstall
 ```
 
 Without a parameter the script opens its menu. **Diagnostics** there shows the
 server process, the database, the ports, and whether the API and the console answer.
 
-`-Uninstall` stops and removes the service or the scheduled task. It asks whether
-to make a backup first and whether to delete `C:\NeoDesk` and
-`C:\NeoDeskConsole`. With `-Auto` added it makes the backup and keeps both
-folders; with `-Purge` added it deletes them. Updates are covered in
-[Updating](/docs/operations/updating).
-
-These stay after an uninstall, also with `-Purge`:
-
-- The firewall rules whose names start with `NeoDesk - `. Remove them with
-  `Remove-NetFirewallRule -DisplayName "NeoDesk - *"`.
-- `C:\NeoDesk-Backups`, with the database, the key pair and the API key of
-  every backup. Delete it by hand when you no longer need it.
-- `C:\NeoDesk\bin` on the machine's `Path`, when you keep `C:\NeoDesk`.
+`-Uninstall` stops and removes the service or the scheduled task, its firewall
+rules and the `C:\NeoDesk\bin` entry on the machine's `Path`. It asks whether to
+make a backup first, and whether to delete `C:\NeoDesk`, `C:\NeoDeskConsole`
+and the backups in `C:\NeoDesk-Backups`. With `-Auto` added it makes the backup
+and keeps the folders; with `-Purge` added it deletes all three. At the end it
+lists what it kept. Updates are covered in [Updating](/docs/operations/updating).
 
 ## Build from the repository
 

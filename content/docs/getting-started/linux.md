@@ -78,21 +78,28 @@ signature itself.
 
 ### What the script asks
 
-1. **Database.** SQLite, the default, or PostgreSQL. For PostgreSQL the script
-   asks for the host, port, database, user and password, installs PostgreSQL on
-   this machine and creates the user and the database. Keep the host at its
-   default: the script always installs PostgreSQL here, whatever host you type.
-   For a database on another server, install with `--pg-uri` instead, see below
-   and [PostgreSQL](/docs/operations/postgresql).
+The script asks everything before it installs anything:
+
+1. **Database.** SQLite, the default, or PostgreSQL. For PostgreSQL it asks
+   where the database is: **On this machine** installs PostgreSQL here and
+   creates the database and its user, with the name, user and password you give
+   (an empty password makes one). **An existing database**, on this machine or
+   another, takes a connection URI such as
+   `postgres://user:password@host:5432/database`. See
+   [PostgreSQL](/docs/operations/postgresql).
 2. **Relay address.** The address clients get for the relay: the server's public
    IP address (the default), its LAN address for a server that only serves your
    local network, or an IP address or host name you type.
 3. **Connection strategy.** P2P first, the recommended default, tries a direct
    connection between the two computers before it uses the relay. Relay only
    sends every session through the relay.
-4. **TLS, at the end.** Whether TLS ends at a reverse proxy in front of the
-   server, and whether to set up HTTPS now. Answer `n` to both to keep the
+4. **HTTPS.** "Will a reverse proxy (Caddy, nginx) handle HTTPS for the console
+   instead?" and, if not, "Replace the self-signed certificate with Let's
+   Encrypt or your own after the install?". Answer `n` to both to keep the
    defaults described below. See [Reverse proxy and TLS](/docs/operations/reverse-proxy-tls).
+
+Then it installs, runs the HTTPS step you chose, and ends with the admin
+password and the summary.
 
 ### What the script does
 
@@ -159,9 +166,9 @@ sudo ADMIN_PASSWORD='<admin-password>' bash neodesk.sh --auto
 
 `sudo bash neodesk.sh --help` lists every flag and variable.
 
-The self-signed certificate covers the server's public address, its LAN address
-and `localhost`. A host name you type as the relay address isn't in it. To put
-a host name into the certificate, and have the console's HTTP port send
+The self-signed certificate covers the server's public address, its LAN address,
+`localhost`, and a relay address you type or give with `--relay-servers`. To put
+another host name into the certificate, and have the console's HTTP port send
 browsers to that name, set `SSL_DOMAIN`, with the name in place of
 `<host-name>`:
 
@@ -169,8 +176,9 @@ browsers to that name, set `SSL_DOMAIN`, with the name in place of
 sudo SSL_DOMAIN='<host-name>' bash neodesk.sh
 ```
 
-Each run of the script writes its own log, `/tmp/neodesk_<date>_<time>.log`.
-When an install fails, the end of that file says why.
+Each run of the script writes its own log, `/tmp/neodesk_<date>_<time>.log`,
+with the package manager's output in it. When an install fails, the end of that
+file says why.
 
 ## Admin credentials
 
@@ -182,16 +190,24 @@ Login:    admin
 Password: <password>
 ```
 
-The password is 32 random characters. Copy it now. The script shows it once and
-removes it from the env file when the server has started. If you lose it, this
-sets the password from `ADMIN_PASSWORD`, or a random one, and shows it once:
+The password is 32 random characters. Copy it now. The script shows it once,
+right above the summary, and removes it from the env file when the server has
+started. If you lose it, this sets the password from `ADMIN_PASSWORD`, or a
+random one, and shows it once:
 
 ```bash
 sudo neodesk-setup --reset-password
 ```
 
 In the menu, **Reset admin password** also lets you type one, with at least 8
-characters.
+characters. When the admin has lost the phone and the recovery codes of
+two-factor sign-in too, add `--reset-two-factor`: it also turns off the
+account's two-factor sign-in. See
+[If the only admin is locked out](/docs/people/two-factor#if-the-only-admin-is-locked-out).
+
+```bash
+sudo neodesk-setup --reset-password --reset-two-factor
+```
 
 ## First sign-in address
 
@@ -202,10 +218,11 @@ NeoDesk is installed
 
   Web console:   https://203.0.113.10:5443  (http://203.0.113.10:3375 leads there)
                  The certificate is self-signed, so the browser warns once.
-  First sign-in: user admin, with the password shown above (it is not shown again)
+  First sign-in: user admin, with the password shown above (it is not shown again;
+                 lost it? sudo neodesk-setup --reset-password)
   RustDesk clients (Settings > Network > ID/Relay server):
     ID server:     203.0.113.10
-    Relay server:  203.0.113.10
+    Relay server:  203.0.113.10:21117
     API server:    http://203.0.113.10:21121
     Key:           <the server's public key>
   Log:           sudo journalctl -u neodesk-server -f
@@ -220,10 +237,11 @@ The **Web console** line is the console's address. Your browser warns about the
 certificate because nobody it trusts signed it. The RustDesk lines are what
 clients need, see [Connect a RustDesk client](/docs/getting-started/connect-a-client).
 
-The plain port 3375 always sends the browser to the address in that line,
-usually the public IP address. Behind a router without hairpin NAT that address
-doesn't work from inside your network. Open the LAN address over HTTPS directly
-instead, `https://<lan-address>:5443`; the certificate covers it.
+From inside your network, use the server's LAN address:
+`http://<lan-address>:3375` leads to `https://<lan-address>:5443`, and the
+certificate covers it. On the server itself, `http://localhost:3375` leads to
+`https://localhost:5443`. Any other name on the plain port goes to the address
+in the **Web console** line.
 
 Continue with [First sign-in](/docs/getting-started/first-sign-in).
 
@@ -234,7 +252,7 @@ Continue with [First sign-in](/docs/getting-started/first-sign-in).
 | `/opt/neodesk` | The binary `neodesk-server`, the database `db_v2.sqlite3`, the key pair `id_ed25519` and `id_ed25519.pub`, the API key `.api_key`, the key file of saved sign-in `.device_vault_key`, and `ssl/` |
 | `/opt/NeoDeskConsole` | The settings file `.env` and the console's `data/` folder |
 | `/etc/systemd/system/neodesk-server.service` | The service. It runs as the user `neodesk` and reads `/opt/NeoDeskConsole/.env`. |
-| `/opt/neodesk-backups` | Backups the script makes, for example before an update. Up to 3.6.0-rc.4 they went to `/opt/rustdesk-backups`; the first run of the new script moves them here. |
+| `/opt/neodesk-backups` | Backups the script makes before an update that installs a new release, and at uninstall. Only root can read them (the folder is `0700`, each archive `0600`), because they hold the server's keys and settings. The newest five stay; `BACKUP_KEEP=<number>` keeps another number, `BACKUP_KEEP=0` all. Up to 3.6.0-rc.4 they went to `/opt/rustdesk-backups`; the first run of the new script moves them here. |
 | `/usr/local/sbin/neodesk-setup` | The script, as the command for later. Up to 3.6.0-rc.4 it was `/usr/local/sbin/neodesk`. |
 | `/usr/local/bin/neodesk` | The command line, a copy of the server binary that every user can run |
 
@@ -266,10 +284,11 @@ bare `sudo neodesk` on a terminal opens the menu.
 `--uninstall` makes a backup, then removes the service and keeps the data. It
 lists what is left on the machine. `--uninstall --purge` also deletes
 `/opt/neodesk`, `/opt/NeoDeskConsole` and the commands `neodesk-setup` and
-`neodesk`. The backups in `/opt/neodesk-backups` stay. On an install with
-PostgreSQL, the database and PostgreSQL stay too, even when the list doesn't
-name them. To delete the database and its user (`neodesk` unless you chose
-other names):
+`neodesk`. On a terminal it asks whether to delete the backups in
+`/opt/neodesk-backups` too; without a terminal it keeps them. On an install
+with PostgreSQL, the database, its user and PostgreSQL stay, and the list says
+how to delete the database and its user (`neodesk` unless you chose other
+names):
 
 ```bash
 sudo -u postgres dropdb neodesk

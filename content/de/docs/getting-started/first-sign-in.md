@@ -22,12 +22,13 @@ Die Adresse hängt davon ab, wie du NeoDesk installiert hast:
 Installationen unter Linux und Windows, die mit 3.6.0-rc.4 oder älter gemacht
 wurden, behalten Port 5000 statt 3375.
 
-Unter Linux und Windows leitet `http://<server-address>:3375` auf Port 5443
-unter der Adresse weiter, die der Installer gespeichert hat, meist die
-öffentliche IP-Adresse des Servers. Hinter einem Router ohne Hairpin-NAT
-antwortet diese Adresse aus dem eigenen Netz nicht. Öffne dort direkt
-`https://<lan-address>:5443`: Das selbstsignierte Zertifikat gilt auch für die
-LAN-Adresse des Servers.
+Unter Linux und Windows behält der einfache Port die eigenen Adressen des
+Servers: Aus deinem eigenen Netzwerk führt `http://<lan-address>:3375` zu
+`https://<lan-address>:5443`, und auf dem Server selbst führt
+`http://localhost:3375` zu `https://localhost:5443`. Das selbstsignierte
+Zertifikat gilt für beide. Jeder andere Name führt auf Port 5443 unter der
+Adresse, die der Installer gespeichert hat, meist die öffentliche IP-Adresse
+des Servers.
 
 Die Skripte für Linux und Windows nutzen für HTTPS ein selbstsigniertes
 Zertifikat, deshalb warnt der Browser beim ersten Mal. Bei einer neuen
@@ -45,7 +46,7 @@ Installation es hinterlegt hat:
 
 - Docker: [der Befehl für die Zugangsdaten](/docs/getting-started/docker#get-the-admin-password)
 - Linux: [der Kasten, den das Skript ausgegeben hat](/docs/getting-started/linux#admin-credentials)
-- Windows: [der Kasten, den das Skript ausgegeben hat](/docs/getting-started/windows#admin-credentials)
+- Windows: [die Zusammenfassung, die das Skript ausgegeben hat](/docs/getting-started/windows#admin-credentials)
 
 Die Installation zeigt das Passwort nur einmal. Hast du es verloren, setze ein
 neues, wie es [Admin-Passwort vergessen](/docs/operations/troubleshooting#forgot-the-admin-password)

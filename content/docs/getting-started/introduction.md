@@ -46,9 +46,9 @@ it in the same mode, where one process runs:
 Each part listens on its own port. The ID server and the relay use 21115 to
 21117, and 21118 and 21119 for clients that connect over WebSocket. The API for
 clients uses 21121. The console uses 3375; the Linux and Windows installers
-give it HTTPS on 5443, and 3375 sends browsers there. On a Linux or Windows
-install the server's own API listens on 21114, and CDAP device agents connect
-on 21122. [Ports](/docs/operations/ports) lists them all and says which ones
+give it HTTPS on 5443, and 3375 sends browsers there. The server's own API
+listens on 21114, which also answers RustDesk clients that leave the API server
+empty, and CDAP device agents connect on 21122. [Ports](/docs/operations/ports) lists them all and says which ones
 clients need.
 
 The web console is a Svelte app. It is built into the binary when the binary is
