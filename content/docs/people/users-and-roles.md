@@ -182,7 +182,7 @@ read -rs NEW_PASSWORD
 printf '%s\n' "$NEW_PASSWORD" | neodesk-server reset-password admin
 ```
 
-The commands for Docker, and the **Reset admin password** entry of the installers' menus, are in [Troubleshooting](/docs/operations/troubleshooting#forgot-the-admin-password). The reset leaves two-factor sign-in as it is; to turn it off for someone, see [Two-factor sign-in](/docs/people/two-factor#when-someone-has-lost-the-phone). When the only administrator is locked out by two-factor sign-in, the reset command with a new name makes a second administrator account; see [If the only admin is locked out](/docs/people/two-factor#if-the-only-admin-is-locked-out).
+The commands for Docker, and the **Reset admin password** entry of the installers' menus, are in [Troubleshooting](/docs/operations/troubleshooting#forgot-the-admin-password). The reset leaves two-factor sign-in as it is unless you add `--reset-two-factor`, which also turns it off for the account. To turn it off for someone in the console, see [Two-factor sign-in](/docs/people/two-factor#when-someone-has-lost-the-phone). When the only administrator is locked out by two-factor sign-in, see [If the only admin is locked out](/docs/people/two-factor#if-the-only-admin-is-locked-out).
 
 ## Sessions and failed sign-ins
 

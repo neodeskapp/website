@@ -71,9 +71,11 @@ und Schlüssel.
 
 Trage im normalen RustDesk-Client **API-Server** ein, hier
 `http://desk.example.com:21121`. Bleibt das Feld leer, schickt der Client
-seine API-Aufrufe an Port 21114 auf dem Host des ID-Servers, wo NeoDesk sie
-nicht beantwortet. Das Gerät verbindet sich trotzdem, aber die Konsole bekommt
-nie seinen Namen, sein Betriebssystem oder seine Version, und die Anmeldung im
+seine API-Aufrufe an Port 21114 auf dem Host des ID-Servers. Eine
+Docker-Installation antwortet dort und öffnet den Port; unter Linux und
+Windows halten die Installer 21114 für Clients geschlossen. Kommen die Aufrufe
+nicht an, verbindet sich das Gerät trotzdem, aber die Konsole bekommt nie
+seinen Namen, sein Betriebssystem oder seine Version, und die Anmeldung im
 Client und sein Adressbuch funktionieren nicht. Ein NeoDesk-Client, den du von
 Hand einrichtest und bei dem **API-Server** leer bleibt, nutzt Port 21121 auf
 dem Host des ID-Servers, hier also `http://desk.example.com:21121`. Trage das
@@ -320,8 +322,9 @@ Was dann passiert, hängt vom Beitrittsmodus des Servers ab:
 - **Verwaltet**: Das Gerät wartet unter **Geräte**, dann
   **Beitrittsanfragen**. Es kann sich nicht verbinden, bis jemand
   **Genehmigen** wählt und ihm einen Namen gibt. Der normale RustDesk-Client
-  zeigt währenddessen **Bereit** und schickt vor der Genehmigung keinen Namen.
-  Vergleiche also die ID in der Anfrage mit der im RustDesk-Fenster.
+  zeigt währenddessen **Bereit**. Die Anfrage zeigt seinen Namen, sobald der
+  Client seine Systeminformationen an den API-Server geschickt hat; bis dahin
+  vergleichst du die ID in der Anfrage mit der im RustDesk-Fenster.
 - **Gesperrt**: Nur Geräte mit einem Gerätetoken werden aufgenommen, alle
   anderen abgewiesen. Der normale RustDesk-Client kann keinen Gerätetoken
   senden, deshalb kann ein neuer RustDesk-Client in diesem Modus nicht
@@ -416,9 +419,10 @@ Geh diese Punkte der Reihe nach durch:
   jeder Client braucht den neuen Schlüssel.
 - **API-Server.** Er beginnt mit `http://` oder `https://` und endet mit dem
   Port, den **Übersicht** zeigt, also 21121. Der eigene Port der Konsole, 3375
-  (5000 bei älteren Installationen), ist der falsche, und 21114 auch. Verbindet
-  sich das Gerät, zeigt in der Konsole aber keinen Namen und kein
-  Betriebssystem, ist das Feld meist leer.
+  (5000 bei älteren Installationen), ist der falsche. Bleibt das Feld leer,
+  nutzt der Client 21114, und das antwortet nur bei Docker. Verbindet sich das
+  Gerät, zeigt in der Konsole aber keinen Namen und kein Betriebssystem, ist
+  das Feld meist leer.
 - **Eine öffentliche Adresse.** Erreichen mehrere Computer in einem Büro den
   Server über dieselbe öffentliche Adresse, kann eine Sitzung, die einer von
   ihnen startet, mit „ID does not exist“ fehlschlagen (im deutschen Client
