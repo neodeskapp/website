@@ -2,6 +2,7 @@
 title: NeoDesk and TeamViewer compared
 description: A self-hosted alternative to TeamViewer. How NeoDesk and TeamViewer differ in hosting, plans, sign-in and platforms, and how to move over.
 order: 4
+seoTitle: Free self-hosted TeamViewer alternative: NeoDesk compared
 og: comparison
 product: TeamViewer
 logo: teamviewer.svg

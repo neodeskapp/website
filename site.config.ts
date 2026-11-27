@@ -89,7 +89,8 @@ const config: SiteConfig = {
 		{
 			slug: 'use-cases',
 			label: 'Use cases',
-			intro: 'What working with NeoDesk looks like for an IT service provider, for a company\'s own IT team, and for a server at home or in a club.'
+			intro: 'What working with NeoDesk looks like for an IT service provider, for a company\'s own IT team, for a server at home or in a club, and as a free web console for RustDesk clients.',
+			description: 'NeoDesk at an IT service provider, in a company\'s IT team, at home or in a club, and as a free web console for RustDesk.'
 		},
 		{
 			slug: 'compare',

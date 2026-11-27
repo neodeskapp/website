@@ -310,7 +310,8 @@ export const STRINGS: Record<string, Partial<Strings>> = {
 			},
 			'use-cases': {
 				label: 'Einsatzbeispiele',
-				intro: 'Wie die Arbeit mit NeoDesk aussieht: beim IT-Dienstleister, in der IT-Abteilung einer Firma und mit einem Server zu Hause oder im Verein.'
+				intro: 'Wie die Arbeit mit NeoDesk aussieht: beim IT-Dienstleister, in der IT-Abteilung einer Firma, mit einem Server zu Hause oder im Verein und als kostenlose Web-Konsole für RustDesk-Clients.',
+				description: 'NeoDesk beim IT-Dienstleister, in der IT-Abteilung, zu Hause oder im Verein und als kostenlose Web-Konsole für RustDesk.'
 			},
 			compare: {
 				label: 'Vergleiche',

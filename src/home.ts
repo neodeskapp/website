@@ -59,8 +59,8 @@ export interface HomeStrings {
 
 export const HOME: Record<string, Partial<HomeStrings>> = {
 	en: {
-		title: 'NeoDesk: your own RustDesk-compatible remote desktop server',
-		description: 'NeoDesk is a self-hosted, RustDesk-compatible server written in Go, with a web console for the devices you look after.',
+		title: 'NeoDesk: free RustDesk server with a web console',
+		description: 'A free, open-source RustDesk server with a web console: device list, accounts, address book, LDAP or OIDC sign-in and an audit log. No device limit.',
 		heroTitle: 'Your <span class="blue">own</span> remote desktop server',
 		heroLead: 'A RustDesk-compatible server written in Go, with a web console for the devices you look after.',
 		install: 'Install',
@@ -98,8 +98,8 @@ export const HOME: Record<string, Partial<HomeStrings>> = {
 		copyCommands: 'Copy the {os} install commands'
 	},
 	de: {
-		title: 'NeoDesk: eigener Remote-Desktop-Server, RustDesk-kompatibel',
-		description: 'NeoDesk ist ein selbst gehosteter, RustDesk-kompatibler Server in Go, mit einer Web-Konsole für die Geräte, die du betreust.',
+		title: 'NeoDesk: kostenloser RustDesk-Server mit Web-Konsole',
+		description: 'Kostenloser Open-Source-Server für RustDesk mit Web-Konsole: Geräteliste, Konten, Adressbuch, LDAP oder OIDC und Audit-Protokoll. Ohne Gerätelimit.',
 		summary:
 			'NeoDesk ist ein Remote-Desktop-Server, den du selbst betreibst. Er spricht das RustDesk-Protokoll, deshalb verbindet sich der normale RustDesk-Client mit ihm. Ein einziges Go-Binary stellt den ID-Server, das Relay, die Client-API und eine Web-Konsole für die Geräte bereit, die du betreust. NeoDesk ist Open Source unter der AGPL-3.0.',
 		heroTitle: 'Dein <span class="blue">eigener</span> Remote-Desktop-Server',
