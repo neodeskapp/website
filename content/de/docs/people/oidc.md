@@ -8,7 +8,7 @@ Ist Single Sign-on eingeschaltet, bekommt die Anmeldeseite eine Schaltfläche, d
 
 ## Wo du es einstellst {#where-it-is-set}
 
-Öffne **Einstellungen**, **Single Sign-on**. Den Tab sehen Konten mit der Berechtigung **Server konfigurieren**: standardmäßig Super-Admin, Administrator und Serveradministrator.
+Öffne **Einstellungen**, **Single Sign-on**. In der Seitenleiste liegt die Seite im eingeklappten Teil von **Einstellungen**: Klicke dort auf **… weitere anzeigen** oder suche nach ihr. Sie ist für Konten mit der Berechtigung **Servereinstellungen ändern** da: standardmäßig Super-Admin, Administrator und Serveradministrator.
 
 Die Einstellungen liegen in der Datenbank des Servers und gelten ohne Neustart ab der nächsten Anmeldung. Wer schon angemeldet ist, bleibt angemeldet.
 
@@ -21,7 +21,7 @@ Die Einstellungen liegen in der Datenbank des Servers und gelten ohne Neustart a
    https://desk.example.com/api/auth/oidc/callback
    ```
 
-   Sie muss genau mit **Weiterleitungs-URL** in NeoDesk übereinstimmen. Der Pfad `/api/oidc/callback` funktioniert auch.
+   Sie muss genau mit **Weiterleitungs-URL (Callback)** in NeoDesk übereinstimmen. Der Pfad `/api/oidc/callback` funktioniert auch.
 3. Kopiere die Client-ID und das Client-Secret.
 4. Willst du Rollen aus Gruppen, lass den Anbieter die Gruppen der Person in einen Claim schreiben, standardmäßig `groups`.
 
@@ -29,39 +29,41 @@ Die Einstellungen liegen in der Datenbank des Servers und gelten ohne Neustart a
 
 ## Einstellungen {#settings}
 
-Setze den Haken bei **Single Sign-on einschalten**, damit die Felder erscheinen. Beim Einschalten füllt die Konsole **Weiterleitungs-URL** und **Panel-URL** mit der Adresse, die du gerade nutzt, wenn die Felder leer sind.
+**Single Sign-on einschalten** schaltet Single Sign-on ein und aus. Die übrigen Felder sind immer zu sehen. Beim Einschalten füllt die Konsole **Weiterleitungs-URL (Callback)** und **Konsolenadresse** mit der Adresse, die du gerade nutzt, wenn die Felder leer sind. **Automatische Discovery**, die Endpoints und **Erlaubte private OIDC-Netzwerke** liegen unter **Erweiterte Optionen**, die Claims unter **Claims**.
 
 | Einstellung | Bedeutung |
 | --- | --- |
 | **Text der Schaltfläche** | Der Name des Anbieters auf der Anmeldeschaltfläche. |
 | **Aussteller-URL** | Die Issuer-Adresse des Anbieters. Ist Automatische Discovery an, findet der Server daraus die übrigen Adressen. |
-| **Erlaubte private OIDC-Netzwerke** | Adressen oder Bereiche, durch Kommas getrennt, für einen Anbieter in einem privaten Netz, etwa `10.20.0.0/16`. Ohne sie kontaktiert der Server keine Anbieter unter privaten Adressen. Nur private Bereiche werden angenommen, und Anbieter auf dem Server selbst werden nie kontaktiert. |
+| **Erlaubte private OIDC-Netzwerke** | Unter **Erweiterte Optionen**. Adressen oder Bereiche für einen Anbieter in einem privaten Netz, eine pro Zeile, etwa `10.20.0.0/16`; **Netz hinzufügen** fügt eine Zeile hinzu. Ohne sie kontaktiert der Server keine Anbieter unter privaten Adressen. Nur private Bereiche werden angenommen, und Anbieter auf dem Server selbst werden nie kontaktiert. |
 | **Client-ID**, **Client-Secret** | Vom Anbieter. Ein gespeichertes Secret erscheint als Punkte; lass sie stehen, um es zu behalten. |
 | **Weiterleitungs-URL (Callback)** | Die beim Anbieter registrierte Weiterleitungsadresse. Sie muss http oder https nutzen und auf `/api/auth/oidc/callback` oder `/api/oidc/callback` enden. |
-| **Panel-URL** | Die Adresse, unter der Personen die Konsole öffnen. Der Server schickt den Browser dorthin, um die Anmeldung abzuschließen. Ist sie leer, gilt `PANEL_PUBLIC_URL` oder `PUBLIC_URL` aus der Umgebung. |
+| **Konsolenadresse** | Die Adresse, unter der Personen die Konsole öffnen. Der Server schickt den Browser dorthin, um die Anmeldung abzuschließen. Ist sie leer, gilt `PANEL_PUBLIC_URL` oder `PUBLIC_URL` aus der Umgebung. |
 | **Scopes** | Standard `openid profile email`. |
 | **PKCE verwenden (empfohlen)** | Ergänzt die Anmeldung um PKCE. Angehakt bei einem Single Sign-on, das noch nie gespeichert wurde; ein gespeichertes behält den Wert, mit dem es gespeichert wurde. |
-| **Automatische Discovery** | Standardmäßig an. Ausgeschaltet erscheinen **Autorisierungs-Endpoint**, **Token-Endpoint** und **UserInfo-Endpoint**, die du von Hand ausfüllst. |
+| **Automatische Discovery** | Unter **Erweiterte Optionen**. Standardmäßig an. Ausgeschaltet erscheinen **Autorisierungs-Endpoint**, **Token-Endpoint** und **UserInfo-Endpoint**, die du von Hand ausfüllst. |
 | **Benutzer automatisch erstellen** | Standardmäßig an: Die erste Anmeldung legt ein Konto an. Aus: Nur wer hier schon ein Single-Sign-on-Konto hat, kann sich anmelden. |
 | **Single Sign-on bevorzugen** | Die Anmeldeseite geht direkt zum Anbieter (siehe unten). Standardmäßig aus. |
 | **Benutzername-Claim** | Unter **Claims**. Der Claim, der zum Kontonamen wird. Standard `preferred_username`. |
 | **E-Mail-Claim** | Standard `email`. Wird bei jeder Anmeldung mit dem Konto gespeichert und in der Spalte **E-Mail** der Seite Benutzer angezeigt. Der Teil vor dem @ dient nur dann als Kontoname, wenn der Anbieter keinen Benutzername-Claim schickt und die Adresse als bestätigt meldet. |
 | **Anzeigename-Claim** | Standard `name`. Wird bei jeder Anmeldung mit dem Konto gespeichert. |
 | **Gruppen-Claim** | Der Claim mit den Gruppen der Person. Standard `groups`. |
-| **Standardrolle** | Unter **Rollen**: **Betrachter**, **Operator** oder **Administrator**. Das sind die Rollen Betrachter, Remote-Operator und Administrator aus der [Rollentabelle](/docs/people/users-and-roles#roles). |
+| **Standardrolle** | Unter **Rollen**. Zur Wahl stehen alle Rollen des Servers, von **Super-Admin** bis **Pro-Lizenz (nur Client-API)**; siehe die [Rollentabelle](/docs/people/users-and-roles#roles). |
 | **Gruppen zu Rollen** | Gruppen und die Rolle, die jede davon gibt (siehe unten). |
 
 Damit du mit eingeschaltetem Single Sign-on speichern kannst, braucht der Server eine Client-ID, eine Weiterleitungs-URL und entweder eine Aussteller-URL oder sowohl den Autorisierungs- als auch den Token-Endpoint.
 
 ::: warning
-**Administrator** unter **Standardrolle** ist die Rolle Administrator, die jede Berechtigung hat. Damit bekommt jede Person, die dein Anbieter durchlässt, die volle Kontrolle über den Server.
+**Super-Admin** und **Administrator** haben jede Berechtigung. Steht eine davon unter **Standardrolle**, bekommt jede Person, die dein Anbieter durchlässt, die volle Kontrolle über den Server.
 :::
 
 ## Rollen aus Gruppen {#roles-from-groups}
 
-Schreibe einen Eintrag pro Zeile, als `group=role`, mit einem Rollennamen aus der [Rollentabelle](/docs/people/users-and-roles#roles), etwa `viewer`, `operator`, `global_admin` oder `super_admin`. Gruppennamen müssen genau so geschrieben sein, wie der Anbieter sie schickt, auch in Groß- und Kleinschreibung. Der Gruppen-Claim kann eine Liste sein oder ein Text, in dem die Namen durch Leerzeichen oder Kommas getrennt sind.
+Klicke unter **Gruppen zu Rollen** für jede Gruppe auf **Gruppe hinzufügen**. Trage die Gruppe in das Feld der neuen Zeile ein (**Gruppe 1**, **Gruppe 2** und so weiter), genau so, wie der Anbieter sie schickt, auch in Groß- und Kleinschreibung, und wähle daneben die Rolle, die ihre Mitglieder bekommen (**Rolle für Gruppe 1**, **Rolle für Gruppe 2** und so weiter). Zur Wahl stehen dieselben Rollen wie unter **Standardrolle**. Der Gruppen-Claim kann eine Liste sein oder ein Text, in dem die Namen durch Leerzeichen oder Kommas getrennt sind.
 
-Die Rolle beginnt bei der **Standardrolle**, und eine Gruppe in der Zuordnung kann sie nur anheben: Passen mehrere, gewinnt die mit den meisten Rechten. Ein neues Konto bekommt diese Rolle.
+Die Rolle beginnt bei der **Standardrolle**, und eine Gruppe in der Zuordnung kann sie nur anheben. Passen mehrere Gruppen, gewinnt die Rolle mit den meisten Rechten: Super-Admin und Administrator, dann Serveradministrator und Globaler Administrator, dann Remote-Operator, dann Betrachter. Gastlink-Aussteller und Pro-Lizenz stehen hier unter Betrachter, eine Gruppe mit einer davon ändert die Rolle also nie. Geben zwei passende Gruppen gleichrangige Rollen, etwa Serveradministrator und Globaler Administrator, entscheidet die Gruppe, die im Gruppen-Claim des Anbieters zuerst steht. Ein neues Konto bekommt die Rolle, die dabei herauskommt.
+
+Der Server speichert die Zuordnung als Text, als Einträge `group=role`, getrennt durch `|`, mit dem Namen der Rolle aus der [Rollentabelle](/docs/people/users-and-roles#roles). In dieser Form nimmt die API sie an.
 
 Ist eine Zuordnung ausgefüllt, wird die Rolle bei jeder Anmeldung neu gesetzt. Wessen Gruppen zu keinem Eintrag der Zuordnung passen, bekommt die **Standardrolle**. Wer beim Anbieter aus einer Gruppe entfernt wird, verliert deshalb bei der nächsten Anmeldung die Rolle dieser Gruppe. Eine Rolle, die du auf der Seite **Benutzer** wählst, gilt nur bis dahin. Ohne Zuordnung gilt die **Standardrolle** nur für neue Konten, und eine Rolle, die du auf der Seite Benutzer wählst, bleibt.
 
@@ -101,21 +103,21 @@ Eine abgelehnte Anmeldung zeigt im Browser „Sign-in failed“ mit dem Grund, e
 | **Aussteller-URL** | `https://sso.example.com` |
 | **Client-ID** | `neodesk` |
 | **Weiterleitungs-URL (Callback)** | `https://desk.example.com/api/auth/oidc/callback` |
-| **Panel-URL** | `https://desk.example.com` |
+| **Konsolenadresse** | `https://desk.example.com` |
 | **PKCE verwenden (empfohlen)** | Angehakt |
 | **Standardrolle** | **Betrachter** |
 
 **Gruppen zu Rollen** für einen Anbieter, der diese Namen in `groups` schickt:
 
-```text
-neodesk-admins=global_admin
-neodesk-operators=operator
-```
+| Gruppe | Rolle für die Gruppe |
+| --- | --- |
+| `neodesk-admins` | **Globaler Administrator** |
+| `neodesk-operators` | **Remote-Operator** |
 
 ## Testen {#test-it}
 
 1. Klicke auf **Discovery testen**. Der Server holt das Discovery-Dokument der **Aussteller-URL** und listet die gefundenen Endpoints auf. Client-ID und Secret prüft er nicht.
-2. Klicke auf **Single-Sign-on-Einstellungen speichern** und bestätige.
+2. Klicke auf **Änderungen speichern** und bestätige.
 3. Bleib angemeldet, öffne die Anmeldeseite in einem privaten Browserfenster und klicke auf die neue Schaltfläche.
 
 | Meldung auf der Anmeldeseite | Bedeutung |
@@ -124,7 +126,7 @@ neodesk-operators=operator
 | Ihr Konto wurde nicht gefunden und die automatische Registrierung ist deaktiviert. | **Benutzer automatisch erstellen** ist aus, und es gibt kein Single-Sign-on-Konto mit diesem Namen. |
 | OIDC-Authentifizierung fehlgeschlagen. Bitte versuchen Sie es erneut. | Der Server konnte die Anmeldung beim Anbieter nicht abschließen, zum Beispiel wegen eines falschen Client-Secrets, oder weil der Anbieter länger als 15 Sekunden für die Antwort auf die Token-Anfrage des Servers gebraucht hat. |
 | Ungültiger OIDC-Rückruf. Bitte versuche es erneut. | Der Callback gehört nicht zu einer Anmeldung, die dieser Browser begonnen hat, oder die Anmeldung beim Anbieter hat länger als 10 Minuten gedauert. |
-| Beim SSO-Anmelden ist ein Fehler aufgetreten. | Der Server konnte die Anmeldung nicht beginnen oder nicht abschließen, zum Beispiel weil er den Anbieter nicht erreicht. |
+| Bei der Anmeldung per Single Sign-on ist ein Fehler aufgetreten. | Der Server konnte die Anmeldung nicht beginnen oder nicht abschließen, zum Beispiel weil er den Anbieter nicht erreicht. |
 | Dieser Name gehört zu einem Konto, das sich mit einem Passwort oder über das Verzeichnis anmeldet, daher kann Single Sign-On Sie nicht anmelden. Wenden Sie sich an einen Administrator. | Es gibt schon ein Passwort- oder Verzeichniskonto mit demselben Namen. Single Sign-on übernimmt ein solches Konto nie. |
 | Dieses Konto ist deaktiviert. Wenden Sie sich an einen Administrator. | Das Konto ist auf der Seite Benutzer deaktiviert. |
 

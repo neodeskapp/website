@@ -9,13 +9,13 @@ With LDAP sign-in turned on, people from your directory sign in with their direc
 
 ## Where it is set
 
-Open **Settings**, **Directory (LDAP)**. The tab is there for accounts with the **Server configuration** permission: Super admin, Administrator and Server admin by default.
+Open **Settings**, **Directory (LDAP)**. In the sidebar the page is in the folded part of **Settings**: click **Show … more** there to reach it, or search for it. It is there for accounts with the **Change server settings** permission: Super admin, Administrator and Server admin by default.
 
 The settings are saved in the server's database. There are no environment variables for them, and saving applies them to the next sign-in without a restart. People who are already signed in stay signed in.
 
 ## Settings
 
-Tick **Turn on LDAP sign-in** to show the fields.
+**Turn on LDAP sign-in** turns directory sign-in on and off. The other fields show either way. **Skip TLS verify** and **Connection timeout (s)** are under **Advanced options**, the attribute fields under **User attributes**.
 
 | Setting | Meaning |
 | --- | --- |
@@ -23,8 +23,8 @@ Tick **Turn on LDAP sign-in** to show the fields.
 | **Port** | `389` for plain LDAP and StartTLS, `636` for LDAPS. Ticking **LDAPS (TLS)** switches 389 to 636. |
 | **LDAPS (TLS)** | Connect with TLS from the start. |
 | **StartTLS** | Connect on the plain port, then switch to TLS. Has no effect when LDAPS is ticked. |
-| **Skip TLS verify** | Do not check the server's certificate. Only for tests. |
-| **Connection timeout (s)** | Seconds to wait for the connection to the directory, and for each of its answers. Default 10. A whole sign-in waits at most 30 seconds; see [How long a sign-in waits](#how-long-a-sign-in-waits). |
+| **Skip TLS verify** | Under **Advanced options**. Do not check the server's certificate. Only for tests. |
+| **Connection timeout (s)** | Under **Advanced options**. Seconds to wait for the connection to the directory, and for each of its answers. Default 10. A whole sign-in waits at most 30 seconds; see [How long a sign-in waits](#how-long-a-sign-in-waits). |
 | **Direct bind** | Sign in by building the user's DN from a template instead of searching for it with a service account. |
 | **Bind DN (service account)** | A read-only account the server signs in with to search for users. |
 | **Bind password** | Its password. A saved password shows as dots; leave them to keep it. |
@@ -37,13 +37,13 @@ Tick **Turn on LDAP sign-in** to show the fields.
 | **Group filter** | The group search, with `{{dn}}` for the user's DN and `{{username}}` for the account name. Default `(member={{dn}})`. |
 | **Group name attribute** | The attribute the group search asks for. Default `cn`. |
 | **Auto-create users** | On by default: a person the directory accepts gets an account at their first sign-in. Off: only people who already have a directory account here can sign in through the directory. |
-| **Default role** | The role for people none of whose groups is in the map: **Viewer**, **Operator** or **Admin**. These are the roles Viewer, Remote operator and Administrator in the [roles table](/docs/people/users-and-roles#roles). |
+| **Default role** | The role for people none of whose groups is in the map. The choice lists every role of the server, from **Super admin** to **Pro license (client API only)**; see the [roles table](/docs/people/users-and-roles#roles). |
 | **Group to role map** | Directory groups and the role each gives (see below). |
 
 For OpenLDAP and similar servers, set **User filter** to something like `(uid={{username}})` and **User name attribute** to `uid`.
 
 ::: warning
-**Admin** in **Default role** is the Administrator role, which has every permission. With it, every person the directory accepts gets full control of the server.
+**Super admin** and **Administrator** have every permission. With one of them in **Default role**, every person the directory accepts gets full control of the server. **Server admin** and **Global admin** there give everyone server settings or all users and devices.
 :::
 
 ## Accounts from the directory
@@ -58,8 +58,8 @@ Things to know about directory accounts:
 
 - The directory checks the password at every sign-in. The console keeps no usable password for these accounts and has no password field for them.
 - People can type their user name in any letter case. The account name is always in lower case, and every spelling signs in to the same account.
-- If a password account with the same name already exists, the directory sign-in is refused with "A local account with this username already exists." Delete the password account first if the person should sign in through the directory.
-- While **Auto-create users** is on, deleting a directory account on the Users page does not stop the person: their next sign-in makes a new account. To keep someone out, choose **Disable account** in the row menu instead (see [Disable an account](/docs/people/users-and-roles#disable-an-account)). A disabled directory account stays disabled when the person signs in again.
+- If a password account with the same name already exists, the directory sign-in is refused with "A local account with this username already exists. Sign in with your local password, or ask an administrator to rename or remove the conflicting account." Delete the password account first if the person should sign in through the directory.
+- While **Auto-create users** is on, deleting a directory account on the Users page does not stop the person: their next sign-in makes a new account. To keep someone out, choose **Disable account…** in the row menu instead (see [Disable an account](/docs/people/users-and-roles#disable-an-account)). A disabled directory account stays disabled when the person signs in again.
 
 ## The RustDesk client
 
@@ -69,9 +69,19 @@ Directory accounts sign in to the RustDesk client with the same user name and di
 
 The role is set again at every sign-in, so you cannot change it on the Users page. The server reads the groups from the user's `memberOf` attribute. Only if the entry has none does it search with **Group base DN** and **Group filter**.
 
-Write one entry per line, or separate entries with `|`. Each entry is a group, `=`, and a role name from the [roles table](/docs/people/users-and-roles#roles), such as `viewer`, `operator`, `global_admin`, `server_admin` or `super_admin`. The last `=` in an entry separates the group from the role, so DNs with `=` in them work. An entry with an unknown role name is skipped.
+Under **Group to role map**, click **Add a group** for each directory group. Type the group into the new row's **Group** field (**Group 1**, **Group 2** and so on) and pick the role its members get in **Role for group 1**, **Role for group 2** and so on. The roles are the same as in **Default role**. Remove a row with its remove button, and click **Save changes**.
 
-A group written as a full DN must match the group's DN, ignoring letter case. A bare name, or a single `CN=name`, matches every group with that common name, wherever it is. If several groups match, the role with the most rights wins: Super admin and Administrator, then Server admin and Global admin, then Remote operator, then Viewer. If none matches, the person gets the **Default role**.
+A group written as a full DN must match the group's DN, ignoring letter case. A bare name, or a single `CN=name`, matches every group with that common name, wherever it is, and also the **Group name attribute** of a group the group search found. If none matches, the person gets the **Default role**. If several match, the role with the most rights wins, in this order:
+
+1. Super admin and Administrator
+2. Server admin and Global admin
+3. Remote operator
+4. Viewer and Guest link issuer
+5. Pro license
+
+Roles on the same line count as equal, and the server doesn't break the tie. A person in two mapped groups whose roles are on the same line, such as one group for Server admin and one for Global admin, can get either role, and it can change from one sign-in to the next. Map such groups to the same role, or keep people out of one of them.
+
+The server stores the map as text: entries separated by `|`, each a group, `=`, and the role's name from the [roles table](/docs/people/users-and-roles#roles), such as `CN=NeoDesk Admins,OU=Groups,DC=example,DC=com=global_admin`. The last `=` separates the group from the role, so DNs with `=` in them work. That is the form the API takes; the server skips an entry with an unknown role name.
 
 ## Example for Active Directory
 
@@ -86,12 +96,12 @@ A domain `example.com` with a read-only service account and two groups for NeoDe
 | **User filter** | `(sAMAccountName={{username}})` |
 | **Default role** | **Viewer** |
 
-**Group to role map**:
+**Group to role map**, two rows:
 
-```text
-CN=NeoDesk Admins,OU=Groups,DC=example,DC=com=global_admin
-CN=NeoDesk Operators,OU=Groups,DC=example,DC=com=operator
-```
+| Group | Role for the group |
+| --- | --- |
+| `CN=NeoDesk Admins,OU=Groups,DC=example,DC=com` | **Global admin** |
+| `CN=NeoDesk Operators,OU=Groups,DC=example,DC=com` | **Remote operator** |
 
 People then sign in with their `sAMAccountName` in lower case, such as `jdoe`, and their domain password. Members of NeoDesk Admins become Global admin, members of NeoDesk Operators become Remote operator, and everyone else the filter finds becomes Viewer.
 
@@ -104,7 +114,7 @@ When the directory hasn't answered in that time, the console's sign-in page says
 ## Test it
 
 1. Fill in the settings and click **Test connection**. It checks that the server reaches the directory with the TLS settings you chose and that the **Bind DN** and **Bind password** work. It does not look up any user.
-2. Click **Save LDAP settings** and confirm.
+2. Click **Save changes** and confirm.
 3. Stay signed in, and sign in with a directory account in a private browser window.
 4. On the **Users** page the account appears with the **LDAP/AD** tag and its role.
 

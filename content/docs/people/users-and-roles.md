@@ -14,29 +14,46 @@ Everyone who signs in to the web console has an account on the **Users** page, u
 You need a role that may create accounts: Super admin, Administrator or Global admin, unless the defaults were changed on the [Permissions](/docs/people/permissions) page.
 
 1. Open **People**, then **Users**, and click **Add user**.
-2. Enter a **Username** of 3 to 64 characters: letters, digits, dot, underscore, at sign or hyphen.
-3. Enter a **Password** that meets the [password rules](#password-rules).
-4. Optionally enter an **Email**. The console sends help request notifications to it when the person is given device folders or groups.
-5. Pick a **Role**. The list only offers roles you may give (see [who can give which role](#who-can-give-which-role)).
-6. Under **Device access**, choose what the person may see (see [which devices a user sees](#which-devices-a-user-sees)).
-7. Click **Create user**.
+2. Choose how the person gets a password:
+   - **Send an invite by email**: the person gets a link and chooses their own password. The link works for 7 days. Enter the **Email** the invite goes to. The **Username** is optional; left empty, it is the part of the address before the @. The sheet starts with this choice when the console can send email. Without a mail server under **Settings**, **Email** (see [Mail](/docs/operations/configuration#mail)) it can't be chosen.
+   - **Set a password now**: enter a **Username** of 3 to 64 characters (letters, digits, dot, underscore, at sign or hyphen) and a **Password** that meets the [password rules](#password-rules), and pass the password on yourself. Optionally enter an **Email**.
+3. Pick a **Role**. The list only offers roles you may give (see [who can give which role](#who-can-give-which-role)).
+4. Under **Device access**, choose what the person may see (see [which devices a user sees](#which-devices-a-user-sees)).
+5. Click **Send invite** or **Create user**.
+
+The console sends help request notifications to the email address when the person is given device folders or groups. An invited account shows as invited in the list until the person has signed in. If the invite mail didn't go out, the console says so; fix the email settings and use **Resend invite** in the row menu.
 
 Accounts added here sign in with a password. Accounts for [LDAP](/docs/people/ldap) and [single sign-on](/docs/people/oidc) are made by their first sign-in, unless **Auto-create users** is off in those settings, and carry an **LDAP/AD** or **SSO** tag next to the role.
 
 ## Change a user
 
-Click the row, or choose **Edit** in the row's menu. The sheet shows the username and how the account signs in. Change the **Email**, **Role** or **Device access** and click **Save**. To set a new password for a password account, type it in **New password**, or leave the field empty to keep the current one.
+A click on the row opens the person's page, with their profile, sign-in, devices and organizations, and activity, and the same actions as the row menu. To change the account, choose **Edit…** in the row menu. The sheet shows the username and how the account signs in. Change the **Email**, **Role** or **Device access** and click **Save**. To set a new password for a password account, type it in **New password**, or leave the field empty to keep the current one. For other people's accounts the sheet also has:
 
-- Directory accounts get their role from the directory, so the role choices are locked. Directory and single sign-on accounts have no password field.
-- A new role or a new password signs the person out of the console. When you change your own password, your current session stays.
-- **Reset password…** in the row menu sets a new password for a password account in one step.
-- **Turn off two-factor sign-in** in the row menu helps someone who has lost their authenticator app (see [Two-factor sign-in](/docs/people/two-factor#when-someone-has-lost-the-phone)).
-- **Signed-in devices…** in the row menu lists the browsers the person is signed in on, with **Sign out** for each and **Sign out everywhere** (see [Your account](/docs/people/your-account#for-administrators)).
-- If your role may not change an account, a click on its row opens its organizations instead.
+- **End date**: on this date the account is disabled, for example when a contract ends. Admins who may change the account get a notice a week before. Leave it empty for no end date.
+- **Keep this account even when it isn't used**: for service accounts, so the rule that disables accounts that don't sign in leaves it alone.
+
+Directory accounts get their role from the directory, so the role choices are locked. Directory and single sign-on accounts have no password field. A new role or a new password signs the person out of the console. When you change your own password, your current session stays.
+
+## The row menu
+
+The row menu of an account groups what you can do with it. It shows only the entries your permissions and the account allow.
+
+- **Account**: **Open user page**, **Edit…**, **Resend invite** (an invited account that hasn't signed in yet), **Enable account** (a disabled account), **Send a message** in team chat (on the user page), and **Copy sign-in link**, which copies the console's sign-in address with the username filled in.
+- **Access**: **Organizations…**, **Console access…** (see [Console access](/docs/people/permissions#console-access)) and **Sign in as…**, which shows the console read-only as that person sees it. Sign in as needs **View the console as another user**, which only Super admin and Administrator have by default, and works only for accounts with fewer rights than yours.
+- **Sign-in security**:
+  - **Reset password…** for a password account: send a reset link by email (it works for 24 hours), set a temporary password the person replaces at the next sign-in, or set a new password now.
+  - **Ask for a new password at next sign-in**, or **Don't ask for a new password** once it is set.
+  - **Unlock**, for an account locked by failed sign-ins (see [Sessions and failed sign-ins](#sessions-and-failed-sign-ins)).
+  - **Require two-factor sign-in** or **Don't require two-factor sign-in** for a password account.
+  - **Turn off two-factor sign-in…** or **Reset two-factor sign-in…**, and **Make recovery codes unusable…**, for an account with two-factor sign-in on (see [Two-factor sign-in](/docs/people/two-factor#when-someone-has-lost-the-phone)).
+  - **Signed-in devices…** lists the browsers the person is signed in on, with **Sign out** for each and **Sign out everywhere** (see [Your account](/docs/people/your-account#for-administrators)).
+- **Disable or delete**: **Withdraw invite…** (deletes an invited account that never signed in), **Disable account…** and **Delete…**.
+
+Everything in **Sign-in security** except **Reset password…** and **Signed-in devices…** needs **Manage sign-in security of users**, and none of it is offered for your own account. Editing, resetting a password and disabling need **Edit users**. All of them also need a role that may change the account (see [who can give which role](#who-can-give-which-role)).
 
 ## Disable an account
 
-To stop someone from signing in and keep their account, choose **Disable account** in the row menu and confirm. The person can no longer sign in to the console or to the RustDesk client, and their console sessions and client sign-ins end. The account, its settings and its history stay, and the list shows **Disabled** under the name. A disabled directory or single sign-on account stays disabled when the person signs in again; no new account is made for them.
+To stop someone from signing in and keep their account, choose **Disable account…** in the row menu and confirm. The person can no longer sign in to the console or to the RustDesk client, and their console sessions and client sign-ins end. The account, its settings and its history stay, and the list shows **Disabled** under the name. A disabled directory or single sign-on account stays disabled when the person signs in again; no new account is made for them.
 
 **Enable account** in the same menu lets the person sign in again. Disabling needs **Edit users** and a role that may change the account (see [who can give which role](#who-can-give-which-role)). Nobody can disable their own account.
 
@@ -59,7 +76,7 @@ Choose **Delete…** in the row menu and confirm. The deletion cannot be undone.
 | Guest link issuer | `guest_issuer` | Seeing devices and creating guest links to them. Cannot connect to devices or change anything. |
 | Pro license (client API only) | `pro` | Activating RustDesk Pro features in the desktop client. Cannot sign in to the console. |
 
-The name in role maps is what you type in the group to role maps of [LDAP](/docs/people/ldap#roles-from-directory-groups) and [single sign-on](/docs/people/oidc#roles-from-groups).
+The name in role maps is how the group to role maps of [LDAP](/docs/people/ldap#roles-from-directory-groups) and [single sign-on](/docs/people/oidc#roles-from-groups) store a role, and what the API takes. In the console you pick the role by its name.
 
 ### What each role can do
 
@@ -84,25 +101,27 @@ These are the default permissions. Super admin and Administrator have all of the
 | Test RDP and VNC targets | No | Yes | Yes | No |
 | View users | Yes | Yes | Yes | No |
 | Create users, Edit users, Delete users | No | Yes | No | No |
+| Manage sign-in security of users | No | Yes | No | No |
+| View the console as another user | No | No | No | No |
 | Create organizations, Edit organizations, Delete organizations | No | Yes | No | No |
 | Manage organization users | No | Yes | No | No |
 | Manage organization devices | No | Yes | Yes | No |
-| Manage enrollment | Yes | Yes | No | No |
-| Approve enrollment | No | Yes | No | No |
-| Support chat, Team chat | No | Yes | Yes | Yes |
+| Manage joining | Yes | Yes | No | No |
+| Approve join requests | No | Yes | No | No |
+| Answer support chat, Use team chat | No | Yes | Yes | Yes |
 | Assign conversations | No | Yes | Yes | No |
-| Manage canned replies | No | Yes | No | No |
-| View audit logs, View metrics | Yes | Yes | Yes | Yes |
+| Manage canned replies, Manage teams | No | Yes | No | No |
+| View the audit log, View metrics | Yes | Yes | Yes | Yes |
 | Edit blocklist | Yes | No | No | No |
-| Server configuration | Yes | No | No | No |
-| Manage API keys | Yes | No | No | No |
+| Change server settings | Yes | No | No | No |
+| Manage server API keys | Yes | No | No | No |
 | Run capacity tests | Yes | No | No | No |
-| Edit appearance | No | Yes | No | No |
+| Change appearance and branding | No | Yes | No | No |
 | View billing, Write work reports | No | Yes | Yes | No |
 | Manage billing packages and contracts, Export billing data | No | Yes | No | No |
 | View CDAP devices | No | Yes | Yes | Yes |
-| Send CDAP commands | No | Yes | Yes | No |
-| CDAP terminal access, CDAP file access | No | Yes | No | No |
+| Send commands to CDAP devices | No | Yes | Yes | No |
+| Terminal on CDAP devices, Files on CDAP devices | No | Yes | No | No |
 | Power actions on MeshCentral agents | No | Yes | Yes | No |
 | Terminal on MeshCentral agents, Files on MeshCentral agents | No | Yes | No | No |
 | Terminal on NeoDesk agents, Files on NeoDesk agents | No | Yes | No | No |
@@ -134,11 +153,11 @@ Super admin, Administrator, Server admin and Global admin always see every devic
 
 - **User groups**: groups the person belongs to. A device group's access settings can allow a user group (see [Devices](/docs/console/devices)).
 - **Folder access**: folders whose devices the person sees. A folder chosen for anyone is hidden from other operators and viewers who are not given it.
-- **Direct devices**: device IDs, separated by commas, that the person sees whatever their folders and groups.
+- **Direct devices**: devices the person sees whatever their folders and groups, one device ID per row; **Add a device** adds a row.
 
 The **Device visibility default** under **Settings**, **General** sets what happens around that. With **Open**, people see every device except those in a folder or device group whose access list leaves them out. With **Restricted**, they see only the devices they were given, and someone given nothing sees an empty device list. Under Open, giving a person a folder hides that folder from others but does not narrow the person's own view, so use Restricted to limit people to certain devices. The **Devices** column on the Users page shows the result for each account.
 
-To make a user group, click **Create group** in the **User groups** section of the Users page, then add people to it when you edit them. Deleting a group takes away the device access its members had through it. It needs a role that may change every member of the group, and the [panel access](/docs/people/permissions#panel-access) limits the group put on its members stay with them as their own settings.
+To make a user group, click **Create group** in the **User groups** section of the Users page, then add people to it when you edit them. Deleting a group takes away the device access its members had through it. It needs a role that may change every member of the group, and the [console access](/docs/people/permissions#console-access) limits the group put on its members stay with them as their own settings.
 
 ## Example: an operator for some devices
 
@@ -148,7 +167,7 @@ Someone who should connect to a few devices and see nothing else gets the Remote
 2. On the Users page, add the person with the role **Remote operator**. Under **Device access**, choose the folder in **Folder access**. For a team, make a user group instead, choose it in the folder's **Allowed user groups**, and put the people in the group.
 3. Under **Settings**, **General**, set **Device visibility default** to **Restricted**. Under **Open** the person would also see every device that is in no folder or group with an access list.
 
-The person can then connect from the console's [web viewer](/docs/console/remote-in-browser) or the RustDesk app and change their own password under **Your account**. Device access decides only which devices they see: when they connect, the device still asks for its RustDesk password or for approval on its screen. To hide parts of the console from them as well, use [panel access](/docs/people/permissions#panel-access).
+The person can then connect from the console's [web viewer](/docs/console/remote-in-browser) or the RustDesk app and change their own password under **Your account**. Device access decides only which devices they see: when they connect, the device still asks for its RustDesk password or for approval on its screen. To hide parts of the console from them as well, use [console access](/docs/people/permissions#console-access).
 
 For someone who needs a device for a short time and no account, a [guest access link](/docs/console/device-details#guest-access-links) is enough.
 
@@ -163,7 +182,7 @@ read -rs NEW_PASSWORD
 printf '%s\n' "$NEW_PASSWORD" | neodesk-server reset-password admin
 ```
 
-The commands for Docker, and the **Reset admin password** entry of the installers' menus, are in [Troubleshooting](/docs/operations/troubleshooting#forgot-the-admin-password). The reset leaves two-factor sign-in as it is; to turn it off for someone, see [Two-factor sign-in](/docs/people/two-factor#when-someone-has-lost-the-phone).
+The commands for Docker, and the **Reset admin password** entry of the installers' menus, are in [Troubleshooting](/docs/operations/troubleshooting#forgot-the-admin-password). The reset leaves two-factor sign-in as it is; to turn it off for someone, see [Two-factor sign-in](/docs/people/two-factor#when-someone-has-lost-the-phone). When the only administrator is locked out by two-factor sign-in, the reset command with a new name makes a second administrator account; see [If the only admin is locked out](/docs/people/two-factor#if-the-only-admin-is-locked-out).
 
 ## Sessions and failed sign-ins
 

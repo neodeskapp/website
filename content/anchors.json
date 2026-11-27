@@ -1408,7 +1408,8 @@
 		"what-you-cannot-change",
 		"panel-access",
 		"which-setting-wins",
-		"client-features"
+		"client-features",
+		"console-access"
 	],
 	"people/two-factor": [
 		"turn-it-on",
@@ -1417,7 +1418,8 @@
 		"turn-it-off",
 		"when-someone-has-lost-the-phone",
 		"make-it-mandatory",
-		"directory-and-single-sign-on-accounts"
+		"directory-and-single-sign-on-accounts",
+		"if-the-only-admin-is-locked-out"
 	],
 	"people/users-and-roles": [
 		"add-a-user",
@@ -1430,7 +1432,8 @@
 		"which-devices-a-user-sees",
 		"example-an-operator-for-some-devices",
 		"password-rules",
-		"sessions-and-failed-sign-ins"
+		"sessions-and-failed-sign-ins",
+		"the-row-menu"
 	],
 	"people/your-account": [
 		"signed-in-devices",

@@ -13,29 +13,46 @@ Jede Person, die sich an der Web-Konsole anmeldet, hat ein Konto auf der Seite *
 Dafür brauchst du eine Rolle, die Konten anlegen darf: Super-Admin, Administrator oder Globaler Administrator, sofern niemand die Standardwerte auf der Seite [Berechtigungen](/docs/people/permissions) geändert hat.
 
 1. Öffne **Personen**, dann **Benutzer**, und klicke auf **Benutzer hinzufügen**.
-2. Trage unter **Benutzername** einen Namen mit 3 bis 64 Zeichen ein: Buchstaben, Ziffern, Punkt, Unterstrich, At-Zeichen oder Bindestrich.
-3. Trage unter **Passwort** ein Passwort ein, das die [Passwortregeln](#password-rules) erfüllt.
-4. Trage bei Bedarf eine **E-Mail** ein. An diese Adresse schickt die Konsole Benachrichtigungen über Hilfeanfragen, wenn der Person Geräteordner oder Gerätegruppen zugewiesen sind.
-5. Wähle eine **Rolle**. Die Liste bietet nur Rollen an, die du vergeben darfst (siehe [wer welche Rolle vergeben darf](#who-can-give-which-role)).
-6. Wähle unter **Gerätezugriff**, was die Person sehen darf (siehe [welche Geräte ein Benutzer sieht](#which-devices-a-user-sees)).
-7. Klicke auf **Benutzer anlegen**.
+2. Wähle, wie die Person zu einem Passwort kommt:
+   - **Einladung per E-Mail senden**: Die Person bekommt einen Link und wählt ihr Passwort selbst. Der Link gilt 7 Tage. Trage die **E-Mail** ein, an die die Einladung geht. Der **Benutzername** ist freiwillig; bleibt er leer, wird es der Teil der Adresse vor dem @. Kann die Konsole E-Mails senden, beginnt das Fenster mit dieser Auswahl. Ohne Mailserver unter **Einstellungen**, **E-Mail** (siehe [E-Mail](/docs/operations/configuration#mail)) lässt sie sich nicht wählen.
+   - **Passwort jetzt festlegen**: Trage unter **Benutzername** einen Namen mit 3 bis 64 Zeichen ein (Buchstaben, Ziffern, Punkt, Unterstrich, At-Zeichen oder Bindestrich) und unter **Passwort** ein Passwort, das die [Passwortregeln](#password-rules) erfüllt, und gib das Passwort selbst weiter. Eine **E-Mail** ist freiwillig.
+3. Wähle eine **Rolle**. Die Liste bietet nur Rollen an, die du vergeben darfst (siehe [wer welche Rolle vergeben darf](#who-can-give-which-role)).
+4. Wähle unter **Gerätezugriff**, was die Person sehen darf (siehe [welche Geräte ein Benutzer sieht](#which-devices-a-user-sees)).
+5. Klicke auf **Einladung senden** oder **Benutzer anlegen**.
+
+An die E-Mail-Adresse schickt die Konsole Benachrichtigungen über Hilfeanfragen, wenn der Person Geräteordner oder Gerätegruppen zugewiesen sind. Ein eingeladenes Konto steht in der Liste als eingeladen, bis sich die Person angemeldet hat. Ging die Einladung nicht hinaus, sagt die Konsole das; richte dann die E-Mail-Einstellungen und nutze **Einladung erneut senden** im Menü der Zeile.
 
 Konten, die du hier anlegst, melden sich mit einem Passwort an. Konten für [LDAP](/docs/people/ldap) und [Single Sign-on](/docs/people/oidc) entstehen bei der ersten Anmeldung, außer **Benutzer automatisch anlegen** (LDAP) bzw. **Benutzer automatisch erstellen** (Single Sign-on) ist dort ausgeschaltet. Sie haben neben der Rolle den Tag **LDAP/AD** oder **SSO**.
 
 ## Benutzer ändern {#change-a-user}
 
-Klicke auf die Zeile oder wähle **Bearbeiten** im Menü der Zeile. Das Fenster zeigt den Benutzernamen und wie sich das Konto anmeldet. Ändere **E-Mail**, **Rolle** oder **Gerätezugriff** und klicke auf **Speichern**. Ein neues Passwort für ein Passwortkonto tippst du in **Neues Passwort** ein. Lässt du das Feld leer, bleibt das aktuelle Passwort.
+Ein Klick auf die Zeile öffnet die Seite der Person, mit Profil, Anmeldung, Geräten und Organisationen und Aktivität und denselben Aktionen wie im Menü der Zeile. Um das Konto zu ändern, wähle **Bearbeiten…** im Menü der Zeile. Das Fenster zeigt den Benutzernamen und wie sich das Konto anmeldet. Ändere **E-Mail**, **Rolle** oder **Gerätezugriff** und klicke auf **Speichern**. Ein neues Passwort für ein Passwortkonto tippst du in **Neues Passwort** ein. Lässt du das Feld leer, bleibt das aktuelle Passwort. Bei den Konten anderer hat das Fenster außerdem:
 
-- Verzeichniskonten bekommen ihre Rolle aus dem Verzeichnis, deshalb ist die Rollenauswahl gesperrt. Verzeichnis- und Single-Sign-on-Konten haben kein Passwortfeld.
-- Eine neue Rolle oder ein neues Passwort meldet die Person von der Konsole ab. Änderst du dein eigenes Passwort, bleibt deine aktuelle Sitzung bestehen.
-- **Passwort zurücksetzen…** im Menü der Zeile setzt in einem Schritt ein neues Passwort für ein Passwortkonto.
-- **Zwei-Faktor-Anmeldung ausschalten** im Menü der Zeile hilft jemandem, der seine Authenticator-App verloren hat (siehe [Zwei-Faktor-Anmeldung](/docs/people/two-factor#when-someone-has-lost-the-phone)).
-- **Angemeldete Geräte…** im Menü der Zeile listet die Browser, auf denen die Person angemeldet ist, mit **Abmelden** für jeden und **Überall abmelden** (siehe [Dein Konto](/docs/people/your-account#for-administrators)).
-- Darf deine Rolle ein Konto nicht ändern, öffnet ein Klick auf seine Zeile stattdessen seine Organisationen.
+- **Enddatum**: An diesem Tag wird das Konto deaktiviert, etwa wenn ein Vertrag endet. Admins, die das Konto ändern dürfen, bekommen eine Woche vorher einen Hinweis. Leer heißt: kein Enddatum.
+- **Dieses Konto behalten, auch wenn es nicht benutzt wird**: für Dienstkonten, damit die Regel, die Konten ohne Anmeldung deaktiviert, dieses Konto in Ruhe lässt.
+
+Verzeichniskonten bekommen ihre Rolle aus dem Verzeichnis, deshalb ist die Rollenauswahl gesperrt. Verzeichnis- und Single-Sign-on-Konten haben kein Passwortfeld. Eine neue Rolle oder ein neues Passwort meldet die Person von der Konsole ab. Änderst du dein eigenes Passwort, bleibt deine aktuelle Sitzung bestehen.
+
+## Das Menü der Zeile {#the-row-menu}
+
+Das Menü der Zeile eines Kontos gruppiert, was du damit tun kannst. Es zeigt nur die Einträge, die deine Berechtigungen und das Konto erlauben.
+
+- **Konto**: **Benutzerseite öffnen**, **Bearbeiten…**, **Einladung erneut senden** (ein eingeladenes Konto, das sich noch nicht angemeldet hat), **Konto aktivieren** (ein deaktiviertes Konto), **Nachricht senden** im Team-Chat (auf der Benutzerseite) und **Anmeldelink kopieren**, das die Adresse der Anmeldeseite der Konsole mit eingetragenem Benutzernamen kopiert.
+- **Zugriff**: **Organisationen…**, **Konsolenzugriff…** (siehe [Konsolenzugriff](/docs/people/permissions#console-access)) und **Anmelden als…**, das die Konsole schreibgeschützt so zeigt, wie die Person sie sieht. Anmelden als braucht **Die Konsole als anderer Benutzer ansehen**, das standardmäßig nur Super-Admin und Administrator haben, und geht nur bei Konten mit weniger Rechten als deinen.
+- **Anmeldesicherheit**:
+  - **Passwort zurücksetzen…** für ein Passwortkonto: einen Link zum Zurücksetzen per E-Mail senden (er gilt 24 Stunden), ein vorläufiges Passwort festlegen, das die Person bei der nächsten Anmeldung ersetzt, oder gleich ein neues Passwort festlegen.
+  - **Bei nächster Anmeldung neues Passwort verlangen**, oder **Kein neues Passwort verlangen**, wenn das schon gesetzt ist.
+  - **Entsperren** für ein Konto, das fehlgeschlagene Anmeldungen gesperrt haben (siehe [Sitzungen und fehlgeschlagene Anmeldungen](#sessions-and-failed-sign-ins)).
+  - **Zwei-Faktor-Anmeldung verlangen** oder **Zwei-Faktor-Anmeldung nicht mehr verlangen** für ein Passwortkonto.
+  - **Zwei-Faktor-Anmeldung ausschalten…** oder **Zwei-Faktor-Anmeldung zurücksetzen…** und **Wiederherstellungscodes ungültig machen…** für ein Konto mit eingeschalteter Zwei-Faktor-Anmeldung (siehe [Zwei-Faktor-Anmeldung](/docs/people/two-factor#when-someone-has-lost-the-phone)).
+  - **Angemeldete Geräte…** listet die Browser, auf denen die Person angemeldet ist, mit **Abmelden** für jeden und **Überall abmelden** (siehe [Dein Konto](/docs/people/your-account#for-administrators)).
+- **Deaktivieren oder löschen**: **Einladung zurückziehen…** (löscht ein eingeladenes Konto, das sich nie angemeldet hat), **Konto deaktivieren…** und **Löschen…**.
+
+Alles unter **Anmeldesicherheit** außer **Passwort zurücksetzen…** und **Angemeldete Geräte…** braucht **Anmeldesicherheit von Benutzern verwalten**, und nichts davon gibt es für dein eigenes Konto. Bearbeiten, Passwort zurücksetzen und Deaktivieren brauchen **Benutzer bearbeiten**. Alle brauchen außerdem eine Rolle, die das Konto ändern darf (siehe [wer welche Rolle vergeben darf](#who-can-give-which-role)).
 
 ## Konto deaktivieren {#disable-an-account}
 
-Willst du jemanden von der Anmeldung abhalten, das Konto aber behalten, wähle **Konto deaktivieren** im Menü der Zeile und bestätige. Die Person kann sich dann weder an der Konsole noch im RustDesk-Client anmelden, und ihre Konsolensitzungen und Client-Anmeldungen enden. Das Konto, seine Einstellungen und sein Verlauf bleiben erhalten, und die Liste zeigt **Deaktiviert** unter dem Namen. Ein deaktiviertes Verzeichnis- oder Single-Sign-on-Konto bleibt deaktiviert, wenn sich die Person erneut anmeldet; es entsteht kein neues Konto für sie.
+Willst du jemanden von der Anmeldung abhalten, das Konto aber behalten, wähle **Konto deaktivieren…** im Menü der Zeile und bestätige. Die Person kann sich dann weder an der Konsole noch im RustDesk-Client anmelden, und ihre Konsolensitzungen und Client-Anmeldungen enden. Das Konto, seine Einstellungen und sein Verlauf bleiben erhalten, und die Liste zeigt **Deaktiviert** unter dem Namen. Ein deaktiviertes Verzeichnis- oder Single-Sign-on-Konto bleibt deaktiviert, wenn sich die Person erneut anmeldet; es entsteht kein neues Konto für sie.
 
 Mit **Konto aktivieren** im selben Menü kann sich die Person wieder anmelden. Zum Deaktivieren brauchst du **Benutzer bearbeiten** und eine Rolle, die das Konto ändern darf (siehe [wer welche Rolle vergeben darf](#who-can-give-which-role)). Niemand kann sein eigenes Konto deaktivieren.
 
@@ -58,7 +75,7 @@ Wähle **Löschen…** im Menü der Zeile und bestätige. Das Löschen lässt si
 | Gastlink-Aussteller | `guest_issuer` | Geräte sehen und Gastlinks zu ihnen erstellen. Kann sich nicht mit Geräten verbinden und nichts ändern. |
 | Pro-Lizenz (nur Client-API) | `pro` | RustDesk-Pro-Funktionen im Desktop-Client freischalten. Kann sich nicht an der Konsole anmelden. |
 
-Den Namen in Rollenzuordnungen trägst du in die Zuordnungen von Gruppen zu Rollen bei [LDAP](/docs/people/ldap#roles-from-directory-groups) und [Single Sign-on](/docs/people/oidc#roles-from-groups) ein.
+Unter dem Namen in Rollenzuordnungen speichern die Zuordnungen von Gruppen zu Rollen bei [LDAP](/docs/people/ldap#roles-from-directory-groups) und [Single Sign-on](/docs/people/oidc#roles-from-groups) eine Rolle, und so nimmt die API sie an. In der Konsole wählst du die Rolle mit ihrem Namen.
 
 ### Was jede Rolle darf {#what-each-role-can-do}
 
@@ -83,26 +100,28 @@ Das sind die Standardberechtigungen. Super-Admin und Administrator haben alle. D
 | RDP- und VNC-Ziele testen | Nein | Ja | Ja | Nein |
 | Benutzer anzeigen | Ja | Ja | Ja | Nein |
 | Benutzer erstellen, Benutzer bearbeiten, Benutzer löschen | Nein | Ja | Nein | Nein |
+| Anmeldesicherheit von Benutzern verwalten | Nein | Ja | Nein | Nein |
+| Die Konsole als anderer Benutzer ansehen | Nein | Nein | Nein | Nein |
 | Organisationen erstellen, Organisationen bearbeiten, Organisationen löschen | Nein | Ja | Nein | Nein |
 | Organisationsbenutzer verwalten | Nein | Ja | Nein | Nein |
 | Organisationsgeräte verwalten | Nein | Ja | Ja | Nein |
-| Registrierungen verwalten | Ja | Ja | Nein | Nein |
-| Registrierungen genehmigen | Nein | Ja | Nein | Nein |
-| Support-Chat, Team-Chat | Nein | Ja | Ja | Ja |
+| Beitritt verwalten | Ja | Ja | Nein | Nein |
+| Beitrittsanfragen genehmigen | Nein | Ja | Nein | Nein |
+| Support-Chat beantworten, Team-Chat nutzen | Nein | Ja | Ja | Ja |
 | Unterhaltungen zuweisen | Nein | Ja | Ja | Nein |
-| Textbausteine verwalten | Nein | Ja | Nein | Nein |
-| Audit anzeigen, Metriken anzeigen | Ja | Ja | Ja | Ja |
+| Textbausteine verwalten, Teams verwalten | Nein | Ja | Nein | Nein |
+| Audit-Protokoll ansehen, Metriken anzeigen | Ja | Ja | Ja | Ja |
 | Sperrliste bearbeiten | Ja | Nein | Nein | Nein |
-| Server konfigurieren | Ja | Nein | Nein | Nein |
-| API-Schlüssel verwalten | Ja | Nein | Nein | Nein |
+| Servereinstellungen ändern | Ja | Nein | Nein | Nein |
+| API-Schlüssel des Servers verwalten | Ja | Nein | Nein | Nein |
 | Kapazitätstests ausführen | Ja | Nein | Nein | Nein |
-| Erscheinungsbild bearbeiten | Nein | Ja | Nein | Nein |
+| Darstellung und Branding ändern | Nein | Ja | Nein | Nein |
 | Abrechnung ansehen, Arbeitsberichte schreiben | Nein | Ja | Ja | Nein |
 | Abrechnungspakete und Verträge verwalten, Abrechnungsdaten exportieren | Nein | Ja | Nein | Nein |
-| CDAP anzeigen | Nein | Ja | Ja | Ja |
-| CDAP-Befehle ausführen | Nein | Ja | Ja | Nein |
-| CDAP-Terminal verwenden, CDAP-Dateien verwalten | Nein | Ja | Nein | Nein |
-| Ein-/Ausschalten von MeshCentral-Agenten | Nein | Ja | Ja | Nein |
+| CDAP-Geräte ansehen | Nein | Ja | Ja | Ja |
+| Befehle an CDAP-Geräte senden | Nein | Ja | Ja | Nein |
+| Terminal auf CDAP-Geräten, Dateien auf CDAP-Geräten | Nein | Ja | Nein | Nein |
+| Ein- und Ausschalten auf MeshCentral-Agenten | Nein | Ja | Ja | Nein |
 | Terminal auf MeshCentral-Agenten, Dateien auf MeshCentral-Agenten | Nein | Ja | Nein | Nein |
 | Terminal auf NeoDesk-Agenten, Dateien auf NeoDesk-Agenten | Nein | Ja | Nein | Nein |
 
@@ -133,11 +152,11 @@ Super-Admin, Administrator, Serveradministrator und Globaler Administrator sehen
 
 - **Benutzergruppen**: Gruppen, zu denen die Person gehört. Die Zugriffseinstellungen einer Gerätegruppe können eine Benutzergruppe zulassen (siehe [Die Geräteliste](/docs/console/devices)).
 - **Ordnerzugriff**: Ordner, deren Geräte die Person sieht. Ein Ordner, der für irgendjemanden ausgewählt ist, ist vor anderen Operatoren und Betrachtern verborgen, denen er nicht zugewiesen ist.
-- **Einzelne Geräte**: Geräte-IDs, durch Kommas getrennt, die die Person unabhängig von ihren Ordnern und Gruppen sieht.
+- **Einzelne Geräte**: Geräte, die die Person unabhängig von ihren Ordnern und Gruppen sieht, eine Geräte-ID pro Zeile; **Gerät hinzufügen** fügt eine Zeile hinzu.
 
 Die **Standard-Sichtbarkeit von Geräten** unter **Einstellungen**, **Allgemein** legt fest, was darüber hinaus gilt. Mit **Offen** sehen Personen jedes Gerät außer denen in einem Ordner oder einer Gerätegruppe, deren Zugriffsliste sie nicht enthält. Mit **Eingeschränkt** sehen sie nur die Geräte, die ihnen zugewiesen sind, und wer nichts zugewiesen bekommen hat, sieht eine leere Geräteliste. Unter Offen verbirgt ein zugewiesener Ordner diesen Ordner zwar vor anderen, schränkt aber die Sicht der Person selbst nicht ein. Willst du Personen auf bestimmte Geräte beschränken, nimm deshalb Eingeschränkt. Die Spalte **Geräte** auf der Seite Benutzer zeigt das Ergebnis für jedes Konto.
 
-Für eine Benutzergruppe klickst du im Bereich **Benutzergruppen** der Seite Benutzer auf **Gruppe erstellen**. Personen nimmst du in die Gruppe auf, wenn du sie bearbeitest. Löschst du eine Gruppe, verlieren ihre Mitglieder den Gerätezugriff, den sie über die Gruppe hatten. Dafür brauchst du eine Rolle, die jedes Mitglied der Gruppe ändern darf, und die Grenzen beim [Konsolenzugriff](/docs/people/permissions#panel-access), die die Gruppe ihren Mitgliedern gesetzt hat, bleiben bei ihnen als eigene Einstellungen.
+Für eine Benutzergruppe klickst du im Bereich **Benutzergruppen** der Seite Benutzer auf **Gruppe erstellen**. Personen nimmst du in die Gruppe auf, wenn du sie bearbeitest. Löschst du eine Gruppe, verlieren ihre Mitglieder den Gerätezugriff, den sie über die Gruppe hatten. Dafür brauchst du eine Rolle, die jedes Mitglied der Gruppe ändern darf, und die Grenzen beim [Konsolenzugriff](/docs/people/permissions#console-access), die die Gruppe ihren Mitgliedern gesetzt hat, bleiben bei ihnen als eigene Einstellungen.
 
 ## Beispiel: ein Operator für einige Geräte {#example-an-operator-for-some-devices}
 
@@ -147,7 +166,7 @@ Wer sich mit ein paar Geräten verbinden und sonst nichts sehen soll, bekommt di
 2. Füge die Person auf der Seite Benutzer mit der Rolle **Remote-Operator** hinzu. Wähle unter **Gerätezugriff** den Ordner in **Ordnerzugriff**. Für ein Team legst du stattdessen eine Benutzergruppe an, wählst sie im Ordner unter **Zugelassene Benutzergruppen** aus und nimmst die Personen in die Gruppe auf.
 3. Setze unter **Einstellungen**, **Allgemein** die **Standard-Sichtbarkeit von Geräten** auf **Eingeschränkt**. Unter **Offen** würde die Person auch jedes Gerät sehen, das in keinem Ordner und keiner Gruppe mit Zugriffsliste liegt.
 
-Danach kann sich die Person über den [Web-Viewer](/docs/console/remote-in-browser) der Konsole oder die RustDesk-App verbinden und ihr eigenes Passwort unter **Dein Konto** ändern. Der Gerätezugriff entscheidet nur, welche Geräte sie sieht: Beim Verbinden fragt das Gerät weiterhin nach seinem RustDesk-Passwort oder nach einer Bestätigung auf seinem Bildschirm. Willst du auch Teile der Konsole vor ihr verbergen, nutze den [Konsolenzugriff](/docs/people/permissions#panel-access).
+Danach kann sich die Person über den [Web-Viewer](/docs/console/remote-in-browser) der Konsole oder die RustDesk-App verbinden und ihr eigenes Passwort unter **Dein Konto** ändern. Der Gerätezugriff entscheidet nur, welche Geräte sie sieht: Beim Verbinden fragt das Gerät weiterhin nach seinem RustDesk-Passwort oder nach einer Bestätigung auf seinem Bildschirm. Willst du auch Teile der Konsole vor ihr verbergen, nutze den [Konsolenzugriff](/docs/people/permissions#console-access).
 
 Für jemanden, der kurz ein Gerät braucht und kein Konto, reicht ein [Gastzugangslink](/docs/console/device-details#guest-access-links).
 
@@ -162,7 +181,7 @@ read -rs NEW_PASSWORD
 printf '%s\n' "$NEW_PASSWORD" | neodesk-server reset-password admin
 ```
 
-Die Befehle für Docker und den Eintrag **Reset admin password** in den Menüs der Installer findest du unter [Fehlersuche](/docs/operations/troubleshooting#forgot-the-admin-password). Das Zurücksetzen lässt die Zwei-Faktor-Anmeldung, wie sie ist. Wie du sie für jemanden ausschaltest, steht unter [Zwei-Faktor-Anmeldung](/docs/people/two-factor#when-someone-has-lost-the-phone).
+Die Befehle für Docker und den Eintrag **Reset admin password** in den Menüs der Installer findest du unter [Fehlersuche](/docs/operations/troubleshooting#forgot-the-admin-password). Das Zurücksetzen lässt die Zwei-Faktor-Anmeldung, wie sie ist. Wie du sie für jemanden ausschaltest, steht unter [Zwei-Faktor-Anmeldung](/docs/people/two-factor#when-someone-has-lost-the-phone). Sperrt die Zwei-Faktor-Anmeldung den einzigen Admin aus, legt der Befehl mit einem neuen Namen ein zweites Admin-Konto an; siehe [Wenn der einzige Admin ausgesperrt ist](/docs/people/two-factor#if-the-only-admin-is-locked-out).
 
 ## Sitzungen und fehlgeschlagene Anmeldungen {#sessions-and-failed-sign-ins}
 

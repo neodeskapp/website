@@ -1,11 +1,11 @@
 ---
 title: Permissions
-description: Change what a role may do, narrow console sections for one person or a user group with Panel access, and limit what they may do in remote sessions.
+description: Change what a role may do, narrow console sections for one person or a user group with Console access, and limit what they may do in remote sessions.
 order: 2
 icon: admin_panel_settings
 ---
 
-A role is a set of permissions that every account with that role has. Two places change what people may do: the **Roles and permissions** page changes a role for everyone who has it, and **Panel access** on the Users page narrows single parts of the console, and the client features of remote sessions, for one person or one user group.
+A role is a set of permissions that every account with that role has. Two places change what people may do: the **Roles and permissions** page changes a role for everyone who has it, and **Console access** on the Users page narrows single parts of the console, and the client features of remote sessions, for one person or one user group.
 
 ## Roles and permissions
 
@@ -33,18 +33,18 @@ Changes apply from the next page people with that role open. They do not sign an
 
 A change saved for a locked row before it was locked still shows as changed and can be put back with **Reset**.
 
-## Panel access
+## Console access {#console-access alias=panel-access}
 
-Panel access narrows what one person or one user group may do in each part of the console. It never gives more than the person's role allows.
+Console access narrows what one person or one user group may do in each part of the console. It never gives more than the person's role allows.
 
-Open **People**, then **Users**. In the row menu of a person, or of a group under **User groups**, choose **Panel access…**. The sheet lists the console's sections in groups (Core, Administration, Operations, Commercialization, Security and System) with a level for each:
+Open **People**, then **Users**. In the row menu of a person, or of a group under **User groups**, choose **Console access…**. The sheet lists the console's sections in groups (Core, Administration, Operations, Commercialization, Security and System) with a level for each:
 
 | Level | Effect |
 | --- | --- |
 | **None** | The section shows that the person has no access, and the server refuses its requests. |
 | **Read** | The person can open and read the section but not change anything in it. |
 | **Full** | Reading and changing, as far as the role allows. |
-| **Role or group default** | No setting for this person. For a group the choice is called **Not set**. |
+| **Default** | No setting for this person. The choice names what applies then, such as "Default: Read, from the role". For a group it is called **Not set**. |
 
 The row **All sections in this group** sets every section of a group at once. Click **Save** to store the sheet. Reading it needs the **View users** permission. Saving it needs **Edit users** and a role that may change the person, or every member of the group (see [who can give which role](/docs/people/users-and-roles#who-can-give-which-role)). For your own account, or a group you are in, a save may keep or lower what you have but never raise it; the server answers "You cannot widen your own panel access".
 

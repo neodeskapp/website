@@ -6,8 +6,6 @@ order: 3
 
 Mit der Zwei-Faktor-Anmeldung öffnet ein Passwort allein dein Konto nicht mehr: Nach dem Passwort tippst du zusätzlich einen sechsstelligen Code aus einer Authenticator-App auf deinem Handy ein, etwa Google Authenticator, Microsoft Authenticator oder Authy. Jede Person schaltet sie für ihr eigenes Konto ein, und ein Admin kann sie für Passwortkonten zur Pflicht machen.
 
-![Die Einstellungsseite Anmeldung mit den Bereichen Passwort und Zwei-Faktor-Anmeldung](shot:settings-auth)
-
 ## Einschalten {#turn-it-on}
 
 1. Öffne das Kontomenü am Ende der oberen Leiste, wähle **Dein Konto** und gehe zu **Zwei-Faktor-Anmeldung**. Siehe [Dein Konto](/docs/people/your-account).
@@ -56,25 +54,69 @@ Das löscht den Schlüssel und die Wiederherstellungscodes und meldet die andere
 
 ## Wenn jemand das Handy verloren hat {#when-someone-has-lost-the-phone}
 
-Hat jemand sowohl das Handy als auch die Wiederherstellungscodes verloren, schaltet ein Admin die Zwei-Faktor-Anmeldung für diese Person aus:
+Hat jemand sowohl das Handy als auch die Wiederherstellungscodes verloren, nimmt ein Admin die Zwei-Faktor-Anmeldung von diesem Konto:
 
 1. Öffne **Personen**, dann **Benutzer**.
-2. Wähle im Menü der Zeile der Person **Zwei-Faktor-Anmeldung ausschalten** und bestätige.
+2. Wähle im Menü der Zeile der Person unter **Anmeldesicherheit** den Eintrag, den es zeigt, und bestätige:
+   - **Zwei-Faktor-Anmeldung ausschalten…**, wenn nichts die Zwei-Faktor-Anmeldung von der Person verlangt. Sie meldet sich nur mit dem Passwort an, bis sie die Zwei-Faktor-Anmeldung wieder einrichtet.
+   - **Zwei-Faktor-Anmeldung zurücksetzen…**, wenn sie von ihr verlangt wird, für alle (siehe [Zur Pflicht machen](#make-it-mandatory)) oder für diese Person. Sie richtet sie bei ihrer nächsten Anmeldung an der Konsole mit dem neuen Handy wieder ein.
 
-Das löscht Schlüssel und Wiederherstellungscodes der Person und beendet ihre Konsolensitzungen und Anmeldungen im RustDesk-Client. Sie meldet sich nur mit dem Passwort an, bis sie die Zwei-Faktor-Anmeldung wieder einrichtet. Den Menüeintrag gibt es bei Konten mit eingeschalteter Zwei-Faktor-Anmeldung, und zwar für Personen mit **Benutzer bearbeiten**, deren Rolle das Konto ändern darf (siehe [wer welche Rolle vergeben darf](/docs/people/users-and-roles#who-can-give-which-role)). Deine eigene Zwei-Faktor-Anmeldung schaltest du unter **Dein Konto** aus.
+Beides löscht Schlüssel und Wiederherstellungscodes der Person und beendet ihre Konsolensitzungen und Anmeldungen im RustDesk-Client. Die Einträge gibt es bei Konten mit eingeschalteter Zwei-Faktor-Anmeldung, und zwar für Personen mit **Anmeldesicherheit von Benutzern verwalten**, deren Rolle das Konto ändern darf (siehe [wer welche Rolle vergeben darf](/docs/people/users-and-roles#who-can-give-which-role)). Standardmäßig sind das Super-Admin, Administrator und Globaler Administrator. Für dein eigenes Konto gibt es sie nie: Deine eigene Zwei-Faktor-Anmeldung schaltest du unter **Dein Konto** aus.
 
-Der Befehl des Servers zum Zurücksetzen des Passworts lässt die Zwei-Faktor-Anmeldung, wie sie ist.
+**Wiederherstellungscodes ungültig machen…** in derselben Gruppe beendet nur die Wiederherstellungscodes, etwa wenn jemand anderes sie gesehen hat. Neue erstellt die Person unter **Dein Konto** mit ihrer App.
+
+## Wenn der einzige Admin ausgesperrt ist {#if-the-only-admin-is-locked-out}
+
+Der Befehl des Servers zum Zurücksetzen des Passworts lässt die Zwei-Faktor-Anmeldung, wie sie ist. Hat der einzige Admin sowohl das Handy als auch die Wiederherstellungscodes verloren, bleibt niemand, der sie in der Konsole ausschalten kann. Der Weg zurück ist ein zweites Admin-Konto: Der Befehl legt eines an, wenn du ihm einen Namen gibst, den noch kein Konto hat.
+
+1. Führe auf dem Server den Befehl zum Zurücksetzen mit einem neuen Namen aus, etwa `rescue`. Die Befehle für jede Installationsart stehen unten. Er legt ein Konto mit der Rolle Administrator und diesem Namen an, mit dem Passwort, das du ihm gibst.
+2. Melde dich an der Konsole als `rescue` an. Ist die Zwei-Faktor-Anmeldung für alle verlangt, richtest du sie zuerst für dieses Konto ein.
+3. Schalte unter **Personen**, **Benutzer** die Zwei-Faktor-Anmeldung des ersten Kontos aus oder setze sie zurück, wie unter [Wenn jemand das Handy verloren hat](#when-someone-has-lost-the-phone) beschrieben.
+4. Melde dich mit dem ersten Konto an und richte die Zwei-Faktor-Anmeldung unter **Dein Konto** neu ein.
+5. Lösche oder deaktiviere das Konto `rescue` auf der Seite **Benutzer**.
+
+Docker, mit dem Skript installiert. Es zeigt das Passwort des neuen Kontos einmal an:
+
+```bash
+sudo bash /opt/neodesk/docker/neodesk-docker.sh reset-password --user rescue
+```
+
+Docker mit der Compose-Datei. Tippe das Passwort nach dem ersten Befehl ein (es wird nicht angezeigt) und führe dann den zweiten im Ordner mit der Compose-Datei aus:
+
+```bash
+read -rs NEWPASS
+printf '%s\n' "$NEWPASS" | docker compose exec -T -u neodesk neodesk neodesk-server reset-password rescue
+```
+
+Linux:
+
+```bash
+read -rs NEWPASS
+printf '%s\n' "$NEWPASS" | sudo -u neodesk env NEODESK_ENV_FILE=/opt/NeoDeskConsole/.env /opt/neodesk/neodesk-server reset-password rescue
+```
+
+Windows, in einer PowerShell, die als Administrator läuft. Nimm für das Passwort Buchstaben, Ziffern und übliche Sonderzeichen, denn Windows PowerShell gibt andere Zeichen als Fragezeichen weiter:
+
+```powershell
+$env:NEODESK_ENV_FILE = 'C:\NeoDeskConsole\.env'
+$pw = [Net.NetworkCredential]::new('', (Read-Host 'New password' -AsSecureString)).Password
+$pw | & 'C:\NeoDesk\neodesk-server.exe' reset-password rescue
+```
+
+Die Einträge **Reset admin password** in den Menüs der Installer setzen nur das Konto `admin` zurück und helfen deshalb nicht, wenn genau das ausgesperrt ist. Mehr zum Befehl steht unter [Fehlersuche](/docs/operations/troubleshooting#forgot-the-admin-password).
 
 ## Zur Pflicht machen {#make-it-mandatory}
 
-Ein Konto mit der Berechtigung **Server konfigurieren** (standardmäßig Super-Admin, Administrator und Serveradministrator) kann die Zwei-Faktor-Anmeldung für jedes Passwortkonto verlangen:
+Ein Konto mit der Berechtigung **Servereinstellungen ändern** (standardmäßig Super-Admin, Administrator und Serveradministrator) kann die Zwei-Faktor-Anmeldung für jedes Passwortkonto verlangen:
 
-1. Öffne **Einstellungen**, **Anmeldung** und gehe zu **Für alle**.
-2. Setze den Haken bei **Zwei-Faktor-Anmeldung verlangen** und klicke auf **Speichern**.
+1. Öffne **Einstellungen**, **Anmeldung** und gehe zu **Anmeldung an der Konsole**.
+2. Schalte **Zwei-Faktor-Anmeldung verlangen** ein und klicke auf **Änderungen speichern**.
 
 Ab dann richtet ein Passwortkonto ohne Zwei-Faktor-Anmeldung sie direkt nach dem Passwort ein, wenn es sich an der Konsole anmeldet. Die Anmeldeseite zeigt **Zwei-Faktor-Anmeldung einrichten** mit dem QR-Code und dem Feld **Manueller Schlüssel**. Die Person scannt den QR-Code, tippt den Code aus der App ein, klickt auf **Bestätigen**, bewahrt die Wiederherstellungscodes auf, klickt auf **Ich habe die Codes gespeichert** und ist dann angemeldet. Die Einrichtung muss innerhalb von 15 Minuten fertig sein, und fünf falsche Codes brechen sie ab; dann beginnt die Anmeldung wieder mit dem Passwort.
 
 Solange das Konto keine Zwei-Faktor-Anmeldung hat, lehnt der RustDesk-Client es mit „Two-factor sign-in is required for this account. Sign in to the web console once to set it up.“ ab. Personen können die Zwei-Faktor-Anmeldung für ihr eigenes Konto weiterhin ausschalten, und ihre nächste Anmeldung an der Konsole verlangt dann wieder die Einrichtung.
+
+Um sie nur von einer Person zu verlangen, wähle im Menü ihrer Zeile auf der Seite **Benutzer** unter **Anmeldesicherheit** den Eintrag **Zwei-Faktor-Anmeldung verlangen**. Den gibt es bei Passwortkonten, für Personen mit **Anmeldesicherheit von Benutzern verwalten**. Mit **Zwei-Faktor-Anmeldung nicht mehr verlangen** an derselben Stelle folgt die Person wieder der Einstellung für alle.
 
 Die Einstellung gilt nicht für Verzeichnis- und Single-Sign-on-Konten; die bleiben ihrem Verzeichnis oder Identitätsanbieter überlassen. Sie gilt auch nicht für Konten mit Pro-Lizenz: Diese können sich nicht an der Konsole anmelden, wo die Einrichtung stattfindet, und melden sich deshalb weiter mit ihrem Passwort im RustDesk-Client an.
 

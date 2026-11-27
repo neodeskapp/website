@@ -32,7 +32,7 @@ Um jede Berechtigung der Rolle auf ihren Standard zurückzusetzen, klicke unter 
 
 Wurde für eine Zeile eine Änderung gespeichert, bevor sie gesperrt war, wird sie weiter als geändert angezeigt und lässt sich mit **Zurücksetzen** zurücknehmen.
 
-## Konsolenzugriff {#panel-access}
+## Konsolenzugriff {#console-access alias=panel-access}
 
 Der Konsolenzugriff schränkt ein, was eine Person oder eine Benutzergruppe in jedem Teil der Konsole tun darf. Er gibt nie mehr, als die Rolle der Person erlaubt.
 
@@ -43,7 +43,7 @@ Der Konsolenzugriff schränkt ein, was eine Person oder eine Benutzergruppe in j
 | **Keiner** | Der Bereich zeigt, dass die Person keinen Zugriff hat, und der Server lehnt seine Anfragen ab. |
 | **Lesen** | Die Person kann den Bereich öffnen und lesen, aber nichts darin ändern. |
 | **Voll** | Lesen und Ändern, soweit die Rolle es erlaubt. |
-| **Standard für Rolle oder Gruppe** | Keine Einstellung für diese Person. Bei einer Gruppe heißt diese Auswahl **Nicht festgelegt**. |
+| **Standard** | Keine Einstellung für diese Person. Die Auswahl nennt, was dann gilt, etwa „Standard: Lesen, aus der Rolle“. Bei einer Gruppe heißt sie **Nicht festgelegt**. |
 
 Die Zeile **Alle Bereiche dieser Gruppe** setzt alle Bereiche einer Gruppe auf einmal. Klicke auf **Speichern**, um die Einstellungen im Fenster zu speichern. Zum Ansehen brauchst du die Berechtigung **Benutzer anzeigen**. Zum Speichern brauchst du **Benutzer bearbeiten** und eine Rolle, die die Person oder jedes Mitglied der Gruppe ändern darf (siehe [wer welche Rolle vergeben darf](/docs/people/users-and-roles#who-can-give-which-role)). Für dein eigenes Konto oder eine Gruppe, in der du bist, darf das Speichern deinen Zugriff behalten oder verringern, aber nie erweitern; sonst antwortet der Server „You cannot widen your own panel access“.
 
