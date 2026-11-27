@@ -70,7 +70,7 @@ Both delete the person's key and recovery codes and end their console sessions a
 
 When the only administrator has lost both the phone and the recovery codes, nobody is left who can turn two-factor sign-in off in the console. The server's password reset command does it instead: with `--reset-two-factor` it gives the account a new password, turns off its two-factor sign-in and deletes its key and recovery codes. Where two-factor sign-in is required, the console asks the account to set it up again at its next sign-in. Afterwards, set it up again under **Your account** with the new phone.
 
-The option needs NeoDesk 3.6.26 or newer. An older server refuses it, and the installers say to update first.
+The option comes after NeoDesk 3.6.0-rc.6. A server without it refuses the option, and the installers say to update first.
 
 Docker, installed with the script. It prints the new password once; `--user <name>` picks another account than `admin`:
 
