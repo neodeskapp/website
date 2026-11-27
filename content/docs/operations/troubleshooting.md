@@ -23,7 +23,7 @@ The server and the console write one log.
   journalctl -u neodesk-server -f
   ```
 
-- Windows: `C:\NeoDesk\logs\server.log`. The **Diagnostics** item in the menu of `C:\NeoDesk\neodesk.ps1` checks the ports and the service.
+- Windows: `C:\NeoDesk\logs\server.log`, which the server moves to `server.log.1` at 10 MB. The service's starts, stops and crashes are in Windows' System event log, from the Service Control Manager. The **Diagnostics** item in the menu of `C:\NeoDesk\neodesk.ps1` checks the ports and the service.
 
 The Linux installer also keeps a log of each run, `/tmp/neodesk_<date>_<time>.log`. Look there when an install or update stops with an error.
 
@@ -83,7 +83,7 @@ On Windows, in PowerShell as Administrator, this is the check the installer runs
 & C:\NeoDesk\neodesk-server.exe check --api http://127.0.0.1:21114/api/health --panel https://127.0.0.1:5443/health --insecure --port 127.0.0.1:21116 --port 127.0.0.1:21117
 ```
 
-`/api/health/detail` and `/metrics` give more, but only to the addresses in `METRICS_IP_ALLOWLIST` or with an API key.
+`/api/health/detail` and `/metrics` give more, but only to the addresses in `METRICS_IP_ALLOWLIST` or with an API key. On Linux and Windows an API key works on 21114 only from this machine or from an address in `API_ALLOW_FROM`; other hosts get only the client API there.
 
 ## The console does not open
 
@@ -182,7 +182,7 @@ Behind a reverse proxy without `TRUST_PROXY`, all people share the proxy's addre
 - In the `managed` and `locked` join modes, a new device cannot register until someone approves it under **Join requests**. A new install starts in `managed`. The log shows `Rejected new peer <id> from <address> (enrollment policy)`. See [Join requests](/docs/console/enrollment).
 - `Rate limited RegisterPk for new peer` in the log means more than `SIGNAL_RATE_LIMIT_PER_IP` new devices (20 a minute) registered from one address. Raise it when many devices share a public address.
 - If the server lost its key file, it made a new key, and clients with the old one cannot connect. Restore the old key file or give clients the new key; see [why the key file matters](/docs/operations/backup#why-the-key-file-matters).
-- A RustDesk client shows online in the console, but without host name, user or OS, or signing in from it fails: its **API server** names the wrong address or port. Set it to `http://<server-address>:21121` in the client's network settings. Left empty, the stock RustDesk client calls port 21114 on the ID server's address, which Docker publishes but the Linux and Windows installers don't open. See [the API port](/docs/operations/ports#the-api-port-on-linux-and-windows).
+- A RustDesk client shows online in the console, but without host name, user or OS, or signing in from it fails: its **API server** names the wrong address or port. Set it to `http://<server-address>:21121` in the client's network settings. Left empty, the stock RustDesk client calls port 21114 on the ID server's address. Every install type answers there once the port is open: Docker publishes it, and the Linux and Windows installers open it in the firewall. An install made by an older installer opens it when you run the installer again, or add the rule for 21114/tcp by hand. See [the API port](/docs/operations/ports#the-api-port-on-linux-and-windows).
 - The first time a client registers after the server started, the log shows `[signal] New peer registered: <id> from <address>`.
 - `Rejected outbound from <address> (... reason=...)` names why the server refused to start a session for the computer that asked. `initiator_pending_enrollment`: it waits under **Join requests**. `initiator_not_registered`: no device registered with this server from that address. `initiator_banned`: the device is banned. `initiator_ambiguous_same_nat`: several devices share the public address of the computer that asked, as in an office behind one router, and the server can't tell which one it is. The client then shows "ID does not exist". Setting `ALLOW_SHARED_NAT_INITIATOR=Y` lets a computer at such an address start sessions anyway, without the server knowing which device asked; see [Configuration](/docs/operations/configuration).
 - A computer that was set up again or reset can come back with its old ID and a new key. The log shows `[signal] PK mismatch for <id>`, and the console shows the device offline with a **New key** notice on its **Overview** tab. Approve the new key or delete the device; see [A reinstalled or reset computer](/docs/console/add-a-computer#a-reinstalled-or-reset-computer).
@@ -227,13 +227,13 @@ So when **Public relay server** holds a wrong address, correct it there; `RELAY_
   sudo systemctl restart neodesk-server
   ```
 
-  On Windows, with the Windows service `NeoDeskServer`:
+  On Windows:
 
   ```powershell
   Restart-Service NeoDeskServer
   ```
 
-  Without NSSM it runs as the scheduled task `NeoDeskServer`. Stop the server, and the task starts it again:
+  An install made by an older script that still runs as a scheduled task restarts when you stop the server, until its next update makes it the service; see [Install on Windows](/docs/getting-started/windows#files-and-the-service):
 
   ```powershell
   Stop-Process -Name neodesk-server -Force

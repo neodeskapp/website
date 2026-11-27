@@ -22,7 +22,7 @@ Server und Konsole schreiben ein gemeinsames Log.
   journalctl -u neodesk-server -f
   ```
 
-- Windows: `C:\NeoDesk\logs\server.log`. Der Menüpunkt **Diagnostics** von `C:\NeoDesk\neodesk.ps1` prüft die Ports und den Dienst.
+- Windows: `C:\NeoDesk\logs\server.log`, das der Server bei 10 MB nach `server.log.1` verschiebt. Starts, Stopps und Abstürze des Dienstes stehen im Systemprotokoll von Windows, vom Dienststeuerungs-Manager (Service Control Manager). Der Menüpunkt **Diagnostics** von `C:\NeoDesk\neodesk.ps1` prüft die Ports und den Dienst.
 
 Der Linux-Installer schreibt außerdem für jeden Lauf ein eigenes Log, `/tmp/neodesk_<date>_<time>.log`. Schau dort nach, wenn eine Installation oder ein Update mit einem Fehler abbricht.
 
@@ -82,7 +82,7 @@ Unter Windows, in PowerShell als Administrator, ist das die Prüfung, die der In
 & C:\NeoDesk\neodesk-server.exe check --api http://127.0.0.1:21114/api/health --panel https://127.0.0.1:5443/health --insecure --port 127.0.0.1:21116 --port 127.0.0.1:21117
 ```
 
-`/api/health/detail` und `/metrics` liefern mehr, aber nur an die Adressen in `METRICS_IP_ALLOWLIST` oder mit einem API-Schlüssel.
+`/api/health/detail` und `/metrics` liefern mehr, aber nur an die Adressen in `METRICS_IP_ALLOWLIST` oder mit einem API-Schlüssel. Unter Linux und Windows wirkt ein API-Schlüssel auf 21114 nur von diesem Rechner oder von einer Adresse in `API_ALLOW_FROM`; andere Hosts bekommen dort nur die Client-API.
 
 ## Die Konsole öffnet nicht {#the-console-does-not-open}
 
@@ -181,7 +181,7 @@ Hinter einem Reverse Proxy ohne `TRUST_PROXY` teilen sich alle Menschen die Adre
 - In den Beitrittsmodi `managed` und `locked` kann sich ein neues Gerät erst registrieren, wenn jemand es unter **Beitrittsanfragen** freigibt. Eine neue Installation startet in `managed`. Das Log zeigt `Rejected new peer <id> from <address> (enrollment policy)`. Siehe [Beitrittsanfragen](/docs/console/enrollment).
 - `Rate limited RegisterPk for new peer` im Log heißt, dass sich mehr als `SIGNAL_RATE_LIMIT_PER_IP` neue Geräte (20 pro Minute) von einer Adresse registriert haben. Erhöhe den Wert, wenn sich viele Geräte eine öffentliche Adresse teilen.
 - Hat der Server seine Schlüsseldatei verloren, hat er einen neuen Schlüssel erzeugt, und Clients mit dem alten können sich nicht verbinden. Stelle die alte Schlüsseldatei wieder her oder gib den Clients den neuen Schlüssel; siehe [warum die Schlüsseldatei zählt](/docs/operations/backup#why-the-key-file-matters).
-- Ein RustDesk-Client erscheint in der Konsole als online, aber ohne Hostname, Benutzer oder Betriebssystem, oder die Anmeldung aus dem Client scheitert: Sein **API-Server** nennt die falsche Adresse oder den falschen Port. Setze es in den Netzwerkeinstellungen des Clients auf `http://<server-address>:21121`. Bleibt es leer, ruft der normale RustDesk-Client Port 21114 auf der Adresse des ID-Servers auf, den Docker veröffentlicht, die Installer für Linux und Windows aber nicht öffnen. Siehe [den API-Port](/docs/operations/ports#the-api-port-on-linux-and-windows).
+- Ein RustDesk-Client erscheint in der Konsole als online, aber ohne Hostname, Benutzer oder Betriebssystem, oder die Anmeldung aus dem Client scheitert: Sein **API-Server** nennt die falsche Adresse oder den falschen Port. Setze es in den Netzwerkeinstellungen des Clients auf `http://<server-address>:21121`. Bleibt es leer, ruft der normale RustDesk-Client Port 21114 auf der Adresse des ID-Servers auf. Jede Installationsart antwortet dort, sobald der Port offen ist: Docker veröffentlicht ihn, und die Installer für Linux und Windows öffnen ihn in der Firewall. Eine Installation von einem älteren Installer öffnet ihn, wenn du den Installer erneut ausführst, oder du legst die Regel für 21114/tcp von Hand an. Siehe [den API-Port](/docs/operations/ports#the-api-port-on-linux-and-windows).
 - Registriert sich ein Client zum ersten Mal, seit der Server gestartet ist, zeigt das Log `[signal] New peer registered: <id> from <address>`.
 - `Rejected outbound from <address> (... reason=...)` nennt, warum der Server keine Sitzung für den anfragenden Computer gestartet hat. `initiator_pending_enrollment`: Er wartet unter **Beitrittsanfragen**. `initiator_not_registered`: Von dieser Adresse hat sich kein Gerät bei diesem Server registriert. `initiator_banned`: Das Gerät ist gesperrt. `initiator_ambiguous_same_nat`: Mehrere Geräte teilen sich die öffentliche Adresse des anfragenden Computers, etwa in einem Büro hinter einem Router, und der Server kann nicht erkennen, welches davon es ist. Der Client zeigt dann „ID does not exist“. `ALLOW_SHARED_NAT_INITIATOR=Y` lässt einen Computer an einer solchen Adresse trotzdem Sitzungen starten, ohne dass der Server weiß, welches Gerät gefragt hat; siehe [Konfiguration](/docs/operations/configuration).
 - Ein Computer, der neu eingerichtet oder zurückgesetzt wurde, kann mit seiner alten ID und einem neuen Schlüssel zurückkommen. Das Log zeigt `[signal] PK mismatch for <id>`, und die Konsole zeigt das Gerät offline mit einem Hinweis **Neuer Schlüssel** im Tab **Übersicht**. Genehmige den neuen Schlüssel oder lösche das Gerät; siehe [Ein neu installierter oder zurückgesetzter Computer](/docs/console/add-a-computer#a-reinstalled-or-reset-computer).
@@ -226,13 +226,13 @@ Steht in **Öffentlicher Relay-Server** also eine falsche Adresse, korrigiere si
   sudo systemctl restart neodesk-server
   ```
 
-  Unter Windows, mit dem Windows-Dienst `NeoDeskServer`:
+  Unter Windows:
 
   ```powershell
   Restart-Service NeoDeskServer
   ```
 
-  Ohne NSSM läuft er als geplante Aufgabe `NeoDeskServer`. Beende den Server, und die Aufgabe startet ihn wieder:
+  Eine Installation von einem älteren Skript, die noch als geplante Aufgabe läuft, startet neu, wenn du den Server beendest, bis ihr nächstes Update sie zum Dienst macht; siehe [Installation unter Windows](/docs/getting-started/windows#files-and-the-service):
 
   ```powershell
   Stop-Process -Name neodesk-server -Force

@@ -48,7 +48,9 @@ Each part listens on its own port. The ID server and the relay use 21115 to
 clients uses 21121. The console uses 3375; the Linux and Windows installers
 give it HTTPS on 5443, and 3375 sends browsers there. The server's own API
 listens on 21114, which also answers RustDesk clients that leave the API server
-empty, and CDAP device agents connect on 21122. [Ports](/docs/operations/ports) lists them all and says which ones
+empty; on Linux and Windows other hosts get only the client API there, and the
+whole API answers this machine and the addresses in `API_ALLOW_FROM`. CDAP
+device agents connect on 21122. [Ports](/docs/operations/ports) lists them all and says which ones
 clients need.
 
 The web console is a Svelte app. It is built into the binary when the binary is
@@ -90,7 +92,7 @@ There are three ways to install it. Each installs the same server.
 |--------|------------------------|
 | [Docker](/docs/getting-started/docker) | Docker with Compose 2.24 or newer, and access to `ghcr.io`, where the image is published. The install script installs Docker when it is missing. |
 | [Linux](/docs/getting-started/linux) | Root access, systemd, and apt-get, dnf, yum or pacman. A 64-bit x86, arm64 or armv7 processor, and access to github.com, where the releases are. |
-| [Windows](/docs/getting-started/windows) | 64-bit Windows, PowerShell run as Administrator, and access to github.com. NSSM is optional and turns the server into a Windows service; without it the server runs as a scheduled task. Windows support is experimental. |
+| [Windows](/docs/getting-started/windows) | 64-bit Windows, PowerShell run as Administrator, and access to github.com. The server runs as the Windows service `NeoDeskServer`. Windows support is experimental. |
 
 None of them needs Go or Node.js on the machine: Docker runs the published
 image, and the Linux and Windows scripts download a release. Only a build from

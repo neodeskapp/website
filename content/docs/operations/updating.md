@@ -159,7 +159,9 @@ In PowerShell as Administrator:
 powershell -NoProfile -ExecutionPolicy Bypass -File C:\NeoDesk\neodesk.ps1 -Update
 ```
 
-It works like the Linux update: a backup to `C:\NeoDesk-Backups`, the new binary with the old one kept as `.prev`, the env file merged, the service or scheduled task `NeoDeskServer` written again and restarted, the old binary back if the new one fails, and the copy of the script replaced with the `neodesk.ps1` of the release it installed. `-Channel`, `-FromSource` and `-Binary <path>` work as on Linux.
+It works like the Linux update: a backup to `C:\NeoDesk-Backups`, the new binary with the old one kept as `.prev`, the env file merged, the Windows service `NeoDeskServer` written again and restarted, the old binary back if the new one fails, and the copy of the script replaced with the `neodesk.ps1` of the release it installed. `-Channel`, `-FromSource` and `-Binary <path>` work as on Linux.
+
+An install made by an older script ran the server through NSSM or as a scheduled task. This update makes it the Windows service `NeoDeskServer`, keeping its settings, and removes the task. The console's **Updates** page replaces only the binary, so such an install stays as it was until the script's update has run once.
 
 ## The Updates page in the console
 

@@ -6,8 +6,7 @@ seoTitle: NeoDesk unter Windows installieren, RustDesk-kompatibel
 ---
 
 Das Skript `neodesk.ps1` installiert NeoDesk auf einem Windows-Rechner. Es
-betreibt den Server als Windows-Dienst namens `NeoDeskServer` oder, wenn NSSM
-nicht installiert ist, als geplante Aufgabe mit demselben Namen. Es lädt das
+betreibt den Server als Windows-Dienst `NeoDeskServer`. Es lädt das
 neueste Release von `neodesk-server.exe` von GitHub herunter und legt eine
 Kopie von sich selbst in `C:\NeoDesk` ab. Damit aktualisierst und reparierst
 du die Installation später und legst Backups an. Diese Seite beschreibt die
@@ -29,11 +28,6 @@ Probleme meldest du auf [GitHub](https://github.com/neodeskapp/neodesk/issues).
   liegen. Für die öffentliche IP-Adresse des Rechners fragt das Skript
   ipv4.icanhazip.com, ifconfig.me und icanhazip.com. Gib diese Hosts frei, wenn
   ein Proxy oder eine Firewall nur bestimmte Hosts durchlässt.
-- [NSSM](https://nssm.cc), wenn du einen Windows-Dienst willst. Das Skript
-  findet es im `PATH` oder als `tools\nssm.exe` neben dem Skript. Es
-  installiert NSSM nicht. Ohne NSSM läuft der Server als geplante Aufgabe unter
-  SYSTEM, dem Konto mit den meisten Rechten unter Windows, statt unter einem
-  eigenen Konto.
 - Nur um den Server aus dem Repository zu bauen (`-FromSource`): git und
   Node.js 22.17 oder neuer mit npm im `PATH`. Fehlt der Befehl `go`, lädt das
   Skript Go 1.26.11 nach `C:\Go` herunter und trägt es in den System-`PATH`
@@ -142,13 +136,14 @@ selbstsignierten Zertifikat selbst ein.
   Administratoren, SYSTEM und `NT SERVICE\NeoDeskServer`, weil sie die
   Schlüssel und Einstellungen des Servers enthalten. Andere Benutzer des
   Rechners können sie nicht lesen.
-- Registriert `NeoDeskServer`. Mit NSSM ist das ein Dienst, der mit Windows
-  startet und unter einem eigenen Konto mit wenigen Rechten läuft,
-  `NT SERVICE\NeoDeskServer`. Ohne NSSM ist es eine geplante Aufgabe, die beim
-  Systemstart als SYSTEM läuft. Die Zeile **Runs as** der Zusammenfassung
-  sagt, was du hast.
-- Öffnet diese Ports in der Windows-Firewall, für alle Netzwerkprofile: 21115,
-  21116 für TCP und UDP, 21117, 21121, 21122 für CDAP-Geräte-Agents, außer die
+- Registriert den Windows-Dienst `NeoDeskServer` mit dem Anzeigenamen
+  „NeoDesk Server“. `neodesk-server.exe` ist der Dienst selbst. Er startet mit
+  Windows und läuft unter einem eigenen Konto mit wenigen Rechten,
+  `NT SERVICE\NeoDeskServer`; die Zeile **Runs as** der Zusammenfassung zeigt
+  es.
+- Öffnet diese Ports in der Windows-Firewall, für alle Netzwerkprofile: 21114
+  für RustDesk-Clients ohne API-Server-Einstellung, 21115, 21116 für TCP und
+  UDP, 21117, 21121, 21122 für CDAP-Geräte-Agents, außer die
   env-Datei setzt `CDAP_ENABLED=N`, und die Ports 3375 und 5443 der Konsole.
   Sagt `TRUST_PROXY`, dass ein Reverse Proxy davor steht, schließt es die
   beiden Regeln der Konsole wieder.
@@ -176,7 +171,7 @@ Installation. Diese Parameter ändern, was es tut:
 | `-RelayMode local` | Nutzt die LAN-Adresse des Rechners für das Relay. |
 | `-PgUri <uri>` | Nutzt diese vorhandene PostgreSQL-Datenbank statt SQLite. |
 | `-Minimal` | Installiert den Server mit ausgeschalteter Web-Konsole. |
-| `-RunAsRoot` | Betreibt den Dienst mit NSSM als LocalSystem statt unter seinem eigenen Konto. Die geplante Aufgabe läuft ohnehin als SYSTEM. |
+| `-RunAsRoot` | Betreibt den Dienst als LocalSystem statt unter seinem eigenen Konto. |
 | `-Channel dev`, `-FromSource`, `-Binary <path>` | Woher der Server kommt, siehe oben. |
 
 Willst du mit deinem eigenen Admin-Passwort starten, setze es zuerst im selben
@@ -283,30 +278,42 @@ bekommt diese Rechte beim nächsten Update oder mit `-RepairPermissions`. Die
 Kommandozeile `neodesk` liest den API-Schlüssel in `C:\NeoDesk`, führe sie also
 in einem Fenster aus, das als Administrator gestartet ist.
 
-Der Server schreibt sein Log nach `C:\NeoDesk\logs\server.log`, als Dienst wie
-als geplante Aufgabe. Ein Log über 10 MB wird beim nächsten Start zu
-`server.log.1`.
+Der Server schreibt sein Log selbst nach `C:\NeoDesk\logs\server.log` und
+verschiebt es bei 10 MB nach `server.log.1`; eine alte Datei bleibt. Das
+Systemprotokoll von Windows hat die Starts, Stopps und Abstürze des Dienstes,
+vom Dienststeuerungs-Manager (Service Control Manager).
 
-Mit NSSM verwaltest du ihn wie jeden anderen Dienst:
+Du verwaltest ihn wie jeden Windows-Dienst, hier oder in `services.msc`:
 
 ```powershell
 Get-Service NeoDeskServer
+Stop-Service NeoDeskServer
+Start-Service NeoDeskServer
 Restart-Service NeoDeskServer
 ```
 
-Ohne NSSM führt die geplante Aufgabe `C:\NeoDesk\start-neodesk-server.cmd`
-aus. Das startet den Server jedes Mal neu, wenn er sich beendet. Zum Neustarten
-beendest du also den Server, und die Aufgabe startet ihn wieder:
+Ein Stopp beendet den Server sauber. Endet der Server auf andere Weise, nach
+einem Absturz oder wenn die Konsole ihn für einen Neustart, ein Update oder
+eine Wiederherstellung neu startet, startet Windows ihn nach 2, 5 und dann 10
+Sekunden wieder, wie es der Reiter **Wiederherstellung** des Dienstes zeigt.
+Außer `C:\NeoDeskConsole\.env` bekommt der Dienst beim Start ein paar eigene
+Einstellungen aus der Registry, aus dem Wert `Environment` unter
+`HKLM\SYSTEM\CurrentControlSet\Services\NeoDeskServer`; sie gelten vor der
+env-Datei.
+
+Eine Installation von einem älteren Skript hat den Server über NSSM oder als
+geplante Aufgabe unter SYSTEM betrieben. Ihr nächstes Update mit dem Skript
+(`-Update`, oder im Menü **Repair installation**, dann **Repair services**)
+macht daraus den Windows-Dienst, behält ihre Einstellungen und entfernt die
+Aufgabe und `C:\NeoDesk\start-neodesk-server.cmd`. Ein Update über die Seite
+**Updates** der Konsole ersetzt nur das Binary, führe also einmal das Update
+des Skripts aus. Bis dahin startest du eine NSSM-Installation wie bisher als Dienst neu, und
+eine Installation als Aufgabe startet neu, wenn du den Server beendest, weil
+die Aufgabe ihn wieder startet:
 
 ```powershell
-Get-ScheduledTask -TaskName NeoDeskServer
 Stop-Process -Name neodesk-server -Force
 ```
-
-Um eine Installation von der geplanten Aufgabe auf den Dienst umzustellen,
-legst du `nssm.exe` in den `Path` oder nach `C:\NeoDesk\tools`, öffnest das
-Menü des Skripts und wählst **Repair installation**, dann **Repair services**,
-oder führst `-Update` aus.
 
 Die env-Datei setzt **Verwaltet** nur als ersten Beitrittsmodus. Ein
 Modus, den du in der Konsole wählst, bleibt nach einem Neustart erhalten. Was
@@ -327,7 +334,7 @@ Ohne Parameter öffnet das Skript sein Menü. **Diagnostics** zeigt dort den
 Serverprozess, die Datenbank, die Ports und ob die API und die Konsole
 antworten.
 
-`-Uninstall` stoppt und entfernt den Dienst oder die geplante Aufgabe, seine
+`-Uninstall` stoppt und entfernt den Dienst, seine
 Firewall-Regeln und den Eintrag `C:\NeoDesk\bin` im `Path` des Rechners. Es
 fragt, ob es vorher ein Backup machen soll und ob es `C:\NeoDesk`,
 `C:\NeoDeskConsole` und die Backups in `C:\NeoDesk-Backups` löschen soll. Mit

@@ -9,8 +9,7 @@ icon: window
 ---
 
 The `neodesk.ps1` script installs NeoDesk on a Windows machine. It runs the
-server as a Windows service called `NeoDeskServer`, or as a scheduled task of
-the same name when NSSM is not installed. It downloads the newest release of
+server as the Windows service `NeoDeskServer`. It downloads the newest release of
 `neodesk-server.exe` from GitHub and keeps a copy of itself in
 `C:\NeoDesk`, which you use later to update, repair and back up the install.
 This page covers the first install.
@@ -31,10 +30,6 @@ Report problems on [GitHub](https://github.com/neodeskapp/neodesk/issues).
   are. To look up the machine's public IP address the script asks
   ipv4.icanhazip.com, ifconfig.me and icanhazip.com. Allow these hosts if a
   proxy or firewall only lets listed hosts through.
-- [NSSM](https://nssm.cc), if you want a Windows service. The script finds it on
-  the `PATH` or as `tools\nssm.exe` next to the script. It does not install NSSM.
-  Without it, the server runs as a scheduled task under SYSTEM, the most
-  privileged account on Windows, instead of an account of its own.
 - Only to build the server from the repository (`-FromSource`): git, and Node.js
   22.17 or newer with npm on the `PATH`. If the `go` command is missing, the
   script downloads Go 1.26.11 into `C:\Go` and adds it to the system `PATH`.
@@ -134,12 +129,13 @@ certificate by itself.
 - Limits `C:\NeoDesk`, `C:\NeoDeskConsole` and `C:\NeoDesk-Backups` to
   Administrators, SYSTEM and `NT SERVICE\NeoDeskServer`, because they hold the
   server's keys and settings. Other users of the machine can't read them.
-- Registers `NeoDeskServer`. With NSSM it is a service that starts with
-  Windows and runs under its own low-privilege account,
-  `NT SERVICE\NeoDeskServer`. Without NSSM it is a scheduled task that runs as
-  SYSTEM at startup. The summary's **Runs as** line says which one you have.
-- Opens these ports in Windows Firewall, for every network profile: 21115, 21116
-  for TCP and UDP, 21117, 21121, 21122 for CDAP device agents unless the env
+- Registers the Windows service `NeoDeskServer`, display name "NeoDesk Server".
+  `neodesk-server.exe` is the service itself. It starts with Windows and runs
+  under its own low-privilege account, `NT SERVICE\NeoDeskServer`; the
+  summary's **Runs as** line shows it.
+- Opens these ports in Windows Firewall, for every network profile: 21114 for
+  RustDesk clients without an API server setting, 21115, 21116 for TCP and UDP,
+  21117, 21121, 21122 for CDAP device agents unless the env
   file sets `CDAP_ENABLED=N`, and the console's 3375 and 5443. When
   `TRUST_PROXY` says a reverse proxy is in front, it closes the console's two
   rules again.
@@ -167,7 +163,7 @@ what it does:
 | `-RelayMode local` | Uses the machine's LAN address for the relay. |
 | `-PgUri <uri>` | Uses this existing PostgreSQL database instead of SQLite. |
 | `-Minimal` | Installs the server with the web console turned off. |
-| `-RunAsRoot` | With NSSM, runs the service as LocalSystem instead of its own account. The scheduled task runs as SYSTEM anyway. |
+| `-RunAsRoot` | Runs the service as LocalSystem instead of its own account. |
 | `-Channel dev`, `-FromSource`, `-Binary <path>` | Where the server comes from, see above. |
 
 To start with your own admin password, set it in the same window first. Put
@@ -271,28 +267,39 @@ rights at its next update, or with `-RepairPermissions`. The command line
 `neodesk` reads the API key in `C:\NeoDesk`, so run it in a window started as
 administrator.
 
-The server writes its log to `C:\NeoDesk\logs\server.log`, as a service and as
-a scheduled task. A log over 10 MB becomes `server.log.1` at the next start.
+The server writes its log itself to `C:\NeoDesk\logs\server.log` and moves it
+to `server.log.1` at 10 MB, keeping one old file. Windows' System event log has
+the service's starts, stops and crashes, from the Service Control Manager.
 
-With NSSM, manage it like any service:
+Manage it like any Windows service, here or in `services.msc`:
 
 ```powershell
 Get-Service NeoDeskServer
+Stop-Service NeoDeskServer
+Start-Service NeoDeskServer
 Restart-Service NeoDeskServer
 ```
 
-Without NSSM, the scheduled task runs `C:\NeoDesk\start-neodesk-server.cmd`,
-which starts the server again whenever it exits. To restart it, stop the
-server; the task starts it again:
+A stop shuts the server down cleanly. When the server ends any other way, after
+a crash or when the console restarts it for a restart, an update or a restore,
+Windows starts it again after 2, 5 and then 10 seconds, as the service's
+**Recovery** tab shows. Besides `C:\NeoDeskConsole\.env`, the service starts
+with a few settings of its own in the registry, the value `Environment` of
+`HKLM\SYSTEM\CurrentControlSet\Services\NeoDeskServer`; they win over the env
+file.
+
+An install made by an older script ran the server through NSSM or as a
+scheduled task under SYSTEM. Its next update with the script (`-Update`, or
+the menu's **Repair installation**, then **Repair services**) makes it the
+Windows service, keeping its settings, and removes the task and
+`C:\NeoDesk\start-neodesk-server.cmd`. An update from the console's
+**Updates** page replaces only the binary, so run the script's update once.
+Until then, an NSSM install restarts as a service as before, and a task
+install restarts when you stop the server, because the task starts it again:
 
 ```powershell
-Get-ScheduledTask -TaskName NeoDeskServer
 Stop-Process -Name neodesk-server -Force
 ```
-
-To move an install from the scheduled task to the service, put `nssm.exe` on
-the `Path` or into `C:\NeoDesk\tools`, then run the script's menu and choose
-**Repair installation**, then **Repair services**, or run `-Update`.
 
 The env file sets **Managed** only as the first join mode. A mode you pick in
 the console stays after a restart. See [Join requests](/docs/console/enrollment) for
@@ -310,7 +317,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "C:\NeoDesk\neodesk.ps1" -Un
 Without a parameter the script opens its menu. **Diagnostics** there shows the
 server process, the database, the ports, and whether the API and the console answer.
 
-`-Uninstall` stops and removes the service or the scheduled task, its firewall
+`-Uninstall` stops and removes the service, its firewall
 rules and the `C:\NeoDesk\bin` entry on the machine's `Path`. It asks whether to
 make a backup first, and whether to delete `C:\NeoDesk`, `C:\NeoDeskConsole`
 and the backups in `C:\NeoDesk-Backups`. With `-Auto` added it makes the backup
