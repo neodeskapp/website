@@ -53,8 +53,10 @@ bis 21117, dazu 21118 und 21119 für Clients, die sich über WebSocket
 verbinden. Die API für Clients nutzt 21121. Die Konsole nutzt 3375; die
 Installer für Linux und Windows geben ihr HTTPS auf 5443, und 3375 leitet
 Browser dorthin weiter. Die eigene API des Servers lauscht auf 21114, das auch
-RustDesk-Clients antwortet, die den API-Server leer lassen, und
-CDAP-Geräte-Agents verbinden sich auf 21122. [Ports](/docs/operations/ports) listet alle auf und sagt, welche davon
+RustDesk-Clients antwortet, die den API-Server leer lassen; unter Linux und
+Windows bekommen andere Hosts dort nur die Client-API, die ganze API antwortet
+diesem Rechner und den Adressen in `API_ALLOW_FROM`. CDAP-Geräte-Agents
+verbinden sich auf 21122. [Ports](/docs/operations/ports) listet alle auf und sagt, welche davon
 die Clients brauchen.
 
 Die Web-Konsole ist eine Svelte-App. Sie wird beim Bauen in das Binary
@@ -102,7 +104,7 @@ Es gibt drei Wege, NeoDesk zu installieren. Jeder installiert denselben Server.
 |-----|-------------------------|
 | [Docker](/docs/getting-started/docker) | Docker mit Compose 2.24 oder neuer und Zugriff auf `ghcr.io`, wo das Image veröffentlicht ist. Das Installationsskript installiert Docker, wenn es fehlt. |
 | [Linux](/docs/getting-started/linux) | Root-Zugriff, systemd und apt-get, dnf, yum oder pacman. Einen 64-Bit-x86-, arm64- oder armv7-Prozessor und Zugriff auf github.com, wo die Releases liegen. |
-| [Windows](/docs/getting-started/windows) | 64-Bit-Windows, PowerShell als Administrator und Zugriff auf github.com. NSSM ist optional und macht den Server zu einem Windows-Dienst; ohne NSSM läuft der Server als geplante Aufgabe. Die Unterstützung für Windows ist experimentell. |
+| [Windows](/docs/getting-started/windows) | 64-Bit-Windows, PowerShell als Administrator und Zugriff auf github.com. Der Server läuft als Windows-Dienst `NeoDeskServer`. Die Unterstützung für Windows ist experimentell. |
 
 Keiner davon braucht Go oder Node.js auf dem Rechner: Docker startet das
 veröffentlichte Image, und die Skripte für Linux und Windows laden ein Release
