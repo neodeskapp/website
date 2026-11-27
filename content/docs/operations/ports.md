@@ -19,7 +19,7 @@ RustDesk clients reach the server on a handful of ports, and people open the web
 | 21118 | TCP | RustDesk clients set to use WebSocket: the ID server | Only for such clients |
 | 21119 | TCP | RustDesk clients set to use WebSocket: the relay | Only for such clients |
 | 21121 | TCP (HTTP) | RustDesk clients: the client API, for system information, sign-in and the address book | Yes |
-| 21114 | TCP (HTTP) | Linux and Windows only: the server's own API, with `/metrics` for Prometheus. The console passes the client API calls from 21121 to it inside the server, so clients and browsers don't connect here | Only from a Prometheus server that reads `/metrics`. The installers don't open it |
+| 21114 | TCP (HTTP) | Docker: the client API for RustDesk clients whose **API server** is empty. Linux and Windows: the server's own API, with `/metrics` for Prometheus; the console passes the client API calls from 21121 to it inside the server | Docker: yes, for clients without an API server setting; the compose file publishes it. Linux and Windows: only from a Prometheus server that reads `/metrics`; the installers don't open it |
 | 21122 | TCP | CDAP device agents | Only when you use them |
 | 3375 | TCP (HTTP) | Browsers: the web console, and remote desktop in the browser | Only through a reverse proxy with TLS |
 | 5443 | TCP (HTTPS) | Browsers: the console when it serves HTTPS itself | Only when no reverse proxy is in front |
@@ -45,14 +45,19 @@ Up to 3.6.0-rc.4 the console's default port was 5000. Which installs moved:
 
 Clients use 21121 on every install type. In Docker the server's API itself listens there. On a Linux or Windows install the server's API listens on 21114, and the console answers the client API on 21121 and passes it on to 21114. The installers open 21121, and the console gives clients `http://<server-address>:21121` as their API server. **What clients get now** under **Settings**, **General** shows the address in use.
 
-In a stock RustDesk client, set **API server** to `http://<server-address>:21121`. Left empty, the client sends its API calls to port 21114 on the ID server's address, which Docker doesn't publish and the installers don't open. The device then connects, but the console shows it without host name, OS or version, and signing in from the client and the address book don't work.
+In a stock RustDesk client, set **API server** to `http://<server-address>:21121`. Left empty, the client sends its API calls to port 21114 on the ID server's address:
+
+- Docker answers there: when the API listens on another port than 21114, the server also serves it on 21114, and the compose file publishes that port. A compose file of your own needs `- "21114:21114"` in the `neodesk` service's ports.
+- Linux and Windows answer there only when 21114 is open in the firewall, which the installers don't do, because the server's own API listens on that port.
+
+Where no API answers on 21114, the device connects, but the device list shows it without host name, OS or version, and signing in from the client and the address book don't work.
 
 The installers' self-signed certificate is not used on 21121: they set `RUSTDESK_API_TLS=false` in the env file, which keeps the port on plain HTTP, because RustDesk clients don't accept a self-signed certificate. With a certificate clients trust in `SSL_CERT_PATH` and `SSL_KEY_PATH`, set `RUSTDESK_API_TLS=auto`, and after a restart 21121 serves HTTPS and clients get an `https://` address.
 
 ### Other ports
 
 - 21118 and 21119 take TLS only while the ID server and relay use TLS (`TLS_SIGNAL` and `TLS_RELAY`), which the Linux and Windows installers turn on with their self-signed certificate.
-- 21122, the CDAP gateway, is on by default. RustDesk clients don't use it. The Docker compose files publish it, and the one-line Docker install opens it in ufw or firewalld whether the gateway is on or off. The Linux and Windows installers open it unless the env file sets `CDAP_ENABLED=N`; **Disable gateway** on the IoT devices page doesn't change what they open. [The gateway](/docs/console/cdap#the-gateway) explains how to turn it off.
+- 21122, the CDAP gateway, is on by default. RustDesk clients don't use it. The Docker compose files publish it, and the Docker install script opens it in ufw or firewalld whether the gateway is on or off. The Linux and Windows installers open it unless the env file sets `CDAP_ENABLED=N`; **Disable gateway** on the IoT devices page doesn't change what they open. [The gateway](/docs/console/cdap#the-gateway) explains how to turn it off.
 - `ADMIN_PORT`: a management interface that is off by default, only ever listens on 127.0.0.1, and starts only with `ADMIN_PASSWORD` set.
 - PostgreSQL: the `postgres` service in the compose file publishes no port.
 
@@ -98,10 +103,10 @@ The lines with 3375 and 5443 are for the console, as long as no reverse proxy is
 
 The Linux installer opens the ports itself when ufw or firewalld is active, and adds iptables rules only when neither of them is installed. A ufw or firewalld that is installed but switched off stays as it is, with no rules added. The ports it opens are 21115 to 21117 over TCP, 21116 over UDP, the client API port 21121, 21122 unless the env file sets `CDAP_ENABLED=N`, and the console's port (3375 on a new install) and, with HTTPS on, 5443. With `TRUST_PROXY` on it leaves the console's ports closed. It takes the ID server and relay ports from the env file, and at the end it prints the list for a firewall outside the machine, such as your cloud provider's.
 
-The one-line install for Docker opens its ports in ufw or firewalld only when one of them is active, and adds no iptables rules. It opens 21115 to 21119, 21121 and 21122 over TCP and 21116 over UDP. It opens the console's ports by the same rule as the Linux installer, read from the `.env` file: 3375, plus 5443 with `HTTPS_ENABLED=true`, and neither with `TRUST_PROXY` on or `NEODESK_CONSOLE_BIND=127.0.0.1`. With `--domain` it opens 80 and 443 instead. When `TRUST_PROXY` keeps the console's port closed, it prints the command to open it by hand; see [Install with the script](/docs/getting-started/docker#install-with-the-script).
+The Docker install script, `neodesk-docker.sh`, opens its ports in ufw or firewalld only when one of them is active, before the container starts, and adds no iptables rules. `install.sh` leaves this step to it, so both paths do the same. It opens 21114 to 21119, 21121 and 21122 over TCP and 21116 over UDP. It opens the console's ports by the same rule as the Linux installer, read from the `.env` file: 3375, plus 5443 with `HTTPS_ENABLED=true`, and neither with `TRUST_PROXY` on or `NEODESK_CONSOLE_BIND=127.0.0.1`. With `--domain` it opens 80 and 443 instead. Its rules carry the comment "NeoDesk port ...". A later run closes the rules it added for ports it no longer serves, so `--no-traefik` closes 80 and 443, and `uninstall` closes all of them. When `TRUST_PROXY` keeps the console's port closed, it prints the command to open it by hand. `--skip-firewall`, on both scripts, or `NEODESK_SKIP_FIREWALL=true` leaves ufw and firewalld as they are; see [Install with the script](/docs/getting-started/docker#install-with-the-script).
 
 ::: note
-Docker publishes container ports through its own firewall rules, and ufw does not filter them. To keep the console off the network, publish it on the loopback address only: set `NEODESK_CONSOLE_BIND=127.0.0.1` in the `.env` file next to the compose file and recreate the container in that folder:
+Docker publishes container ports over IPv4 through its own firewall rules, and ufw doesn't filter them. Visitors over IPv6 come in through the host's firewall, which is why the script opens the ports there. To keep the console off the network, publish it on the loopback address only: set `NEODESK_CONSOLE_BIND=127.0.0.1` in the `.env` file next to the compose file, or `[::1]` for IPv6 loopback, and recreate the container in that folder:
 
 ```bash
 docker compose up -d
@@ -120,7 +125,7 @@ New-NetFirewallRule -DisplayName "NeoDesk console" -Direction Inbound -Protocol 
 
 The last line opens the console, for as long as no reverse proxy is in front of it.
 
-The Windows installer creates inbound rules for the same ports as the Linux installer, each named "NeoDesk - " and what the port is for.
+The Windows installer creates inbound rules for the same ports as the Linux installer, for every network profile, each named "NeoDesk - " and what the port is for. With `TRUST_PROXY` on it removes the two rules of the console's ports, and an uninstall removes every "NeoDesk - " rule.
 
 ## Check the ports from outside
 
@@ -151,7 +156,14 @@ The console's port:
   sudo systemctl restart neodesk-server
   ```
 
-  On Windows, restart the service or scheduled task `NeoDeskServer`, as [Files and the service](/docs/getting-started/windows#files-and-the-service) shows.
+  On Windows, restart the Windows service `NeoDeskServer`. Without NSSM the server runs as the scheduled task `NeoDeskServer`; stop the server, and the task starts it again:
+
+  ```powershell
+  Restart-Service NeoDeskServer
+  Stop-Process -Name neodesk-server -Force
+  ```
+
+  The first line is for the service, the second for the scheduled task.
 
 The RustDesk ports can move too, but then every client needs the port in its server addresses, so keep the defaults unless something else holds them.
 

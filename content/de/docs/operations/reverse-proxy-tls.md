@@ -12,19 +12,23 @@ Die Web-Konsole lauscht auf Port 3375 mit unverschlüsseltem HTTP. Bevor Mensche
 
 ## HTTPS mit Let's Encrypt unter Docker {#https-with-lets-encrypt-on-docker}
 
-Bei einer Docker-Installation lassen `--domain` und `--email` das Installationsskript einen Traefik-Container vor die Konsole setzen. Traefik holt für den Namen ein Zertifikat von Let's Encrypt, erneuert es selbst und leitet einfaches HTTP auf HTTPS weiter. Der Name muss auf den Server zeigen, und die Ports 80 und 443 müssen auf dem Host frei und aus dem Internet erreichbar sein.
+Bei einer Docker-Installation lässt `--domain` das Installationsskript einen Traefik-Container vor die Konsole setzen. Traefik holt für den Namen ein Zertifikat von Let's Encrypt, erneuert es selbst und leitet einfaches HTTP auf HTTPS weiter. Der Name muss auf den Server zeigen, und die Ports 80 und 443 müssen auf dem Host frei und aus dem Internet erreichbar sein.
 
-Für eine Installation, die schon läuft, führst du das Skript in `/opt/neodesk/docker` aus und setzt für `<domain>` den DNS-Namen und für `<email-address>` deine E-Mail-Adresse ein:
+Für eine Installation, die schon läuft, führst du das Skript aus und setzt für `<domain>` den DNS-Namen ein:
 
 ```bash
-sudo bash neodesk-docker.sh --domain <domain> --email <email-address>
+sudo bash /opt/neodesk/docker/neodesk-docker.sh --domain <domain>
 ```
 
-Die Ein-Zeilen-Installation nimmt dasselbe als `--domain` und `--letsencrypt-email`. Das Skript schaltet das Compose-Profil `traefik` ein, veröffentlicht die eigenen Ports der Konsole, 3375 und 5443, nur noch auf `127.0.0.1` und setzt `TRUST_PROXY=1` und `PANEL_PUBLIC_URL=https://<domain>`. `--letsencrypt-staging` holt ein Testzertifikat vom Staging-Server von Let's Encrypt, und `--no-traefik` nimmt alles wieder heraus, auch `TRUST_PROXY`. Die Details stehen unter [HTTPS mit Let's Encrypt](/docs/getting-started/docker#https-with-lets-encrypt) auf der Docker-Seite.
+`--email <email-address>` ist optional und gibt deinem Konto bei Let's Encrypt eine Kontaktadresse. Die Ein-Zeilen-Installation nimmt dieselben Optionen. Das Skript schaltet das Compose-Profil `traefik` ein, veröffentlicht die eigenen Ports der Konsole, 3375 und 5443, nur noch auf `127.0.0.1` und setzt `TRUST_PROXY=1` und `PANEL_PUBLIC_URL=https://<domain>`. `--letsencrypt-staging` holt ein Testzertifikat vom Staging-Server von Let's Encrypt, und `--no-traefik` nimmt alles wieder heraus, auch `TRUST_PROXY`. Die Details stehen unter [HTTPS mit Let's Encrypt](/docs/getting-started/docker#https-with-lets-encrypt) auf der Docker-Seite.
 
 Nimm stattdessen einen eigenen Proxy, wenn ein anderer Webserver auf dem Host schon die Ports 80 und 443 belegt, oder wenn der Server aus dem Internet nicht auf Port 80 erreichbar ist, über den Let's Encrypt den Namen prüft.
 
-Das Compose-Netz hat kein IPv6, deshalb reicht Docker Besucher, die über IPv6 kommen, über seinen eigenen Proxy an Traefik weiter. Die Konsole sieht dann jeden von ihnen als das Gateway des Docker-Netzes, etwa `172.18.0.1`: Das Aktivitätsprotokoll zeigt diese Adresse, und die Anmeldelimits zählen alle Besucher über IPv6 als einen. Besucher über IPv4 behalten ihre eigene Adresse.
+Standardmäßig hat das Compose-Netz kein IPv6, deshalb reicht Docker Besucher, die über IPv6 kommen, über seinen eigenen Proxy an Traefik weiter. Die Konsole sieht dann jeden von ihnen als das Gateway des Docker-Netzes, etwa `172.18.0.1`: Das Aktivitätsprotokoll zeigt diese Adresse, und die Anmeldelimits zählen alle Besucher über IPv6 als einen. Besucher über IPv4 behalten ihre eigene Adresse. Mit Docker Engine 27 oder neuer gibt `NEODESK_IPV6=true` in der Datei `.env` dem Netz IPv6, und auch Besucher über IPv6 behalten ihre eigene Adresse. Ältere Versionen von Docker Compose brauchen vor der Änderung `docker compose down`; starte die Installation danach wieder:
+
+```bash
+docker compose up -d
+```
 
 ## An welchen Port der Proxy weiterleitet {#which-port-the-proxy-forwards-to}
 
@@ -49,7 +53,7 @@ Schicke jeden Pfad auf dem Hostnamen der Konsole an die Konsole. Sie nutzt `/ws/
 
 Läuft der Proxy auf demselben Rechner, lass nur den Proxy an den Port der Konsole:
 
-- Docker: Setze `NEODESK_CONSOLE_BIND=127.0.0.1` in der Datei `.env` neben der Compose-Datei und erstelle den Container danach in diesem Ordner neu. Die Ports der Konsole werden dann nur auf der Loopback-Adresse veröffentlicht. Mit `--domain` setzt das Installationsskript das selbst.
+- Docker: Setze `NEODESK_CONSOLE_BIND=127.0.0.1` in der Datei `.env` neben der Compose-Datei, oder `[::1]` für einen Proxy, der sich über IPv6-Loopback verbindet, und erstelle den Container danach in diesem Ordner neu. Die Ports der Konsole werden dann nur auf der Loopback-Adresse veröffentlicht; ohne die Einstellung auf allen Adressen, IPv6 eingeschlossen. Mit `--domain` setzt das Installationsskript das selbst.
 
   ```bash
   docker compose up -d
@@ -144,16 +148,22 @@ sudo systemctl reload caddy
 
 Hinter einem Proxy erreicht jede Anfrage NeoDesk von der Adresse des Proxys. `TRUST_PROXY` sagt NeoDesk, die Adresse des Clients, das Schema und den Host stattdessen aus den Headern des Proxys zu nehmen.
 
-Setze die Variable bei jedem eigenen Proxy. Ohne sie funktioniert die Konsole, und nichts warnt dich, aber:
+Setze die Variable bei jedem eigenen Proxy. Ohne sie funktioniert die Konsole, aber:
 
 - die Sitzungs-Cookies sind nicht als Secure markiert, weil die Konsole dem `X-Forwarded-Proto: https` des Proxys nicht glaubt,
 - die Anmeldelimits und Sperren zählen jeden Menschen als den Proxy,
 - das Aktivitätsprotokoll zeigt für alle die Adresse des Proxys.
 
+Das Log der Konsole sagt das einmal, bei der ersten Anfrage mit weitergeleiteten Headern:
+
+```text
+[console] WARN: requests from <proxy-address> carry X-Forwarded-Proto: https, but TRUST_PROXY does not trust that address: the console's cookies are not Secure and the activity log shows the proxy's address. Behind a reverse proxy, set TRUST_PROXY (for example TRUST_PROXY=1, or the proxy's address)
+```
+
 Zwei Teile des Servers lesen sie:
 
 - Die Konsole liest nur `TRUST_PROXY`. Ein eingeschalteter Wert wie `Y`, `true` oder `1` vertraut einem Proxy davor, eine größere Zahl entsprechend vielen. Eine kommagetrennte Liste von Adressen oder Adressbereichen (oder `loopback`, `linklocal`, `uniquelocal`) vertraut Proxys mit diesen Adressen.
-- Die API- und WebSocket-Ports des Servers lesen weitergeleitete Header nur mit eingeschaltetem `TRUST_PROXY` und nur von den Adressen in `TRUSTED_PROXIES`. Ohne `TRUSTED_PROXIES` loggt der Server eine Warnung und ignoriert die Header. Das betrifft Anfragen, die der Proxy an die eigenen Ports des Servers schickt, etwa beim API-Host weiter unten. Die Traefik-Einrichtung des Docker-Installationsskripts loggt diese Warnung auch; dort ist sie harmlos, weil Traefik nur die Konsole trägt.
+- Der API-Port des Servers und seine WebSocket-Ports 21118 und 21119 lesen weitergeleitete Header nur mit eingeschaltetem `TRUST_PROXY` und nur von den Adressen in `TRUSTED_PROXIES`. Ohne `TRUSTED_PROXIES` ignorieren sie die Header, und der Server sagt das beim Start, mit deinem Wert von `TRUST_PROXY` und den Ports: `[config] TRUST_PROXY=1 without TRUSTED_PROXIES: the console trusts its proxy; the server's API and WebSocket ports (...) ignore forwarded headers. Set TRUSTED_PROXIES only when a proxy sits in front of those ports`. Das betrifft nur Anfragen, die der Proxy an die eigenen Ports des Servers schickt, etwa beim API-Host weiter unten. Die Traefik-Einrichtung des Docker-Installationsskripts trägt nur die Konsole und braucht daher kein `TRUSTED_PROXIES`.
 
 `Y` funktioniert für beide Teile. Für einen Proxy auf demselben Rechner wie eine Installation unter Linux oder Windows trägst du das in die env-Datei ein:
 
@@ -226,7 +236,7 @@ Mesh-Agents, die den Server über den Proxy erreichen, sehen das Zertifikat des 
 
 ## HTTPS ohne Proxy {#https-without-a-proxy}
 
-Die Konsole kann HTTPS selbst ausliefern: Setze `HTTPS_ENABLED=true`, `SSL_CERT_PATH` und `SSL_KEY_PATH` (und `SSL_CA_PATH` für eine Zertifikatskette in einer eigenen Datei). Sie lauscht dann mit TLS auf `HTTPS_PORT`, standardmäßig 5443, und der unverschlüsselte Port (`CONSOLE_PORT`, standardmäßig 3375) leitet jede Anfrage dorthin weiter, an den Host, den `PANEL_PUBLIC_HOST` nennt, oder an die eine Adresse, auf der die Konsole lauscht. Lauscht die Konsole auf allen Adressen und ist `PANEL_PUBLIC_HOST` nicht gesetzt, leitet der unverschlüsselte Port nicht weiter, sondern zeigt eine Seite, die nach dem Wert fragt. `HTTP_REDIRECT_HTTPS=false` schaltet die Weiterleitung aus.
+Die Konsole kann HTTPS selbst ausliefern: Setze `HTTPS_ENABLED=true`, `SSL_CERT_PATH` und `SSL_KEY_PATH` (und `SSL_CA_PATH` für eine Zertifikatskette in einer eigenen Datei). Sie lauscht dann mit TLS auf `HTTPS_PORT`, standardmäßig 5443, und der unverschlüsselte Port (`CONSOLE_PORT`, standardmäßig 3375) leitet jede Anfrage dorthin weiter. Eine Anfrage an die IP-Adresse, die die Verbindung erreicht hat, etwa die LAN-Adresse des Rechners, oder an `localhost` auf dem Rechner selbst behält diese Adresse: `http://<lan-address>:3375` führt zu `https://<lan-address>:5443`. Jede andere Anfrage geht an den Host, den `PANEL_PUBLIC_HOST` nennt, oder an die eine Adresse, auf der die Konsole lauscht. Unter Docker erreichen veröffentlichte Ports die eigene Adresse des Containers, dort geht also jede Anfrage an `PANEL_PUBLIC_HOST`. Lauscht die Konsole auf allen Adressen und ist `PANEL_PUBLIC_HOST` nicht gesetzt, leitet der unverschlüsselte Port nicht weiter, sondern zeigt eine Seite, die nach dem Wert fragt. `HTTP_REDIRECT_HTTPS=false` schaltet die Weiterleitung aus.
 
 Die Installer für Linux und Windows richten das bei einer neuen Installation mit einem selbst signierten Zertifikat ein, das zehn Jahre gilt. Sie setzen `PANEL_PUBLIC_HOST` auf die Adresse, die die Clients nutzen, außer die env-Datei enthält schon eine. Unter Linux ersetzt das Menü **Configure SSL certificates** des Installers das Zertifikat durch eines von Let's Encrypt, ein eigenes oder ein neues selbst signiertes. Ein Let's-Encrypt-Zertifikat wird nach `/opt/neodesk/ssl/` kopiert, wo das Dienstkonto es lesen kann, und ein Deploy-Hook von certbot kopiert es nach jeder Erneuerung erneut und startet den Server neu. Das Menü bietet außerdem Port 443 an, mit Port 80 für die Weiterleitung, und gibt dem Dienst das Recht, Ports unter 1024 zu nutzen. Ohne dieses Recht weicht die Konsole auf 5443 und ihren unverschlüsselten Port aus.
 
