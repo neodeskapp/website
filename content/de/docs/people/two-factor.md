@@ -69,7 +69,7 @@ Beides löscht Schlüssel und Wiederherstellungscodes der Person und beendet ihr
 
 Hat der einzige Admin sowohl das Handy als auch die Wiederherstellungscodes verloren, bleibt niemand, der die Zwei-Faktor-Anmeldung in der Konsole ausschalten kann. Das übernimmt dann der Befehl des Servers zum Zurücksetzen des Passworts: Mit `--reset-two-factor` gibt er dem Konto ein neues Passwort, schaltet seine Zwei-Faktor-Anmeldung aus und löscht seinen Schlüssel und die Wiederherstellungscodes. Ist die Zwei-Faktor-Anmeldung verlangt, fordert die Konsole das Konto bei der nächsten Anmeldung auf, sie neu einzurichten. Richte sie danach unter **Dein Konto** mit dem neuen Handy wieder ein.
 
-Die Option braucht NeoDesk 3.6.26 oder neuer. Ein älterer Server lehnt sie ab, und die Installer sagen, dass du zuerst aktualisieren sollst.
+Die Option kam nach NeoDesk 3.6.0-rc.6. Ein Server ohne sie lehnt sie ab, und die Installer sagen, dass du zuerst aktualisieren sollst.
 
 Docker, mit dem Skript installiert. Es zeigt das neue Passwort einmal an; `--user <name>` wählt ein anderes Konto als `admin`:
 
