@@ -3,6 +3,7 @@ title: neodesk device-groups
 description: 3 commands. Device groups (manual and by tag).
 order: 20
 quoted: true
+icon: workspaces
 ---
 
 Device groups (manual and by tag).

@@ -3,6 +3,7 @@ title: neodesk device-files
 description: 6 commands. Files on a device with a NeoDesk agent.
 order: 19
 quoted: true
+icon: folder_open
 ---
 
 Files on a device with a NeoDesk agent.

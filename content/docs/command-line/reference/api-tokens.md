@@ -3,6 +3,7 @@ title: neodesk api-tokens
 description: 4 commands. API tokens for scripts, this command line and AI agents.
 order: 4
 quoted: true
+icon: token
 ---
 
 API tokens for scripts, this command line and AI agents.

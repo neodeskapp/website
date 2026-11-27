@@ -3,6 +3,7 @@ title: neodesk keys
 description: 6 commands. The server's key, the client settings and the QR code.
 order: 31
 quoted: true
+icon: qr_code_2
 ---
 
 The server's key, the client settings and the QR code.

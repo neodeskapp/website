@@ -3,6 +3,7 @@ title: neodesk audit
 description: 4 commands. The audit log and the security overview.
 order: 6
 quoted: true
+icon: receipt_long
 ---
 
 The audit log and the security overview.

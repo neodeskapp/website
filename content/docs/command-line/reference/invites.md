@@ -3,6 +3,7 @@ title: neodesk invites
 description: 7 commands. Invites that add a computer to this server.
 order: 30
 quoted: true
+icon: add_to_queue
 ---
 
 Invites that add a computer to this server.

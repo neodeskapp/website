@@ -3,6 +3,7 @@ title: neodesk restart
 description: 6 commands. Pending server restarts after a change.
 order: 44
 quoted: true
+icon: restart_alt
 ---
 
 Pending server restarts after a change.

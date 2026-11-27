@@ -3,6 +3,7 @@ title: neodesk settings
 description: 30 commands. Server settings: mail, sign-in, addresses, enrollment, sessions.
 order: 49
 quoted: true
+icon: settings
 ---
 
 Server settings: mail, sign-in, addresses, enrollment, sessions.

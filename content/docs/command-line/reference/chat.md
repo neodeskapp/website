@@ -3,6 +3,7 @@ title: neodesk chat
 description: 23 commands. Chat search and files.
 order: 13
 quoted: true
+icon: chat
 ---
 
 Chat search and files.

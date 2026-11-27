@@ -3,6 +3,7 @@ title: neodesk registrations
 description: 7 commands. Devices that asked to register.
 order: 39
 quoted: true
+icon: app_registration
 ---
 
 Devices that asked to register.

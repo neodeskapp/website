@@ -3,6 +3,7 @@ title: neodesk enrollment
 description: 7 commands. Who may join, and devices waiting for approval.
 order: 23
 quoted: true
+icon: how_to_reg
 ---
 
 Who may join, and devices waiting for approval.

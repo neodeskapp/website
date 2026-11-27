@@ -3,6 +3,7 @@ title: neodesk transfers
 description: 5 commands. File transfers between the console and devices.
 order: 57
 quoted: true
+icon: swap_vert
 ---
 
 File transfers between the console and devices.

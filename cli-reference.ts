@@ -95,6 +95,72 @@ const GERMAN: Record<string, string> = {
 	users: 'Konten der Konsole: anlegen, ändern, deaktivieren, löschen'
 };
 
+// The icon of each group's page, from src/icons: the icon of the console's page on the same
+// thing where there is one. A group the command table gains needs its line here, or the
+// script stops.
+const ICONS: Record<string, string> = {
+	account: 'person',
+	activity: 'history',
+	agents: 'package_2',
+	'api-tokens': 'token',
+	attestation: 'speed',
+	audit: 'receipt_long',
+	automation: 'notifications_active',
+	backups: 'backup',
+	billing: 'payments',
+	branding: 'palette',
+	'cdap-studio': 'flowchart',
+	cdap: 'settings_input_component',
+	chat: 'chat',
+	'client-branding': 'brush',
+	'cross-platform': 'devices_other',
+	dashboard: 'dashboard',
+	dataguard: 'encrypted',
+	'device-control': 'mouse',
+	'device-files': 'folder_open',
+	'device-groups': 'workspaces',
+	'device-tokens': 'vpn_key',
+	devices: 'devices',
+	enrollment: 'how_to_reg',
+	fleet: 'assignment',
+	folders: 'folder',
+	generator: 'build',
+	'guest-links': 'add_link',
+	'help-requests': 'help',
+	inventory: 'inventory_2',
+	invites: 'add_to_queue',
+	keys: 'qr_code_2',
+	languages: 'translate',
+	mesh: 'hub',
+	network: 'network_check',
+	organizations: 'corporate_fare',
+	pairing: 'password',
+	'panel-access': 'admin_panel_settings',
+	policies: 'policy',
+	registrations: 'app_registration',
+	'remote-targets': 'lan',
+	remote: 'desktop_windows',
+	reports: 'bar_chart',
+	'resource-control': 'usb',
+	restart: 'restart_alt',
+	roles: 'badge',
+	scaling: 'cell_tower',
+	server: 'dns',
+	sessions: 'login',
+	settings: 'settings',
+	'setup-guide': 'checklist',
+	strategies: 'strategy',
+	support: 'support_agent',
+	tags: 'sell',
+	tenants: 'apartment',
+	tickets: 'confirmation_number',
+	toolkit: 'handyman',
+	transfers: 'swap_vert',
+	updates: 'update',
+	'user-groups': 'groups',
+	users: 'group',
+};
+
 const dir = process.argv[2];
 if (!dir || !fs.existsSync(path.join(dir, 'commands.json'))) {
 	console.error('Usage: node cli-reference.ts <folder that go run ./cmd/clidocs -out wrote>');
@@ -105,6 +171,11 @@ const d = JSON.parse(read('commands.json')) as Description;
 const missing = d.groups.filter((g) => !GERMAN[g.name]).map((g) => g.name);
 if (missing.length) {
 	console.error(`No German summary for the group${missing.length > 1 ? 's' : ''} ${missing.join(', ')}; add ${missing.length > 1 ? 'them' : 'it'} to GERMAN in cli-reference.ts`);
+	process.exit(1);
+}
+const noIcon = d.groups.filter((g) => !ICONS[g.name]).map((g) => g.name);
+if (noIcon.length) {
+	console.error(`No icon for the group${noIcon.length > 1 ? 's' : ''} ${noIcon.join(', ')}; add ${noIcon.length > 1 ? 'them' : 'it'} to ICONS in cli-reference.ts`);
 	process.exit(1);
 }
 if (!d.version) {
@@ -199,7 +270,7 @@ d.groups.forEach((g, i) => {
 	const intro = `\`neodesk ${g.name} --help\` lists the same commands in the terminal. The flags every command takes are in the [command reference](/docs/${REF}#flags-for-every-command).`;
 	put(
 		`docs/${REF}/${g.name}.md`,
-		frontMatter({ title: `neodesk ${g.name}`, description: `${n} command${n === 1 ? '' : 's'}. ${summary}.`, order: i + 1, quoted: true }) + `${summary}.\n\n${intro}\n\n${body}`
+		frontMatter({ title: `neodesk ${g.name}`, description: `${n} command${n === 1 ? '' : 's'}. ${summary}.`, order: i + 1, quoted: true, icon: ICONS[g.name] }) + `${summary}.\n\n${intro}\n\n${body}`
 	);
 	const de = GERMAN[g.name];
 	put(
@@ -218,7 +289,8 @@ d.groups.forEach((g, i) => {
 			title: 'Routes without a command',
 			description: 'The console routes the command line leaves out, by reason: routes for devices and clients, pages of the console, signing in and old addresses.',
 			order: 100,
-			quoted: true
+			quoted: true,
+			icon: 'alt_route'
 		}) + body
 	);
 	put(

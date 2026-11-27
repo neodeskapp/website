@@ -3,6 +3,7 @@ title: neodesk server
 description: 15 commands. The server: health, versions, resources, services and logs.
 order: 47
 quoted: true
+icon: dns
 ---
 
 The server: health, versions, resources, services and logs.

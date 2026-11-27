@@ -13,12 +13,6 @@ export const esc = (s: unknown) => String(s).replace(/&/g, '&amp;').replace(/</g
 const SEARCH_ICON =
 	'<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M12.8 12.8 17 17"/></svg>';
 
-const PREV_ICON =
-	'<svg class="pager-icon" viewBox="0 0 20 20" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 10H4M9 5l-5 5 5 5"/></svg>';
-
-const NEXT_ICON =
-	'<svg class="pager-icon" viewBox="0 0 20 20" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12M11 5l5 5-5 5"/></svg>';
-
 const CONTENTS_ICON =
 	'<svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 5h9M8 10h9M8 15h9M3.5 5h.01M3.5 10h.01M3.5 15h.01" stroke-width="2.2"/></svg>';
 
@@ -260,11 +254,11 @@ const rowClass = (p: Page) => {
 	const c = [p.parent && 'child', (p.logo || p.icon) && 'tile'].filter(Boolean);
 	return c.length ? ` class="${c.join(' ')}"` : '';
 };
-const rowTile = (p: Page) =>
+const rowTile = (p: { logo?: string; icon?: string }, iconClass = 'row-icon') =>
 	p.logo
 		? `<img${p.logo.endsWith('.svg') ? '' : ' class="boxed"'} src="/img/compare/${esc(p.logo)}" alt="" width="32" height="32" loading="lazy">`
 		: p.icon
-			? `<span class="row-icon">${iconSvg(p.icon)}</span>`
+			? `<span class="${iconClass}">${iconSvg(p.icon)}</span>`
 			: '';
 
 function rows(shared: Shared, items: Page[]) {
@@ -391,8 +385,8 @@ ${tocItems.map((h) => `      <li${h.level === 3 ? ' class="sub"' : ''}><a href="
 	]
 		.filter(Boolean)
 		.join('\n        ');
-	const pagerLink = (p: Pager | null, cls: string, icon: string) =>
-		p ? `<a class="${cls}" href="${p.href}">${icon}<span class="pager-label">${esc(p.label)}</span><span class="pager-title">${esc(p.title)}</span></a>` : '<span></span>';
+	const pagerLink = (p: Pager | null, cls: string) =>
+		p ? `<a class="${cls}" href="${p.href}">${rowTile(p, 'pager-icon')}<span class="pager-label">${esc(p.label)}</span><span class="pager-title">${esc(p.title)}</span></a>` : '<span></span>';
 	const main = `    <div class="crumb">
       ${crumbNav(shared, [
 				{ name: t.docs, path: '/docs/' },
@@ -407,7 +401,7 @@ ${tocItems.map((h) => `      <li${h.level === 3 ? ' class="sub"' : ''}><a href="
 ${page.html}
     </div>
     ${seeAlso(shared, page)}
-    ${prev || next ? `<nav class="pager" aria-label="${esc(t.pager)}">${pagerLink(prev, 'pager-prev', PREV_ICON)}${pagerLink(next, 'pager-next', NEXT_ICON)}</nav>` : ''}`;
+    ${prev || next ? `<nav class="pager" aria-label="${esc(t.pager)}">${pagerLink(prev, 'pager-prev')}${pagerLink(next, 'pager-next')}</nav>` : ''}`;
 	return frame({
 		...shared,
 		title: page.title,

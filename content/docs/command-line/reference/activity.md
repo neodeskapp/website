@@ -3,6 +3,7 @@ title: neodesk activity
 description: 3 commands. What people did on devices: the activity agents report.
 order: 2
 quoted: true
+icon: history
 ---
 
 What people did on devices: the activity agents report.

@@ -3,6 +3,7 @@ title: neodesk device-control
 description: 7 commands. Screen, keyboard, mouse, clipboard and terminal of a NeoDesk agent.
 order: 18
 quoted: true
+icon: mouse
 ---
 
 Screen, keyboard, mouse, clipboard and terminal of a NeoDesk agent.

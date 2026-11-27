@@ -3,6 +3,7 @@ title: neodesk backups
 description: 10 commands. Full backups, the backup schedule and restores.
 order: 8
 quoted: true
+icon: backup
 ---
 
 Full backups, the backup schedule and restores.

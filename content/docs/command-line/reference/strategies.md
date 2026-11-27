@@ -3,6 +3,7 @@ title: neodesk strategies
 description: 7 commands. Strategies: settings pushed to desktop clients.
 order: 51
 quoted: true
+icon: strategy
 ---
 
 Strategies: settings pushed to desktop clients.

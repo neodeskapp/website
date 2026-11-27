@@ -3,6 +3,7 @@ title: neodesk resource-control
 description: 10 commands. USB, disks, monitors and quotas on devices.
 order: 43
 quoted: true
+icon: usb
 ---
 
 USB, disks, monitors and quotas on devices.

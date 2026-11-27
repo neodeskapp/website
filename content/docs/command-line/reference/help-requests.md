@@ -3,6 +3,7 @@ title: neodesk help-requests
 description: 3 commands. Help requests sent from devices.
 order: 28
 quoted: true
+icon: help
 ---
 
 Help requests sent from devices.

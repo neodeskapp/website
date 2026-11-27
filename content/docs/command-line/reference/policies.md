@@ -3,6 +3,7 @@ title: neodesk policies
 description: 10 commands. Organization policies and device attestation.
 order: 38
 quoted: true
+icon: policy
 ---
 
 Organization policies and device attestation.

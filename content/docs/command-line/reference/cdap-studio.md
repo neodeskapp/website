@@ -3,6 +3,7 @@ title: neodesk cdap-studio
 description: 10 commands. CDAP Studio flows.
 order: 12
 quoted: true
+icon: flowchart
 ---
 
 CDAP Studio flows.

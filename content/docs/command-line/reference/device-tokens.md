@@ -3,6 +3,7 @@ title: neodesk device-tokens
 description: 6 commands. Tokens that let a new device join without approval.
 order: 21
 quoted: true
+icon: vpn_key
 ---
 
 Tokens that let a new device join without approval.

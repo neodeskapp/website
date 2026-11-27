@@ -677,6 +677,8 @@ async function build() {
 		}
 	}
 	for (const page of main.pages) {
+		// The pager and the section lists show it, so a reader sees what a page is about at a glance
+		if (!page.icon && !page.logo) problems.push(`${page.rel}: no icon; pick one from src/icons and set it as "icon:"`);
 		for (const r of page.related ?? []) if (!main.pages.some((p) => `/docs/${p.slug}` === r)) problems.push(`${page.rel}: related: "${r}" is not a page`);
 	}
 
@@ -834,7 +836,7 @@ async function build() {
 		site.reading.forEach((page, i) => {
 			const pager = (word: string, wordIn: string, other: Page | undefined): Pager | null =>
 				other
-					? { label: other.section === page.section ? word : fill(wordIn, { section: labelOf(other.section) }), title: other.title, href: url(`${locale.prefix}/docs/${other.slug}/`) }
+					? { label: other.section === page.section ? word : fill(wordIn, { section: labelOf(other.section) }), title: other.title, href: url(`${locale.prefix}/docs/${other.slug}/`), icon: other.icon, logo: other.logo }
 					: null;
 			write(
 				out(`docs/${page.slug}/index.html`),

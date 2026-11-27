@@ -3,6 +3,7 @@ title: neodesk billing
 description: 27 commands. Billing: packages, contracts, sessions, reports and the clock.
 order: 9
 quoted: true
+icon: payments
 ---
 
 Billing: packages, contracts, sessions, reports and the clock.

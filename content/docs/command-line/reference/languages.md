@@ -3,6 +3,7 @@ title: neodesk languages
 description: 9 commands. The console's languages and translations.
 order: 32
 quoted: true
+icon: translate
 ---
 
 The console's languages and translations.

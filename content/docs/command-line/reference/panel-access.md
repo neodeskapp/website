@@ -3,6 +3,7 @@ title: neodesk panel-access
 description: 5 commands. Which console sections and client features each account may use.
 order: 37
 quoted: true
+icon: admin_panel_settings
 ---
 
 Which console sections and client features each account may use.

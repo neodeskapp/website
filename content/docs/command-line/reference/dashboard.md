@@ -3,6 +3,7 @@ title: neodesk dashboard
 description: 6 commands. The numbers on the dashboard and the server status.
 order: 16
 quoted: true
+icon: dashboard
 ---
 
 The numbers on the dashboard and the server status.

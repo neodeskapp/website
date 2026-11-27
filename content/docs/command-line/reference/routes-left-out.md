@@ -3,6 +3,7 @@ title: Routes without a command
 description: The console routes the command line leaves out, by reason: routes for devices and clients, pages of the console, signing in and old addresses.
 order: 100
 quoted: true
+icon: alt_route
 ---
 
 Every route of the console has a command, or is here with the reason. `neodesk api` still sends any request.

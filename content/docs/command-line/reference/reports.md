@@ -3,6 +3,7 @@ title: neodesk reports
 description: 8 commands. Reports and trends.
 order: 42
 quoted: true
+icon: bar_chart
 ---
 
 Reports and trends.

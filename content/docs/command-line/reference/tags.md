@@ -3,6 +3,7 @@ title: neodesk tags
 description: 3 commands. Device tags.
 order: 53
 quoted: true
+icon: sell
 ---
 
 Device tags.

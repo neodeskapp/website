@@ -3,6 +3,7 @@ title: neodesk roles
 description: 5 commands. Roles and their permissions.
 order: 45
 quoted: true
+icon: badge
 ---
 
 Roles and their permissions.
