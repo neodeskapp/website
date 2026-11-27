@@ -13,7 +13,7 @@ you picked. Nobody types a server address or a key. While you wait, the invite
 stays open in the console and walks you through the computer's first steps as
 soon as it joins.
 
-You need the **Approve enrollment** permission. For a stock RustDesk client,
+You need the **Approve join requests** permission. For a stock RustDesk client,
 use the values under **Devices**, **Add computers**, **Manual setup** instead;
 see [Connect a RustDesk client](/docs/getting-started/connect-a-client).
 
@@ -205,7 +205,7 @@ its address, the time and the fingerprint of the new key. Then either:
   asks first: the new key becomes the device's key, and its old device tokens
   and sessions end. Click **Approve new key** in the question to go on. Then
   open the invite on the computer again; it joins with the same invite. This
-  needs the **Approve enrollment** permission.
+  needs the **Approve join requests** permission.
 - Or delete the device with **Permanently delete (release ID)** (see
   [Deleted devices](/docs/console/devices#deleted-devices)). The computer then
   joins as a new device. A delete without that option keeps the ID reserved,

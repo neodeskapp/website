@@ -25,6 +25,36 @@ server on Linux, on Windows or in Docker.
   does not read RustDesk's database, except on PostgreSQL, see
   [Keep the device list on PostgreSQL](#keep-the-device-list-on-postgresql).
 
+The relay address does not carry over by itself. hbbs without `-r` sent
+clients to the relay at the address they used, but the NeoDesk installers give
+clients the public IP address they detect. When your clients reach the old
+server at a LAN address or a name, relayed sessions then go to the public
+address, which often doesn't work from inside the network. Give the installer
+the address your clients use today, see [The relay address](#the-relay-address).
+
+## The relay address
+
+Pass the address your clients have as ID server when you install, in place of
+`<old-server-address>`. Each installer spells the option its own way:
+
+```bash
+# Docker, with the one-line install
+curl -fsSL https://neode.sk/install.sh | sudo bash -s -- --relay-servers <old-server-address>
+# Linux
+curl -fsSL https://neode.sk/neodesk.sh | sudo bash -s -- --relay-servers <old-server-address>
+```
+
+```powershell
+# Windows
+.\neodesk.ps1 -RelayServers <old-server-address>
+```
+
+`neodesk-docker.sh` takes it as `--relay <old-server-address>`. In an interactive
+install on Linux or Windows you can also choose **Custom address** when the
+script asks for the relay. For a server that only clients in the same network
+use, `--relay-mode local` (`-RelayMode local` on Windows) picks the server's
+LAN address instead.
+
 ## Before you start
 
 1. Copy the old server's data folder somewhere safe, with `id_ed25519`,
@@ -99,9 +129,10 @@ its log at every start, as `Server public key: <key>`.
 ## In Docker
 
 Install NeoDesk as described in [Install with Docker](/docs/getting-started/docker).
-At its first start it makes a key pair of its own. Replace it with the old one
-and restart the container. Run these commands in the folder that holds the old
-key files:
+At its first start it makes a key pair of its own, and the installer prints
+that new key under **Key**: don't hand it to clients. Replace it with the old
+one and restart the container, right after the install. Run these commands in
+the folder that holds the old key files:
 
 ```bash
 docker exec -i -u neodesk neodesk sh -c 'umask 077; cat > /opt/neodesk/data/id_ed25519' < id_ed25519
@@ -117,6 +148,10 @@ has the old public key:
 docker exec -u neodesk neodesk cat /opt/neodesk/data/id_ed25519.pub
 ```
 
+Clients that reach the server between the install and the restart already
+show up under **Join requests**. That does no harm: they stay there, and you
+approve them as described below once the old key is in place.
+
 ## Let the clients back in
 
 A new install starts in the **Managed** join mode. To NeoDesk, your
@@ -124,27 +159,48 @@ RustDesk clients are new devices, so each one waits under **Devices**,
 **Join requests** until someone approves it. Until then nobody can reach
 it, and it cannot start a session.
 
-There are two ways to let them in:
+Approve each one under **Join requests**. A stock RustDesk client sends no
+name before it is approved, so its request shows **No name sent**, its ID and
+the address it came from. Tell the devices apart by ID: it is the ID the
+RustDesk window shows on each computer, and the same one the old server knew.
+Give each device its name when you approve it.
 
-- Approve each one under **Join requests**.
-- Switch to **Open** while the clients come back, then switch back to
-  **Managed**. Waiting devices connect the next time they try, and a device the
-  server knows can register again in every mode. Do this when you have more
-  than 1000 clients: the queue holds at most 1000 waiting devices, and turns
-  away the rest without a request.
+The queue holds at most 1000 waiting devices and turns away new ones while it
+is full. A device turned away asks again, so with more clients than that,
+approve the waiting ones and the rest come in as room frees up.
 
-See [Changing the mode](/docs/console/enrollment#changing-the-mode).
+::: warning
+Don't switch to **Open** to let the waiting clients in. A device that was
+waiting when you switch connects and can be reached, but it stays under
+**Join requests** as waiting, and it can't start a session to another device
+until someone approves it. RustDesk then shows "ID does not exist".
+:::
 
-The clients' **API server** can stay empty, as a RustDesk server setup usually
-leaves it, or be `http://<server-address>:21121`; both work. See
+See [Approving a device](/docs/console/enrollment#approving-a-device).
+
+## Set the API server on the clients
+
+RustDesk server setups usually leave the clients' **API server** empty. Set it
+to `http://<server-address>:21121` on each client, or hand the clients the
+config string from the console, see
 [Connect a client](/docs/getting-started/connect-a-client#get-the-four-values).
+
+With **API server** empty, a stock RustDesk client sends its API calls to port
+21114 on the ID server's host. NeoDesk answers them on 21121, and none of the
+installers opens 21114 to clients. The device then connects and can be
+reached, but the console never gets its name, operating system or version,
+and signing in to the client and its address book don't work.
 
 ## Keep the device list on PostgreSQL
 
-On an install that runs on PostgreSQL, the installer can copy the devices from
-RustDesk's database into NeoDesk's. A copied device counts as known: it
-registers again without approval in every mode, and shows under **Devices**
-before it connects.
+On a Linux or Windows install that runs on PostgreSQL, the installer can copy
+the devices from RustDesk's database into NeoDesk's. A copied device counts as
+known: it registers again without approval in every mode, and shows under
+**Devices** before it connects.
+
+On Docker and on SQLite installs there is no way to copy the device list into
+the running server. The devices come back as they connect, and each one waits
+under **Join requests** as described above.
 
 1. Start the installer. On Linux:
 

@@ -21,7 +21,7 @@ The device's software or bridge decides how it signs in to the gateway. There ar
 - **An API key** of the server.
 - **A device token** that belongs to that device. The device must already be on the server and must not be banned, disabled or deleted.
 
-A device that signs in with an account or an API key joins the server under the ID it gives, so that account's or key's role needs the **Approve enrollment** permission. An ID that another account or key registered is refused, and so is a banned device.
+A device that signs in with an account or an API key joins the server under the ID it gives, so that account's or key's role needs the **Approve join requests** permission. An ID that another account or key registered is refused, and so is a banned device.
 
 A device that has signed in shows on the **IoT devices** page while it is connected, and in [the device list](/docs/console/devices) with the name and type it gave.
 

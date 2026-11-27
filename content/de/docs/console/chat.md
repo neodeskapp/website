@@ -18,8 +18,8 @@ Vier Berechtigungen bestimmen, was ein Konto im Chat darf:
 
 | Berechtigung | Was sie erlaubt | Rollen, die sie von Anfang an haben |
 |---|---|---|
-| **Support-Chat** | Die Unterhaltungen mit Computern lesen und schreiben, die das Konto sehen kann | Super-Admin, Globaler Administrator, Remote-Operator, Betrachter |
-| **Team-Chat** | Kollegen schreiben und in Gruppen mitschreiben | Super-Admin, Globaler Administrator, Remote-Operator, Betrachter |
+| **Support-Chat beantworten** | Die Unterhaltungen mit Computern lesen und schreiben, die das Konto sehen kann | Super-Admin, Globaler Administrator, Remote-Operator, Betrachter |
+| **Team-Chat nutzen** | Kollegen schreiben und in Gruppen mitschreiben | Super-Admin, Globaler Administrator, Remote-Operator, Betrachter |
 | **Unterhaltungen zuweisen** | Eine Unterhaltung übernehmen, an Kollegen übergeben, jede Unterhaltung abschließen | Super-Admin, Globaler Administrator, Remote-Operator |
 | **Textbausteine verwalten** | Die Textbausteine pflegen, die alle nutzen | Super-Admin, Globaler Administrator |
 
@@ -109,17 +109,17 @@ sein.
 ### In einer Fernsitzung {#in-a-remote-session}
 
 Der Chat einer Fernsitzung im Web-Viewer gehört zur Unterhaltung des Computers,
-wenn du **Support-Chat** hast. Was die Person in der Sitzung schreibt, wird in
+wenn du die Berechtigung **Support-Chat beantworten** hast. Was die Person in der Sitzung schreibt, wird in
 der Unterhaltung gespeichert, und was du dem Computer schreibst, auch auf der
 Chat-Seite oder im Chat-Bereich, kommt als reiner Text in die Sitzung.
 Antworten, Änderungen und Reaktionen erreichen die Sitzung nicht, und eine Datei
-kommt dort als „File:“ mit ihrem Namen an, ohne Link. Ohne **Support-Chat**
+kommt dort als „File:“ mit ihrem Namen an, ohne Link. Ohne **Support-Chat beantworten**
 bleibt der Chat der Sitzung in der Sitzung und wird nicht gespeichert.
 
 ## Team {#team}
 
 **Team** listet deine Unterhaltungen mit Kollegen und unter **Kollegen** alle
-mit **Team-Chat**, denen du noch nicht geschrieben hast. Eine Zeile zeigt den
+mit der Berechtigung **Team-Chat nutzen**, denen du noch nicht geschrieben hast. Eine Zeile zeigt den
 Namen, die Rolle und den Status. Deinen eigenen Status setzt du im Kontomenü
 unter **Mein Status**: **Online**, **Abwesend** oder **Beschäftigt**.
 
@@ -220,7 +220,7 @@ Die Konsole schickt sie über den Mailserver unter **Einstellungen**,
 
 ## Chat-Einstellungen für diesen Server {#chat-settings-for-this-server}
 
-Konten mit **Server konfigurieren** finden **Chat-Einstellungen für diesen
+Konten mit **Servereinstellungen ändern** finden **Chat-Einstellungen für diesen
 Server** im Menü oben rechts auf der Chat-Seite. Die Suche in der oberen Leiste
 findet sie auch, zum Beispiel mit „chat mit computern“.
 

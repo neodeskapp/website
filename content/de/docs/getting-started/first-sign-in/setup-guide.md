@@ -21,7 +21,7 @@ Konto hat sich je angemeldet, und es gibt kein Gerät. Ein Update öffnet die
 Anleitung nie auf einer Installation, die schon in Betrieb war, und kein
 anderes Konto bekommt sie von selbst.
 
-Nur Konten mit der Berechtigung **Server konfigurieren** sehen die Anleitung
+Nur Konten mit der Berechtigung **Servereinstellungen ändern** sehen die Anleitung
 und können sie zurückholen, siehe
 [Ausblenden und zurückholen](#hide-it-and-bring-it-back).
 
@@ -40,7 +40,7 @@ eventuell weniger als acht.
 | **Ersten Computer hinzufügen** | **Computer hinzufügen**, direkt auf der Übersicht | Der Server ein Gerät hat |
 | **Eine Fernsitzung öffnen** | **Alle Geräte** | Der Server eine Fernsitzung gesehen hat |
 | **Weitere Personen hinzufügen** | **Benutzer** | Es ein weiteres Konto gibt, das nicht deaktiviert ist, oder Single Sign-on oder LDAP eingeschaltet ist |
-| **Sicherung erstellen** | **Server**, **Sicherungen**, **Sicherung erstellen** | Eine Sicherung von Hand erstellt wurde oder eine geplante Sicherung geklappt hat |
+| **Sicherung erstellen** | **Server**, **Sicherungen**, **Sicherung erstellen** | Eine Sicherung auf **Sicherungen** erstellt wurde oder eine geplante Sicherung geklappt hat |
 
 Die Fortschrittszeile über der Liste zählt die Schritte, zum Beispiel „3 von 8
 erledigt. Ein Schritt hakt sich selbst ab, sobald der Server ihn erledigt
@@ -54,7 +54,7 @@ Du kannst die Anleitung jetzt ausblenden.“
   Passwort anmeldet.
 - **Zwei-Faktor-Anmeldung einschalten** sehen Konten, die sich mit einem
   eigenen Passwort anmelden, nicht über Single Sign-on oder LDAP.
-- **Ersten Computer hinzufügen** braucht **Registrierungen genehmigen**.
+- **Ersten Computer hinzufügen** braucht **Beitrittsanfragen genehmigen**.
 - **Eine Fernsitzung öffnen** braucht **Mit Geräten verbinden**.
 - **Weitere Personen hinzufügen** braucht **Benutzer erstellen**.
 - **Sicherung erstellen** sehen nur Konten mit der Rolle Super-Admin oder
@@ -80,6 +80,12 @@ anbietet, so wie die Skripte für Linux und Windows sie auf 5443 einrichten.
 **Eine Fernsitzung öffnen** zählt jede Sitzung zu jedem Gerät: eine, die der
 Server aufgebaut hat, im Browser oder in einer App, oder eine, die ein Client
 gemeldet hat.
+
+**Sicherung erstellen** zählt die Sicherungen, die die Konsole erstellt: einen
+Download unter **Server**, **Sicherungen** oder eine geplante Sicherung, die
+geklappt hat. Die Sicherungen des Docker-Skripts (`neodesk-docker.sh backup`
+und die, die es vor einem Update anlegt) und des Linux-Installers haken den
+Schritt nicht ab.
 
 Eine Sitzung, eine Sicherung und ein geändertes erstes Passwort bleiben
 erledigt, sobald die Anleitung sie gesehen hat, auch wenn ihre Spur längst aus
@@ -117,7 +123,7 @@ Beides öffnet die Übersicht mit der Anleitung. Ausblenden und Zurückholen
 ## Auf der Kommandozeile {#on-the-command-line}
 
 Die Kommandozeile zeigt dieselben Schritte, für ein Konto mit
-**Server konfigurieren**:
+**Servereinstellungen ändern**:
 
 ```bash
 neodesk setup-guide status

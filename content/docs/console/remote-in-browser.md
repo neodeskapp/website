@@ -90,7 +90,7 @@ For a RustDesk device, the viewer stops before it sends a password if the connec
 | **Display** | **Image quality** (**Best**, **Balanced**, **Performance**), **Frame rate** (30, 60 or **Adaptive**), **Scaling**, **Keyboard mode**, **Video codec**, and the options **Show remote cursor**, **Lock after session**, **Privacy mode** and **Disable clipboard** |
 | **Displays** | For a device that sends several displays at once: the layout, the display you work on, a window of its own for a display, and virtual displays. See [Several displays](#several-displays) |
 | **Monitors** | For other devices: picks the screen to show, and adds or removes virtual displays when the device supports them. A device with two to four screens gets one button per screen instead |
-| **Chat** | Messages appear on the device's screen; replies show here. With **Support chat**, both go into the computer's conversation, see [Chat](/docs/console/chat#in-a-remote-session) |
+| **Chat** | Messages appear on the device's screen; replies show here. With **Answer support chat**, both go into the computer's conversation, see [Chat](/docs/console/chat#in-a-remote-session) |
 | **File transfer** | Copies files between this computer and the device |
 | **Session info** | The device, the connection, encryption, round trip time, frame rate, screen size and video format |
 | Sound, **Record**, **View only** | Turn the sound on or off, record the session, or watch without sending input |

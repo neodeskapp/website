@@ -24,7 +24,7 @@ Der Modus gilt für RustDesk-Clients. Neue Mesh-Agenten warten unabhängig vom M
 
 ### Den Modus ändern {#changing-the-mode}
 
-Ändere ihn unter **Geräte**, **Computer hinzufügen** auf dem Tab **Gerätetokens**, unter **Beitrittsmodus**. Der Modus wird gespeichert, sobald du ihn auswählst. Der Tab braucht die Berechtigung, die Registrierung zu verwalten: Standardmäßig haben sie Konten mit den Rollen Super-Admin, Serveradministrator und Globaler Administrator.
+Ändere ihn unter **Geräte**, **Computer hinzufügen** auf dem Tab **Gerätetokens**, unter **Beitrittsmodus**. Der Modus wird gespeichert, sobald du ihn auswählst. Der Tab braucht die Berechtigung **Beitritt verwalten**: Standardmäßig haben sie Konten mit den Rollen Super-Admin, Administrator, Serveradministrator und Globaler Administrator.
 
 Die Änderung gilt sofort für Geräte, die ab dann beitreten. Geräte, die schon auf dem Server sind, funktionieren weiter.
 
@@ -34,7 +34,7 @@ Für Konten mit dieser Berechtigung zeigt **Beitrittsanfragen** unter dem aktuel
 `ENROLLMENT_MODE_ENV_OVERRIDE=Y` in der Umgebung des Servers sorgt dafür, dass der Server `ENROLLMENT_MODE` bei jedem Start anwendet, auch wenn in der Konsole ein anderer Modus gespeichert ist. Eine Änderung in der Konsole gilt dann nur bis zum nächsten Neustart. Siehe [Konfiguration](/docs/operations/configuration#security).
 :::
 
-Wechselst du zu **Offen**, während RustDesk-Clients warten, können sich diese Geräte beim nächsten Versuch verbinden, ob du sie genehmigst oder nicht; eine Genehmigung setzt trotzdem ihren Namen und Ordner. Wechselst du zu **Gesperrt**, bleiben die wartenden Geräte blockiert, bis du sie genehmigst. Die Seitenspalte weist darauf hin, solange das zutrifft.
+Wechselst du zu **Offen**, während RustDesk-Clients warten, verbinden sich diese Geräte beim nächsten Versuch und sind erreichbar. Sie bleiben aber als **Wartend** in der Liste und können keine Sitzung zu einem anderen Gerät starten, bis du sie genehmigst. RustDesk zeigt dann „ID does not exist“ (im deutschen Client „Diese ID existiert nicht.“). Genehmige sie, damit sie Sitzungen starten können und ihren Namen und Ordner bekommen. Wechselst du zu **Gesperrt**, bleiben die wartenden Geräte blockiert, bis du sie genehmigst. Die Seitenspalte weist darauf hin, solange das zutrifft.
 
 ## Die Liste {#the-list}
 
@@ -42,7 +42,7 @@ Die Schaltflächen über der Liste legen fest, was sie zeigt: **Wartend**, **Gen
 
 | Spalte | Zeigt |
 |---|---|
-| **Gerät** | Den Namen, den das Gerät gesendet hat, oder **Kein Name übermittelt**, und seine ID |
+| **Gerät** | Den Namen, den das Gerät gesendet hat, oder **Kein Name übermittelt**, und seine ID. Ein normaler RustDesk-Client schickt vor der Genehmigung keinen Namen; vergleiche also die ID mit der im RustDesk-Fenster auf dem Computer. |
 | **Plattform** | Das Betriebssystem und die Client-Version |
 | **IP-Adresse** | Die Adresse, von der die Anfrage kam |
 | **Eingegangen über** | **RustDesk-Client**, **Lokales Netzwerk** oder **Mesh-Agent** |
@@ -53,7 +53,7 @@ Auf den meisten Bildschirmen sind **IP-Adresse** und **Eingegangen über** ausge
 
 **Lokales Netzwerk** steht für einen Client, der diesen Server über die Suche im lokalen Netzwerk gefunden und nach seinen Einstellungen gefragt hat. **RustDesk-Client** steht für einen RustDesk-Client, der sich beim Server registriert hat, während eine Genehmigung nötig war.
 
-Jede Zeile hat außerdem ein Menü mit **ID kopieren**. Bei einer entschiedenen Anfrage aus **Lokales Netzwerk** enthält es auch **Eintrag löschen**. Das entfernt die Anfrage aus der Liste und ändert am Gerät nichts; dafür brauchst du die Berechtigung, die Registrierung zu verwalten, dieselbe, die **Gerätetokens** braucht.
+Jede Zeile hat außerdem ein Menü mit **ID kopieren**. Bei einer entschiedenen Anfrage aus **Lokales Netzwerk** enthält es auch **Eintrag löschen**. Das entfernt die Anfrage aus der Liste und ändert am Gerät nichts; dafür brauchst du **Beitritt verwalten**, dieselbe Berechtigung, die **Gerätetokens** braucht.
 
 ## Ein Gerät genehmigen {#approving-a-device}
 
@@ -87,4 +87,4 @@ Im Modus **Verwaltet** kann niemand ein Gerät erreichen, das auf eine Genehmigu
 
 ## Wer genehmigen darf {#who-can-approve}
 
-Genehmigen und Ablehnen braucht die Berechtigung, Geräte zu genehmigen. Standardmäßig haben sie Konten mit den Rollen Super-Admin und Globaler Administrator; Konten mit den Rollen Remote-Operator, Betrachter und Serveradministrator haben sie nicht. Konten ohne diese Berechtigung sehen **Beitrittsanfragen** nicht in der Seitenleiste. Ein Administrator kann die Standardwerte ändern, siehe [Benutzer und Rollen](/docs/people/users-and-roles).
+Genehmigen und Ablehnen braucht die Berechtigung **Beitrittsanfragen genehmigen**. Standardmäßig haben sie Konten mit den Rollen Super-Admin, Administrator und Globaler Administrator; Konten mit den Rollen Remote-Operator, Betrachter und Serveradministrator haben sie nicht. Konten ohne diese Berechtigung sehen **Beitrittsanfragen** nicht in der Seitenleiste. Ein Administrator kann die Standardwerte ändern, siehe [Benutzer und Rollen](/docs/people/users-and-roles).

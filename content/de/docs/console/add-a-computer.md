@@ -12,7 +12,7 @@ Serveradresse oder einen Schlüssel ein. Während du wartest, bleibt die Einladu
 in der Konsole offen und führt dich durch die ersten Schritte des Computers,
 sobald er beitritt.
 
-Du brauchst die Berechtigung **Registrierungen genehmigen**. Für einen normalen
+Du brauchst die Berechtigung **Beitrittsanfragen genehmigen**. Für einen normalen
 RustDesk-Client nimmst du stattdessen die Werte unter **Geräte**,
 **Computer hinzufügen**, **Manuelle Einrichtung**; siehe
 [Einen RustDesk-Client verbinden](/docs/getting-started/connect-a-client).
@@ -228,7 +228,7 @@ hast du zwei Möglichkeiten:
   Schlüssel des Geräts, und seine alten Gerätetokens und Sitzungen enden. Klicke
   in der Frage auf **Neuen Schlüssel genehmigen**, um fortzufahren. Öffne dann
   die Einladung auf dem Computer erneut; er tritt mit derselben Einladung bei.
-  Dafür brauchst du die Berechtigung **Registrierungen genehmigen**.
+  Dafür brauchst du die Berechtigung **Beitrittsanfragen genehmigen**.
 - Oder lösche das Gerät mit **Dauerhaft löschen (ID freigeben)** (siehe
   [Gelöschte Geräte](/docs/console/devices#deleted-devices)). Der Computer tritt
   dann als neues Gerät bei. Ein Löschen ohne diese Option hält die ID

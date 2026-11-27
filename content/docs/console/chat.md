@@ -19,8 +19,8 @@ Four permissions decide what an account can do in the chat:
 
 | Permission | What it allows | Roles that have it by default |
 |---|---|---|
-| **Support chat** | Read and write the conversations with computers the account can see | Super admin, Global admin, Remote operator, Viewer |
-| **Team chat** | Write to colleagues and take part in groups | Super admin, Global admin, Remote operator, Viewer |
+| **Answer support chat** | Read and write the conversations with computers the account can see | Super admin, Global admin, Remote operator, Viewer |
+| **Use team chat** | Write to colleagues and take part in groups | Super admin, Global admin, Remote operator, Viewer |
 | **Assign conversations** | Take a conversation, hand it to a colleague, close any conversation | Super admin, Global admin, Remote operator |
 | **Manage canned replies** | Keep the canned replies everyone shares | Super admin, Global admin |
 
@@ -103,17 +103,17 @@ the console's address. No other port has to be open.
 ### In a remote session
 
 The chat of a remote session in the browser viewer belongs to the computer's
-conversation, when you have **Support chat**. What the person writes in the
+conversation, when you have the permission **Answer support chat**. What the person writes in the
 session is stored in the conversation, and what you write to the computer, also
 from the chat page or the panel, goes into the session as plain text. Replies,
 edits and reactions don't reach the session, and a file arrives there as
-"File:" and its name, without a link. Without **Support chat**, the session's
+"File:" and its name, without a link. Without **Answer support chat**, the session's
 chat stays in the session and isn't stored.
 
 ## Team
 
 **Team** lists your conversations with colleagues, and under **Colleagues**
-everyone with **Team chat** you haven't written to yet. A row shows the name,
+everyone with the permission **Use team chat** you haven't written to yet. A row shows the name,
 the role and the status. You set your own status under **My status** in the
 account menu: **Online**, **Away** or **Busy**.
 
@@ -206,7 +206,7 @@ The console sends it through the mail server under **Settings**, **Email**.
 
 ## Chat settings for this server
 
-Accounts with **Server configuration** find **Chat settings for this server** in
+Accounts with **Change server settings** find **Chat settings for this server** in
 the menu at the top right of the chat page. The top bar search finds it too, for
 example by "chat with computers".
 

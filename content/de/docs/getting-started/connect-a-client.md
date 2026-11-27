@@ -57,23 +57,28 @@ Einstellungen unter **Öffentliche Client-Endpunkte** fest, siehe
 **Geräte**, **Computer hinzufügen**, Tab **Manuelle Einrichtung** zeigt
 dieselben Werte auf einer eigenen Seite; **Serverschlüssel und QR-Code** auf
 **Übersicht** öffnet sie. Dazu kommen die **Konfigurationszeichenfolge**, die alle vier in
-einer Zeile enthält, der QR-Code für Handys unter **Handy einrichten** und der
+einer Zeile enthält (dieselbe Zeichenfolge, die **Deploy-String kopieren** auf
+**Übersicht** kopiert), der QR-Code für Handys unter **Handy einrichten** und der
 Schlüssel als Datei `id_ed25519.pub` unter **Downloads**.
 
 ## Die Werte im Client eintragen {#enter-the-values-in-the-client}
 
-Öffne im RustDesk-Client die Netzwerkeinstellungen und dort den Abschnitt
+Öffne im RustDesk-Client **Einstellungen**, dann **Netzwerk**. Zeigt er
+**Netzwerkeinstellungen entsperren**, wähle das zuerst. Öffne dann
 **ID/Relay-Server**. Kopiere jeden Wert mit seiner Schaltfläche **Kopieren**
 und füge ihn in das gleichnamige Feld ein: ID-Server, Relay-Server, API-Server
 und Schlüssel.
 
-Im normalen RustDesk-Client kann **API-Server** leer bleiben oder
-`http://desk.example.com:21121` sein; beides funktioniert. Bleibt das Feld
-leer, schickt der Client seine API-Aufrufe über den ID-Server, und der
-beantwortet sie. Ein NeoDesk-Client, den du von Hand einrichtest und bei dem
-**API-Server** leer bleibt, nutzt Port 21121 auf dem Host des ID-Servers, hier
-also `http://desk.example.com:21121`. Trage das Feld ein, wenn die API unter
-einer anderen Adresse liegt, etwa der eines Reverse Proxys.
+Trage im normalen RustDesk-Client **API-Server** ein, hier
+`http://desk.example.com:21121`. Bleibt das Feld leer, schickt der Client
+seine API-Aufrufe an Port 21114 auf dem Host des ID-Servers, wo NeoDesk sie
+nicht beantwortet. Das Gerät verbindet sich trotzdem, aber die Konsole bekommt
+nie seinen Namen, sein Betriebssystem oder seine Version, und die Anmeldung im
+Client und sein Adressbuch funktionieren nicht. Ein NeoDesk-Client, den du von
+Hand einrichtest und bei dem **API-Server** leer bleibt, nutzt Port 21121 auf
+dem Host des ID-Servers, hier also `http://desk.example.com:21121`. Trage das
+Feld auch dort ein, wenn die API unter einer anderen Adresse liegt, etwa der
+eines Reverse Proxys.
 
 **Alles kopieren** kopiert die vier Werte auf einmal, einen pro Zeile, damit du
 sie jemandem schicken kannst, der den Client einrichtet:
@@ -314,7 +319,9 @@ Was dann passiert, hängt vom Beitrittsmodus des Servers ab:
   dann **Alle Geräte**.
 - **Verwaltet**: Das Gerät wartet unter **Geräte**, dann
   **Beitrittsanfragen**. Es kann sich nicht verbinden, bis jemand
-  **Genehmigen** wählt und ihm einen Namen gibt.
+  **Genehmigen** wählt und ihm einen Namen gibt. Der normale RustDesk-Client
+  zeigt währenddessen **Bereit** und schickt vor der Genehmigung keinen Namen.
+  Vergleiche also die ID in der Anfrage mit der im RustDesk-Fenster.
 - **Gesperrt**: Nur Geräte mit einem Gerätetoken werden aufgenommen, alle
   anderen abgewiesen. Der normale RustDesk-Client kann keinen Gerätetoken
   senden, deshalb kann ein neuer RustDesk-Client in diesem Modus nicht
@@ -359,9 +366,11 @@ Geh diese Punkte der Reihe nach durch:
 - **Schlüssel.** Füge den Schlüssel noch einmal mit **Kopieren** ein. Wurde das
   Schlüsselpaar des Servers gelöscht, hat der Server ein neues erzeugt, und
   jeder Client braucht den neuen Schlüssel.
-- **API-Server.** Leer, oder er beginnt mit `http://` oder `https://` und
-  endet mit dem Port, den **Übersicht** zeigt, also 21121. Der eigene Port der
-  Konsole, 3375 (5000 bei älteren Installationen), ist der falsche.
+- **API-Server.** Er beginnt mit `http://` oder `https://` und endet mit dem
+  Port, den **Übersicht** zeigt, also 21121. Der eigene Port der Konsole, 3375
+  (5000 bei älteren Installationen), ist der falsche, und 21114 auch. Verbindet
+  sich das Gerät, zeigt in der Konsole aber keinen Namen und kein
+  Betriebssystem, ist das Feld meist leer.
 - **Eine öffentliche Adresse.** Erreichen mehrere Computer in einem Büro den
   Server über dieselbe öffentliche Adresse, kann eine Sitzung, die einer von
   ihnen startet, mit „ID does not exist“ fehlschlagen (im deutschen Client
@@ -369,6 +378,6 @@ Geh diese Punkte der Reihe nach durch:
   [Fehlersuche](/docs/operations/troubleshooting#clients-show-not-ready-or-cannot-connect).
 - **Genehmigung.** Schau im Modus **Verwaltet** unter
   **Beitrittsanfragen** nach. Das Gerät kann sich nicht verbinden, bis
-  jemand es genehmigt.
+  jemand es genehmigt, auch wenn der RustDesk-Client **Bereit** zeigt.
 
 [Fehlersuche](/docs/operations/troubleshooting) hilft weiter.

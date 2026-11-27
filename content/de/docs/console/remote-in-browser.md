@@ -89,7 +89,7 @@ Bei einem RustDesk-Gerät bricht der Viewer ab, bevor er ein Passwort sendet, we
 | **Anzeige** | **Bildqualität** (**Beste**, **Ausgewogen**, **Leistung**), **Bildrate** (30, 60 oder **Automatisch anpassen**), **Skalierung**, **Tastaturmodus**, **Videocodec** und die Optionen **Entfernten Mauszeiger zeigen**, **Nach der Sitzung sperren**, **Privatsphäre-Modus** und **Zwischenablage abschalten** |
 | **Bildschirme** | Für ein Gerät, das mehrere Bildschirme zugleich schickt: die Anordnung, der Bildschirm, auf dem du arbeitest, ein eigenes Fenster für einen Bildschirm und virtuelle Bildschirme. Siehe [Mehrere Bildschirme](#several-displays) |
 | **Monitore** | Für andere Geräte: wählt den Bildschirm, der angezeigt wird, und fügt virtuelle Bildschirme hinzu oder entfernt sie, wenn das Gerät das unterstützt. Ein Gerät mit zwei bis vier Bildschirmen bekommt stattdessen eine Schaltfläche pro Bildschirm |
-| **Chat** | Nachrichten erscheinen auf dem Bildschirm des Geräts; Antworten erscheinen hier. Mit **Support-Chat** landen beide in der Unterhaltung des Computers, siehe [Chat](/docs/console/chat#in-a-remote-session) |
+| **Chat** | Nachrichten erscheinen auf dem Bildschirm des Geräts; Antworten erscheinen hier. Mit **Support-Chat beantworten** landen beide in der Unterhaltung des Computers, siehe [Chat](/docs/console/chat#in-a-remote-session) |
 | **Dateiübertragung** | Kopiert Dateien zwischen diesem Computer und dem Gerät |
 | **Sitzungsinfo** | Das Gerät, die Verbindung, Verschlüsselung, Round-Trip-Zeit, Bildrate, Bildschirmgröße und Videoformat |
 | Ton, **Aufnehmen**, **Nur ansehen** | Schalten den Ton ein oder aus, zeichnen die Sitzung auf oder lassen dich zusehen, ohne Eingaben zu senden |

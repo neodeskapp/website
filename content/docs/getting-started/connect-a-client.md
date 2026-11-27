@@ -54,22 +54,26 @@ settings, see [Set the address clients use](/docs/getting-started/first-sign-in#
 
 **Devices**, **Add computers**, tab **Manual setup** shows the same values
 on a page of their own; **Server key and QR code** on **Overview** opens it. It
-adds the **Config string**, which holds all four in one line, the QR code for
+adds the **Config string**, which holds all four in one line (the same string
+that **Copy deploy string** copies on **Overview**), the QR code for
 phones under **Set up a phone**, and the key as the file `id_ed25519.pub` under
 **Downloads**.
 
 ## Enter the values in the client
 
-In the RustDesk client, open the network settings and their **ID/Relay server**
-section. Copy each value with its **Copy** button and paste it into the field of
-the same name: ID server, relay server, API server and key.
+In the RustDesk client, open **Settings**, then **Network**. If it shows
+**Unlock network settings**, choose that first. Then open **ID/Relay server**.
+Copy each value with its **Copy** button and paste it into the field of the
+same name: ID server, relay server, API server and key.
 
-In a stock RustDesk client, **API server** can stay empty or be
-`http://desk.example.com:21121`; both work. Left empty, the client sends its
-API calls through the ID server, which answers them. A NeoDesk client set up
-by hand with **API server** left empty uses port 21121 on the ID server's host,
-`http://desk.example.com:21121` here. Fill the field in when the API is at
-another address, such as a reverse proxy's.
+Fill in **API server** in a stock RustDesk client, here
+`http://desk.example.com:21121`. Left empty, the client sends its API calls to
+port 21114 on the ID server's host, where NeoDesk doesn't answer them. The
+device still connects, but the console never gets its name, operating system
+or version, and signing in to the client and its address book don't work. A
+NeoDesk client set up by hand with **API server** left empty uses port 21121
+on the ID server's host, `http://desk.example.com:21121` here. Fill the field
+in there too when the API is at another address, such as a reverse proxy's.
 
 **Copy all** copies the four values at once, one per line, to send to someone
 who sets up the client:
@@ -298,7 +302,10 @@ What happens next depends on the server's join mode:
 - **Open**: the device joins right away and shows up under **Devices**, then
   **All devices**.
 - **Managed**: the device waits under **Devices**, then **Join requests**.
-  It can't connect until someone chooses **Approve** and gives it a name.
+  It can't connect until someone chooses **Approve** and gives it a name. The
+  stock RustDesk client shows **Ready** while it waits, and it sends no name
+  before it is approved, so compare the ID in the request with the one in the
+  RustDesk window.
 - **Locked**: only devices with a device token can join. Others are turned away.
   The stock RustDesk client has no way to send a device token, so a new
   RustDesk client can't join in this mode.
@@ -337,14 +344,17 @@ Go through these in order:
   [The relay address](/docs/getting-started/docker#the-relay-address).
 - **Key.** Paste the key again with **Copy**. If the server's key pair was
   deleted, the server made a new one and every client needs the new key.
-- **API server.** Empty, or starting with `http://` or `https://` and ending
-  with the port that **Overview** shows, 21121. The console's own port, 3375
-  (5000 on older installs), is the wrong one.
+- **API server.** Starting with `http://` or `https://` and ending with the
+  port that **Overview** shows, 21121. The console's own port, 3375 (5000 on
+  older installs), is the wrong one, and so is 21114. When the device connects
+  but shows no name or operating system in the console, the field is usually
+  empty.
 - **One public address.** When several computers in one office reach the
   server through the same public address, a session started from one of them
   can fail with "ID does not exist". See
   [Troubleshooting](/docs/operations/troubleshooting#clients-show-not-ready-or-cannot-connect).
 - **Approval.** In **Managed** mode, look under **Join requests**. The
-  device can't connect until someone approves it.
+  device can't connect until someone approves it, even though the RustDesk
+  client shows **Ready**.
 
 [Troubleshooting](/docs/operations/troubleshooting) goes further.

@@ -100,9 +100,10 @@ Die Sammelaktionen überspringen gelöschte Geräte und RDP/VNC-Ziele in der Aus
 
 Jede Zeile hat an ihrem Ende ein Menü (die drei Punkte); ein Rechtsklick auf die Zeile öffnet es ebenfalls. Es enthält nur, was dein Konto mit diesem Gerät tun darf:
 
-- **Web-Remote**, **Gastzugriff-Link**, **CDAP Snapshot Viewer** und **Über Desktop-Client verbinden**. Was jeder Eintrag tut und braucht, steht in [Gerätedetails und Verbinden](/docs/console/device-details#connecting).
+- **Web-Remote**, **Gastzugriff-Link**, **CDAP Snapshot Viewer**, **In NeoDesk öffnen** und **In RustDesk öffnen**. Was jeder Eintrag tut und braucht, steht in [Gerätedetails und Verbinden](/docs/console/device-details#connecting).
 - **Gerätedetails** öffnet den Seitenbereich, **Bearbeiten** öffnet ihn gleich zum Bearbeiten.
 - **Tags verwalten**, **Gruppen verwalten** und **In Ordner verschieben**.
+- **Gespeicherte Anmeldung** hält Namen und Passwort eines Windows-Kontos für das Gerät bereit, siehe [Gespeicherte Anmeldung](/docs/console/saved-sign-in).
 - **ID ändern** gibt dem Gerät auf dem Server eine neue ID aus 6 bis 16 Buchstaben, Ziffern, Bindestrichen und Unterstrichen. Der Server schickt die neue ID an das Gerät, wenn es in diesem Moment online ist, und der NeoDesk-Client übernimmt sie. Ein NeoDesk-Client, der dann offline ist, und ein normaler RustDesk-Client behalten ihre alte ID, bis du die neue von Hand im Client einträgst. Ändere die ID deshalb, wo es geht, im Client auf dem Gerät. Bei einem Gerät, das online ist, warnt die Konsole vorher.
 - **Issue a new token** beendet den aktuellen Gerätetoken des Geräts. Das Gerät bekommt einen neuen, wenn es sich das nächste Mal meldet: Es weist dazu seinen Schlüssel mit einer Signatur nach, die die Uhrzeit enthält. Ein Gerät, dessen Uhr mehr als 5 Minuten von der des Servers abweicht, bekommt keinen neuen Token. Normale RustDesk-Clients nutzen keine Gerätetokens.
 - **Sperren** oder **Entsperren** und **Löschen**, beschrieben weiter unten.
@@ -138,8 +139,8 @@ Alle, die Geräte sehen dürfen, können die Liste durchsuchen, filtern und öff
 
 | Aktion | Rollen |
 |---|---|
-| Bearbeiten, Tags, Ordner, Gruppen, **In Ordner verschieben**, **Issue a new token** | Super-Admin, Globaler Administrator, Remote-Operator |
-| **Gastzugriff-Link** | Super-Admin, Globaler Administrator, Remote-Operator |
-| **Sperren**, **Löschen**, **ID ändern** | Super-Admin, Globaler Administrator |
-| **Computer hinzufügen** | Super-Admin, Globaler Administrator |
-| **RDP/VNC-Ziel hinzufügen** | Super-Admin, Globaler Administrator |
+| Bearbeiten, Tags, Ordner, Gruppen, **In Ordner verschieben**, **Issue a new token** | Super-Admin, Administrator, Globaler Administrator, Remote-Operator |
+| **Gastzugriff-Link** | Super-Admin, Administrator, Globaler Administrator, Remote-Operator |
+| **Sperren**, **Löschen**, **ID ändern** | Super-Admin, Administrator, Globaler Administrator |
+| **Computer hinzufügen** | Super-Admin, Administrator, Globaler Administrator |
+| **RDP/VNC-Ziel hinzufügen** | Super-Admin, Administrator, Globaler Administrator |

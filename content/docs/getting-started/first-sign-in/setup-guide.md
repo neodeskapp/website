@@ -20,7 +20,7 @@ when nobody has used it yet: no account has ever signed in and it has no
 device. An update never opens the guide on an install that was in use, and no
 other account gets it by itself.
 
-Only accounts with the permission **Server configuration** see the guide and
+Only accounts with the permission **Change server settings** see the guide and
 can bring it back, see [Hide it and bring it back](#hide-it-and-bring-it-back).
 
 ## The steps
@@ -37,7 +37,7 @@ do itself, so another admin can see fewer than eight.
 | **Add your first computer** | **Add a computer**, right on the overview | The server has a device |
 | **Open a remote session** | **All devices** | The server has seen a remote session |
 | **Add the people who help** | **Users** | Another account that is not disabled exists, or single sign-on or LDAP is on |
-| **Make a backup** | **Server**, **Backups**, **Create a backup** | A backup was made by hand, or a scheduled backup succeeded |
+| **Make a backup** | **Server**, **Backups**, **Create a backup** | A backup was made on **Backups**, or a scheduled backup succeeded |
 
 The progress line above the list counts the steps, for example "3 of 8 done. A
 step ticks itself once the server sees it done." When every step is done it
@@ -49,7 +49,7 @@ says "All steps are done. You can hide the guide now."
   guide opened for, and only while it signs in with a password of its own.
 - **Turn on two-factor sign-in** shows to accounts that sign in with a password
   of their own, not through single sign-on or LDAP.
-- **Add your first computer** needs **Approve enrollment**.
+- **Add your first computer** needs **Approve join requests**.
 - **Open a remote session** needs **Connect to devices**.
 - **Add the people who help** needs **Create users**.
 - **Make a backup** shows only to Super admin and Administrator accounts,
@@ -74,6 +74,11 @@ Linux and Windows scripts set it up on 5443.
 
 **Open a remote session** counts any session to any device: one the server
 set up, in the browser or in an app, or one a client reported.
+
+**Make a backup** counts the backups the console makes: a download from
+**Server**, **Backups**, or a scheduled backup that succeeded. The backups of
+the Docker script (`neodesk-docker.sh backup`, and the one it makes before an
+update) and of the Linux installer don't tick it.
 
 A session, a backup and a changed first password stay done once the guide has
 seen them, even after their trace has left the logs.
@@ -107,7 +112,7 @@ changes it only for your account.
 ## On the command line
 
 The command line shows the same steps, for an account with
-**Server configuration**:
+**Change server settings**:
 
 ```bash
 neodesk setup-guide status
