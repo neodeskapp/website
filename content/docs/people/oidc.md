@@ -9,7 +9,7 @@ With single sign-on turned on, the sign-in page gets a button that sends people 
 
 ## Where it is set
 
-Open **Settings**, **Single sign-on**. The tab is there for accounts with the **Server configuration** permission: Super admin, Administrator and Server admin by default.
+Open **Settings**, **Single sign-on**. In the sidebar the page is in the folded part of **Settings**: click **Show … more** there to reach it, or search for it. It is there for accounts with the **Change server settings** permission: Super admin, Administrator and Server admin by default.
 
 The settings are saved in the server's database and apply to the next sign-in without a restart. People who are already signed in stay signed in.
 
@@ -22,7 +22,7 @@ The settings are saved in the server's database and apply to the next sign-in wi
    https://desk.example.com/api/auth/oidc/callback
    ```
 
-   It must be exactly the same as **Redirect URL** in NeoDesk. The path `/api/oidc/callback` works too.
+   It must be exactly the same as **Redirect URL (callback)** in NeoDesk. The path `/api/oidc/callback` works too.
 3. Copy the client ID and the client secret.
 4. If you want roles from groups, have the provider put the person's groups into a claim, by default `groups`.
 
@@ -30,39 +30,41 @@ Open the console at that same address when you sign in. The browser carries a co
 
 ## Settings
 
-Tick **Turn on single sign-on** to show the fields. Turning it on fills **Redirect URL** and **Panel URL** with the address you are using, when they are empty.
+**Turn on single sign-on** turns it on and off. The other fields show either way. Turning it on fills **Redirect URL (callback)** and **Console address** with the address you are using, when they are empty. **Auto-discovery**, the endpoints and **Allowed private OIDC networks** are under **Advanced options**, the claims under **Claims**.
 
 | Setting | Meaning |
 | --- | --- |
 | **Button text** | The provider's name on the sign-in button. |
 | **Issuer URL** | The provider's issuer address. With Auto-discovery the server finds the other addresses from it. |
-| **Allowed private OIDC networks** | Addresses or ranges, separated by commas, for a provider on a private network, such as `10.20.0.0/16`. Without them the server does not contact providers at private addresses. Only private ranges are accepted, and providers on the server itself are never contacted. |
+| **Allowed private OIDC networks** | Under **Advanced options**. Addresses or ranges for a provider on a private network, one per row, such as `10.20.0.0/16`; **Add a network** adds a row. Without them the server does not contact providers at private addresses. Only private ranges are accepted, and providers on the server itself are never contacted. |
 | **Client ID**, **Client Secret** | From the provider. A saved secret shows as dots; leave them to keep it. |
 | **Redirect URL (callback)** | The redirect address registered at the provider. It must use http or https and end in `/api/auth/oidc/callback` or `/api/oidc/callback`. |
-| **Panel URL** | The address people open the console at. The server sends the browser there to finish the sign-in. If it is empty, `PANEL_PUBLIC_URL` or `PUBLIC_URL` from the environment is used. |
+| **Console address** | The address people open the console at. The server sends the browser there to finish the sign-in. If it is empty, `PANEL_PUBLIC_URL` or `PUBLIC_URL` from the environment is used. |
 | **Scopes** | Default `openid profile email`. |
 | **Use PKCE (recommended)** | Adds PKCE to the sign-in. Ticked for a single sign-on that was never saved; a saved one keeps the value it was saved with. |
-| **Auto-discovery** | On by default. Turned off, it shows **Authorization endpoint**, **Token endpoint** and **Userinfo endpoint** to fill in by hand. |
+| **Auto-discovery** | Under **Advanced options**. On by default. Turned off, it shows **Authorization endpoint**, **Token endpoint** and **Userinfo endpoint** to fill in by hand. |
 | **Auto-create users** | On by default: the first sign-in makes an account. Off: only people who already have a single sign-on account here can sign in. |
 | **Prefer single sign-on** | The sign-in page goes straight to the provider (see below). Off by default. |
 | **User name claim** | Under **Claims**. The claim that becomes the account name. Default `preferred_username`. |
 | **Email claim** | Default `email`. Stored with the account at every sign-in and shown in the **Email** column of the Users page. Used for the account name, the part before the @, only when the provider sends no user name claim and says the address is verified. |
 | **Display name claim** | Default `name`. Stored with the account at every sign-in. |
 | **Groups claim** | The claim with the person's groups. Default `groups`. |
-| **Default role** | Under **Roles**: **Viewer**, **Operator** or **Admin**. These are the roles Viewer, Remote operator and Administrator in the [roles table](/docs/people/users-and-roles#roles). |
+| **Default role** | Under **Roles**. The choice lists every role of the server, from **Super admin** to **Pro license (client API only)**; see the [roles table](/docs/people/users-and-roles#roles). |
 | **Groups to roles** | Groups and the role each gives (see below). |
 
 To save with single sign-on on, the server needs a Client ID, a Redirect URL, and an Issuer URL or both the authorization and token endpoints.
 
 ::: warning
-**Admin** in **Default role** is the Administrator role, which has every permission. With it, everyone your provider lets through gets full control of the server.
+**Super admin** and **Administrator** have every permission. With one of them in **Default role**, everyone your provider lets through gets full control of the server.
 :::
 
 ## Roles from groups
 
-Write one entry per line, as `group=role`, with a role name from the [roles table](/docs/people/users-and-roles#roles), such as `viewer`, `operator`, `global_admin` or `super_admin`. Group names must be written exactly as the provider sends them, letter case included. The groups claim can be a list, or text with the names separated by spaces or commas.
+Under **Groups to roles**, click **Add a group** for each group. Type the group into the new row's **Group** field (**Group 1**, **Group 2** and so on) exactly as the provider sends it, letter case included, and pick the role its members get in **Role for group 1**, **Role for group 2** and so on. The roles are the same as in **Default role**. The groups claim can be a list, or text with the names separated by spaces or commas.
 
-The role starts at the **Default role**, and a group in the map can only raise it: if several match, the one with the most rights wins. A new account gets that role.
+The role starts at the **Default role**, and a group in the map can only raise it. If several groups match, the role with the most rights wins: Super admin and Administrator, then Server admin and Global admin, then Remote operator, then Viewer. Guest link issuer and Pro license rank below Viewer here, so a group with one of them never changes the role. When two matching groups give roles of the same rank, such as Server admin and Global admin, the group that comes first in the provider's groups claim decides. A new account gets the resulting role.
+
+The server stores the map as text, `group=role` entries separated by `|`, with the role's name from the [roles table](/docs/people/users-and-roles#roles). That is the form the API takes.
 
 With a map filled in, the role is set again at every sign-in. Someone whose groups match none of the map gets the **Default role**, so a person removed from a group at the provider loses that group's role at the next sign-in. A role you choose on the **Users** page lasts only until then. Without a map, the **Default role** is only for new accounts, and a role you choose on the Users page stays.
 
@@ -102,21 +104,21 @@ A refused sign-in shows "Sign-in failed" in the browser with the reason, such as
 | **Issuer URL** | `https://sso.example.com` |
 | **Client ID** | `neodesk` |
 | **Redirect URL (callback)** | `https://desk.example.com/api/auth/oidc/callback` |
-| **Panel URL** | `https://desk.example.com` |
+| **Console address** | `https://desk.example.com` |
 | **Use PKCE (recommended)** | Ticked |
 | **Default role** | **Viewer** |
 
 **Groups to roles**, for a provider that sends these names in `groups`:
 
-```text
-neodesk-admins=global_admin
-neodesk-operators=operator
-```
+| Group | Role for the group |
+| --- | --- |
+| `neodesk-admins` | **Global admin** |
+| `neodesk-operators` | **Remote operator** |
 
 ## Test it
 
 1. Click **Test discovery**. The server fetches the discovery document of the **Issuer URL** and lists the endpoints it found. It does not check the client ID or secret.
-2. Click **Save single sign-on settings** and confirm.
+2. Click **Save changes** and confirm.
 3. Stay signed in, open the sign-in page in a private browser window and click the new button.
 
 | Message on the sign-in page | Meaning |
@@ -125,7 +127,7 @@ neodesk-operators=operator
 | Your account was not found and auto-registration is disabled. | **Auto-create users** is off and there is no single sign-on account of that name. |
 | OIDC authentication failed. Please try again. | The server could not finish the sign-in with the provider, for example because of a wrong client secret, or because the provider took more than 15 seconds to answer the server's token request. |
 | Invalid OIDC callback. Please try again. | The callback does not belong to a sign-in this browser started, or the sign-in at the provider took more than 10 minutes. |
-| An error occurred during SSO login. | The server could not start or finish the sign-in, for example because it cannot reach the provider. |
+| Single sign-on failed with an error. | The server could not start or finish the sign-in, for example because it cannot reach the provider. |
 | This name belongs to an account that signs in with a password or through the directory, so single sign-on cannot sign you in. Ask an administrator. | A password or directory account with the same name already exists. Single sign-on never takes over such an account. |
 | This account is disabled. Ask an administrator. | The account is disabled on the Users page. |
 

@@ -53,7 +53,7 @@ Steht ein Fingerabdruck in **Fingerabdruck des vertrauenswürdigen Zertifikats**
 
 Eine RDP- oder VNC-Sitzung zeigt den Bildschirm und gibt Maus und Tastatur weiter. Text, den du auf dem Bildschirm einfügst, geht in die Zwischenablage des Computers, und Text, der auf dem Computer kopiert wird, kommt in die Zwischenablage dieses Computers, wenn der Browser es erlaubt. Es gibt keinen Ton, keine Dateiübertragung und keine Auswahl des Bildschirms, und **Text eintippen** ist nicht verfügbar. Von den Einstellungen unter **Anzeige** wirkt nur **Zwischenablage abschalten**; **Nur ansehen** funktioniert wie in anderen Sitzungen.
 
-Die **Client-Funktionen** einer Person im [Konsolenzugriff](/docs/people/permissions#panel-access) schränken die Sitzung ein. Ohne **Fernsteuerung** kann die Person nur zusehen, und ohne **Zwischenablage** wird in keine Richtung etwas kopiert.
+Die **Client-Funktionen** einer Person im [Konsolenzugriff](/docs/people/permissions#console-access) schränken die Sitzung ein. Ohne **Fernsteuerung** kann die Person nur zusehen, und ohne **Zwischenablage** wird in keine Richtung etwas kopiert.
 
 Welche Ziele jemand öffnen darf, folgt denselben Zugriffsregeln wie bei Geräten, siehe [Welche Geräte ein Benutzer sieht](/docs/people/users-and-roles#which-devices-a-user-sees).
 
