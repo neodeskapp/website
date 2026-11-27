@@ -102,15 +102,33 @@ Es gibt drei Wege, NeoDesk zu installieren. Jeder installiert denselben Server.
 |-----|-------------------------|
 | [Docker](/docs/getting-started/docker) | Docker mit Compose 2.24 oder neuer und Zugriff auf `ghcr.io`, wo das Image veröffentlicht ist. Das Installationsskript installiert Docker, wenn es fehlt. |
 | [Linux](/docs/getting-started/linux) | Root-Zugriff, systemd und apt-get, dnf, yum oder pacman. Einen 64-Bit-x86-, arm64- oder armv7-Prozessor und Zugriff auf github.com, wo die Releases liegen. |
-| [Windows](/docs/getting-started/windows) | 64-Bit-Windows, PowerShell als Administrator und Zugriff auf github.com. NSSM ist optional und macht den Server zu einem Windows-Dienst; ohne NSSM läuft der Server als geplante Aufgabe. |
+| [Windows](/docs/getting-started/windows) | 64-Bit-Windows, PowerShell als Administrator und Zugriff auf github.com. NSSM ist optional und macht den Server zu einem Windows-Dienst; ohne NSSM läuft der Server als geplante Aufgabe. Die Unterstützung für Windows ist experimentell. |
 
 Keiner davon braucht Go oder Node.js auf dem Rechner: Docker startet das
 veröffentlichte Image, und die Skripte für Linux und Windows laden ein Release
 herunter. Nur wer mit dem Linux- oder Windows-Skript aus dem Repository baut,
 braucht sie; wie das geht, steht auf den Installationsseiten.
 
-Docker ist der kürzeste Weg: Ein Befehl installiert alles, siehe
-[Mit dem Skript installieren](/docs/getting-started/docker#install-with-the-script).
+### Welcher Weg passt {#which-one-to-pick}
+
+- **Docker**, auf jedem Linux-Server oder einem NAS mit Docker. Das ist der
+  kürzeste Weg: Ein Befehl installiert alles, siehe
+  [Mit dem Skript installieren](/docs/getting-started/docker#install-with-the-script).
+  Die Konsole spricht auf Port 3375 einfaches HTTP. Mit `--domain` richtet das
+  Skript HTTPS mit einem Zertifikat von Let's Encrypt ein. Auf einem
+  Synology-NAS folgst du [Docker auf einem Synology-NAS](/docs/getting-started/docker/synology).
+- **Linux**, auf einem Linux-Server oder einer VM, auf der du kein Docker
+  willst. Der Server läuft als systemd-Dienst. Die Konsole bekommt HTTPS auf
+  Port 5443 mit einem selbstsignierten Zertifikat, vor dem der Browser warnt,
+  bis du es ersetzt.
+- **Windows**, auf einem Windows-Server, wenn du keinen Linux-Rechner hast. Es
+  funktioniert wie die Installation unter Linux, HTTPS auf 5443 eingeschlossen,
+  aber die Unterstützung für Windows ist experimentell: Das Skript sagt das beim
+  Start, und Linux ist die Hauptplattform.
+
+Alle drei installieren denselben Server mit derselben Konsole. Remote Desktop im
+Browser zeigt jedes Gerät nur über HTTPS, siehe
+[Remote Desktop im Browser](/docs/console/remote-in-browser#https-for-every-device).
 
 Egal welchen Weg du nimmst, die Clients müssen den Server auf 21115 bis 21117
 und 21121 über TCP und auf 21116 über UDP erreichen. Verbinden sich deine

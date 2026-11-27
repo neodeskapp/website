@@ -1190,7 +1190,8 @@
 		"https-with-lets-encrypt",
 		"what-it-changes",
 		"when-not-to-use-it",
-		"turn-it-off"
+		"turn-it-off",
+		"when-the-certificate-doesnt-come"
 	],
 	"getting-started/docker/synology": [
 		"before-you-start",
@@ -1227,7 +1228,8 @@
 		"neodesk-and-rustdesk",
 		"what-you-need",
 		"where-to-go-next",
-		"getting-help"
+		"getting-help",
+		"which-one-to-pick"
 	],
 	"getting-started/linux": [
 		"requirements",
@@ -1263,7 +1265,8 @@
 		"files-and-the-service",
 		"later-update-and-uninstall",
 		"build-from-the-repository",
-		"next-steps"
+		"next-steps",
+		"when-powershell-refuses-the-script"
 	],
 	"operations/backup": [
 		"why-the-key-file-matters",

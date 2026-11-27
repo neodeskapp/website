@@ -15,32 +15,70 @@ the same name when NSSM is not installed. It downloads the newest release of
 `C:\NeoDesk`, which you use later to update, repair and back up the install.
 This page covers the first install.
 
+::: note
+Windows support is experimental, and the script says so when it starts. Linux
+is the main platform: if you have the choice, install with
+[Docker](/docs/getting-started/docker) or on [Linux](/docs/getting-started/linux).
+Report problems on [GitHub](https://github.com/neodeskapp/neodesk/issues).
+:::
+
 ## Requirements
 
 - 64-bit Windows.
 - PowerShell, run as Administrator. The script stops if it isn't.
-- Access to github.com, where the releases are.
+- Access to neode.sk for the first download, and to github.com,
+  api.github.com and release-assets.githubusercontent.com, where the releases
+  are. To look up the machine's public IP address the script asks
+  ipv4.icanhazip.com, ifconfig.me and icanhazip.com. Allow these hosts if a
+  proxy or firewall only lets listed hosts through.
 - [NSSM](https://nssm.cc), if you want a Windows service. The script finds it on
   the `PATH` or as `tools\nssm.exe` next to the script. It does not install NSSM.
-  Without it, the server runs as a scheduled task.
+  Without it, the server runs as a scheduled task under SYSTEM, the most
+  privileged account on Windows, instead of an account of its own.
 - Only to build the server from the repository (`-FromSource`): git, and Node.js
   22.17 or newer with npm on the `PATH`. If the `go` command is missing, the
   script downloads Go 1.26.11 into `C:\Go` and adds it to the system `PATH`.
 
 ## Install
 
-Open PowerShell as Administrator, download the script and run it:
+Open PowerShell as Administrator, download the script into your temp folder and
+run it:
 
 ```powershell
-Invoke-WebRequest https://neode.sk/neodesk.ps1 -OutFile neodesk.ps1 -UseBasicParsing
-.\neodesk.ps1
+Invoke-WebRequest https://neode.sk/neodesk.ps1 -OutFile $env:TEMP\neodesk.ps1 -UseBasicParsing
+& $env:TEMP\neodesk.ps1
 ```
 
-If PowerShell refuses because running scripts is disabled on this system, allow
-scripts for this window only and run the script again:
+The install keeps its own copy in `C:\NeoDesk`, so you can delete the
+downloaded file afterwards.
+
+### When PowerShell refuses the script {#when-powershell-refuses-the-script}
+
+Windows' execution policy decides whether a script may run:
+
+- "running scripts is disabled on this system": the default on Windows 10 and
+  11. Allow scripts for this window only and run the script again:
+
+  ```powershell
+  Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+  ```
+
+- "is not digitally signed": the file came from a browser, which marks
+  downloads from the internet. Remove the mark, then run it again:
+
+  ```powershell
+  Unblock-File $env:TEMP\neodesk.ps1
+  ```
+
+- A group policy that allows only signed scripts: the script isn't signed, so it
+  can't run on that machine, and `-Scope Process` doesn't override the policy.
+
+`Set-ExecutionPolicy -Scope Process` lasts only until you close the window. For
+the commands you run later, start the script through `powershell` with the
+policy for that one run, as the commands on this page do:
 
 ```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+powershell -NoProfile -ExecutionPolicy Bypass -File C:\NeoDesk\neodesk.ps1
 ```
 
 The script opens its menu. Move with the arrow keys and choose
@@ -78,8 +116,10 @@ refuses a release without a valid one.
 3. **Connection strategy.** P2P first, the recommended default, tries a direct
    connection between the two computers before it uses the relay. Relay only
    sends every session through the relay.
-4. **HTTPS, at the end.** Whether to configure HTTPS now. Answer `n` to keep the
-   defaults described below.
+4. **HTTPS, at the end.** "Would you like to configure HTTPS Enterprise now?"
+   Answer `n`: the install has turned on HTTPS with a self-signed certificate
+   already. Copy the admin password before you answer, because answering `y`
+   clears the screen, and so does pressing Enter at the very end.
 
 ### What the script does
 
@@ -146,10 +186,18 @@ Login:    admin
 Password: <password>
 ```
 
-The password is 16 random letters and digits. Copy it now. The script shows it once and removes it from the env file
-when the server has started. If you lose it, run
-`C:\NeoDesk\neodesk.ps1` and choose **Reset admin password**. It generates a
-new random password, or sets one you type, with at least 8 characters.
+The password is 16 random letters and digits. Copy it now. The script shows it
+once, above the summary, and removes it from the env file when the server has
+started. If you lose it, open the script's menu and choose
+**Reset admin password**:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File C:\NeoDesk\neodesk.ps1
+```
+
+It generates a new random password for the account `admin`, or sets one you
+type, with at least 8 characters. For another account, see
+[Forgot the admin password](/docs/operations/troubleshooting#forgot-the-admin-password).
 
 ## First sign-in address
 
@@ -159,6 +207,23 @@ RustDesk clients, and the ports a firewall outside this machine has to let
 through. With the self-signed certificate of a fresh install, the console is at
 `https://<server-address>:5443`, and `http://<server-address>:3375` leads there. Your browser
 warns about the certificate because nobody it trusts signed it.
+
+The plain port always sends the browser to the address the install saved: the
+public IP address, unless you chose another relay address. Behind a router
+without hairpin NAT that address doesn't work from inside your network. Open the
+LAN address over HTTPS directly instead, `https://<lan-address>:5443`. The
+certificate covers the public address, the LAN address and `localhost`. To add a
+host name, set it in the same window before you run the script, with the name
+in place of `<host-name>`:
+
+```powershell
+$env:SSL_DOMAIN = '<host-name>'
+```
+
+For a certificate that browsers trust, put a reverse proxy with TLS in front, or
+bring your own certificate: in the script's menu choose
+**Configure SSL certificates**, then **Custom certificate**. The script can't
+get a Let's Encrypt certificate on Windows.
 
 Keep the console away from the internet unless a reverse proxy with TLS is in
 front of it, see [Reverse proxy and TLS](/docs/operations/reverse-proxy-tls). If
@@ -201,18 +266,29 @@ The env file sets **Managed** only as the first join mode. A mode you pick in
 the console stays after a restart. See [Join requests](/docs/console/enrollment) for
 what the modes do.
 
-## Later: update and uninstall
+## Later: update, diagnostics and uninstall {#later-update-and-uninstall}
 
 ```powershell
-& 'C:\NeoDesk\neodesk.ps1' -Update
-& 'C:\NeoDesk\neodesk.ps1' -Uninstall
+powershell -NoProfile -ExecutionPolicy Bypass -File C:\NeoDesk\neodesk.ps1 -Update
+powershell -NoProfile -ExecutionPolicy Bypass -File C:\NeoDesk\neodesk.ps1 -Uninstall
 ```
+
+Without a parameter the script opens its menu. **Diagnostics** there shows the
+server process, the database, the ports, and whether the API and the console answer.
 
 `-Uninstall` stops and removes the service or the scheduled task. It asks whether
 to make a backup first and whether to delete `C:\NeoDesk` and
 `C:\NeoDeskConsole`. With `-Auto` added it makes the backup and keeps both
 folders; with `-Purge` added it deletes them. Updates are covered in
 [Updating](/docs/operations/updating).
+
+These stay after an uninstall, also with `-Purge`:
+
+- The firewall rules whose names start with `NeoDesk - `. Remove them with
+  `Remove-NetFirewallRule -DisplayName "NeoDesk - *"`.
+- `C:\NeoDesk-Backups`, with the database, the key pair and the API key of
+  every backup. Delete it by hand when you no longer need it.
+- `C:\NeoDesk\bin` on the machine's `Path`, when you keep `C:\NeoDesk`.
 
 ## Build from the repository
 
