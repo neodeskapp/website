@@ -24,6 +24,12 @@ The address depends on how you installed NeoDesk:
 Linux and Windows installs made with 3.6.0-rc.4 or older keep port 5000 instead
 of 3375.
 
+On Linux and Windows, `http://<server-address>:3375` redirects to port 5443 at
+the address the installer saved, usually the server's public IP address. Behind
+a router without hairpin NAT, that address doesn't answer from inside the
+network. There, open `https://<lan-address>:5443` directly: the self-signed
+certificate covers the server's LAN address too.
+
 The Linux and Windows scripts use a self-signed certificate for HTTPS, so the
 browser warns about it the first time. That is expected for a new install. A
 reverse proxy with a real certificate removes the warning, see
@@ -39,6 +45,10 @@ Type `admin` under **Username**, the password from the install under
 - Docker: [the credentials command](/docs/getting-started/docker#get-the-admin-password)
 - Linux: [the box the script printed](/docs/getting-started/linux#admin-credentials)
 - Windows: [the box the script printed](/docs/getting-started/windows#admin-credentials)
+
+The install shows the password only once. If you lost it, set a new one as
+[Forgot the admin password](/docs/operations/troubleshooting#forgot-the-admin-password)
+describes.
 
 The console opens on **Overview**. By default a session ends after 30 minutes
 without activity, and 24 hours after you signed in at the latest. The console
@@ -151,7 +161,7 @@ From left to right:
   connect to devices.
 - **Chat** opens the chat panel over the page you are on, with the number of
   unread messages, see [Chat](/docs/console/chat). It shows for accounts with
-  **Support chat** or **Team chat**.
+  the permission **Answer support chat** or **Use team chat**.
 - **Notifications** lists new help requests and devices that ask to join.
 - **Help**, the book icon, opens a panel with **Show the setup guide** (for
   accounts that may see the guide), **Keyboard shortcuts**, **Platform

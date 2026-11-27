@@ -20,7 +20,7 @@ Die Software oder Bridge des Geräts entscheidet, wie es sich beim Gateway anmel
 - **Ein API-Schlüssel** des Servers.
 - **Ein Gerätetoken**, der zu diesem Gerät gehört. Das Gerät muss schon auf dem Server sein und darf nicht gesperrt, deaktiviert oder gelöscht sein.
 
-Ein Gerät, das sich mit einem Konto oder einem API-Schlüssel anmeldet, tritt dem Server unter der ID bei, die es angibt; die Rolle dieses Kontos oder Schlüssels braucht deshalb die Berechtigung **Registrierungen genehmigen**. Eine ID, die ein anderes Konto oder ein anderer Schlüssel registriert hat, wird abgelehnt, ebenso ein gesperrtes Gerät.
+Ein Gerät, das sich mit einem Konto oder einem API-Schlüssel anmeldet, tritt dem Server unter der ID bei, die es angibt; die Rolle dieses Kontos oder Schlüssels braucht deshalb die Berechtigung **Beitrittsanfragen genehmigen**. Eine ID, die ein anderes Konto oder ein anderer Schlüssel registriert hat, wird abgelehnt, ebenso ein gesperrtes Gerät.
 
 Ein angemeldetes Gerät erscheint auf der Seite **IoT-Geräte**, solange es verbunden ist, und in [der Geräteliste](/docs/console/devices) mit dem Namen und dem Typ, die es angegeben hat.
 

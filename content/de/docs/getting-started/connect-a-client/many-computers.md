@@ -18,7 +18,7 @@ beides und was passiert, wenn viele neue Geräte auf einmal beitreten.
    Computer seinen eigenen Namen behält.
 3. Wähle unter **Kann benutzt werden** eine der Optionen **5-mal**, **25-mal**
    oder **Bis zum Ablauf**, und unter **Gilt für**, wie lange der Link gilt:
-   1, 7 oder 30 Tage.
+   1, 7 oder 30 Tage. Auch **Bis zum Ablauf** endet nach 1000 Computern.
 4. Wähle **Einladung erstellen** und schick den Link an die Leute an den
    Computern.
 
@@ -94,7 +94,12 @@ Passwort für unbeaufsichtigten Zugriff, siehe
 Die Konsole hat nur für Windows ein Installationsskript. Auf anderen Systemen
 übergibst du die Konfigurationszeichenfolge in deinem eigenen Skript an die
 RustDesk-Option `--config`, oder die Leute importieren sie selbst in den
-Netzwerkeinstellungen von RustDesk.
+Netzwerkeinstellungen von RustDesk. Unter Linux braucht die Option
+Root-Rechte. Setze die Konfigurationszeichenfolge für `<config-string>` ein:
+
+```bash
+sudo rustdesk --config '<config-string>'
+```
 
 Für Skripte, die den Schlüssel des Servers aus einer Datei lesen, gibt es unter
 **Geräte**, **Computer hinzufügen**, **Manuelle Einrichtung** im Bereich
@@ -123,7 +128,11 @@ Einstellungen läuft. Was dann passiert, hängt vom Beitrittsmodus ab:
 Eine neue Installation startet im Modus **Verwaltet**. Für einen großen
 Rollout normaler Clients kannst du auf **Offen** umstellen, solange die
 Computer beitreten, und zurück auf **Verwaltet**, wenn alle da sind: Ein Gerät,
-das der Server schon kennt, kann sich in jedem Modus neu registrieren. Siehe
+das der Server schon kennt, kann sich in jedem Modus neu registrieren. Stelle
+um, bevor die Computer die neuen Einstellungen bekommen. Ein Computer, der
+beim Umstellen schon wartete, verbindet sich, bleibt aber unter
+**Beitrittsanfragen** als wartend stehen und kann keine Sitzung zu einem
+anderen Gerät starten, bis jemand ihn genehmigt. Siehe
 [Den Modus ändern](/docs/console/enrollment#changing-the-mode) und
 [Ein Gerät genehmigen](/docs/console/enrollment#approving-a-device).
 

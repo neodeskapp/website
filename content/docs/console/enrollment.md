@@ -25,7 +25,7 @@ The mode applies to RustDesk clients. New mesh agents wait for approval in the s
 
 ### Changing the mode
 
-Change it under **Devices**, **Add computers**, on the **Device tokens** tab, under **Join mode**. The mode is saved as soon as you pick it. The tab needs permission to manage enrollment: Super admin, Server admin and Global admin accounts have it by default.
+Change it under **Devices**, **Add computers**, on the **Device tokens** tab, under **Join mode**. The mode is saved as soon as you pick it. The tab needs the permission **Manage joining**: Super admin, Administrator, Server admin and Global admin accounts have it by default.
 
 The change applies right away to devices that join from then on. Devices already on the server keep working.
 
@@ -35,7 +35,7 @@ For accounts with that permission, **Join requests** has **Change the join mode*
 `ENROLLMENT_MODE_ENV_OVERRIDE=Y` in the server's environment makes the server apply `ENROLLMENT_MODE` at every start, over the mode saved in the console. A change made in the console then lasts only until the next restart. See [Configuration](/docs/operations/configuration#security).
 :::
 
-If you switch to **Open** while RustDesk clients are waiting, those devices can connect the next time they try, whether you approve them or not; approving them still sets their name and folder. If you switch to **Locked**, the waiting ones stay blocked until you approve them. The side column says so while it applies.
+If you switch to **Open** while RustDesk clients are waiting, those devices connect the next time they try and can be reached, but they stay in the list as **Waiting** and can't start a session to another device until you approve them. RustDesk then shows "ID does not exist". Approve them to let them start sessions and to set their name and folder. If you switch to **Locked**, the waiting ones stay blocked until you approve them. The side column says so while it applies.
 
 ## The list
 
@@ -43,7 +43,7 @@ The buttons above the list pick what it shows: **Waiting**, **Approved**, **Reje
 
 | Column | Shows |
 |---|---|
-| **Device** | The name the device sent, or **No name sent**, and its ID |
+| **Device** | The name the device sent, or **No name sent**, and its ID. A stock RustDesk client sends no name before it is approved, so compare the ID with the one in the RustDesk window on the computer. |
 | **Platform** | The operating system and the client version |
 | **IP address** | The address the request came from |
 | **Came in via** | **RustDesk client**, **Local network** or **Mesh agent** |
@@ -54,7 +54,7 @@ On most screens **IP address** and **Came in via** are hidden; click a row to se
 
 **Local network** means a client that found this server through discovery on the local network and asked for its settings. **RustDesk client** means a RustDesk client that registered with the server while approval was required.
 
-Each row also has a menu with **Copy ID**. For a decided **Local network** request it has **Delete record**, which removes the request from the list and changes nothing on the device; that needs permission to manage enrollment, the same one **Device tokens** needs.
+Each row also has a menu with **Copy ID**. For a decided **Local network** request it has **Delete record**, which removes the request from the list and changes nothing on the device; that needs **Manage joining**, the same permission **Device tokens** needs.
 
 ## Approving a device
 
@@ -88,4 +88,4 @@ In **Managed** mode, a device that waits for approval can't be reached by anyone
 
 ## Who can approve
 
-Approving and rejecting needs permission to approve devices. By default Super admin and Global admin accounts have it; Remote operator, Viewer and Server admin accounts don't. Accounts without it don't see **Join requests** in the sidebar. An administrator can change the defaults, see [Users and roles](/docs/people/users-and-roles).
+Approving and rejecting needs the permission **Approve join requests**. By default Super admin, Administrator and Global admin accounts have it; Remote operator, Viewer and Server admin accounts don't. Accounts without it don't see **Join requests** in the sidebar. An administrator can change the defaults, see [Users and roles](/docs/people/users-and-roles).

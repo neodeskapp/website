@@ -27,6 +27,40 @@ Windows oder in Docker.
   PostgreSQL, siehe
   [Die Geräteliste auf PostgreSQL behalten](#keep-the-device-list-on-postgresql).
 
+Die Relay-Adresse wird nicht von selbst übernommen. hbbs ohne `-r` schickte
+die Clients zum Relay unter der Adresse, die sie benutzten. Die Installer von
+NeoDesk geben den Clients dagegen die öffentliche IP-Adresse, die sie
+ermitteln. Erreichen deine Clients den alten Server unter einer LAN-Adresse
+oder einem Namen, gehen weitergeleitete Sitzungen dann an die öffentliche
+Adresse, und das klappt aus dem eigenen Netz oft nicht. Gib dem Installer die
+Adresse, die deine Clients heute nutzen, siehe
+[Die Relay-Adresse](#the-relay-address).
+
+## Die Relay-Adresse {#the-relay-address}
+
+Gib bei der Installation die Adresse an, die deine Clients als ID-Server
+eingetragen haben, anstelle von `<old-server-address>`. Jeder Installer
+schreibt die Option etwas anders:
+
+```bash
+# Docker, mit der Installation in einer Zeile
+curl -fsSL https://neode.sk/install.sh | sudo bash -s -- --relay-servers <old-server-address>
+# Linux
+curl -fsSL https://neode.sk/neodesk.sh | sudo bash -s -- --relay-servers <old-server-address>
+```
+
+```powershell
+# Windows
+.
+eodesk.ps1 -RelayServers <old-server-address>
+```
+
+`neodesk-docker.sh` nimmt sie als `--relay <old-server-address>`. Bei einer
+interaktiven Installation unter Linux oder Windows kannst du auch
+**Custom address** wählen, wenn das Skript nach dem Relay fragt. Für einen
+Server, den nur Clients im selben Netz nutzen, nimmt `--relay-mode local`
+(`-RelayMode local` unter Windows) stattdessen die LAN-Adresse des Servers.
+
 ## Bevor du anfängst {#before-you-start}
 
 1. Kopiere den Datenordner des alten Servers an einen sicheren Ort, mit
@@ -106,9 +140,11 @@ außerdem bei jedem Start in sein Log, als `Server public key: <key>`.
 
 Installiere NeoDesk wie in
 [Installation mit Docker](/docs/getting-started/docker) beschrieben. Beim
-ersten Start erzeugt es ein eigenes Schlüsselpaar. Ersetze es durch das alte
-und starte den Container neu. Führe diese Befehle in dem Ordner aus, in dem
-die alten Schlüsseldateien liegen:
+ersten Start erzeugt es ein eigenes Schlüsselpaar, und der Installer gibt
+diesen neuen Schlüssel unter **Key** aus: Gib ihn nicht an Clients weiter.
+Ersetze ihn gleich nach der Installation durch den alten und starte den
+Container neu. Führe diese Befehle in dem Ordner aus, in dem die alten
+Schlüsseldateien liegen:
 
 ```bash
 docker exec -i -u neodesk neodesk sh -c 'umask 077; cat > /opt/neodesk/data/id_ed25519' < id_ed25519
@@ -124,6 +160,11 @@ den alten öffentlichen Schlüssel hat:
 docker exec -u neodesk neodesk cat /opt/neodesk/data/id_ed25519.pub
 ```
 
+Clients, die den Server zwischen Installation und Neustart erreichen,
+erscheinen schon unter **Beitrittsanfragen**. Das schadet nicht: Sie bleiben
+dort, und du genehmigst sie wie unten beschrieben, sobald der alte Schlüssel
+an seinem Platz ist.
+
 ## Die Clients wieder hereinlassen {#let-the-clients-back-in}
 
 Eine neue Installation startet im Beitrittsmodus **Verwaltet**. Für
@@ -131,28 +172,54 @@ NeoDesk sind deine RustDesk-Clients neue Geräte, also wartet jedes unter
 **Geräte**, **Beitrittsanfragen**, bis jemand es genehmigt. Bis dahin kann
 es niemand erreichen, und es kann keine Sitzung starten.
 
-Es gibt zwei Wege, die Clients hereinzulassen:
+Genehmige jedes Gerät unter **Beitrittsanfragen**. Ein normaler
+RustDesk-Client schickt vor der Genehmigung keinen Namen, seine Anfrage zeigt
+also **Kein Name übermittelt**, seine ID und die Adresse, von der sie kam.
+Unterscheide die Geräte an der ID: Es ist die ID, die das RustDesk-Fenster auf
+jedem Rechner zeigt, und dieselbe, die der alte Server kannte. Gib jedem Gerät
+beim Genehmigen seinen Namen.
 
-- Genehmige jedes Gerät unter **Beitrittsanfragen**.
-- Stelle auf **Offen** um, solange die Clients zurückkommen, und danach wieder
-  auf **Verwaltet**. Wartende Geräte verbinden sich beim nächsten Versuch, und
-  ein Gerät, das der Server kennt, kann sich in jedem Modus neu registrieren.
-  Nimm diesen Weg, wenn du mehr als 1000 Clients hast: Die Warteschlange fasst
-  höchstens 1000 wartende Geräte und weist den Rest ohne Anfrage ab.
+Die Warteschlange fasst höchstens 1000 wartende Geräte und weist neue ab,
+solange sie voll ist. Ein abgewiesenes Gerät fragt wieder an. Hast du mehr
+Clients, genehmige also die wartenden, und der Rest kommt nach, sobald Platz
+frei wird.
 
-Siehe [Den Modus ändern](/docs/console/enrollment#changing-the-mode).
+::: warning
+Stelle nicht auf **Offen** um, um die wartenden Clients hereinzulassen. Ein
+Gerät, das beim Umstellen wartete, verbindet sich und ist erreichbar, bleibt
+aber unter **Beitrittsanfragen** als wartend stehen und kann keine Sitzung zu
+einem anderen Gerät starten, bis jemand es genehmigt. RustDesk zeigt dann
+„ID does not exist“ (im deutschen Client „Diese ID existiert nicht.“).
+:::
 
-Der **API-Server** der Clients kann leer bleiben, wie ihn eine
-RustDesk-Server-Einrichtung meist lässt, oder `http://<server-address>:21121`
-sein; beides funktioniert. Siehe
+Siehe [Ein Gerät genehmigen](/docs/console/enrollment#approving-a-device).
+
+## Den API-Server auf den Clients eintragen {#set-the-api-server-on-the-clients}
+
+Bei einer RustDesk-Server-Einrichtung bleibt der **API-Server** der Clients
+meist leer. Trage auf jedem Client `http://<server-address>:21121` ein, oder
+gib den Clients die Konfigurationszeichenfolge aus der Konsole, siehe
 [Einen RustDesk-Client verbinden](/docs/getting-started/connect-a-client#get-the-four-values).
+
+Bleibt **API-Server** leer, schickt ein normaler RustDesk-Client seine
+API-Aufrufe an Port 21114 auf dem Host des ID-Servers. NeoDesk beantwortet sie
+auf 21121, und keiner der Installer öffnet 21114 für Clients. Das Gerät
+verbindet sich dann und ist erreichbar, aber die Konsole bekommt nie seinen
+Namen, sein Betriebssystem oder seine Version, und die Anmeldung im Client und
+sein Adressbuch funktionieren nicht.
 
 ## Die Geräteliste auf PostgreSQL behalten {#keep-the-device-list-on-postgresql}
 
-Bei einer Installation, die auf PostgreSQL läuft, kann der Installer die
-Geräte aus der Datenbank von RustDesk in die von NeoDesk kopieren. Ein
-kopiertes Gerät gilt als bekannt: Es registriert sich in jedem Modus ohne
-Genehmigung neu und erscheint unter **Geräte**, bevor es sich verbindet.
+Bei einer Installation unter Linux oder Windows, die auf PostgreSQL läuft,
+kann der Installer die Geräte aus der Datenbank von RustDesk in die von
+NeoDesk kopieren. Ein kopiertes Gerät gilt als bekannt: Es registriert sich in
+jedem Modus ohne Genehmigung neu und erscheint unter **Geräte**, bevor es sich
+verbindet.
+
+Bei Docker und bei Installationen auf SQLite gibt es keinen Weg, die
+Geräteliste in den laufenden Server zu kopieren. Die Geräte kommen zurück,
+wenn sie sich verbinden, und jedes wartet wie oben beschrieben unter
+**Beitrittsanfragen**.
 
 1. Starte den Installer. Unter Linux:
 

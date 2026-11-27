@@ -18,7 +18,7 @@ page covers both, and what happens when many new devices join at once.
    one keeps its own name.
 3. Under **Can be used**, choose **5 times**, **25 times** or
    **Until it expires**, and under **Works for** how long the link works:
-   1, 7 or 30 days.
+   1, 7 or 30 days. **Until it expires** still ends after 1000 computers.
 4. Choose **Create invite** and send the link to the people at the computers.
 
 Each computer that opens the link gets the NeoDesk client: a download on
@@ -87,7 +87,12 @@ unattended access, see
 
 The console has an install script for Windows only. On other systems, pass the
 config string to RustDesk's `--config` option in your own script, or have
-people import it in the RustDesk network settings.
+people import it in the RustDesk network settings. On Linux the option needs
+root. Put the config string in place of `<config-string>`:
+
+```bash
+sudo rustdesk --config '<config-string>'
+```
 
 For scripts that read the server's key from a file, **Devices**,
 **Add computers**, **Manual setup** has **Download key file** under
@@ -114,7 +119,10 @@ happens then depends on the join mode:
 A new install starts in **Managed**. For a large rollout of stock clients you
 can switch to **Open** while the computers join and back to **Managed** when
 they are all there: a device the server already knows can register again in
-every mode. See
+every mode. Switch before the computers get the new settings. A computer that
+was already waiting when you switch connects, but it stays under
+**Join requests** as waiting and can't start a session to another device until
+someone approves it. See
 [Changing the mode](/docs/console/enrollment#changing-the-mode) and
 [Approving a device](/docs/console/enrollment#approving-a-device).
 

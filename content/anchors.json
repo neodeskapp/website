@@ -1249,7 +1249,9 @@
 		"on-linux-or-windows",
 		"in-docker",
 		"let-the-clients-back-in",
-		"keep-the-device-list-on-postgresql"
+		"keep-the-device-list-on-postgresql",
+		"the-relay-address",
+		"set-the-api-server-on-the-clients"
 	],
 	"getting-started/windows": [
 		"requirements",

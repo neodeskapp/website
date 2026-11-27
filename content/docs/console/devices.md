@@ -101,9 +101,10 @@ The bulk actions skip deleted devices and RDP/VNC targets in the selection.
 
 Each row has a menu at its end (the three dots); a right-click on the row opens it too. It holds only what your account may do with that device:
 
-- **Web remote**, **Guest access link**, **CDAP snapshot viewer** and **Connect via desktop client**. What each one does and needs is in [Device details and connecting](/docs/console/device-details#connecting).
+- **Web remote**, **Guest access link**, **CDAP snapshot viewer**, **Open in NeoDesk** and **Open in RustDesk**. What each one does and needs is in [Device details and connecting](/docs/console/device-details#connecting).
 - **Details** opens the panel, **Edit** opens it ready to edit.
 - **Manage tags**, **Manage groups** and **Move to folder**.
+- **Saved sign-in** keeps a Windows account's name and password for the device, see [Saved sign-in](/docs/console/saved-sign-in).
 - **Change ID** gives the device a new ID of 6 to 16 letters, digits, dashes and underscores on the server. The server sends the new ID to the device when it is online at that moment, and the NeoDesk client takes it on. A NeoDesk client that is offline then, and a stock RustDesk client, keep their old ID until you set the new one in the client by hand. Where you can, change the ID in the client on the device instead. For a device that is online the console warns first.
 - **Issue a new token** ends the device's current device token. The device gets a new one the next time it checks in, by proving its key with a signature that carries the time. A device whose clock is more than 5 minutes off the server's gets no new token. Stock RustDesk clients don't use device tokens.
 - **Ban** or **Unban**, and **Delete**, described below.
@@ -139,8 +140,8 @@ Everyone who may see devices can search, filter and open the list. The rest depe
 
 | Action | Roles |
 |---|---|
-| Edit, tags, folders, groups, **Move to folder**, **Issue a new token** | Super admin, Global admin, Remote operator |
-| **Guest access link** | Super admin, Global admin, Remote operator |
-| **Ban**, **Delete**, **Change ID** | Super admin, Global admin |
-| **Add a computer** | Super admin, Global admin |
-| **Add RDP/VNC target** | Super admin, Global admin |
+| Edit, tags, folders, groups, **Move to folder**, **Issue a new token** | Super admin, Administrator, Global admin, Remote operator |
+| **Guest access link** | Super admin, Administrator, Global admin, Remote operator |
+| **Ban**, **Delete**, **Change ID** | Super admin, Administrator, Global admin |
+| **Add a computer** | Super admin, Administrator, Global admin |
+| **Add RDP/VNC target** | Super admin, Administrator, Global admin |

@@ -22,6 +22,13 @@ Die Adresse hängt davon ab, wie du NeoDesk installiert hast:
 Installationen unter Linux und Windows, die mit 3.6.0-rc.4 oder älter gemacht
 wurden, behalten Port 5000 statt 3375.
 
+Unter Linux und Windows leitet `http://<server-address>:3375` auf Port 5443
+unter der Adresse weiter, die der Installer gespeichert hat, meist die
+öffentliche IP-Adresse des Servers. Hinter einem Router ohne Hairpin-NAT
+antwortet diese Adresse aus dem eigenen Netz nicht. Öffne dort direkt
+`https://<lan-address>:5443`: Das selbstsignierte Zertifikat gilt auch für die
+LAN-Adresse des Servers.
+
 Die Skripte für Linux und Windows nutzen für HTTPS ein selbstsigniertes
 Zertifikat, deshalb warnt der Browser beim ersten Mal. Bei einer neuen
 Installation ist das zu erwarten. Ein Reverse Proxy mit einem echten
@@ -39,6 +46,10 @@ Installation es hinterlegt hat:
 - Docker: [der Befehl für die Zugangsdaten](/docs/getting-started/docker#get-the-admin-password)
 - Linux: [der Kasten, den das Skript ausgegeben hat](/docs/getting-started/linux#admin-credentials)
 - Windows: [der Kasten, den das Skript ausgegeben hat](/docs/getting-started/windows#admin-credentials)
+
+Die Installation zeigt das Passwort nur einmal. Hast du es verloren, setze ein
+neues, wie es [Admin-Passwort vergessen](/docs/operations/troubleshooting#forgot-the-admin-password)
+beschreibt.
 
 Die Konsole öffnet sich auf **Übersicht**. Standardmäßig endet eine Sitzung
 nach 30 Minuten ohne Aktivität und spätestens 24 Stunden nach der Anmeldung.
@@ -161,7 +172,8 @@ Von links nach rechts:
   Konten, die sich mit Geräten verbinden dürfen.
 - **Chat** öffnet den Chat-Bereich über der Seite, auf der du bist, mit der
   Zahl der ungelesenen Nachrichten, siehe [Chat](/docs/console/chat). Die
-  Schaltfläche erscheint für Konten mit **Support-Chat** oder **Team-Chat**.
+  Schaltfläche erscheint für Konten mit der Berechtigung **Support-Chat beantworten** oder
+  **Team-Chat nutzen**.
 - **Benachrichtigungen** listet neue Hilfeanfragen und Geräte, die beitreten
   möchten.
 - **Hilfe**, das Buch-Symbol, öffnet einen Bereich mit

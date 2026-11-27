@@ -27,7 +27,7 @@ The panel shows only the tabs that apply to the device:
 
 ### Overview
 
-When the device is banned, a notice at the top says when and by whom, and the reason if one was given. When the computer came back with a new key, for example after a reinstall, a **New key** notice follows. After a refused invite it names the computer, its address, the time and the new key's fingerprint, and offers **Approve new key** to accounts with **Approve enrollment**; otherwise it says that the server doesn't accept the new key. See [A reinstalled or reset computer](/docs/console/add-a-computer#a-reinstalled-or-reset-computer). Then come these sections:
+When the device is banned, a notice at the top says when and by whom, and the reason if one was given. When the computer came back with a new key, for example after a reinstall, a **New key** notice follows. After a refused invite it names the computer, its address, the time and the new key's fingerprint, and offers **Approve new key** to accounts with **Approve join requests**; otherwise it says that the server doesn't accept the new key. See [A reinstalled or reset computer](/docs/console/add-a-computer#a-reinstalled-or-reset-computer). Then come these sections:
 
 - **Current load**: **CPU**, **Memory** and **Disk** as bars, **Network** with what the device receives and sends per second, and under **Updated** the time of these values. [Usage data](#usage-data) says which clients send them and what the section says when they don't.
 - **Identity**: **ID**, **Display name**, **Hostname**, **Username**, **Platform** and, when the device sent them, its UUID, **Client version** and **Capabilities**.
