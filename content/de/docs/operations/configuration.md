@@ -58,16 +58,10 @@ sudo neodesk-setup --set-config TRUST_PROXY=Y --set-config LOG_LEVEL=info
 
 ## Windows {#windows}
 
-Der Installer registriert `NeoDeskServer`, einen Windows-Dienst, wenn NSSM installiert ist, sonst eine geplante Aufgabe. Seine env-Datei ist `C:\NeoDeskConsole\.env`, und Dienst oder Aufgabe setzen `NEODESK_ENV_FILE`, `GO_API_PORT=21114` und `MESH_ENABLED=Y` selbst. Bearbeite die Datei und starte den Server danach neu. Als Dienst:
+Der Installer registriert den Windows-Dienst `NeoDeskServer`. Seine env-Datei ist `C:\NeoDeskConsole\.env`. Der Dienst setzt ein paar Variablen selbst, im Wert `Environment` seines Registry-Schlüssels `HKLM\SYSTEM\CurrentControlSet\Services\NeoDeskServer`, und die gehen der env-Datei vor: `NEODESK_ENV_FILE`, `NEODESK_SUPERVISOR`, `GO_API_PORT=21114`, `MESH_ENABLED=Y` und die Verbindungsstrategie aus der Installation. Bearbeite die env-Datei und starte den Dienst danach neu:
 
 ```powershell
 Restart-Service NeoDeskServer
-```
-
-Ohne NSSM läuft er als geplante Aufgabe. Beende den Server, und die Aufgabe startet ihn wieder:
-
-```powershell
-Stop-Process -Name neodesk-server -Force
 ```
 
 In PowerShell als Administrator ändert dieser Befehl Einstellungen der Vorlage, wie `--set-config` unter Linux:
@@ -156,6 +150,7 @@ Die ersten sechs liefern die Anfangswerte für **Verbindungsstrategie** unter **
 | `PANEL_TRUST_SECRET`, `PANEL_TRUST_ALLOWED_HOSTS` | aus | | Ein gemeinsames Geheimnis mit mindestens 32 Zeichen. Damit erreichen die Änderungen der Konsole an Gerätegruppen die API als das angemeldete Konto statt als der API-Schlüssel der Konsole. Außerdem nimmt der API-Port dann Anfragen, die mit diesem Geheimnis signiert sind, vom selben Rechner oder von den Adressen in `PANEL_TRUST_ALLOWED_HOSTS` an, als das Konto, das sie nennen. Lass die Variable ungesetzt, außer ein Programm von dir signiert Anfragen auf diese Weise. |
 | `REMOTE_TARGET_VAULT_KEY` | | | Verschlüsselt gespeicherte RDP- und VNC-Zugangsdaten. Ohne diese Variable ist dieser Speicher aus. Die Installer schreiben einen Schlüssel in die env-Datei; Docker erzeugt beim ersten Start einen und legt ihn im Datenvolume als `.remote_target_vault_key` ab. |
 | `WS_ALLOWED_ORIGINS`, `API_WS_ALLOWED_ORIGINS` | | | Kommagetrennte Origins von Browserseiten, die WebSockets auf den Ports des Servers öffnen dürfen: `WS_ALLOWED_ORIGINS` für ID-Server und Relay, `API_WS_ALLOWED_ORIGINS` für den Event-Stream der API. Ist die Variable leer, nehmen ID-Server und Relay nur Seiten von localhost an und der Event-Stream nur Seiten von seinem eigenen Host. RustDesk-Clients senden keinen Origin und sind nicht betroffen. |
+| `API_ALLOW_FROM` | | | IP-Adressen und CIDR-Bereiche durch Kommas getrennt, etwa `192.0.2.10,198.51.100.0/24`, die unter Linux und Windows auf 21114 neben diesem Rechner die ganze API bekommen. Andere Rechner bekommen dort nur die Client-API. Für Skripte, SDK-Clients und Monitoring auf anderen Rechnern. Siehe [Der API-Port unter Linux und Windows](/docs/operations/ports#the-api-port-on-linux-and-windows). |
 | `METRICS_IP_ALLOWLIST`, `METRICS_PUBLIC` | | | Wer `/metrics` und `/api/health/detail` auf dem API-Port ohne API-Schlüssel lesen darf. Siehe [Monitoring](/docs/operations/monitoring#prometheus-metrics). |
 | `BLOCKLIST_FILE` | `blocklist.txt` neben der Schlüsseldatei | `-blocklist` | Datei mit IP-Adressen, Adressbereichen und Geräte-IDs, die abgewiesen werden. Siehe [Härtung](/docs/operations/security#block-addresses-and-devices). |
 | `AUDIT_LOG_FILE` | | `-audit-log` | Schreibt die Audit-Ereignisse des Servers als JSON-Zeilen in diese Datei. Siehe [Monitoring](/docs/operations/monitoring#audit-entries). |

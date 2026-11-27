@@ -13,7 +13,7 @@ Der NeoDesk-Server hat eine einzige HTTP-API. Die Web-Konsole, die RustDesk-Clie
 | Linux und Windows | `http://<server-address>:21114` |
 | Docker | `http://<server-address>:21121` |
 
-Unter Linux und Windows beantwortet die Konsole die Client-API von RustDesk auf 21121 und reicht nur die Client-Pfade an 21114 weiter (siehe [Die Client-API](#the-client-api)). Alles andere auf dieser Seite braucht deshalb 21114. Rufe die API vom Server selbst aus auf oder öffne den Port in der Firewall für die Rechner, die ihn brauchen. Siehe [Der API-Port unter Linux und Windows](/docs/operations/ports#the-api-port-on-linux-and-windows).
+Unter Linux und Windows beantwortet die Konsole die Client-API von RustDesk auf 21121 und reicht nur die Client-Pfade an 21114 weiter (siehe [Die Client-API](#the-client-api)). Alles andere auf dieser Seite braucht deshalb 21114. Dort bekommen Aufrufer von anderen Rechnern nur die Client-API; der Rest antwortet 404. Rufe die API vom Server selbst aus auf oder trag die Adressen der Rechner, die sie brauchen, in `API_ALLOW_FROM` ein, IPs und CIDR-Bereiche durch Kommas getrennt, und starte den Server neu. Siehe [Der API-Port unter Linux und Windows](/docs/operations/ports#the-api-port-on-linux-and-windows).
 
 Die API spricht unverschlüsseltes HTTP. Mit `TLS_API=Y` und einem Zertifikat in `TLS_CERT` und `TLS_KEY` spricht sie stattdessen HTTPS. Für ein Zertifikat, dem die Clients vertrauen, setze einen Reverse Proxy davor, wie unter [HTTPS für die Client-API](/docs/operations/reverse-proxy-tls#https-for-the-client-api) gezeigt. Mit `FORCE_HTTPS=Y` lehnt die API unverschlüsseltes HTTP mit 403 ab, außer ein vertrauenswürdiger Proxy meldet `X-Forwarded-Proto: https`.
 

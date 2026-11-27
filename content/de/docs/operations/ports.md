@@ -17,7 +17,7 @@ RustDesk-Clients erreichen den Server über eine Handvoll Ports, und die Web-Kon
 | 21118 | TCP | RustDesk-Clients, die auf WebSocket eingestellt sind: der ID-Server | Nur für solche Clients |
 | 21119 | TCP | RustDesk-Clients, die auf WebSocket eingestellt sind: das Relay | Nur für solche Clients |
 | 21121 | TCP (HTTP) | RustDesk-Clients: die Client-API, für Systeminformationen, Anmeldung und das Adressbuch | Ja |
-| 21114 | TCP (HTTP) | Docker: die Client-API für RustDesk-Clients, deren **API-Server** leer ist. Linux und Windows: die eigene API des Servers, mit `/metrics` für Prometheus; die Konsole reicht die Aufrufe der Client-API von 21121 innerhalb des Servers an sie weiter | Docker: ja, für Clients ohne API-Server-Einstellung; die Compose-Datei veröffentlicht ihn. Linux und Windows: nur von einem Prometheus-Server, der `/metrics` liest; die Installer öffnen den Port nicht |
+| 21114 | TCP (HTTP) | RustDesk-Clients, deren **API-Server** leer ist: die Client-API. Unter Linux und Windows auch die eigene API des Servers, die nur dieser Rechner und die Adressen in `API_ALLOW_FROM` ganz bekommen | Ja, für Clients ohne API-Server-Einstellung. Die Installer öffnen ihn |
 | 21122 | TCP | CDAP-Geräte-Agents | Nur, wenn du sie nutzt |
 | 3375 | TCP (HTTP) | Browser: die Web-Konsole und Remote Desktop im Browser | Nur über einen Reverse Proxy mit TLS |
 | 5443 | TCP (HTTPS) | Browser: die Konsole, wenn sie HTTPS selbst ausliefert | Nur, wenn kein Reverse Proxy davor steht |
@@ -41,14 +41,23 @@ Bis 3.6.0-rc.4 war der Standardport der Konsole 5000. Welche Installationen gewe
 
 ### Der API-Port unter Linux und Windows {#the-api-port-on-linux-and-windows}
 
-Clients nutzen 21121 bei jeder Installationsart. Unter Docker lauscht dort die API des Servers selbst. Bei einer Installation unter Linux oder Windows lauscht die API des Servers auf 21114, und die Konsole beantwortet die Client-API auf 21121 und reicht sie an 21114 weiter. Die Installer öffnen 21121, und die Konsole gibt den Clients `http://<server-address>:21121` als API-Server. **Was Clients jetzt erhalten** unter **Einstellungen**, **Allgemein** zeigt die Adresse, die gerade gilt.
+Clients nutzen 21121 bei jeder Installationsart. Unter Docker lauscht dort die API des Servers selbst. Bei einer Installation unter Linux oder Windows lauscht die API des Servers auf 21114, und die Konsole beantwortet die Client-API auf 21121 und reicht sie an 21114 weiter. Die Konsole gibt den Clients `http://<server-address>:21121` als API-Server. **Was Clients jetzt erhalten** unter **Einstellungen**, **Allgemein** zeigt die Adresse, die gerade gilt.
 
-In einem normalen RustDesk-Client setzt du **API-Server** auf `http://<server-address>:21121`. Bleibt das Feld leer, schickt der Client seine API-Aufrufe an Port 21114 auf der Adresse des ID-Servers:
+Ein normaler RustDesk-Client, dessen **API-Server** leer ist, schickt seine API-Aufrufe an Port 21114 auf der Adresse des ID-Servers. Jede Installationsart antwortet dort mit der Client-API: Anmeldung, Adressbuch, Heartbeats und Systeminformationen. Docker bedient die API auch auf 21114, und die Compose-Datei veröffentlicht den Port; eine eigene Compose-Datei braucht `- "21114:21114"` bei den Ports des Dienstes `neodesk`. Die Installer öffnen 21114 in der Firewall des Hosts. Eine Installation von davor öffnet ihn, wenn der Firewall-Schritt des Installers wieder läuft: Führ den Installer also erneut aus oder leg die Regel von Hand an. Wo auf 21114 keine API antwortet, verbindet sich das Gerät zwar, aber die Geräteliste zeigt es ohne Hostname, Betriebssystem und Version, und Anmeldung und Adressbuch im Client funktionieren nicht. **API-Server** auf `http://<server-address>:21121` zu setzen, funktioniert ebenfalls bei jeder Installationsart.
 
-- Docker antwortet dort: Lauscht die API auf einem anderen Port als 21114, bedient der Server sie auch auf 21114, und die Compose-Datei veröffentlicht diesen Port. Eine eigene Compose-Datei braucht `- "21114:21114"` bei den Ports des Dienstes `neodesk`.
-- Linux und Windows antworten dort nur, wenn 21114 in der Firewall offen ist. Das machen die Installer nicht, weil auf diesem Port die eigene API des Servers lauscht.
+Unter Linux und Windows gibt Port 21114 Aufrufern von anderen Rechnern nur die Client-API, mit denselben Pfaden, Ratenlimits und Größengrenzen wie 21121; alles andere antwortet 404. Die ganze API bekommen:
 
-Wo auf 21114 keine API antwortet, verbindet sich das Gerät zwar, aber die Geräteliste zeigt es ohne Hostname, Betriebssystem und Version, und Anmeldung und Adressbuch im Client funktionieren nicht.
+- dieser Rechner, damit Konsole, `neodesk` und Skripte auf dem Server selbst wie bisher funktionieren
+- die Adressen in `API_ALLOW_FROM`, IPs und CIDR-Bereiche durch Kommas getrennt, für Skripte, SDK-Clients und Monitoring auf anderen Rechnern
+- nur für `/metrics`, `/api/health/detail` und `/api/server/stats` die Adressen in `METRICS_IP_ALLOWLIST`, oder jede Adresse mit `METRICS_PUBLIC=Y`; siehe [Monitoring](/docs/operations/monitoring)
+
+Ein Skript, das die API mit einem API-Schlüssel von einem anderen Rechner aus aufruft, bekommt 404, bis seine Adresse in `API_ALLOW_FROM` steht. Setz sie in der env-Datei und starte den Server neu, mit der Adresse des Skripts, oder mehreren Adressen und Bereichen durch Kommas getrennt, statt `<script-address>`:
+
+```bash
+sudo neodesk-setup --set-config API_ALLOW_FROM=<script-address>
+```
+
+Ein Reverse Proxy auf demselben Rechner vor 21114 braucht `TRUST_PROXY` und `TRUSTED_PROXIES` mit der Adresse des Proxys. Ohne sie kommt jede Anfrage über ihn von diesem Rechner und bekommt die ganze API. Während der Server startet, antwortet die API auf 21114 Aufrufern von anderen Rechnern ein paar Sekunden lang mit 503 und `Retry-After`, und bleibt bei 503, wenn die Client-API nicht startet. Der Support-Chat eines Computers antwortet auf 21114 wie bisher jedem Aufrufer. Docker und Installationen mit `API_ENABLED=false` haben keinen eigenen Port für die Client-API, dort antwortet 21114 also jedem vollständig, wie 21121.
 
 Das selbst signierte Zertifikat der Installer wird auf 21121 nicht genutzt. Die Installer setzen `RUSTDESK_API_TLS=false` in der env-Datei, was den Port bei unverschlüsseltem HTTP hält, weil RustDesk-Clients kein selbst signiertes Zertifikat akzeptieren. Hast du in `SSL_CERT_PATH` und `SSL_KEY_PATH` ein Zertifikat, dem die Clients vertrauen, setze `RUSTDESK_API_TLS=auto`. Nach einem Neustart liefert 21121 dann HTTPS aus, und die Clients bekommen eine `https://`-Adresse.
 
@@ -70,6 +79,7 @@ Hinter einem Reverse Proxy muss der Proxy WebSocket-Upgrades für diese Pfade du
 Mit ufw:
 
 ```bash
+sudo ufw allow 21114/tcp
 sudo ufw allow 21115/tcp
 sudo ufw allow 21116/tcp
 sudo ufw allow 21116/udp
@@ -89,7 +99,7 @@ Füge `21118/tcp` und `21119/tcp` nur für Clients hinzu, die WebSocket nutzen, 
 Mit firewalld:
 
 ```bash
-sudo firewall-cmd --permanent --add-port=21115-21117/tcp
+sudo firewall-cmd --permanent --add-port=21114-21117/tcp
 sudo firewall-cmd --permanent --add-port=21116/udp
 sudo firewall-cmd --permanent --add-port=21121/tcp
 sudo firewall-cmd --permanent --add-port=3375/tcp
@@ -99,12 +109,12 @@ sudo firewall-cmd --reload
 
 Die Zeilen mit 3375 und 5443 sind für die Konsole, solange kein Reverse Proxy davor steht.
 
-Der Linux-Installer öffnet die Ports selbst, wenn ufw oder firewalld aktiv ist, und legt iptables-Regeln nur an, wenn keins von beiden installiert ist. Ein ufw oder firewalld, das installiert, aber ausgeschaltet ist, bleibt, wie es ist, ohne neue Regeln. Er öffnet 21115 bis 21117 über TCP, 21116 über UDP, den Port 21121 der Client-API, 21122, außer die env-Datei setzt `CDAP_ENABLED=N`, sowie den Port der Konsole (3375 bei einer neuen Installation) und, mit eingeschaltetem HTTPS, 5443. Ist `TRUST_PROXY` eingeschaltet, lässt er die Ports der Konsole geschlossen. Die Ports von ID-Server und Relay nimmt er aus der env-Datei, und am Ende gibt er die Liste für eine Firewall außerhalb des Rechners aus, etwa die deines Cloud-Anbieters.
+Der Linux-Installer öffnet die Ports selbst, wenn ufw oder firewalld aktiv ist, und legt iptables-Regeln nur an, wenn keins von beiden installiert ist. Ein ufw oder firewalld, das installiert, aber ausgeschaltet ist, bleibt, wie es ist, ohne neue Regeln. Er öffnet 21114 bis 21117 über TCP, 21116 über UDP, den Port 21121 der Client-API, 21122, außer die env-Datei setzt `CDAP_ENABLED=N`, sowie den Port der Konsole (3375 bei einer neuen Installation) und, mit eingeschaltetem HTTPS, 5443. Ist `TRUST_PROXY` eingeschaltet, lässt er die Ports der Konsole geschlossen. Die Ports von ID-Server und Relay nimmt er aus der env-Datei, und am Ende gibt er die Liste für eine Firewall außerhalb des Rechners aus, etwa die deines Cloud-Anbieters.
 
 Das Installationsskript für Docker, `neodesk-docker.sh`, öffnet seine Ports in ufw oder firewalld nur, wenn eines davon aktiv ist, bevor der Container startet, und legt keine iptables-Regeln an. `install.sh` überlässt ihm diesen Schritt, beide Wege machen also dasselbe. Es öffnet 21114 bis 21119, 21121 und 21122 über TCP sowie 21116 über UDP. Die Ports der Konsole öffnet es nach derselben Regel wie der Linux-Installer und liest dafür die Datei `.env`: 3375, dazu 5443 mit `HTTPS_ENABLED=true`, und keinen davon, wenn `TRUST_PROXY` eingeschaltet ist oder `NEODESK_CONSOLE_BIND=127.0.0.1` gesetzt ist. Mit `--domain` öffnet es stattdessen 80 und 443. Seine Regeln tragen den Kommentar „NeoDesk port ...“. Ein späterer Lauf schließt die Regeln, die es für nicht mehr bediente Ports angelegt hat, `--no-traefik` also 80 und 443, und `uninstall` schließt alle. Lässt es den Port der Konsole wegen `TRUST_PROXY` geschlossen, gibt es den Befehl aus, mit dem du ihn von Hand öffnest. `--skip-firewall`, bei beiden Skripten, oder `NEODESK_SKIP_FIREWALL=true` lässt ufw und firewalld, wie sie sind; siehe [Mit dem Skript installieren](/docs/getting-started/docker#install-with-the-script).
 
 ::: note
-Docker veröffentlicht Container-Ports über IPv4 mit eigenen Firewall-Regeln, und ufw filtert sie nicht. Besucher über IPv6 kommen durch die Firewall des Hosts, deshalb öffnet das Skript die Ports dort. Um die Konsole vom Netz fernzuhalten, veröffentliche sie nur auf der Loopback-Adresse: Setze `NEODESK_CONSOLE_BIND=127.0.0.1` in der Datei `.env` neben der Compose-Datei, oder `[::1]` für IPv6-Loopback, und erstelle den Container in diesem Ordner neu:
+Docker veröffentlicht Container-Ports über IPv4 mit eigenen Firewall-Regeln, und ufw filtert sie nicht. Mit dem IPv6-Netzwerk, das eine neue Installation ab Docker Engine 27 bekommt (`NEODESK_IPV6=true`), gilt dasselbe für IPv6, ein in ufw geschlossener Port ist also auf keinem von beiden gesperrt. Eine Installation ohne IPv6-Netzwerk schickt Besucher über IPv6 durch die Firewall des Hosts, deshalb öffnet das Skript die Ports dort; siehe [IPv6](/docs/getting-started/docker#ipv6). Um die Konsole vom Netz fernzuhalten, veröffentliche sie nur auf der Loopback-Adresse: Setze `NEODESK_CONSOLE_BIND=127.0.0.1` in der Datei `.env` neben der Compose-Datei, oder `[::1]` für IPv6-Loopback, und erstelle den Container in diesem Ordner neu:
 
 ```bash
 docker compose up -d
@@ -116,7 +126,7 @@ docker compose up -d
 In PowerShell als Administrator:
 
 ```powershell
-New-NetFirewallRule -DisplayName "NeoDesk TCP" -Direction Inbound -Protocol TCP -LocalPort 21115,21116,21117,21121 -Action Allow
+New-NetFirewallRule -DisplayName "NeoDesk TCP" -Direction Inbound -Protocol TCP -LocalPort 21114,21115,21116,21117,21121 -Action Allow
 New-NetFirewallRule -DisplayName "NeoDesk UDP" -Direction Inbound -Protocol UDP -LocalPort 21116 -Action Allow
 New-NetFirewallRule -DisplayName "NeoDesk console" -Direction Inbound -Protocol TCP -LocalPort 3375,5443 -Action Allow
 ```
@@ -154,14 +164,11 @@ Der Port der Konsole:
   sudo systemctl restart neodesk-server
   ```
 
-  Unter Windows startest du den Windows-Dienst `NeoDeskServer` neu. Ohne NSSM läuft der Server als geplante Aufgabe `NeoDeskServer`; beende den Server, und die Aufgabe startet ihn wieder:
+  Unter Windows startest du den Windows-Dienst `NeoDeskServer` neu:
 
   ```powershell
   Restart-Service NeoDeskServer
-  Stop-Process -Name neodesk-server -Force
   ```
-
-  Die erste Zeile gilt dem Dienst, die zweite der geplanten Aufgabe.
 
 Die RustDesk-Ports lassen sich auch verlegen, aber dann braucht jeder Client den Port in seinen Serveradressen. Behalte deshalb die Standardwerte, solange nichts anderes sie belegt.
 

@@ -26,7 +26,7 @@ In Docker the container's own health check asks the console and the API, over HT
 
 - everyone, with `METRICS_PUBLIC=Y`,
 - the addresses and ranges in `METRICS_IP_ALLOWLIST`, comma-separated. The server checks the address the connection comes from, which behind a reverse proxy is the proxy's,
-- a request with an API key, or a sign-in token of an account that may view metrics.
+- a request with an API key, or a sign-in token of an account that may view metrics. On Linux and Windows, port 21114 takes a key from another host only when its address is in `API_ALLOW_FROM`; from the server itself it always does.
 
 It refuses everything else. To let a Prometheus server in, set this in the env file (in Docker, the `.env` file next to the compose file), with its address in place of `<prometheus-address>`, and restart:
 
@@ -43,7 +43,7 @@ scrape_configs:
       - targets: ["<server-address>:21114"]
 ```
 
-In Docker the port is 21121. On Linux and Windows the installers don't open 21114 in the firewall, so allow it from the Prometheus server only.
+In Docker the port is 21121. On Linux and Windows the installers open 21114 for RustDesk clients, but callers from other hosts get only the client API there: `/metrics`, `/api/health/detail` and `/api/server/stats` answer a Prometheus server on another host only when its address is in `METRICS_IP_ALLOWLIST` (no key needed) or in `API_ALLOW_FROM` (with an API key), or with `METRICS_PUBLIC=Y`. See [The API port on Linux and Windows](/docs/operations/ports#the-api-port-on-linux-and-windows).
 
 For a look by hand from the server itself, send the server API key, which **Devices**, **Add computers**, **Manual setup** shows under **For scripts** after **Show whole key**, for Super admin and Administrator accounts. With the key in `NEODESK_API_KEY`:
 

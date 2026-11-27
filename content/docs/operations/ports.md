@@ -19,7 +19,7 @@ RustDesk clients reach the server on a handful of ports, and people open the web
 | 21118 | TCP | RustDesk clients set to use WebSocket: the ID server | Only for such clients |
 | 21119 | TCP | RustDesk clients set to use WebSocket: the relay | Only for such clients |
 | 21121 | TCP (HTTP) | RustDesk clients: the client API, for system information, sign-in and the address book | Yes |
-| 21114 | TCP (HTTP) | Docker: the client API for RustDesk clients whose **API server** is empty. Linux and Windows: the server's own API, with `/metrics` for Prometheus; the console passes the client API calls from 21121 to it inside the server | Docker: yes, for clients without an API server setting; the compose file publishes it. Linux and Windows: only from a Prometheus server that reads `/metrics`; the installers don't open it |
+| 21114 | TCP (HTTP) | RustDesk clients whose **API server** is empty: the client API. On Linux and Windows also the server's own API, which only this machine and the addresses in `API_ALLOW_FROM` get in full | Yes, for clients without an API server setting. The installers open it |
 | 21122 | TCP | CDAP device agents | Only when you use them |
 | 3375 | TCP (HTTP) | Browsers: the web console, and remote desktop in the browser | Only through a reverse proxy with TLS |
 | 5443 | TCP (HTTPS) | Browsers: the console when it serves HTTPS itself | Only when no reverse proxy is in front |
@@ -43,14 +43,23 @@ Up to 3.6.0-rc.4 the console's default port was 5000. Which installs moved:
 
 ### The API port on Linux and Windows
 
-Clients use 21121 on every install type. In Docker the server's API itself listens there. On a Linux or Windows install the server's API listens on 21114, and the console answers the client API on 21121 and passes it on to 21114. The installers open 21121, and the console gives clients `http://<server-address>:21121` as their API server. **What clients get now** under **Settings**, **General** shows the address in use.
+Clients use 21121 on every install type. In Docker the server's API itself listens there. On a Linux or Windows install the server's API listens on 21114, and the console answers the client API on 21121 and passes it on to 21114. The console gives clients `http://<server-address>:21121` as their API server. **What clients get now** under **Settings**, **General** shows the address in use.
 
-In a stock RustDesk client, set **API server** to `http://<server-address>:21121`. Left empty, the client sends its API calls to port 21114 on the ID server's address:
+A stock RustDesk client whose **API server** is empty sends its API calls to port 21114 on the ID server's address. Every install type answers there with the client API: sign-in, the address book, heartbeats and system information. Docker serves the API on 21114 too and the compose file publishes it; a compose file of your own needs `- "21114:21114"` in the `neodesk` service's ports. The installers open 21114 in the host firewall. An install made before that opens it when the installer's firewall step runs again, so run the installer again or add the rule by hand. Where no API answers on 21114, the device connects, but the device list shows it without host name, OS or version, and signing in from the client and the address book don't work. Setting **API server** to `http://<server-address>:21121` works on every install type too.
 
-- Docker answers there: when the API listens on another port than 21114, the server also serves it on 21114, and the compose file publishes that port. A compose file of your own needs `- "21114:21114"` in the `neodesk` service's ports.
-- Linux and Windows answer there only when 21114 is open in the firewall, which the installers don't do, because the server's own API listens on that port.
+On Linux and Windows, port 21114 gives callers from other hosts only the client API, with the same paths, rate limits and body limits as 21121; everything else answers 404. The whole API is for:
 
-Where no API answers on 21114, the device connects, but the device list shows it without host name, OS or version, and signing in from the client and the address book don't work.
+- this machine, so the console, `neodesk` and scripts on the server itself work as before
+- the addresses in `API_ALLOW_FROM`, IPs and CIDR ranges separated by commas, for scripts, SDK clients and monitoring on other hosts
+- for `/metrics`, `/api/health/detail` and `/api/server/stats` only, the addresses in `METRICS_IP_ALLOWLIST`, or every address with `METRICS_PUBLIC=Y`; see [Monitoring](/docs/operations/monitoring)
+
+A script that calls the API with an API key from another host gets 404 until its address is in `API_ALLOW_FROM`. Set it in the env file and restart the server, with the script's address, or several addresses and ranges separated by commas, in place of `<script-address>`:
+
+```bash
+sudo neodesk-setup --set-config API_ALLOW_FROM=<script-address>
+```
+
+A reverse proxy on the same machine in front of 21114 needs `TRUST_PROXY` and `TRUSTED_PROXIES` set to the proxy's address. Without them every request through it comes from this machine and gets the whole API. While the server starts, the API on 21114 answers callers from other hosts with 503 and `Retry-After` for a few seconds, and keeps answering 503 if the client API doesn't start. A computer's support chat answers every caller on 21114, as before. Docker, and installs with `API_ENABLED=false`, have no separate client API port, so there 21114 answers everyone in full, as 21121 does.
 
 The installers' self-signed certificate is not used on 21121: they set `RUSTDESK_API_TLS=false` in the env file, which keeps the port on plain HTTP, because RustDesk clients don't accept a self-signed certificate. With a certificate clients trust in `SSL_CERT_PATH` and `SSL_KEY_PATH`, set `RUSTDESK_API_TLS=auto`, and after a restart 21121 serves HTTPS and clients get an `https://` address.
 
@@ -72,6 +81,7 @@ Behind a reverse proxy, the proxy has to pass WebSocket upgrades for those paths
 With ufw:
 
 ```bash
+sudo ufw allow 21114/tcp
 sudo ufw allow 21115/tcp
 sudo ufw allow 21116/tcp
 sudo ufw allow 21116/udp
@@ -91,7 +101,7 @@ Add `21118/tcp` and `21119/tcp` only for clients that use WebSocket, `21122/tcp`
 With firewalld:
 
 ```bash
-sudo firewall-cmd --permanent --add-port=21115-21117/tcp
+sudo firewall-cmd --permanent --add-port=21114-21117/tcp
 sudo firewall-cmd --permanent --add-port=21116/udp
 sudo firewall-cmd --permanent --add-port=21121/tcp
 sudo firewall-cmd --permanent --add-port=3375/tcp
@@ -101,12 +111,12 @@ sudo firewall-cmd --reload
 
 The lines with 3375 and 5443 are for the console, as long as no reverse proxy is in front of it.
 
-The Linux installer opens the ports itself when ufw or firewalld is active, and adds iptables rules only when neither of them is installed. A ufw or firewalld that is installed but switched off stays as it is, with no rules added. The ports it opens are 21115 to 21117 over TCP, 21116 over UDP, the client API port 21121, 21122 unless the env file sets `CDAP_ENABLED=N`, and the console's port (3375 on a new install) and, with HTTPS on, 5443. With `TRUST_PROXY` on it leaves the console's ports closed. It takes the ID server and relay ports from the env file, and at the end it prints the list for a firewall outside the machine, such as your cloud provider's.
+The Linux installer opens the ports itself when ufw or firewalld is active, and adds iptables rules only when neither of them is installed. A ufw or firewalld that is installed but switched off stays as it is, with no rules added. The ports it opens are 21114 to 21117 over TCP, 21116 over UDP, the client API port 21121, 21122 unless the env file sets `CDAP_ENABLED=N`, and the console's port (3375 on a new install) and, with HTTPS on, 5443. With `TRUST_PROXY` on it leaves the console's ports closed. It takes the ID server and relay ports from the env file, and at the end it prints the list for a firewall outside the machine, such as your cloud provider's.
 
 The Docker install script, `neodesk-docker.sh`, opens its ports in ufw or firewalld only when one of them is active, before the container starts, and adds no iptables rules. `install.sh` leaves this step to it, so both paths do the same. It opens 21114 to 21119, 21121 and 21122 over TCP and 21116 over UDP. It opens the console's ports by the same rule as the Linux installer, read from the `.env` file: 3375, plus 5443 with `HTTPS_ENABLED=true`, and neither with `TRUST_PROXY` on or `NEODESK_CONSOLE_BIND=127.0.0.1`. With `--domain` it opens 80 and 443 instead. Its rules carry the comment "NeoDesk port ...". A later run closes the rules it added for ports it no longer serves, so `--no-traefik` closes 80 and 443, and `uninstall` closes all of them. When `TRUST_PROXY` keeps the console's port closed, it prints the command to open it by hand. `--skip-firewall`, on both scripts, or `NEODESK_SKIP_FIREWALL=true` leaves ufw and firewalld as they are; see [Install with the script](/docs/getting-started/docker#install-with-the-script).
 
 ::: note
-Docker publishes container ports over IPv4 through its own firewall rules, and ufw doesn't filter them. Visitors over IPv6 come in through the host's firewall, which is why the script opens the ports there. To keep the console off the network, publish it on the loopback address only: set `NEODESK_CONSOLE_BIND=127.0.0.1` in the `.env` file next to the compose file, or `[::1]` for IPv6 loopback, and recreate the container in that folder:
+Docker publishes container ports over IPv4 through its own firewall rules, and ufw doesn't filter them. With the IPv6 network that a new install on Docker Engine 27 or newer gets (`NEODESK_IPV6=true`), it does the same on IPv6, so a port closed in ufw doesn't block it on either. An install without the IPv6 network sends IPv6 visitors through the host's firewall, which is why the script opens the ports there; see [IPv6](/docs/getting-started/docker#ipv6). To keep the console off the network, publish it on the loopback address only: set `NEODESK_CONSOLE_BIND=127.0.0.1` in the `.env` file next to the compose file, or `[::1]` for IPv6 loopback, and recreate the container in that folder:
 
 ```bash
 docker compose up -d
@@ -118,7 +128,7 @@ docker compose up -d
 In PowerShell as Administrator:
 
 ```powershell
-New-NetFirewallRule -DisplayName "NeoDesk TCP" -Direction Inbound -Protocol TCP -LocalPort 21115,21116,21117,21121 -Action Allow
+New-NetFirewallRule -DisplayName "NeoDesk TCP" -Direction Inbound -Protocol TCP -LocalPort 21114,21115,21116,21117,21121 -Action Allow
 New-NetFirewallRule -DisplayName "NeoDesk UDP" -Direction Inbound -Protocol UDP -LocalPort 21116 -Action Allow
 New-NetFirewallRule -DisplayName "NeoDesk console" -Direction Inbound -Protocol TCP -LocalPort 3375,5443 -Action Allow
 ```
@@ -156,14 +166,11 @@ The console's port:
   sudo systemctl restart neodesk-server
   ```
 
-  On Windows, restart the Windows service `NeoDeskServer`. Without NSSM the server runs as the scheduled task `NeoDeskServer`; stop the server, and the task starts it again:
+  On Windows, restart the Windows service `NeoDeskServer`:
 
   ```powershell
   Restart-Service NeoDeskServer
-  Stop-Process -Name neodesk-server -Force
   ```
-
-  The first line is for the service, the second for the scheduled task.
 
 The RustDesk ports can move too, but then every client needs the port in its server addresses, so keep the defaults unless something else holds them.
 

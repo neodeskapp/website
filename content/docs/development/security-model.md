@@ -12,7 +12,7 @@ This page describes the security design as the code implements it, for people wh
 | Boundary | Who crosses it | What protects it |
 |---|---|---|
 | Internet to the ID server and relay (21115 to 21119) | RustDesk clients | Device identity, the key exchange on TCP, optional TLS, enrollment, the check of who may start a session, rate limits |
-| Internet to the client API (21121), and scripts to the API (21114 on Linux and Windows) | RustDesk clients, scripts | Sign-in tokens, API keys in a header, device tokens, rate limits |
+| Internet to the client API (21121, and 21114 for clients without an API server setting), and scripts to the API (21114 on Linux and Windows) | RustDesk clients, scripts | Sign-in tokens, API keys in a header, device tokens, rate limits. On Linux and Windows, 21114 gives other hosts only the client API; the whole API is for this machine and the addresses in `API_ALLOW_FROM` |
 | Browser to the console (3375 or 5443) | People | The session cookie, the CSRF token, roles and permissions, TLS from the console or a reverse proxy |
 | Invite and quick support links on the console | Anyone with a link, NeoDesk's client | A code that works for a limited time and number of uses, a rate limit per address, see [Join and support codes](#join-and-support-codes) |
 | Console to the API server | The console | Nothing crosses a network: the console calls the API server's handler in the same process, as the console's API key |

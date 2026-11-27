@@ -25,7 +25,7 @@ Unter Docker fragt der Health-Check des Containers die Konsole und die API ab, z
 
 - allen, mit `METRICS_PUBLIC=Y`,
 - den Adressen und Adressbereichen in `METRICS_IP_ALLOWLIST`, kommagetrennt. Der Server prüft die Adresse, von der die Verbindung kommt, und hinter einem Reverse Proxy ist das die des Proxys,
-- einer Anfrage mit API-Schlüssel oder mit dem Anmelde-Token eines Kontos, das Metriken sehen darf.
+- einer Anfrage mit API-Schlüssel oder mit dem Anmelde-Token eines Kontos, das Metriken sehen darf. Unter Linux und Windows nimmt Port 21114 einen Schlüssel von einem anderen Rechner nur an, wenn dessen Adresse in `API_ALLOW_FROM` steht; vom Server selbst aus immer.
 
 Alles andere weist es ab. Um einen Prometheus-Server zuzulassen, trage diese Zeile in die env-Datei ein (unter Docker in die Datei `.env` neben der Compose-Datei) und starte neu. Setze für `<prometheus-address>` die Adresse des Prometheus-Servers ein:
 
@@ -42,7 +42,7 @@ scrape_configs:
       - targets: ["<server-address>:21114"]
 ```
 
-Unter Docker ist der Port 21121. Unter Linux und Windows öffnen die Installer 21114 nicht in der Firewall, gib den Port also nur für den Prometheus-Server frei.
+Unter Docker ist der Port 21121. Unter Linux und Windows öffnen die Installer 21114 für RustDesk-Clients, Aufrufer von anderen Rechnern bekommen dort aber nur die Client-API: `/metrics`, `/api/health/detail` und `/api/server/stats` antworten einem Prometheus-Server auf einem anderen Rechner nur, wenn seine Adresse in `METRICS_IP_ALLOWLIST` (ohne Schlüssel) oder in `API_ALLOW_FROM` (mit API-Schlüssel) steht, oder mit `METRICS_PUBLIC=Y`. Siehe [Der API-Port unter Linux und Windows](/docs/operations/ports#the-api-port-on-linux-and-windows).
 
 Für einen Blick von Hand auf dem Server selbst schickst du den API-Schlüssel des Servers mit. Du findest ihn unter **Geräte**, **Computer hinzufügen**, **Manuelle Einrichtung** bei **Für Skripte**, nachdem du auf **Ganzen Schlüssel zeigen** geklickt hast; das können Konten mit der Rolle Super-Admin oder Administrator. Mit dem Schlüssel in `NEODESK_API_KEY`:
 

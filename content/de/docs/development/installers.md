@@ -12,7 +12,7 @@ Das Repository hat vier Installationsskripte, in seinem Ordner `install/` neben 
 |--------|---------|--------------|
 | `install.sh` | Linux | Der Einzeiler-Installer. Standardmäßig holt er `neodesk-docker.sh` und installiert mit Docker; mit `--native` holt er `neodesk.sh` und führt es mit `--auto` aus. |
 | `neodesk.sh` | Linux | Installiert `neodesk-server` als systemd-Dienst `neodesk-server`, und aktualisiert, repariert, sichert, diagnostiziert und entfernt ihn. |
-| `neodesk.ps1` | Windows | Dasselbe unter Windows, mit dem Dienst `NeoDeskServer` oder einer geplanten Aufgabe mit diesem Namen. |
+| `neodesk.ps1` | Windows | Dasselbe unter Windows, mit dem Windows-Dienst `NeoDeskServer`, der `neodesk-server.exe` selbst ist. |
 | `neodesk-docker.sh` | Linux mit Docker | Betreibt das veröffentlichte Image `ghcr.io/neodeskapp/neodesk` in einem Container, mit `docker-compose.yml` und `.env` in `/opt/neodesk/docker`. |
 
 Jedes Release hat die vier Skripte und die drei Compose-Dateien als eigene Dateien dabei, aufgeführt in seiner `SHA256SUMS`, die `SHA256SUMS.sig` mit dem Release-Schlüssel signiert. Die öffentlichen Installationsbefehle holen sie von neode.sk, das zum neuesten Release führt, das sie hat. Kein Skript nimmt seine Dateien mehr vom Branch `main`.
@@ -66,7 +66,7 @@ Regeln für jede Änderung:
 
 - Überschreibe nie einen Wert in einer vorhandenen env-Datei mit einem Wert aus der Vorlage.
 - Entferne nie eine Datenbank, Schlüssel, Volumes oder Firewall-Regeln ohne Bestätigung oder Purge-Flag.
-- Richte nie eine sudoers-Regel ein, die ein Skript aus dem Repository als root ausführt. Ein Neustart aus der Konsole beendet den Prozess `neodesk-server`, und der Supervisor, den der Installer in `NEODESK_SUPERVISOR` nennt, startet ihn wieder: unter Linux die systemd-Unit, unter Windows NSSM oder die geplante Aufgabe, im Image die Restart-Policy von Docker.
+- Richte nie eine sudoers-Regel ein, die ein Skript aus dem Repository als root ausführt. Ein Neustart aus der Konsole beendet den Prozess `neodesk-server`, und der Supervisor, den der Installer in `NEODESK_SUPERVISOR` nennt, startet ihn wieder: unter Linux die systemd-Unit, unter Windows die Wiederherstellungseinstellungen des Windows-Dienstes, im Image die Restart-Policy von Docker.
 - Melde nach einem teilweisen Update nie Erfolg, nur weil der Prozess neu gestartet ist.
 
 ### Konfigurationsbefehle {#configuration-commands}
@@ -128,7 +128,7 @@ Diese Tests laufen in Installer CI, ohne den Rechner zu verändern, auf dem sie 
 | `scripts/test-native-installer.sh` | Der Watchdog von `neodesk.sh` für lange Go-Befehle und seine Reparatur eines kaputten Clones. |
 | `scripts/test-postgresql-hba.sh` | Die Einrichtung von `pg_hba.conf` für PostgreSQL. |
 | `scripts/test-docker-installer.sh` | Die Funktionen von `neodesk-docker.sh`, mit Stubs für `docker`, `curl`, `ss` und `id`, danach `scripts/test-docker-entrypoint.sh` für die Startskripte des Images, die Dockerfiles und die Compose-Dateien. |
-| `scripts/test-windows-installer.ps1` | Die Einrichtung von Dienst und Aufgabe in `neodesk.ps1`, mit Stubs für geplante Aufgaben, `icacls` und NSSM. Der Test läuft auch unter PowerShell auf Linux. |
+| `scripts/test-windows-installer.ps1` | Die Einrichtung des Dienstes in `neodesk.ps1`, auch den Umzug eines älteren NSSM-Dienstes oder einer geplanten Aufgabe auf den Dienst, mit Stubs für die Dienstverwaltung, geplante Aufgaben und `icacls`. Der Test läuft auch unter PowerShell auf Linux. |
 | `scripts/check-supervisor-env.sh` | Die systemd-Unit und das Image nennen ihren Supervisor. |
 | `scripts/check-go-toolchain-pins.sh` | Die Go-Versionen der Installer und der Docker-Builds passen zu `go.mod`. |
 | PowerShell-Parsing | `neodesk.ps1` lässt sich ohne Fehler parsen. |

@@ -59,16 +59,10 @@ sudo neodesk-setup --set-config TRUST_PROXY=Y --set-config LOG_LEVEL=info
 
 ## Windows
 
-The installer registers `NeoDeskServer`, a Windows service when NSSM is installed and a scheduled task otherwise. Its env file is `C:\NeoDeskConsole\.env`, and the service or task sets `NEODESK_ENV_FILE`, `GO_API_PORT=21114` and `MESH_ENABLED=Y` itself. Edit the file, then restart the server. As a service:
+The installer registers the Windows service `NeoDeskServer`. Its env file is `C:\NeoDeskConsole\.env`. The service sets a few variables itself, in the value `Environment` of its registry key `HKLM\SYSTEM\CurrentControlSet\Services\NeoDeskServer`, and those win over the env file: `NEODESK_ENV_FILE`, `NEODESK_SUPERVISOR`, `GO_API_PORT=21114`, `MESH_ENABLED=Y` and the connection strategy chosen at install. Edit the env file, then restart the service:
 
 ```powershell
 Restart-Service NeoDeskServer
-```
-
-Without NSSM it runs as a scheduled task. Stop the server, and the task starts it again:
-
-```powershell
-Stop-Process -Name neodesk-server -Force
 ```
 
 In PowerShell as Administrator, this changes template settings, like `--set-config` on Linux:
@@ -157,6 +151,7 @@ The first six are the first defaults of **Connection strategy** under **Settings
 | `PANEL_TRUST_SECRET`, `PANEL_TRUST_ALLOWED_HOSTS` | off | | A shared secret of at least 32 characters. With it, the console's changes to device groups reach the API as the signed-in account instead of as the console's API key, and the API port also takes requests signed with this secret from the same machine, or from the addresses in `PANEL_TRUST_ALLOWED_HOSTS`, as the account they name. Leave it unset unless a program of yours signs requests this way. |
 | `REMOTE_TARGET_VAULT_KEY` | | | Encrypts stored RDP and VNC credentials. Without it, that store is off. The installers write one into the env file; Docker makes one at the first start and keeps it in the data volume as `.remote_target_vault_key`. |
 | `WS_ALLOWED_ORIGINS`, `API_WS_ALLOWED_ORIGINS` | | | Comma-separated origins of browser pages allowed to open WebSockets on the server's ports: `WS_ALLOWED_ORIGINS` for the ID server and the relay, `API_WS_ALLOWED_ORIGINS` for the API's event stream. Empty lets the ID server and relay take pages from localhost only, and the event stream pages from its own host only. RustDesk clients send no origin and are not affected. |
+| `API_ALLOW_FROM` | | | Comma-separated IP addresses and CIDR ranges, such as `192.0.2.10,198.51.100.0/24`, that get the whole API on 21114 on Linux and Windows, besides this machine. Other hosts get only the client API there. For scripts, SDK clients and monitoring on other hosts. See [The API port on Linux and Windows](/docs/operations/ports#the-api-port-on-linux-and-windows). |
 | `METRICS_IP_ALLOWLIST`, `METRICS_PUBLIC` | | | Who may read `/metrics` and `/api/health/detail` on the API port without an API key. See [Monitoring](/docs/operations/monitoring#prometheus-metrics). |
 | `BLOCKLIST_FILE` | `blocklist.txt` next to the key file | `-blocklist` | File of IP addresses, ranges and device IDs to refuse. See [Hardening](/docs/operations/security#block-addresses-and-devices). |
 | `AUDIT_LOG_FILE` | | `-audit-log` | Write the server's audit events to this file, as JSON lines. See [Monitoring](/docs/operations/monitoring#audit-entries). |
