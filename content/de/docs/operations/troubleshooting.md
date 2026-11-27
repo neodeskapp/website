@@ -60,7 +60,7 @@ Jeder antwortet mit JSON:
 {"status":"ok","version":"..."}
 ```
 
-Unter Linux und Windows antwortet `curl http://localhost:3375/health` stattdessen mit `Temporary Redirect`. Läuft die Konsole ohne HTTPS, etwa hinter einem Reverse Proxy, nimm die Zeile für Docker. Bei einer Installation unter Linux oder Windows, die vor 3.6.0-rc.5 entstanden ist, setze für 3375 den Port 5000 der Konsole ein.
+Unter Linux und Windows antwortet `curl http://localhost:3375/health` stattdessen mit `Temporary Redirect` auf `https://localhost:5443/health`. Läuft die Konsole ohne HTTPS, etwa hinter einem Reverse Proxy, nimm die Zeile für Docker. Bei einer Installation unter Linux oder Windows, die vor 3.6.0-rc.5 entstanden ist, setze für 3375 den Port 5000 der Konsole ein.
 
 Port 21121 antwortet bei jeder Installationsart; unter Linux und Windows reicht die Konsole die Anfrage an die API des Servers auf 21114 weiter. Unter Docker zeigt `docker compose ps` den Container als „healthy“, wenn beide antworten.
 
@@ -87,7 +87,7 @@ Unter Windows, in PowerShell als Administrator, ist das die Prüfung, die der In
 ## Die Konsole öffnet nicht {#the-console-does-not-open}
 
 - Nutze die Adresse deiner Installationsart. Docker: `http://<server-address>:3375`, unverschlüsseltes HTTP, außer du hast HTTPS eingerichtet. Linux und Windows: `https://<server-address>:5443`, weil die Installer HTTPS mit einem selbst signierten Zertifikat einschalten, vor dem der Browser warnt. Ihr unverschlüsselter Port, 3375 (oder 5000 bei einer Installation, die vor 3.6.0-rc.5 entstanden ist), leitet nur dorthin weiter.
-- Der unverschlüsselte Port leitet auf den Host in `PANEL_PUBLIC_HOST` weiter. Die Installer setzen dort die Adresse, die die Clients nutzen, oft die öffentliche IP-Adresse. Aus demselben Netz antwortet diese Adresse manchmal nicht, etwa hinter einem Router ohne Hairpin-NAT. Öffne dann `https://<lan-address>:5443` direkt; das Zertifikat der Installer gilt auch für die LAN-Adresse des Rechners.
+- Unter Linux und Windows behält der unverschlüsselte Port die eingetippte Adresse, wenn sie die eigene IP-Adresse des Rechners ist, oder `localhost` auf dem Rechner selbst: `http://<lan-address>:3375` führt zu `https://<lan-address>:5443`, und das Zertifikat der Installer gilt auch für die LAN-Adresse. Ein Hostname oder eine Adresse, die die Verbindung nicht direkt erreicht hat, geht stattdessen an den Host in `PANEL_PUBLIC_HOST`. Die Installer setzen dort die Adresse, die die Clients nutzen, oft die öffentliche IP-Adresse. Hinter einem Router ohne Hairpin-NAT antwortet diese Adresse aus dem eigenen Netz nicht; öffne dann `https://<lan-address>:5443`.
 - Eine Docker-Installation, die auf 5000 antwortete, wechselt beim ersten Update auf 3.6.0-rc.5 oder neuer auf 3375, außer `NEODESK_CONSOLE_PORT` in ihrer `.env` nennt einen Port. Siehe [Der Port der Konsole nach dem Update](/docs/operations/updating#the-consoles-port-after-the-update).
 - Mit `CONSOLE_PORT=0` ist die Konsole aus. Eine Minimalinstallation (`--minimal`) setzt das.
 - Mit `HOST=127.0.0.1` antwortet die Konsole nur auf dem Rechner selbst. Das willst du hinter einem Reverse Proxy auf demselben Rechner.
@@ -97,7 +97,13 @@ Unter Windows, in PowerShell als Administrator, ist das die Prüfung, die der In
 
 ## Admin-Passwort vergessen {#forgot-the-admin-password}
 
-Unter Docker gibt `neodesk-show-admin-credentials` das erste Passwort nur so lange aus, bis jemand es ändert; siehe [Das Admin-Passwort holen](/docs/getting-started/docker#get-the-admin-password). Bei einer Installation mit dem Skript gibt `sudo bash neodesk-docker.sh reset-password`, ausgeführt in `/opt/neodesk/docker`, `admin` ein neues zufälliges Passwort und zeigt es einmal an. Um das Passwort selbst zu wählen, und bei einer Installation mit der Compose-Datei, tippe es nach dem ersten Befehl ein (es wird nicht angezeigt) und führe dann den zweiten im Ordner mit der Compose-Datei aus:
+Unter Docker gibt `neodesk-show-admin-credentials` das erste Passwort nur so lange aus, bis jemand es ändert; siehe [Das Admin-Passwort holen](/docs/getting-started/docker#get-the-admin-password). Bei einer Installation mit dem Skript gibt dieser Befehl `admin` ein neues zufälliges Passwort und zeigt es einmal an; `--user <name>` wählt ein anderes Konto:
+
+```bash
+sudo bash /opt/neodesk/docker/neodesk-docker.sh reset-password
+```
+
+Um das Passwort selbst zu wählen, und bei einer Installation mit der Compose-Datei, tippe es nach dem ersten Befehl ein (es wird nicht angezeigt) und führe dann den zweiten im Ordner mit der Compose-Datei aus:
 
 ```bash
 read -rs NEWPASS
@@ -111,10 +117,10 @@ read -rs NEWPASS
 printf '%s\n' "$NEWPASS" | sudo -u neodesk env NEODESK_ENV_FILE=/opt/NeoDeskConsole/.env /opt/neodesk/neodesk-server reset-password admin
 ```
 
-Unter Windows öffnest du PowerShell als Administrator, startest das Menü des Skripts und wählst **Reset admin password**. Das setzt das Konto `admin` zurück, auf ein zufälliges Passwort oder eines, das du eintippst. `-ExecutionPolicy Bypass` lässt das Skript in jedem neuen Fenster laufen, auch wo Skripte gesperrt sind:
+Unter Windows öffnest du PowerShell als Administrator. `-ResetPassword` gibt dem Konto `admin` das Passwort aus `ADMIN_PASSWORD` oder ein zufälliges und zeigt es einmal an. Ohne den Parameter hat das Menü des Skripts **Reset admin password**, wo du auch selbst eines eintippen kannst. `-ExecutionPolicy Bypass` lässt das Skript in jedem neuen Fenster laufen, auch wo Skripte gesperrt sind:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File C:\NeoDesk\neodesk.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File C:\NeoDesk\neodesk.ps1 -ResetPassword
 ```
 
 Der eigene Befehl des Servers funktioniert auch unter Windows, für jeden Kontonamen. Tippe das Passwort an der Eingabeaufforderung ein; es wird nicht angezeigt:
@@ -125,9 +131,38 @@ $pass = Read-Host 'New password' -AsSecureString
 [Net.NetworkCredential]::new('', $pass).Password | & C:\NeoDesk\neodesk-server.exe reset-password admin
 ```
 
-`reset-password` funktioniert mit SQLite und PostgreSQL und wirkt sofort. Es liest das Passwort von der Standardeingabe und weigert sich, es von einem Terminal zu lesen, damit es nie sichtbar wird. Das Passwort braucht mindestens 8 Zeichen, dieselbe Regel wie überall sonst. Gibt es kein Konto mit diesem Namen, legt der Befehl eines mit der Admin-Rolle an. Eine Sperre nach Fehlversuchen endet von selbst, 15 Minuten nach dem letzten Versuch.
+`reset-password` funktioniert mit SQLite und PostgreSQL und wirkt sofort. Es liest das Passwort von der Standardeingabe und weigert sich, es von einem Terminal zu lesen, damit es nie sichtbar wird. Das Passwort braucht mindestens 8 Zeichen, dieselbe Regel wie überall sonst. Es gibt eine Zeile aus, `Password updated for admin; its console sessions were signed out.`, und meldet das Konto überall in der Konsole ab. Gibt es kein Konto mit diesem Namen, legt der Befehl eines mit der Admin-Rolle an und gibt `Created admin user: <name>` aus. `--verbose` nennt auch die Datenbank. Eine Sperre nach Fehlversuchen endet von selbst, 15 Minuten nach dem letzten Versuch.
 
-`reset-password` lässt die Zwei-Faktor-Anmeldung, wie sie ist. Hat der einzige Admin Handy und Wiederherstellungscodes verloren, gib dem Befehl einen Namen, den es noch nicht gibt, etwa `recovery`, damit er ein zweites Admin-Konto anlegt. Melde dich damit an, öffne **Personen**, **Benutzer** und wähle im Zeilenmenü des ersten Kontos **Zwei-Faktor-Anmeldung ausschalten…**, oder **Zwei-Faktor-Anmeldung zurücksetzen…**, wenn die Zwei-Faktor-Anmeldung für das Konto verlangt ist. Lösche danach das zusätzliche Konto. Siehe [Zwei-Faktor-Anmeldung](/docs/people/two-factor).
+### Auch Handy und Wiederherstellungscodes verloren {#lost-the-phone-and-the-recovery-codes-too}
+
+Das Zurücksetzen des Passworts lässt die Zwei-Faktor-Anmeldung, wie sie ist. Hat der einzige Admin Handy und Wiederherstellungscodes verloren, ergänze `--reset-two-factor`: Das setzt das neue Passwort, schaltet die Zwei-Faktor-Anmeldung des Kontos aus und löscht sein Authenticator-Geheimnis und seine Wiederherstellungscodes. Wo die Zwei-Faktor-Anmeldung verlangt ist, richtet das Konto sie bei der nächsten Anmeldung neu ein.
+
+- Docker, eine Installation mit dem Skript (`--user <name>` für ein anderes Konto):
+
+  ```bash
+  sudo bash /opt/neodesk/docker/neodesk-docker.sh reset-password --reset-two-factor
+  ```
+
+- Docker, eine Installation mit der Compose-Datei, in ihrem Ordner:
+
+  ```bash
+  read -rs NEWPASS
+  printf '%s\n' "$NEWPASS" | docker compose exec -T -u neodesk neodesk neodesk-server reset-password --reset-two-factor admin
+  ```
+
+- Linux:
+
+  ```bash
+  sudo neodesk-setup --reset-password --reset-two-factor
+  ```
+
+- Windows, in PowerShell als Administrator:
+
+  ```powershell
+  powershell -NoProfile -ExecutionPolicy Bypass -File C:\NeoDesk\neodesk.ps1 -ResetTwoFactor
+  ```
+
+Die Optionen der Skripte gelten dem Konto `admin` (Docker: `--user`). Für ein anderes Konto gibst du dem eigenen Befehl des Servers oben `--reset-two-factor` vor dem Namen mit. Ein Server, der älter als die Option ist, lehnt sie ab; aktualisiere ihn zuerst. Siehe [Wenn der einzige Admin ausgesperrt ist](/docs/people/two-factor#if-the-only-admin-is-locked-out).
 
 ## Anmeldung meldet „Zu viele Versuche“ {#sign-in-says-too-many-attempts}
 
@@ -146,7 +181,7 @@ Hinter einem Reverse Proxy ohne `TRUST_PROXY` teilen sich alle Menschen die Adre
 - In den Beitrittsmodi `managed` und `locked` kann sich ein neues Gerät erst registrieren, wenn jemand es unter **Beitrittsanfragen** freigibt. Eine neue Installation startet in `managed`. Das Log zeigt `Rejected new peer <id> from <address> (enrollment policy)`. Siehe [Beitrittsanfragen](/docs/console/enrollment).
 - `Rate limited RegisterPk for new peer` im Log heißt, dass sich mehr als `SIGNAL_RATE_LIMIT_PER_IP` neue Geräte (20 pro Minute) von einer Adresse registriert haben. Erhöhe den Wert, wenn sich viele Geräte eine öffentliche Adresse teilen.
 - Hat der Server seine Schlüsseldatei verloren, hat er einen neuen Schlüssel erzeugt, und Clients mit dem alten können sich nicht verbinden. Stelle die alte Schlüsseldatei wieder her oder gib den Clients den neuen Schlüssel; siehe [warum die Schlüsseldatei zählt](/docs/operations/backup#why-the-key-file-matters).
-- Ein RustDesk-Client erscheint in der Konsole als online, aber ohne Hostname, Benutzer oder Betriebssystem, oder die Anmeldung aus dem Client scheitert: Sein **API-Server** nennt die falsche Adresse oder den falschen Port. Setze es in den Netzwerkeinstellungen des Clients auf `http://<server-address>:21121`. Bleibt es leer, ruft der normale RustDesk-Client Port 21114 auf der Adresse des ID-Servers auf, den die Installer nicht öffnen und Docker nicht veröffentlicht. Siehe [den API-Port](/docs/operations/ports#the-api-port-on-linux-and-windows).
+- Ein RustDesk-Client erscheint in der Konsole als online, aber ohne Hostname, Benutzer oder Betriebssystem, oder die Anmeldung aus dem Client scheitert: Sein **API-Server** nennt die falsche Adresse oder den falschen Port. Setze es in den Netzwerkeinstellungen des Clients auf `http://<server-address>:21121`. Bleibt es leer, ruft der normale RustDesk-Client Port 21114 auf der Adresse des ID-Servers auf, den Docker veröffentlicht, die Installer für Linux und Windows aber nicht öffnen. Siehe [den API-Port](/docs/operations/ports#the-api-port-on-linux-and-windows).
 - Registriert sich ein Client zum ersten Mal, seit der Server gestartet ist, zeigt das Log `[signal] New peer registered: <id> from <address>`.
 - `Rejected outbound from <address> (... reason=...)` nennt, warum der Server keine Sitzung für den anfragenden Computer gestartet hat. `initiator_pending_enrollment`: Er wartet unter **Beitrittsanfragen**. `initiator_not_registered`: Von dieser Adresse hat sich kein Gerät bei diesem Server registriert. `initiator_banned`: Das Gerät ist gesperrt. `initiator_ambiguous_same_nat`: Mehrere Geräte teilen sich die öffentliche Adresse des anfragenden Computers, etwa in einem Büro hinter einem Router, und der Server kann nicht erkennen, welches davon es ist. Der Client zeigt dann „ID does not exist“. `ALLOW_SHARED_NAT_INITIATOR=Y` lässt einen Computer an einer solchen Adresse trotzdem Sitzungen starten, ohne dass der Server weiß, welches Gerät gefragt hat; siehe [Konfiguration](/docs/operations/configuration).
 - Ein Computer, der neu eingerichtet oder zurückgesetzt wurde, kann mit seiner alten ID und einem neuen Schlüssel zurückkommen. Das Log zeigt `[signal] PK mismatch for <id>`, und die Konsole zeigt das Gerät offline mit einem Hinweis **Neuer Schlüssel** im Tab **Übersicht**. Genehmige den neuen Schlüssel oder lösche das Gerät; siehe [Ein neu installierter oder zurückgesetzter Computer](/docs/console/add-a-computer#a-reinstalled-or-reset-computer).
@@ -191,7 +226,17 @@ Steht in **Öffentlicher Relay-Server** also eine falsche Adresse, korrigiere si
   sudo systemctl restart neodesk-server
   ```
 
-  Unter Windows heißen Dienst und geplante Aufgabe `NeoDeskServer`; [Dateien und der Dienst](/docs/getting-started/windows#files-and-the-service) zeigt, wie du beide neu startest.
+  Unter Windows, mit dem Windows-Dienst `NeoDeskServer`:
+
+  ```powershell
+  Restart-Service NeoDeskServer
+  ```
+
+  Ohne NSSM läuft er als geplante Aufgabe `NeoDeskServer`. Beende den Server, und die Aufgabe startet ihn wieder:
+
+  ```powershell
+  Stop-Process -Name neodesk-server -Force
+  ```
 - Port 21117 muss für TCP offen sein.
 - `[relay] Pair timeout for UUID ...` im Log heißt, dass nur ein Gerät das Relay innerhalb von 30 Sekunden erreicht hat. Das andere erreicht die Relay-Adresse nicht.
 - `[relay] Pair established: <address> <-> <address>` heißt, dass beide Geräte das Relay erreicht haben und es die Sitzung trägt.

@@ -104,7 +104,7 @@ With the script, run it again or give it the `update` command:
 sudo bash /opt/neodesk/docker/neodesk-docker.sh update
 ```
 
-It keeps copies of `.env` and the compose files, pulls the image, stops the container, saves the data volumes with those copies as a `.tar.gz` in `backups` in the install folder, and starts the new image. If the new container is not healthy within three minutes, it puts the old settings back and goes back to the previous image, and if that does not start either, it puts the data from the backup back. When the image and the settings have not changed, it changes nothing.
+It keeps copies of `.env` and the compose files, pulls the image, stops the container, saves the data volumes with those copies as a `.tar.gz` in `backups` in the install folder, and starts the new image. If the new container is not healthy within three minutes, it puts the old settings back and goes back to the previous image, and if that does not start either, it puts the data from the backup back. When the image and the settings have not changed, it changes nothing. When only the settings changed, as with `--domain` or `--no-traefik`, it applies them without stopping NeoDesk and without a backup.
 
 The script also replaces `docker-compose.yml` with the one of the release the image tag names, and itself with that release's `neodesk-docker.sh`, both checked against the release's `SHA256SUMS`. A compose file you changed by hand stays, and the new one is saved next to it as `docker-compose.yml.new`. Keep your own changes in `docker-compose.override.yml` in the same folder, which Docker Compose reads as well.
 
@@ -132,7 +132,7 @@ sudo neodesk-setup --update
 
 `neodesk-setup` is the installer, which the install left as a command. `sudo neodesk --update` reaches it too. `--update` runs without questions. In the menu (`sudo neodesk-setup`), the same is **Update**, then **Update now**. The update:
 
-1. makes the installer's backup in `/opt/neodesk-backups/neodesk_backup_<time>.tar.gz`, see [Backup and restore](/docs/operations/backup#cold-backup-of-a-linux-install),
+1. makes the installer's backup in `/opt/neodesk-backups/neodesk_backup_<time>.tar.gz` and keeps the newest five, see [Backup and restore](/docs/operations/backup#cold-backup-of-a-linux-install). When the release is installed already, it makes no backup, changes nothing and leaves the service running,
 2. gets the new binary and keeps the old one as `neodesk-server.prev`,
 3. adds settings that are new in this version to the env file, keeping the values you have,
 4. writes the systemd unit again, restarts the service and checks that the API, the console, the ID server and the relay answer,

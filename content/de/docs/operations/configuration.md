@@ -64,7 +64,11 @@ Der Installer registriert `NeoDeskServer`, einen Windows-Dienst, wenn NSSM insta
 Restart-Service NeoDeskServer
 ```
 
-Für die geplante Aufgabe siehe [Dateien und der Dienst](/docs/getting-started/windows#files-and-the-service).
+Ohne NSSM läuft er als geplante Aufgabe. Beende den Server, und die Aufgabe startet ihn wieder:
+
+```powershell
+Stop-Process -Name neodesk-server -Force
+```
 
 In PowerShell als Administrator ändert dieser Befehl Einstellungen der Vorlage, wie `--set-config` unter Linux:
 
@@ -145,7 +149,7 @@ Die ersten sechs liefern die Anfangswerte für **Verbindungsstrategie** unter **
 | Variable | Standard | Flag | Was sie bewirkt |
 |---|---|---|---|
 | `ENROLLMENT_MODE` | `open` | | `open`, `managed` oder `locked`, der Modus beim ersten Start. Die Installer und ein neues Docker-Volume setzen `managed`. Danach gewinnt der in der Konsole gewählte Modus, außer `ENROLLMENT_MODE_ENV_OVERRIDE` ist eingeschaltet. Siehe [Beitrittsanfragen](/docs/console/enrollment). |
-| `TRUST_PROXY`, `TRUSTED_PROXIES` | aus | `-trust-proxy`, `-trusted-proxies` | Den weitergeleiteten Headern eines Reverse Proxys vertrauen. Siehe [Reverse Proxy und TLS](/docs/operations/reverse-proxy-tls#trusting-the-proxy). |
+| `TRUST_PROXY`, `TRUSTED_PROXIES` | aus | `-trust-proxy`, `-trusted-proxies` | Den weitergeleiteten Headern eines Reverse Proxys vertrauen. Die Konsole braucht nur `TRUST_PROXY`. `TRUSTED_PROXIES` gilt einem Proxy vor dem API-Port und den WebSocket-Ports des Servers; ohne die Variable ignorieren diese Ports weitergeleitete Header, und der Server sagt das beim Start. Siehe [Reverse Proxy und TLS](/docs/operations/reverse-proxy-tls#trusting-the-proxy). |
 | `HTTPS_ENABLED`, `HTTPS_PORT`, `SSL_CERT_PATH`, `SSL_KEY_PATH` | aus, `5443` | | HTTPS, das die Konsole selbst ausliefert. Siehe [HTTPS ohne Proxy](/docs/operations/reverse-proxy-tls#https-without-a-proxy). |
 | `TLS_CERT`, `TLS_KEY`, `TLS_SIGNAL`, `TLS_RELAY`, `TLS_API` | aus | `-tls-cert`, `-tls-key`, `-tls-signal`, `-tls-relay`, `-tls-api` | TLS auf den eigenen Ports des Servers. Signal und Relay nehmen dann unverschlüsselte und TLS-Verbindungen auf demselben Port an, ihre WebSocket-Ports nur noch TLS; `TLS_API` lässt auf dem API-Port nur noch HTTPS zu. |
 | `JWT_SECRET` | erzeugt und in der Datenbank gespeichert | `-jwt-secret` | Signiert API-Token. |

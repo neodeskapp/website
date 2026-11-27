@@ -1362,7 +1362,8 @@
 		"the-servers-key",
 		"connections-fail-through-the-relay",
 		"behind-a-proxy-signed-out-or-the-wrong-address",
-		"docker-the-container-does-not-stay-up"
+		"docker-the-container-does-not-stay-up",
+		"lost-the-phone-and-the-recovery-codes-too"
 	],
 	"operations/updating": [
 		"before-you-update",

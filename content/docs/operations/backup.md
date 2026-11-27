@@ -131,7 +131,7 @@ sudo tar czf /root/neodesk-backup.tar.gz /opt/neodesk /opt/NeoDeskConsole /etc/s
 sudo systemctl start neodesk-server
 ```
 
-The installer's **Backup** menu item, which every update runs first, works while the server runs. It writes `/opt/neodesk-backups/neodesk_backup_<time>.tar.gz` with the same archive as **Download backup** on the console's Backup page (on SQLite and on PostgreSQL), and a copy of the key pair, the API key and `.admin_credentials`. It leaves out the systemd unit and `.device_vault_key`. Up to 3.6.0-rc.4 the backups went to `/opt/rustdesk-backups`; the first run of the new installer as root moves them to `/opt/neodesk-backups`. On Windows the same item writes a zip file to `C:\NeoDesk-Backups`.
+The installer's **Backup** menu item, which every update runs first, works while the server runs. It writes `/opt/neodesk-backups/neodesk_backup_<time>.tar.gz` with the same archive as **Download backup** on the console's Backup page (on SQLite and on PostgreSQL), and a copy of the key pair, the API key and `.admin_credentials`. It leaves out the systemd unit and `.device_vault_key`. Only root can read the backups: the folder is 0700 and each archive 0600. The newest five stay and older ones are removed; `BACKUP_KEEP=<number>` in the installer's environment keeps another number, and `BACKUP_KEEP=0` keeps them all. An update that finds the release installed already makes no backup. Up to 3.6.0-rc.4 the backups went to `/opt/rustdesk-backups`; the first run of the new installer as root moves them to `/opt/neodesk-backups`. On Windows the same item writes a zip file to `C:\NeoDesk-Backups`, which only Administrators and SYSTEM can open.
 
 ## Restore
 

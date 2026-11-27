@@ -61,7 +61,7 @@ Each answers with JSON:
 {"status":"ok","version":"..."}
 ```
 
-On Linux and Windows, `curl http://localhost:3375/health` answers `Temporary Redirect` instead. Use the Docker line on an install whose console runs without HTTPS, such as one behind a reverse proxy. On a Linux or Windows install made before 3.6.0-rc.5, put the console's port 5000 in place of 3375.
+On Linux and Windows, `curl http://localhost:3375/health` answers `Temporary Redirect` to `https://localhost:5443/health` instead. Use the Docker line on an install whose console runs without HTTPS, such as one behind a reverse proxy. On a Linux or Windows install made before 3.6.0-rc.5, put the console's port 5000 in place of 3375.
 
 Port 21121 answers on every install type; on Linux and Windows the console passes the request on to the server's API on 21114. In Docker, `docker compose ps` shows the container as healthy when both answer.
 
@@ -88,7 +88,7 @@ On Windows, in PowerShell as Administrator, this is the check the installer runs
 ## The console does not open
 
 - Use the address for your install type. Docker: `http://<server-address>:3375`, plain HTTP, unless you set up HTTPS. Linux and Windows: `https://<server-address>:5443`, because the installers turn on HTTPS with a self-signed certificate, which the browser warns about. Their plain port, 3375 (or 5000 on an install made before 3.6.0-rc.5), only redirects there.
-- The plain port redirects to the host in `PANEL_PUBLIC_HOST`, which the installers set to the address clients use, often the public IP address. From inside the same network that address may not answer, for example behind a router without hairpin NAT. Open `https://<lan-address>:5443` directly; the installers' certificate covers the machine's LAN address too.
+- On Linux and Windows the plain port keeps the address you typed when it is the machine's own IP address, or `localhost` on the machine itself: `http://<lan-address>:3375` leads to `https://<lan-address>:5443`, and the installers' certificate covers the LAN address. A host name, or an address the connection didn't reach directly, goes to the host in `PANEL_PUBLIC_HOST` instead, which the installers set to the address clients use, often the public IP address. Behind a router without hairpin NAT that address doesn't answer from inside the network; open `https://<lan-address>:5443` then.
 - A Docker install that answered on 5000 moves to 3375 at its first update to 3.6.0-rc.5 or later, unless `NEODESK_CONSOLE_PORT` in its `.env` names a port. See [The console's port after the update](/docs/operations/updating#the-consoles-port-after-the-update).
 - With `CONSOLE_PORT=0` the console is off. A minimal install (`--minimal`) sets that.
 - With `HOST=127.0.0.1` the console answers only on the machine itself, which is what you want behind a reverse proxy on the same machine.
@@ -98,7 +98,13 @@ On Windows, in PowerShell as Administrator, this is the check the installer runs
 
 ## Forgot the admin password
 
-In Docker, `neodesk-show-admin-credentials` prints the first password only until someone changes it; see [Get the admin password](/docs/getting-started/docker#get-the-admin-password). On an install made with the script, `sudo bash neodesk-docker.sh reset-password`, run in `/opt/neodesk/docker`, gives `admin` a new random password and prints it once. To choose the password yourself, and on an install with the compose file, type it after the first command (it does not show), then run the second in the folder with the compose file:
+In Docker, `neodesk-show-admin-credentials` prints the first password only until someone changes it; see [Get the admin password](/docs/getting-started/docker#get-the-admin-password). On an install made with the script, this gives `admin` a new random password and prints it once; `--user <name>` picks another account:
+
+```bash
+sudo bash /opt/neodesk/docker/neodesk-docker.sh reset-password
+```
+
+To choose the password yourself, and on an install with the compose file, type it after the first command (it does not show), then run the second in the folder with the compose file:
 
 ```bash
 read -rs NEWPASS
@@ -112,10 +118,10 @@ read -rs NEWPASS
 printf '%s\n' "$NEWPASS" | sudo -u neodesk env NEODESK_ENV_FILE=/opt/NeoDeskConsole/.env /opt/neodesk/neodesk-server reset-password admin
 ```
 
-On Windows, open PowerShell as Administrator, start the script's menu and choose **Reset admin password**. It resets the account `admin`, to a random password or one you type. `-ExecutionPolicy Bypass` lets the script run in any new window, also where scripts are blocked:
+On Windows, open PowerShell as Administrator. `-ResetPassword` gives the account `admin` the password from `ADMIN_PASSWORD`, or a random one, and shows it once. Without it, the script's menu has **Reset admin password**, which also lets you type one. `-ExecutionPolicy Bypass` lets the script run in any new window, also where scripts are blocked:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File C:\NeoDesk\neodesk.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File C:\NeoDesk\neodesk.ps1 -ResetPassword
 ```
 
 The server's own command works on Windows too, for any account name. Type the password at the prompt; it doesn't show:
@@ -126,9 +132,38 @@ $pass = Read-Host 'New password' -AsSecureString
 [Net.NetworkCredential]::new('', $pass).Password | & C:\NeoDesk\neodesk-server.exe reset-password admin
 ```
 
-`reset-password` works on SQLite and PostgreSQL and takes effect at once. It reads the password from standard input and refuses to read it from a terminal, so that it never shows. The password needs at least 8 characters, the same rule as everywhere else. Without an account of that name, it creates one with the admin role. A lock from failed attempts ends by itself, 15 minutes after the last one.
+`reset-password` works on SQLite and PostgreSQL and takes effect at once. It reads the password from standard input and refuses to read it from a terminal, so that it never shows. The password needs at least 8 characters, the same rule as everywhere else. It prints one line, `Password updated for admin; its console sessions were signed out.`, and signs that account out of the console everywhere. Without an account of that name, it creates one with the admin role and prints `Created admin user: <name>`. `--verbose` also names the database. A lock from failed attempts ends by itself, 15 minutes after the last one.
 
-`reset-password` leaves two-factor sign-in as it is. When the only admin has lost both the phone and the recovery codes, give the command a name that doesn't exist yet, such as `recovery`, to create a second admin account. Sign in with it, open **People**, **Users**, and in the first account's row menu choose **Turn off two-factor sign-in…**, or **Reset two-factor sign-in…** when two-factor sign-in is required for it. Then delete the extra account. See [Two-factor sign-in](/docs/people/two-factor).
+### Lost the phone and the recovery codes too {#lost-the-phone-and-the-recovery-codes-too}
+
+The password reset leaves two-factor sign-in as it is. When the only admin has lost both the phone and the recovery codes, add `--reset-two-factor`: it sets the new password, turns off the account's two-factor sign-in and deletes its authenticator secret and recovery codes. Where two-factor sign-in is required, the account sets it up again at its next sign-in.
+
+- Docker, an install made with the script (`--user <name>` for another account):
+
+  ```bash
+  sudo bash /opt/neodesk/docker/neodesk-docker.sh reset-password --reset-two-factor
+  ```
+
+- Docker, an install with the compose file, in its folder:
+
+  ```bash
+  read -rs NEWPASS
+  printf '%s\n' "$NEWPASS" | docker compose exec -T -u neodesk neodesk neodesk-server reset-password --reset-two-factor admin
+  ```
+
+- Linux:
+
+  ```bash
+  sudo neodesk-setup --reset-password --reset-two-factor
+  ```
+
+- Windows, in PowerShell as Administrator:
+
+  ```powershell
+  powershell -NoProfile -ExecutionPolicy Bypass -File C:\NeoDesk\neodesk.ps1 -ResetTwoFactor
+  ```
+
+The scripts' options are for the account `admin` (Docker: `--user`). For another account, give the server's own command above `--reset-two-factor` before the name. A server older than the option refuses it; update it first. See [If the only admin is locked out](/docs/people/two-factor#if-the-only-admin-is-locked-out).
 
 ## Sign-in says "Too many attempts"
 
@@ -147,7 +182,7 @@ Behind a reverse proxy without `TRUST_PROXY`, all people share the proxy's addre
 - In the `managed` and `locked` join modes, a new device cannot register until someone approves it under **Join requests**. A new install starts in `managed`. The log shows `Rejected new peer <id> from <address> (enrollment policy)`. See [Join requests](/docs/console/enrollment).
 - `Rate limited RegisterPk for new peer` in the log means more than `SIGNAL_RATE_LIMIT_PER_IP` new devices (20 a minute) registered from one address. Raise it when many devices share a public address.
 - If the server lost its key file, it made a new key, and clients with the old one cannot connect. Restore the old key file or give clients the new key; see [why the key file matters](/docs/operations/backup#why-the-key-file-matters).
-- A RustDesk client shows online in the console, but without host name, user or OS, or signing in from it fails: its **API server** names the wrong address or port. Set it to `http://<server-address>:21121` in the client's network settings. Left empty, the stock RustDesk client calls port 21114 on the ID server's address, which the installers don't open and Docker doesn't publish. See [the API port](/docs/operations/ports#the-api-port-on-linux-and-windows).
+- A RustDesk client shows online in the console, but without host name, user or OS, or signing in from it fails: its **API server** names the wrong address or port. Set it to `http://<server-address>:21121` in the client's network settings. Left empty, the stock RustDesk client calls port 21114 on the ID server's address, which Docker publishes but the Linux and Windows installers don't open. See [the API port](/docs/operations/ports#the-api-port-on-linux-and-windows).
 - The first time a client registers after the server started, the log shows `[signal] New peer registered: <id> from <address>`.
 - `Rejected outbound from <address> (... reason=...)` names why the server refused to start a session for the computer that asked. `initiator_pending_enrollment`: it waits under **Join requests**. `initiator_not_registered`: no device registered with this server from that address. `initiator_banned`: the device is banned. `initiator_ambiguous_same_nat`: several devices share the public address of the computer that asked, as in an office behind one router, and the server can't tell which one it is. The client then shows "ID does not exist". Setting `ALLOW_SHARED_NAT_INITIATOR=Y` lets a computer at such an address start sessions anyway, without the server knowing which device asked; see [Configuration](/docs/operations/configuration).
 - A computer that was set up again or reset can come back with its old ID and a new key. The log shows `[signal] PK mismatch for <id>`, and the console shows the device offline with a **New key** notice on its **Overview** tab. Approve the new key or delete the device; see [A reinstalled or reset computer](/docs/console/add-a-computer#a-reinstalled-or-reset-computer).
@@ -192,7 +227,17 @@ So when **Public relay server** holds a wrong address, correct it there; `RELAY_
   sudo systemctl restart neodesk-server
   ```
 
-  On Windows the service or scheduled task is `NeoDeskServer`; [Files and the service](/docs/getting-started/windows#files-and-the-service) shows how to restart either.
+  On Windows, with the Windows service `NeoDeskServer`:
+
+  ```powershell
+  Restart-Service NeoDeskServer
+  ```
+
+  Without NSSM it runs as the scheduled task `NeoDeskServer`. Stop the server, and the task starts it again:
+
+  ```powershell
+  Stop-Process -Name neodesk-server -Force
+  ```
 - Port 21117 has to be open for TCP.
 - `[relay] Pair timeout for UUID ...` in the log means only one device reached the relay within 30 seconds. The other one cannot reach the relay address.
 - `[relay] Pair established: <address> <-> <address>` means both devices reached the relay and it carries the session.

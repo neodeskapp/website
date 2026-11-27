@@ -65,7 +65,11 @@ The installer registers `NeoDeskServer`, a Windows service when NSSM is installe
 Restart-Service NeoDeskServer
 ```
 
-For the scheduled task, see [Files and the service](/docs/getting-started/windows#files-and-the-service).
+Without NSSM it runs as a scheduled task. Stop the server, and the task starts it again:
+
+```powershell
+Stop-Process -Name neodesk-server -Force
+```
 
 In PowerShell as Administrator, this changes template settings, like `--set-config` on Linux:
 
@@ -146,7 +150,7 @@ The first six are the first defaults of **Connection strategy** under **Settings
 | Variable | Default | Flag | What it does |
 |---|---|---|---|
 | `ENROLLMENT_MODE` | `open` | | `open`, `managed` or `locked`, the mode of the first start. The installers and a new Docker volume set `managed`. After that the mode chosen in the console wins, unless `ENROLLMENT_MODE_ENV_OVERRIDE` is on. See [Join requests](/docs/console/enrollment). |
-| `TRUST_PROXY`, `TRUSTED_PROXIES` | off | `-trust-proxy`, `-trusted-proxies` | Trust a reverse proxy's forwarded headers. See [Reverse proxy and TLS](/docs/operations/reverse-proxy-tls#trusting-the-proxy). |
+| `TRUST_PROXY`, `TRUSTED_PROXIES` | off | `-trust-proxy`, `-trusted-proxies` | Trust a reverse proxy's forwarded headers. The console needs only `TRUST_PROXY`. `TRUSTED_PROXIES` is for a proxy in front of the server's API and WebSocket ports; without it those ports ignore forwarded headers, and the server says so at start. See [Reverse proxy and TLS](/docs/operations/reverse-proxy-tls#trusting-the-proxy). |
 | `HTTPS_ENABLED`, `HTTPS_PORT`, `SSL_CERT_PATH`, `SSL_KEY_PATH` | off, `5443` | | HTTPS served by the console itself. See [HTTPS without a proxy](/docs/operations/reverse-proxy-tls#https-without-a-proxy). |
 | `TLS_CERT`, `TLS_KEY`, `TLS_SIGNAL`, `TLS_RELAY`, `TLS_API` | off | `-tls-cert`, `-tls-key`, `-tls-signal`, `-tls-relay`, `-tls-api` | TLS on the server's own ports. Signal and relay then take plain and TLS connections on the same port, and their WebSocket ports TLS only; `TLS_API` makes the API port HTTPS only. |
 | `JWT_SECRET` | made and stored in the database | `-jwt-secret` | Signs API tokens. |
