@@ -860,7 +860,8 @@
 		"approving-a-device",
 		"rejecting-a-device",
 		"what-a-waiting-device-can-do",
-		"who-can-approve"
+		"who-can-approve",
+		"join-by-script-with-a-device-token"
 	],
 	"console/meshagent": [
 		"the-meshcentral-layer",

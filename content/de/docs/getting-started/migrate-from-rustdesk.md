@@ -212,6 +212,11 @@ Grund. Solange der Modus Offen ist, tritt jeder RustDesk-Client bei, der den
 Server erreicht. Stelle also zurück auf **Verwaltet**, sobald deine Clients
 drin sind.
 
+Kannst du auf den Computern einen Befehl ausführen, tritt ein normaler
+RustDesk-Client 1.5 oder neuer auch ohne Wartezeit bei:
+`rustdesk --deploy --token <device-token>` mit einem Gerätetoken pro Computer,
+siehe [Per Skript mit einem Gerätetoken beitreten](/docs/console/enrollment#join-by-script-with-a-device-token).
+
 Siehe [Ein Gerät genehmigen](/docs/console/enrollment#approving-a-device).
 
 ## Den API-Server auf den Clients eintragen {#set-the-api-server-on-the-clients}
@@ -220,15 +225,15 @@ Bei einer RustDesk-Server-Einrichtung bleibt der **API-Server** der Clients
 meist leer. Dann schickt ein normaler RustDesk-Client seine API-Aufrufe an
 Port 21114 auf dem Host des ID-Servers.
 
-- **Docker:** NeoDesk antwortet dort, und das Installationsskript öffnet 21114
-  in ufw oder firewalld. Die Clients können das Feld leer lassen. Eine eigene
-  Compose-Datei braucht `"21114:21114"` unter den Ports des Dienstes
-  `neodesk`.
-- **Linux und Windows:** Die eigene API des Servers lauscht auf 21114, aber die
-  Installer öffnen diesen Port nicht für Clients. Trage auf jedem Client
-  **API-Server** `http://<server-address>:21121` ein, oder gib den Clients die
-  Konfigurationszeichenfolge aus der Konsole, siehe
-  [Einen RustDesk-Client verbinden](/docs/getting-started/connect-a-client#get-the-four-values).
+NeoDesk antwortet dort bei jeder Installationsart mit der Client-API, und die
+Installer öffnen 21114 in ihrem Firewall-Schritt, die Clients können das Feld
+also leer lassen. Eine Installation von vor der Zeit, als ihr Installer 21114
+öffnete, öffnet ihn, wenn du den Installer erneut ausführst; eine Firewall vor
+dem Server braucht den Port auch. Eine eigene Docker-Compose-Datei braucht
+`"21114:21114"` unter den Ports des Dienstes `neodesk`. **API-Server** auf
+jedem Client auf `http://<server-address>:21121` zu setzen oder den Clients die
+Konfigurationszeichenfolge aus der Konsole zu geben, funktioniert genauso,
+siehe [Einen RustDesk-Client verbinden](/docs/getting-started/connect-a-client#get-the-four-values).
 
 Kommen die API-Aufrufe des Clients nicht an, verbindet sich das Gerät trotzdem
 und ist erreichbar, aber die Konsole bekommt nie seinen Namen, sein

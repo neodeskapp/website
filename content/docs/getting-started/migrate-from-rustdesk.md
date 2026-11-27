@@ -195,6 +195,11 @@ device is approved when it registers next, and its request moves to the
 mode" as the reason. While the mode is Open, any RustDesk client that reaches
 the server joins, so switch back to **Managed** once your clients are in.
 
+Where you can run a command on the computers, a stock RustDesk client 1.5 or
+newer can also join without waiting: `rustdesk --deploy --token <device-token>`
+with a device token per computer, see
+[Join by script with a device token](/docs/console/enrollment#join-by-script-with-a-device-token).
+
 See [Approving a device](/docs/console/enrollment#approving-a-device).
 
 ## Set the API server on the clients
@@ -203,14 +208,15 @@ RustDesk server setups usually leave the clients' **API server** empty. With
 it empty, a stock RustDesk client sends its API calls to port 21114 on the ID
 server's host.
 
-- **Docker:** NeoDesk answers there, and the install script opens 21114 in ufw
-  or firewalld. Clients can keep the field empty. A compose file of your own
-  needs `"21114:21114"` under the ports of the `neodesk` service.
-- **Linux and Windows:** the server's own API listens on 21114, but the
-  installers don't open that port to clients. Set **API server** to
-  `http://<server-address>:21121` on each client, or hand the clients the
-  config string from the console, see
-  [Connect a client](/docs/getting-started/connect-a-client#get-the-four-values).
+NeoDesk answers there on every install type, with the client API, and the
+installers open 21114 in their firewall step, so clients can keep the field
+empty. An install made before its installer opened 21114 opens it when you run
+the installer again; a firewall in front of the server needs the port too. A
+Docker compose file of your own needs `"21114:21114"` under the ports of the
+`neodesk` service. Setting **API server** to `http://<server-address>:21121` on
+each client, or handing the clients the config string from the console, works
+as well, see
+[Connect a client](/docs/getting-started/connect-a-client#get-the-four-values).
 
 When the client's API calls don't arrive, the device still connects and can be
 reached, but the console never gets its name, operating system or version, and

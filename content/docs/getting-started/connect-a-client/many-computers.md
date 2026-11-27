@@ -112,9 +112,14 @@ happens then depends on the join mode:
   folder, tags and groups. At most 1000 RustDesk clients can wait at a time;
   while the list is that full, new ones don't get into it until there is room
   again.
-- **Locked**: new RustDesk clients are turned away. The stock RustDesk client
-  has no way to send a device token, so tokens from **Add computers**,
-  **Device tokens** don't help here.
+- **Locked**: new RustDesk clients are turned away, unless they join with a
+  device token from **Add computers**, **Device tokens**.
+
+A stock RustDesk client, 1.5 or newer, joins a **Managed** or **Locked** server
+without waiting when the rollout script runs
+`rustdesk --deploy --token <device-token>` after the settings, with one token
+per computer (**Create several** makes them). See
+[Join by script with a device token](/docs/console/enrollment#join-by-script-with-a-device-token).
 
 A new install starts in **Managed**. For a large rollout of stock clients you
 can switch to **Open** while the computers join and back to **Managed** when

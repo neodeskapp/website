@@ -18,7 +18,7 @@ Der Beitrittsmodus entscheidet, ob ein neues Gerät dem Server von selbst beitre
 
 Die Seitenspalte von **Beitrittsanfragen** zeigt, welcher Modus aktiv ist. Ein in der Konsole gespeicherter Modus bleibt über Neustarts erhalten. Solange keiner gespeichert ist, übernimmt der Server beim Start die Umgebungsvariable `ENROLLMENT_MODE` und speichert sie als Modus, oder er nutzt **Offen**, wenn die Variable nicht gesetzt ist. Die Installer und der Docker-Container setzen bei einer neuen Installation `managed`.
 
-Der Modus entscheidet nur über neue Geräte. Ein Gerät, das der Server schon kennt, kann sich in jedem Modus jederzeit wieder registrieren. Tokens erstellst du unter **Geräte**, **Computer hinzufügen** auf dem Tab **Gerätetokens**. Ein Gerät, das bei der Registrierung einen gültigen Token sendet, tritt in den Modi **Verwaltet** und **Gesperrt** ohne Wartezeit bei. Tokens sind für NeoDesk-Clients gedacht: Der normale RustDesk-Client kann keinen senden.
+Der Modus entscheidet nur über neue Geräte. Ein Gerät, das der Server schon kennt, kann sich in jedem Modus jederzeit wieder registrieren. Tokens erstellst du unter **Geräte**, **Computer hinzufügen** auf dem Tab **Gerätetokens**. Ein Gerät, das bei der Registrierung einen gültigen Token sendet, tritt in den Modi **Verwaltet** und **Gesperrt** ohne Wartezeit bei. NeoDesk-Clients senden es bei der Registrierung; ein normaler RustDesk-Client, 1.5 oder neuer, sendet es mit einem Befehl, siehe [Per Skript mit einem Gerätetoken beitreten](#join-by-script-with-a-device-token).
 
 Der Modus gilt für RustDesk-Clients. Neue Mesh-Agenten warten unabhängig vom Modus in derselben Liste auf eine Genehmigung; siehe [MeshAgent-Geräte](/docs/console/meshagent#install-the-agent-on-a-device).
 
@@ -35,6 +35,42 @@ Für Konten mit dieser Berechtigung zeigt **Beitrittsanfragen** unter dem aktuel
 :::
 
 Wechselst du zu **Offen**, während RustDesk-Clients warten, wird jedes dieser Geräte genehmigt, wenn es sich das nächste Mal registriert: Seine Anfrage wandert zu **Genehmigt**, und das Aktivitätsprotokoll führt die Genehmigung mit „joined in open mode“ als Grund. Genehmige sie selbst, wenn du ihren Namen und Ordner festlegen willst. Wechselst du zu **Gesperrt**, bleiben die wartenden Geräte blockiert, bis du sie genehmigst. Die Seitenspalte weist darauf hin, solange das zutrifft.
+
+## Per Skript mit einem Gerätetoken beitreten {#join-by-script-with-a-device-token}
+
+Ein normaler RustDesk-Client, 1.5 oder neuer, kann einem Server im Modus **Verwaltet** oder **Gesperrt** ohne Wartezeit beitreten, mit einem Gerätetoken. Das Token erstellst du unter **Geräte**, **Computer hinzufügen** auf dem Tab **Gerätetokens**: **Token erstellen** für eines, **Mehrere erstellen** für eines pro Computer. Dann führst du auf dem Computer, mit installiertem und für diesen Server eingerichtetem RustDesk-Client, diesen Befehl aus, mit dem Token statt `<device-token>`. Unter Linux und macOS:
+
+```bash
+sudo rustdesk --deploy --token <device-token>
+```
+
+Unter Windows in einer Eingabeaufforderung, die als Administrator läuft, im Ordner von RustDesk:
+
+```bat
+rustdesk.exe --deploy --token <device-token>
+```
+
+Ein Client, der nicht installiert ist, antwortet „Installation and administrative privileges required!“. Der Befehl funktioniert auch in einem Skript für die Verteilung, nach den Einstellungen des Clients.
+
+Der Computer ist dann genehmigt, als hätte jemand unter **Beitrittsanfragen** auf **Genehmigen** geklickt, und der Server bindet seinen Schlüssel an seine ID. Mit `--id <new-id>` tritt er stattdessen unter einer anderen ID bei, und der Client übernimmt diese ID.
+
+Das Token ist danach nicht die Zugangsberechtigung des Computers:
+
+- Ein Token nimmt einen Computer auf: die erste ID, für die es benutzt wird. Die Spalte **Gerät** auf **Gerätetokens** zeigt dann `deploy:<id>`. Das Token kann diesen Computer erneut aufnehmen, innerhalb seiner Nutzungen und seines Ablaufs, sonst nichts, und es meldet sich nie als dieses Gerät an.
+- Ein Computer, den der Server mit demselben Schlüssel schon kennt, bekommt wieder „Device deployed.“, und nichts ändert sich.
+- Entfernte, gebannte und abgelehnte Geräte bleiben draußen.
+
+Was der Client ausgibt, und was du dann tust:
+
+| Der Client sagt | Bedeutung |
+|---|---|
+| „Device deployed.“ | Erledigt. |
+| „Server does not require deployment.“ | Der Server ist im Modus **Offen**; der Computer tritt ohne Token bei. |
+| „Id `<id>` is already used by another machine on the server.“ | Ein anderer Computer hat diese ID, wartet unter ihr, oder das Gerät wurde umbenannt. Nimm mit `--id` eine andere ID oder entferne das alte Gerät. |
+| `{"error":"The device token is invalid, expired, revoked or used up"}` | Erstelle ein neues Token. |
+| `{"error":"This device token belongs to another device"}` | Das Token hat schon einen anderen Computer aufgenommen. Erstelle ein neues. |
+
+Der Client schickt die Anfrage an seinen **API-Server**, oder an Port 21114 auf dem Host des ID-Servers, wenn das Feld leer ist. Diese Adresse muss vom Computer aus antworten, wie für seine anderen API-Aufrufe. Jede Adresse darf 20 solche Anfragen pro Minute schicken, zusammen gezählt mit Registrierungen von Geräten; mehr sperren die Adresse für fünf Minuten. Das Aktivitätsprotokoll führt jede Aufnahme als **Gerät registriert** und jede abgelehnte als **Geräteregistrierung abgelehnt** mit dem Grund, etwa `id_taken` oder `deploy_token_rejected`.
 
 ## Die Liste {#the-list}
 
