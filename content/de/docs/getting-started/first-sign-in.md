@@ -105,11 +105,20 @@ unter [Zwei-Faktor-Anmeldung](/docs/people/two-factor).
 ## Die Adresse für die Clients festlegen {#set-the-address-clients-use}
 
 Die Werte, die ein RustDesk-Client braucht, stehen auf **Übersicht** unter
-**Client-Einrichtung**. Die Konsole ermittelt die Adresse des Servers selbst,
-zum Beispiel aus der Adresse, über die du die Konsole geöffnet hast. Das ist
-falsch, wenn Clients den Server unter einem anderen Namen erreichen: wenn du
-die Konsole als `localhost` geöffnet hast oder wenn ein Reverse Proxy oder ein
-Router dazwischen steht.
+**Client-Einrichtung**. Ohne gespeicherte Adresse ermittelt die Konsole die
+Adresse des Servers selbst und nimmt das Erste davon, das einen Wert hat:
+
+1. `PANEL_PUBLIC_HOST` in der Umgebung des Servers.
+2. Die erste Adresse in `RELAY_SERVERS`. Der Docker-Installer schreibt die
+   Adresse, die er ermittelt hat, dort hinein, unter Docker zeigt die Konsole
+   also die Adresse, die der Installer ausgegeben hat.
+3. Den Host der eigenen API-Adresse der Konsole.
+4. Die Adresse, über die du die Konsole geöffnet hast.
+
+Einen Host, den nur dieser Rechner erreicht, etwa `localhost`, `127.0.0.1` oder
+einen Namen ohne Punkt, überspringt sie. Falsch ist das Ergebnis, wenn Clients
+den Server unter einem anderen Namen erreichen, zum Beispiel wenn ein Reverse
+Proxy, ein CDN oder ein Router dazwischen steht.
 
 So legst du die Adresse für alle Clients fest:
 
@@ -126,8 +135,11 @@ So legst du die Adresse für alle Clients fest:
 Die Seitenspalte **Was Clients jetzt erhalten** zeigt das Ergebnis. Die neuen
 Adressen gelten sofort für die Werte der Client-Einrichtung, die QR-Codes und
 die Installationsbefehle. Geräte, die schon eingerichtet sind, behalten ihre
-alte Adresse, bis du sie neu einrichtest. Solange eines dieser Felder einen
-Wert hat, ist das Feld **Client-Serveradresse** auf **Übersicht** gesperrt.
+alte Adresse, bis du sie neu einrichtest. Solange **Öffentlicher ID-Server**
+einen Wert hat, ist das Feld **Client-Serveradresse** auf **Übersicht**
+gesperrt. **Öffentlicher Relay-Server** oder **Öffentliche API-URL** allein
+sperren es nicht: Das Feld ändert dann weiter ID-Server und Relay für diesen
+Tab, und die festen Werte bleiben, wie du sie gesetzt hast.
 
 ## Sich in der Konsole zurechtfinden {#find-your-way-around}
 

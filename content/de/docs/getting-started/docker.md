@@ -381,7 +381,9 @@ sagt Browsern per HSTS, für diesen Namen ein Jahr lang nur HTTPS zu nutzen. Das
 Zertifikat liegt im Volume `neodesk-traefik-letsencrypt`.
 
 Traefik leitet nur die Konsole weiter. ID-Server, Relay und die Client-API auf
-21121 bleiben, wie sie sind, Clients behalten also ihre Werte und Ports.
+21121 bleiben, wie sie sind, Clients behalten also ihre Werte und Ports: Die
+**Client-Einrichtung** der Konsole bietet weiter die Adresse aus
+`RELAY_SERVERS` an, nicht die Domain.
 
 Willst du es von Hand mit der Compose-Datei einrichten, trag diese Zeilen in
 `.env` ein und setze für `<domain>` den DNS-Namen und für `<email-address>`
@@ -449,7 +451,10 @@ Proxy davor steht. Das Volume mit dem Zertifikat bleibt.
 
 Clients brauchen die Adresse des Relay-Servers, also muss der Server seine
 eigene öffentliche Adresse kennen. Das Skript ermittelt sie einmal und
-speichert sie als `RELAY_SERVERS` in `.env`.
+speichert sie als `RELAY_SERVERS` in `.env`. Die **Client-Einrichtung** der
+Konsole und Einladungslinks nehmen dieselbe Adresse, solange
+**Öffentlicher ID-Server** in den Einstellungen leer ist, auch wenn du die
+Konsole über einen SSH-Tunnel als `localhost` öffnest.
 
 Steht dort kein Wert, ermittelt der Container sie bei jedem Start: Er fragt
 checkip.amazonaws.com nach seiner öffentlichen IPv4-Adresse, bei einem Fehler

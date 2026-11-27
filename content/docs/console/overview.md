@@ -28,6 +28,8 @@ This section shows how many devices the server knows, for example "30 devices in
 
 Each number is a link to the device list with the matching status filter. **Open the device list** opens [the device list](/docs/console/devices) without a filter.
 
+On a server without devices the section says "No devices yet." instead of the bar. Accounts that may approve devices get **Add a computer** and **Approve new computers under Join requests** below it.
+
 Accounts that may not see devices don't get this section.
 
 ## Trends
@@ -47,9 +49,11 @@ Trends show for accounts that can open the pages under **Activity**. See [Activi
 
 The side column holds the four values a RustDesk client needs: **ID server**, **Relay server**, **API server** and **Key**. Each has a **Copy** button. The key stays hidden until you click **Show**.
 
-**Client server address** is the address the values are built from. Type another address and click **Show values** to get the values for that address, for example when clients reach the server under a different name. This changes only what the page shows; the server's own setting is in **Settings**, **General**, **Public client endpoints**. When the addresses are set there, the field is locked and a link takes you to the setting.
+**Client server address** is the address the values are built from. Type another address and click **Show values** to get the values for that address, for example when clients reach the server under a different name. This changes only what the page shows; the server's own setting is in **Settings**, **General**, **Public client endpoints**. Without a setting there, the values use the address the installer saved in `RELAY_SERVERS` before the address you opened the console with, see [Set the address clients use](/docs/getting-started/first-sign-in#set-the-address-clients-use). When **Public ID server** is set, the field is locked and the hint says "The ID server is set in Settings, Public client endpoints."; **Public relay server** or **Public API URL** alone leave the field open.
 
 If the values point at this computer only (localhost), a warning says that other computers and phones can't reach them.
+
+Accounts that may approve devices find **Add a computer** at the top of the list under the values. It opens [Add a computer](/docs/console/add-a-computer) on the overview, for an invite link that installs NeoDesk and joins the computer to this server.
 
 The buttons under the values:
 

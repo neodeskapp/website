@@ -109,7 +109,7 @@ On Windows, a UNC path such as `\\<nas-address>\backups` works as well, when the
 
 ## Cold backup of a Docker install
 
-Stopping the container first gives a consistent copy of everything. For an install made with the script, `sudo bash neodesk-docker.sh backup` does that: it stops the container, saves both volumes as one `.tar.gz` with a copy of `docker-compose.yml`, `docker-compose.override.yml` and `.env` in `backups` in the install folder, and starts the container again. With PostgreSQL it adds a dump of the database. It keeps the last five backups. See [Install with Docker](/docs/getting-started/docker#other-commands-of-the-script).
+Stopping the container first gives a consistent copy of everything. For an install made with the script, `sudo bash neodesk-docker.sh backup` does that: it stops the container, saves both volumes as one `.tar.gz` with a copy of `docker-compose.yml`, `docker-compose.override.yml` and `.env` in `backups` in the install folder, and starts the container again. With PostgreSQL it adds a dump of the database. It keeps the last five backups. These backups don't show under **Server**, **Backups** in the console, and they don't tick the setup guide's **Make a backup** step. See [Install with Docker](/docs/getting-started/docker#other-commands-of-the-script).
 
 By hand, run this in the folder with the compose file:
 

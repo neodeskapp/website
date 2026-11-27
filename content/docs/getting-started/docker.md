@@ -364,7 +364,9 @@ browsers with HSTS to use only HTTPS for this name for a year. The
 certificate is kept in the volume `neodesk-traefik-letsencrypt`.
 
 Traefik carries only the console. The ID server, the relay and the client API
-on 21121 stay as they are, so clients keep their values and ports.
+on 21121 stay as they are, so clients keep their values and ports: the
+console's **Client setup** keeps offering the address in `RELAY_SERVERS`, not
+the domain.
 
 To set it up with the compose file by hand, put these lines into `.env`, with
 the DNS name in place of `<domain>` and your email address in place of
@@ -432,6 +434,9 @@ the certificate stays.
 
 Clients need the relay's address, so the server has to know its own public
 address. The script looks it up once and saves it as `RELAY_SERVERS` in `.env`.
+The console's **Client setup** and invite links use the same address while
+**Public ID server** in the settings is empty, also when you open the console
+over an SSH tunnel as `localhost`.
 
 Without a value there, the container looks it up at every start: it asks
 checkip.amazonaws.com for its public IPv4 address, then api.ipify.org or
