@@ -16,7 +16,7 @@ NeoDesk wird im Repository [neodeskapp/neodesk](https://github.com/neodeskapp/ne
 
 Releases werden auf `main` getaggt. Die Details stehen in [Branches, Versionen und Releases](/docs/development/releasing).
 
-Melde Sicherheitsprobleme vertraulich und nicht in einem öffentlichen Issue: Lege auf GitHub ein [Security Advisory](https://github.com/neodeskapp/neodesk/security/advisories/new) an. Den Ablauf beschreibt [SECURITY.md](https://github.com/neodeskapp/neodesk/blob/main/SECURITY.md).
+Melde Sicherheitsprobleme vertraulich und nicht in einem öffentlichen Issue: Lege auf GitHub ein [Security Advisory](https://github.com/neodeskapp/neodesk/security/advisories/new) an. Den Ablauf beschreibt [SECURITY.md](https://github.com/neodeskapp/.github/blob/main/SECURITY.md).
 
 ## Regeln für Pull Requests {#pull-request-rules}
 

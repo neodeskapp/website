@@ -17,7 +17,7 @@ NeoDesk is developed in the repository [neodeskapp/neodesk](https://github.com/n
 
 Releases are tagged from `main`. [Branches, versions and releases](/docs/development/releasing) has the details.
 
-Report security problems privately, not in a public issue: open a [security advisory](https://github.com/neodeskapp/neodesk/security/advisories/new) on GitHub. [SECURITY.md](https://github.com/neodeskapp/neodesk/blob/main/SECURITY.md) has the process.
+Report security problems privately, not in a public issue: open a [security advisory](https://github.com/neodeskapp/neodesk/security/advisories/new) on GitHub. [SECURITY.md](https://github.com/neodeskapp/.github/blob/main/SECURITY.md) has the process.
 
 ## Pull request rules
 

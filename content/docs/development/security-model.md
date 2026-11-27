@@ -5,7 +5,7 @@ order: 11
 icon: policy
 ---
 
-This page describes the security design as the code implements it, for people who review or change it. The settings an operator turns on are on [Hardening](/docs/operations/security), and the place to report a vulnerability is the repository's [security policy](https://github.com/neodeskapp/neodesk/blob/main/SECURITY.md).
+This page describes the security design as the code implements it, for people who review or change it. The settings an operator turns on are on [Hardening](/docs/operations/security), and the place to report a vulnerability is the project's [security policy](https://github.com/neodeskapp/.github/blob/main/SECURITY.md).
 
 ## Trust boundaries
 

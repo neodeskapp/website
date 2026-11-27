@@ -1,6 +1,6 @@
 // The site's small pages on the www host: /support/, /releases/, /security/, /imprint/
-// and /privacy/, each in every language. Their facts come from SECURITY.md of
-// neodeskapp/neodesk, the docs (Hardening, Security model, Privacy) and the release data
+// and /privacy/, each in every language. Their facts come from the security policy in
+// neodeskapp/.github, the docs (Hardening, Security model, Privacy) and the release data
 // the build reads; what those don't say is not on the pages.
 import type { ClientOffer, ClientRelease } from './client-release.ts';
 
@@ -152,7 +152,7 @@ function en(c: SitePageContext): SitePage[] {
 				h2('versions', 'Versions that get fixes'),
 				p('Security fixes go into the main branch and the next release. Older releases may get a fix for a critical problem, at the maintainers\' discretion.'),
 				h2('scope', 'Scope'),
-				p(`${out(`${c.repo}/blob/main/SECURITY.md`, 'SECURITY.md')} in the repository lists what is in scope and what is not.`),
+				p(`${out(`https://github.com/neodeskapp/.github/blob/main/SECURITY.md`, 'The security policy')} lists what is in scope and what is not.`),
 				h2('your-server', 'Your own server'),
 				rows([
 					[to(c.docs('/docs/operations/security'), 'Hardening'), 'The settings and steps that make a server on the internet safer.'],
@@ -312,7 +312,7 @@ function de(c: SitePageContext): SitePage[] {
 				h2('versions', 'Versionen, die Fixes bekommen'),
 				p('Sicherheitsfixes gehen in den Branch main und ins nächste Release. Ältere Releases können bei einem kritischen Problem einen Fix bekommen, das entscheiden die Maintainer.'),
 				h2('scope', 'Umfang'),
-				p(`${out(`${c.repo}/blob/main/SECURITY.md`, 'SECURITY.md')} im Repository nennt, was dazugehört und was nicht.`),
+				p(`${out(`https://github.com/neodeskapp/.github/blob/main/SECURITY.md`, 'Die Sicherheitsrichtlinie')} nennt, was dazugehört und was nicht.`),
 				h2('your-server', 'Dein eigener Server'),
 				rows([
 					[to(c.docs('/docs/operations/security'), 'Härtung'), 'Die Einstellungen und Schritte, die einen Server im Internet sicherer machen.'],

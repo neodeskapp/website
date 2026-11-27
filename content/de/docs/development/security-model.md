@@ -4,7 +4,7 @@ description: Wem der Server vertraut und wie der Code jede Grenze sch체tzt: Ger�
 order: 11
 ---
 
-Diese Seite beschreibt das Sicherheitsdesign so, wie der Code es umsetzt, f체r alle, die es pr체fen oder 채ndern. Die Einstellungen, die ein Betreiber einschaltet, stehen unter [H채rtung](/docs/operations/security). Wo du eine Schwachstelle meldest, steht in der [Sicherheitsrichtlinie](https://github.com/neodeskapp/neodesk/blob/main/SECURITY.md) des Repositorys.
+Diese Seite beschreibt das Sicherheitsdesign so, wie der Code es umsetzt, f체r alle, die es pr체fen oder 채ndern. Die Einstellungen, die ein Betreiber einschaltet, stehen unter [H채rtung](/docs/operations/security). Wo du eine Schwachstelle meldest, steht in der [Sicherheitsrichtlinie](https://github.com/neodeskapp/.github/blob/main/SECURITY.md) des Projekts.
 
 ## Vertrauensgrenzen {#trust-boundaries}
 

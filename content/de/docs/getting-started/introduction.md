@@ -156,4 +156,4 @@ davor: siehe [Reverse Proxy und TLS](/docs/operations/reverse-proxy-tls).
 
 ## Hilfe bekommen {#getting-help}
 
-Fragen stellst du auf dem [NeoDesk-Discord](https://discord.gg/nwERSawufr) oder in den [Diskussionen auf GitHub](https://github.com/neodeskapp/neodesk/discussions), dort bekommst du auch Hilfe. Ein Sicherheitsproblem meldest du so, wie es [SECURITY.md](https://github.com/neodeskapp/neodesk/blob/main/SECURITY.md) beschreibt, nicht öffentlich.
+Fragen stellst du auf dem [NeoDesk-Discord](https://discord.gg/nwERSawufr) oder in den [Diskussionen auf GitHub](https://github.com/neodeskapp/neodesk/discussions), dort bekommst du auch Hilfe. Ein Sicherheitsproblem meldest du so, wie es [SECURITY.md](https://github.com/neodeskapp/.github/blob/main/SECURITY.md) beschreibt, nicht öffentlich.
