@@ -141,4 +141,4 @@ TLS: see [Reverse proxy and TLS](/docs/operations/reverse-proxy-tls).
 
 ## Getting help
 
-Ask questions and get help on the [NeoDesk Discord](https://discord.gg/nwERSawufr) or in the [discussions on GitHub](https://github.com/neodeskapp/neodesk/discussions). Report a security problem as [SECURITY.md](https://github.com/neodeskapp/neodesk/blob/main/SECURITY.md) describes, not in public.
+Ask questions and get help on the [NeoDesk Discord](https://discord.gg/nwERSawufr) or in the [discussions on GitHub](https://github.com/neodeskapp/neodesk/discussions). Report a security problem as [SECURITY.md](https://github.com/neodeskapp/.github/blob/main/SECURITY.md) describes, not in public.

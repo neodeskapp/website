@@ -100,7 +100,7 @@ The installers look up the server's public IP address too:
 
 ## Report a connection this page misses
 
-If you find NeoDesk contacting a host that this page doesn't list, report it the way [SECURITY.md](https://github.com/neodeskapp/neodesk/blob/main/SECURITY.md) describes, not in a public issue.
+If you find NeoDesk contacting a host that this page doesn't list, report it the way [SECURITY.md](https://github.com/neodeskapp/.github/blob/main/SECURITY.md) describes, not in a public issue.
 
 ## This website
 

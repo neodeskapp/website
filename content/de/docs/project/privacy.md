@@ -99,7 +99,7 @@ Auch die Installer fragen nach der öffentlichen IP-Adresse des Servers:
 
 ## Eine Verbindung melden, die hier fehlt {#report-a-connection-this-page-misses}
 
-Stellst du fest, dass NeoDesk einen Host kontaktiert, den diese Seite nicht nennt, melde das so, wie es [SECURITY.md](https://github.com/neodeskapp/neodesk/blob/main/SECURITY.md) beschreibt, und nicht in einem öffentlichen Issue.
+Stellst du fest, dass NeoDesk einen Host kontaktiert, den diese Seite nicht nennt, melde das so, wie es [SECURITY.md](https://github.com/neodeskapp/.github/blob/main/SECURITY.md) beschreibt, und nicht in einem öffentlichen Issue.
 
 ## Diese Website {#this-website}
 
