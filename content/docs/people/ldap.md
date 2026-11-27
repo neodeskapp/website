@@ -79,7 +79,7 @@ A group written as a full DN must match the group's DN, ignoring letter case. A 
 4. Viewer and Guest link issuer
 5. Pro license
 
-Roles on the same line count as equal, and the server doesn't break the tie. A person in two mapped groups whose roles are on the same line, such as one group for Server admin and one for Global admin, can get either role, and it can change from one sign-in to the next. Map such groups to the same role, or keep people out of one of them.
+Between two roles on the same line, such as one group for Server admin and one for Global admin, the group that comes first in the map wins: the one in the upper row. The person gets that role at every sign-in.
 
 The server stores the map as text: entries separated by `|`, each a group, `=`, and the role's name from the [roles table](/docs/people/users-and-roles#roles), such as `CN=NeoDesk Admins,OU=Groups,DC=example,DC=com=global_admin`. The last `=` separates the group from the role, so DNs with `=` in them work. That is the form the API takes; the server skips an entry with an unknown role name.
 

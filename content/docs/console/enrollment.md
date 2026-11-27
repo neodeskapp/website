@@ -35,7 +35,7 @@ For accounts with that permission, **Join requests** has **Change the join mode*
 `ENROLLMENT_MODE_ENV_OVERRIDE=Y` in the server's environment makes the server apply `ENROLLMENT_MODE` at every start, over the mode saved in the console. A change made in the console then lasts only until the next restart. See [Configuration](/docs/operations/configuration#security).
 :::
 
-If you switch to **Open** while RustDesk clients are waiting, those devices connect the next time they try and can be reached, but they stay in the list as **Waiting** and can't start a session to another device until you approve them. RustDesk then shows "ID does not exist". Approve them to let them start sessions and to set their name and folder. If you switch to **Locked**, the waiting ones stay blocked until you approve them. The side column says so while it applies.
+If you switch to **Open** while RustDesk clients are waiting, each of those devices is approved the next time it registers: its request moves to **Approved**, and the activity log records the approval with "joined in open mode" as the reason. Approve them yourself instead when you want to set their name and folder. If you switch to **Locked**, the waiting ones stay blocked until you approve them. The side column says so while it applies.
 
 ## The list
 
@@ -43,7 +43,7 @@ The buttons above the list pick what it shows: **Waiting**, **Approved**, **Reje
 
 | Column | Shows |
 |---|---|
-| **Device** | The name the device sent, or **No name sent**, and its ID. A stock RustDesk client sends no name before it is approved, so compare the ID with the one in the RustDesk window on the computer. |
+| **Device** | The name the device sent, or **No name sent**, and its ID. A stock RustDesk client sends its name, system and version to its API server while it waits, when that address answers. Until then, compare the ID with the one in the RustDesk window on the computer. |
 | **Platform** | The operating system and the client version |
 | **IP address** | The address the request came from |
 | **Came in via** | **RustDesk client**, **Local network** or **Mesh agent** |

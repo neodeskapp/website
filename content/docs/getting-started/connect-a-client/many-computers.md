@@ -119,10 +119,8 @@ happens then depends on the join mode:
 A new install starts in **Managed**. For a large rollout of stock clients you
 can switch to **Open** while the computers join and back to **Managed** when
 they are all there: a device the server already knows can register again in
-every mode. Switch before the computers get the new settings. A computer that
-was already waiting when you switch connects, but it stays under
-**Join requests** as waiting and can't start a session to another device until
-someone approves it. See
+every mode. A computer that was already waiting when you switch is approved
+the next time it registers. See
 [Changing the mode](/docs/console/enrollment#changing-the-mode) and
 [Approving a device](/docs/console/enrollment#approving-a-device).
 

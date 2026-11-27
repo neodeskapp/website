@@ -128,6 +128,24 @@ its log at every start, as `Server public key: <key>`.
 
 ## In Docker
 
+The install script takes the old key pair in the same run. Give it the folder
+with `id_ed25519` and `id_ed25519.pub`, for example the `data` folder that
+RustDesk's own compose file mounts:
+
+```bash
+curl -fsSL https://neode.sk/install.sh | sudo bash -s -- --import-keys /opt/rustdesk-old/data
+```
+
+On an install that runs already, the script stops NeoDesk, makes a backup, puts
+the pair in and starts it again. It keeps the key it replaced in the data volume
+as `id_ed25519.before-import-<time>`. Put the folder in place of `<folder>`:
+
+```bash
+sudo bash /opt/neodesk/docker/neodesk-docker.sh --import-keys <folder>
+```
+
+### By hand {#docker-by-hand}
+
 Install NeoDesk as described in [Install with Docker](/docs/getting-started/docker).
 At its first start it makes a key pair of its own, and the installer prints
 that new key under **Key**: don't hand it to clients. Replace it with the old
@@ -159,37 +177,44 @@ RustDesk clients are new devices, so each one waits under **Devices**,
 **Join requests** until someone approves it. Until then nobody can reach
 it, and it cannot start a session.
 
-Approve each one under **Join requests**. A stock RustDesk client sends no
-name before it is approved, so its request shows **No name sent**, its ID and
-the address it came from. Tell the devices apart by ID: it is the ID the
-RustDesk window shows on each computer, and the same one the old server knew.
-Give each device its name when you approve it.
+Approve each one under **Join requests**. While it waits, a stock RustDesk
+client sends its system information to its API server, and the request then
+shows the computer's name, system and version. Until that arrives, or when the
+client's API address doesn't answer, the request shows **No name sent**, its
+ID and the address it came from. Tell the devices apart by ID then: it is the
+ID the RustDesk window shows on each computer, and the same one the old server
+knew.
 
 The queue holds at most 1000 waiting devices and turns away new ones while it
 is full. A device turned away asks again, so with more clients than that,
 approve the waiting ones and the rest come in as room frees up.
 
-::: warning
-Don't switch to **Open** to let the waiting clients in. A device that was
-waiting when you switch connects and can be reached, but it stays under
-**Join requests** as waiting, and it can't start a session to another device
-until someone approves it. RustDesk then shows "ID does not exist".
-:::
+With many clients, you can switch to **Open** for a while instead. Each waiting
+device is approved when it registers next, and its request moves to the
+**Approved** filter. The activity log records it as approved, with "joined in open
+mode" as the reason. While the mode is Open, any RustDesk client that reaches
+the server joins, so switch back to **Managed** once your clients are in.
 
 See [Approving a device](/docs/console/enrollment#approving-a-device).
 
 ## Set the API server on the clients
 
-RustDesk server setups usually leave the clients' **API server** empty. Set it
-to `http://<server-address>:21121` on each client, or hand the clients the
-config string from the console, see
-[Connect a client](/docs/getting-started/connect-a-client#get-the-four-values).
+RustDesk server setups usually leave the clients' **API server** empty. With
+it empty, a stock RustDesk client sends its API calls to port 21114 on the ID
+server's host.
 
-With **API server** empty, a stock RustDesk client sends its API calls to port
-21114 on the ID server's host. NeoDesk answers them on 21121, and none of the
-installers opens 21114 to clients. The device then connects and can be
-reached, but the console never gets its name, operating system or version,
-and signing in to the client and its address book don't work.
+- **Docker:** NeoDesk answers there, and the install script opens 21114 in ufw
+  or firewalld. Clients can keep the field empty. A compose file of your own
+  needs `"21114:21114"` under the ports of the `neodesk` service.
+- **Linux and Windows:** the server's own API listens on 21114, but the
+  installers don't open that port to clients. Set **API server** to
+  `http://<server-address>:21121` on each client, or hand the clients the
+  config string from the console, see
+  [Connect a client](/docs/getting-started/connect-a-client#get-the-four-values).
+
+When the client's API calls don't arrive, the device still connects and can be
+reached, but the console never gets its name, operating system or version, and
+signing in to the client and its address book don't work.
 
 ## Keep the device list on PostgreSQL
 

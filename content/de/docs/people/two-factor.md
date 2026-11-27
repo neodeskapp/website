@@ -67,43 +67,43 @@ Beides löscht Schlüssel und Wiederherstellungscodes der Person und beendet ihr
 
 ## Wenn der einzige Admin ausgesperrt ist {#if-the-only-admin-is-locked-out}
 
-Der Befehl des Servers zum Zurücksetzen des Passworts lässt die Zwei-Faktor-Anmeldung, wie sie ist. Hat der einzige Admin sowohl das Handy als auch die Wiederherstellungscodes verloren, bleibt niemand, der sie in der Konsole ausschalten kann. Der Weg zurück ist ein zweites Admin-Konto: Der Befehl legt eines an, wenn du ihm einen Namen gibst, den noch kein Konto hat.
+Hat der einzige Admin sowohl das Handy als auch die Wiederherstellungscodes verloren, bleibt niemand, der die Zwei-Faktor-Anmeldung in der Konsole ausschalten kann. Das übernimmt dann der Befehl des Servers zum Zurücksetzen des Passworts: Mit `--reset-two-factor` gibt er dem Konto ein neues Passwort, schaltet seine Zwei-Faktor-Anmeldung aus und löscht seinen Schlüssel und die Wiederherstellungscodes. Ist die Zwei-Faktor-Anmeldung verlangt, fordert die Konsole das Konto bei der nächsten Anmeldung auf, sie neu einzurichten. Richte sie danach unter **Dein Konto** mit dem neuen Handy wieder ein.
 
-1. Führe auf dem Server den Befehl zum Zurücksetzen mit einem neuen Namen aus, etwa `rescue`. Die Befehle für jede Installationsart stehen unten. Er legt ein Konto mit der Rolle Administrator und diesem Namen an, mit dem Passwort, das du ihm gibst.
-2. Melde dich an der Konsole als `rescue` an. Ist die Zwei-Faktor-Anmeldung für alle verlangt, richtest du sie zuerst für dieses Konto ein.
-3. Schalte unter **Personen**, **Benutzer** die Zwei-Faktor-Anmeldung des ersten Kontos aus oder setze sie zurück, wie unter [Wenn jemand das Handy verloren hat](#when-someone-has-lost-the-phone) beschrieben.
-4. Melde dich mit dem ersten Konto an und richte die Zwei-Faktor-Anmeldung unter **Dein Konto** neu ein.
-5. Lösche oder deaktiviere das Konto `rescue` auf der Seite **Benutzer**.
+Die Option braucht NeoDesk 3.6.26 oder neuer. Ein älterer Server lehnt sie ab, und die Installer sagen, dass du zuerst aktualisieren sollst.
 
-Docker, mit dem Skript installiert. Es zeigt das Passwort des neuen Kontos einmal an:
+Docker, mit dem Skript installiert. Es zeigt das neue Passwort einmal an; `--user <name>` wählt ein anderes Konto als `admin`:
 
 ```bash
-sudo bash /opt/neodesk/docker/neodesk-docker.sh reset-password --user rescue
+sudo bash /opt/neodesk/docker/neodesk-docker.sh reset-password --reset-two-factor
 ```
 
 Docker mit der Compose-Datei. Tippe das Passwort nach dem ersten Befehl ein (es wird nicht angezeigt) und führe dann den zweiten im Ordner mit der Compose-Datei aus:
 
 ```bash
 read -rs NEWPASS
-printf '%s\n' "$NEWPASS" | docker compose exec -T -u neodesk neodesk neodesk-server reset-password rescue
+printf '%s\n' "$NEWPASS" | docker compose exec -T -u neodesk neodesk neodesk-server reset-password --reset-two-factor admin
 ```
 
-Linux:
+Linux. Es zeigt das neue Passwort von `admin` einmal an:
+
+```bash
+sudo neodesk-setup --reset-password --reset-two-factor
+```
+
+Windows, in einer PowerShell, die als Administrator läuft. Es gibt `admin` ein neues Passwort: `ADMIN_PASSWORD`, wenn du es im selben Fenster setzt, sonst ein zufälliges, das es einmal anzeigt:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File "C:\NeoDesk\neodesk.ps1" -ResetTwoFactor
+```
+
+Die Befehle für Linux und Windows setzen nur das Konto `admin` zurück. Für ein anderes Konto gibst du dem Befehl des Servers seinen Namen mit `--reset-two-factor`, so wie es [Fehlersuche](/docs/operations/troubleshooting#forgot-the-admin-password) für das Zurücksetzen des Passworts zeigt, zum Beispiel unter Linux:
 
 ```bash
 read -rs NEWPASS
-printf '%s\n' "$NEWPASS" | sudo -u neodesk env NEODESK_ENV_FILE=/opt/NeoDeskConsole/.env /opt/neodesk/neodesk-server reset-password rescue
+printf '%s\n' "$NEWPASS" | sudo -u neodesk env NEODESK_ENV_FILE=/opt/NeoDeskConsole/.env /opt/neodesk/neodesk-server reset-password --reset-two-factor <name>
 ```
 
-Windows, in einer PowerShell, die als Administrator läuft. Nimm für das Passwort Buchstaben, Ziffern und übliche Sonderzeichen, denn Windows PowerShell gibt andere Zeichen als Fragezeichen weiter:
-
-```powershell
-$env:NEODESK_ENV_FILE = 'C:\NeoDeskConsole\.env'
-$pw = [Net.NetworkCredential]::new('', (Read-Host 'New password' -AsSecureString)).Password
-$pw | & 'C:\NeoDesk\neodesk-server.exe' reset-password rescue
-```
-
-Die Einträge **Reset admin password** in den Menüs der Installer setzen nur das Konto `admin` zurück und helfen deshalb nicht, wenn genau das ausgesperrt ist. Mehr zum Befehl steht unter [Fehlersuche](/docs/operations/troubleshooting#forgot-the-admin-password).
+Setze für `<name>` den Namen des Kontos ein.
 
 ## Zur Pflicht machen {#make-it-mandatory}
 

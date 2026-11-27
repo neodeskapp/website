@@ -138,6 +138,25 @@ außerdem bei jedem Start in sein Log, als `Server public key: <key>`.
 
 ## In Docker {#in-docker}
 
+Das Installationsskript übernimmt das alte Schlüsselpaar im selben Lauf. Gib
+ihm den Ordner mit `id_ed25519` und `id_ed25519.pub`, zum Beispiel den Ordner
+`data`, den die Compose-Datei von RustDesk einhängt:
+
+```bash
+curl -fsSL https://neode.sk/install.sh | sudo bash -s -- --import-keys /opt/rustdesk-old/data
+```
+
+Bei einer Installation, die schon läuft, hält das Skript NeoDesk an, macht ein
+Backup, legt das Paar hinein und startet es wieder. Den ersetzten Schlüssel
+behält es im Daten-Volume als `id_ed25519.before-import-<time>`. Setze für
+`<folder>` den Ordner ein:
+
+```bash
+sudo bash /opt/neodesk/docker/neodesk-docker.sh --import-keys <folder>
+```
+
+### Von Hand {#docker-by-hand}
+
 Installiere NeoDesk wie in
 [Installation mit Docker](/docs/getting-started/docker) beschrieben. Beim
 ersten Start erzeugt es ein eigenes Schlüsselpaar, und der Installer gibt
@@ -172,41 +191,49 @@ NeoDesk sind deine RustDesk-Clients neue Geräte, also wartet jedes unter
 **Geräte**, **Beitrittsanfragen**, bis jemand es genehmigt. Bis dahin kann
 es niemand erreichen, und es kann keine Sitzung starten.
 
-Genehmige jedes Gerät unter **Beitrittsanfragen**. Ein normaler
-RustDesk-Client schickt vor der Genehmigung keinen Namen, seine Anfrage zeigt
-also **Kein Name übermittelt**, seine ID und die Adresse, von der sie kam.
-Unterscheide die Geräte an der ID: Es ist die ID, die das RustDesk-Fenster auf
-jedem Rechner zeigt, und dieselbe, die der alte Server kannte. Gib jedem Gerät
-beim Genehmigen seinen Namen.
+Genehmige jedes Gerät unter **Beitrittsanfragen**. Während er wartet, schickt
+ein normaler RustDesk-Client seine Systeminformationen an seinen API-Server,
+und die Anfrage zeigt dann Namen, System und Version des Rechners. Bis sie
+ankommen, oder wenn die API-Adresse des Clients nicht antwortet, zeigt die
+Anfrage **Kein Name übermittelt**, seine ID und die Adresse, von der sie kam.
+Unterscheide die Geräte dann an der ID: Es ist die ID, die das RustDesk-Fenster
+auf jedem Rechner zeigt, und dieselbe, die der alte Server kannte.
 
 Die Warteschlange fasst höchstens 1000 wartende Geräte und weist neue ab,
 solange sie voll ist. Ein abgewiesenes Gerät fragt wieder an. Hast du mehr
 Clients, genehmige also die wartenden, und der Rest kommt nach, sobald Platz
 frei wird.
 
-::: warning
-Stelle nicht auf **Offen** um, um die wartenden Clients hereinzulassen. Ein
-Gerät, das beim Umstellen wartete, verbindet sich und ist erreichbar, bleibt
-aber unter **Beitrittsanfragen** als wartend stehen und kann keine Sitzung zu
-einem anderen Gerät starten, bis jemand es genehmigt. RustDesk zeigt dann
-„ID does not exist“ (im deutschen Client „Diese ID existiert nicht.“).
-:::
+Bei vielen Clients kannst du stattdessen eine Zeit lang auf **Offen**
+umstellen. Jedes wartende Gerät wird genehmigt, wenn es sich das nächste Mal
+registriert, und seine Anfrage wandert in den Filter **Genehmigt**. Das
+Aktivitätsprotokoll führt es als genehmigt, mit „joined in open mode“ als
+Grund. Solange der Modus Offen ist, tritt jeder RustDesk-Client bei, der den
+Server erreicht. Stelle also zurück auf **Verwaltet**, sobald deine Clients
+drin sind.
 
 Siehe [Ein Gerät genehmigen](/docs/console/enrollment#approving-a-device).
 
 ## Den API-Server auf den Clients eintragen {#set-the-api-server-on-the-clients}
 
 Bei einer RustDesk-Server-Einrichtung bleibt der **API-Server** der Clients
-meist leer. Trage auf jedem Client `http://<server-address>:21121` ein, oder
-gib den Clients die Konfigurationszeichenfolge aus der Konsole, siehe
-[Einen RustDesk-Client verbinden](/docs/getting-started/connect-a-client#get-the-four-values).
+meist leer. Dann schickt ein normaler RustDesk-Client seine API-Aufrufe an
+Port 21114 auf dem Host des ID-Servers.
 
-Bleibt **API-Server** leer, schickt ein normaler RustDesk-Client seine
-API-Aufrufe an Port 21114 auf dem Host des ID-Servers. NeoDesk beantwortet sie
-auf 21121, und keiner der Installer öffnet 21114 für Clients. Das Gerät
-verbindet sich dann und ist erreichbar, aber die Konsole bekommt nie seinen
-Namen, sein Betriebssystem oder seine Version, und die Anmeldung im Client und
-sein Adressbuch funktionieren nicht.
+- **Docker:** NeoDesk antwortet dort, und das Installationsskript öffnet 21114
+  in ufw oder firewalld. Die Clients können das Feld leer lassen. Eine eigene
+  Compose-Datei braucht `"21114:21114"` unter den Ports des Dienstes
+  `neodesk`.
+- **Linux und Windows:** Die eigene API des Servers lauscht auf 21114, aber die
+  Installer öffnen diesen Port nicht für Clients. Trage auf jedem Client
+  **API-Server** `http://<server-address>:21121` ein, oder gib den Clients die
+  Konfigurationszeichenfolge aus der Konsole, siehe
+  [Einen RustDesk-Client verbinden](/docs/getting-started/connect-a-client#get-the-four-values).
+
+Kommen die API-Aufrufe des Clients nicht an, verbindet sich das Gerät trotzdem
+und ist erreichbar, aber die Konsole bekommt nie seinen Namen, sein
+Betriebssystem oder seine Version, und die Anmeldung im Client und sein
+Adressbuch funktionieren nicht.
 
 ## Die Geräteliste auf PostgreSQL behalten {#keep-the-device-list-on-postgresql}
 

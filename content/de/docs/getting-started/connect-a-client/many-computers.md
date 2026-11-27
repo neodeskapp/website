@@ -128,11 +128,9 @@ Einstellungen läuft. Was dann passiert, hängt vom Beitrittsmodus ab:
 Eine neue Installation startet im Modus **Verwaltet**. Für einen großen
 Rollout normaler Clients kannst du auf **Offen** umstellen, solange die
 Computer beitreten, und zurück auf **Verwaltet**, wenn alle da sind: Ein Gerät,
-das der Server schon kennt, kann sich in jedem Modus neu registrieren. Stelle
-um, bevor die Computer die neuen Einstellungen bekommen. Ein Computer, der
-beim Umstellen schon wartete, verbindet sich, bleibt aber unter
-**Beitrittsanfragen** als wartend stehen und kann keine Sitzung zu einem
-anderen Gerät starten, bis jemand ihn genehmigt. Siehe
+das der Server schon kennt, kann sich in jedem Modus neu registrieren. Ein
+Computer, der beim Umstellen schon wartete, wird genehmigt, wenn er sich das
+nächste Mal registriert. Siehe
 [Den Modus ändern](/docs/console/enrollment#changing-the-mode) und
 [Ein Gerät genehmigen](/docs/console/enrollment#approving-a-device).
 

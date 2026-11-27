@@ -181,7 +181,7 @@ read -rs NEW_PASSWORD
 printf '%s\n' "$NEW_PASSWORD" | neodesk-server reset-password admin
 ```
 
-Die Befehle für Docker und den Eintrag **Reset admin password** in den Menüs der Installer findest du unter [Fehlersuche](/docs/operations/troubleshooting#forgot-the-admin-password). Das Zurücksetzen lässt die Zwei-Faktor-Anmeldung, wie sie ist. Wie du sie für jemanden ausschaltest, steht unter [Zwei-Faktor-Anmeldung](/docs/people/two-factor#when-someone-has-lost-the-phone). Sperrt die Zwei-Faktor-Anmeldung den einzigen Admin aus, legt der Befehl mit einem neuen Namen ein zweites Admin-Konto an; siehe [Wenn der einzige Admin ausgesperrt ist](/docs/people/two-factor#if-the-only-admin-is-locked-out).
+Die Befehle für Docker und den Eintrag **Reset admin password** in den Menüs der Installer findest du unter [Fehlersuche](/docs/operations/troubleshooting#forgot-the-admin-password). Das Zurücksetzen lässt die Zwei-Faktor-Anmeldung, wie sie ist, außer du ergänzt `--reset-two-factor`, das sie für das Konto auch ausschaltet. Wie du sie in der Konsole für jemanden ausschaltest, steht unter [Zwei-Faktor-Anmeldung](/docs/people/two-factor#when-someone-has-lost-the-phone). Sperrt die Zwei-Faktor-Anmeldung den einzigen Admin aus, siehe [Wenn der einzige Admin ausgesperrt ist](/docs/people/two-factor#if-the-only-admin-is-locked-out).
 
 ## Sitzungen und fehlgeschlagene Anmeldungen {#sessions-and-failed-sign-ins}
 

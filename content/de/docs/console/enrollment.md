@@ -34,7 +34,7 @@ Für Konten mit dieser Berechtigung zeigt **Beitrittsanfragen** unter dem aktuel
 `ENROLLMENT_MODE_ENV_OVERRIDE=Y` in der Umgebung des Servers sorgt dafür, dass der Server `ENROLLMENT_MODE` bei jedem Start anwendet, auch wenn in der Konsole ein anderer Modus gespeichert ist. Eine Änderung in der Konsole gilt dann nur bis zum nächsten Neustart. Siehe [Konfiguration](/docs/operations/configuration#security).
 :::
 
-Wechselst du zu **Offen**, während RustDesk-Clients warten, verbinden sich diese Geräte beim nächsten Versuch und sind erreichbar. Sie bleiben aber als **Wartend** in der Liste und können keine Sitzung zu einem anderen Gerät starten, bis du sie genehmigst. RustDesk zeigt dann „ID does not exist“ (im deutschen Client „Diese ID existiert nicht.“). Genehmige sie, damit sie Sitzungen starten können und ihren Namen und Ordner bekommen. Wechselst du zu **Gesperrt**, bleiben die wartenden Geräte blockiert, bis du sie genehmigst. Die Seitenspalte weist darauf hin, solange das zutrifft.
+Wechselst du zu **Offen**, während RustDesk-Clients warten, wird jedes dieser Geräte genehmigt, wenn es sich das nächste Mal registriert: Seine Anfrage wandert zu **Genehmigt**, und das Aktivitätsprotokoll führt die Genehmigung mit „joined in open mode“ als Grund. Genehmige sie selbst, wenn du ihren Namen und Ordner festlegen willst. Wechselst du zu **Gesperrt**, bleiben die wartenden Geräte blockiert, bis du sie genehmigst. Die Seitenspalte weist darauf hin, solange das zutrifft.
 
 ## Die Liste {#the-list}
 
@@ -42,7 +42,7 @@ Die Schaltflächen über der Liste legen fest, was sie zeigt: **Wartend**, **Gen
 
 | Spalte | Zeigt |
 |---|---|
-| **Gerät** | Den Namen, den das Gerät gesendet hat, oder **Kein Name übermittelt**, und seine ID. Ein normaler RustDesk-Client schickt vor der Genehmigung keinen Namen; vergleiche also die ID mit der im RustDesk-Fenster auf dem Computer. |
+| **Gerät** | Den Namen, den das Gerät gesendet hat, oder **Kein Name übermittelt**, und seine ID. Ein normaler RustDesk-Client schickt Namen, System und Version an seinen API-Server, während er wartet, wenn diese Adresse antwortet. Bis dahin vergleichst du die ID mit der im RustDesk-Fenster auf dem Computer. |
 | **Plattform** | Das Betriebssystem und die Client-Version |
 | **IP-Adresse** | Die Adresse, von der die Anfrage kam |
 | **Eingegangen über** | **RustDesk-Client**, **Lokales Netzwerk** oder **Mesh-Agent** |

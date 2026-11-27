@@ -78,7 +78,7 @@ Eine Gruppe, die als vollständiger DN geschrieben ist, muss dem DN der Gruppe e
 4. Betrachter und Gastlink-Aussteller
 5. Pro-Lizenz
 
-Rollen in derselben Zeile zählen gleich, und der Server entscheidet zwischen ihnen nicht fest. Wer in zwei zugeordneten Gruppen ist, deren Rollen in derselben Zeile stehen, etwa eine Gruppe für Serveradministrator und eine für Globaler Administrator, kann jede der beiden Rollen bekommen, und das kann von Anmeldung zu Anmeldung wechseln. Ordne solchen Gruppen dieselbe Rolle zu oder halte Personen aus einer davon heraus.
+Zwischen zwei Rollen in derselben Zeile, etwa einer Gruppe für Serveradministrator und einer für Globaler Administrator, gewinnt die Gruppe, die in der Zuordnung zuerst steht: die in der oberen Zeile. Die Person bekommt diese Rolle bei jeder Anmeldung.
 
 Der Server speichert die Zuordnung als Text: Einträge, getrennt durch `|`, jeder aus einer Gruppe, `=` und dem Namen der Rolle aus der [Rollentabelle](/docs/people/users-and-roles#roles), etwa `CN=NeoDesk Admins,OU=Groups,DC=example,DC=com=global_admin`. Das letzte `=` trennt die Gruppe von der Rolle, deshalb funktionieren auch DNs, die selbst `=` enthalten. In dieser Form nimmt die API die Zuordnung an; einen Eintrag mit unbekanntem Rollennamen überspringt der Server.
 

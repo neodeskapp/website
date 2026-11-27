@@ -68,43 +68,43 @@ Both delete the person's key and recovery codes and end their console sessions a
 
 ## If the only admin is locked out {#if-the-only-admin-is-locked-out}
 
-The server's password reset command leaves two-factor sign-in as it is. When the only administrator has lost both the phone and the recovery codes, nobody is left who can turn it off in the console. The way back in is a second administrator account: the reset command makes one when you give it a name that no account has yet.
+When the only administrator has lost both the phone and the recovery codes, nobody is left who can turn two-factor sign-in off in the console. The server's password reset command does it instead: with `--reset-two-factor` it gives the account a new password, turns off its two-factor sign-in and deletes its key and recovery codes. Where two-factor sign-in is required, the console asks the account to set it up again at its next sign-in. Afterwards, set it up again under **Your account** with the new phone.
 
-1. On the server, run the reset command with a new name, such as `rescue`. The commands for each install type are below. It makes an Administrator account of that name with the password you give it.
-2. Sign in to the console as `rescue`. If two-factor sign-in is required for everyone, the console asks you to set it up for this account first.
-3. Under **People**, **Users**, turn off or reset two-factor sign-in of the first account, as described under [When someone has lost the phone](#when-someone-has-lost-the-phone).
-4. Sign in with the first account and set up two-factor sign-in again under **Your account**.
-5. Delete or disable the `rescue` account on the **Users** page.
+The option needs NeoDesk 3.6.26 or newer. An older server refuses it, and the installers say to update first.
 
-Docker, installed with the script. It prints the new account's password once:
+Docker, installed with the script. It prints the new password once; `--user <name>` picks another account than `admin`:
 
 ```bash
-sudo bash /opt/neodesk/docker/neodesk-docker.sh reset-password --user rescue
+sudo bash /opt/neodesk/docker/neodesk-docker.sh reset-password --reset-two-factor
 ```
 
 Docker with the compose file. Type the password after the first command (it does not show), then run the second in the folder with the compose file:
 
 ```bash
 read -rs NEWPASS
-printf '%s\n' "$NEWPASS" | docker compose exec -T -u neodesk neodesk neodesk-server reset-password rescue
+printf '%s\n' "$NEWPASS" | docker compose exec -T -u neodesk neodesk neodesk-server reset-password --reset-two-factor admin
 ```
 
-Linux:
+Linux. It prints the new password of `admin` once:
+
+```bash
+sudo neodesk-setup --reset-password --reset-two-factor
+```
+
+Windows, in PowerShell run as Administrator. It gives `admin` a new password: `ADMIN_PASSWORD` when you set it in the same window, else a random one that it shows once:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File "C:\NeoDesk\neodesk.ps1" -ResetTwoFactor
+```
+
+The Linux and Windows commands reset only the account named `admin`. For another account, give its name to the server's command with `--reset-two-factor`, as [Troubleshooting](/docs/operations/troubleshooting#forgot-the-admin-password) shows for a password reset, for example on Linux:
 
 ```bash
 read -rs NEWPASS
-printf '%s\n' "$NEWPASS" | sudo -u neodesk env NEODESK_ENV_FILE=/opt/NeoDeskConsole/.env /opt/neodesk/neodesk-server reset-password rescue
+printf '%s\n' "$NEWPASS" | sudo -u neodesk env NEODESK_ENV_FILE=/opt/NeoDeskConsole/.env /opt/neodesk/neodesk-server reset-password --reset-two-factor <name>
 ```
 
-Windows, in PowerShell run as Administrator. Use letters, digits and common symbols in the password, because Windows PowerShell passes other characters on as question marks:
-
-```powershell
-$env:NEODESK_ENV_FILE = 'C:\NeoDeskConsole\.env'
-$pw = [Net.NetworkCredential]::new('', (Read-Host 'New password' -AsSecureString)).Password
-$pw | & 'C:\NeoDesk\neodesk-server.exe' reset-password rescue
-```
-
-The **Reset admin password** entries in the installers' menus reset only the account named `admin`, so they don't help when that is the locked account. More about the reset command is in [Troubleshooting](/docs/operations/troubleshooting#forgot-the-admin-password).
+Put the account's name in place of `<name>`.
 
 ## Make it mandatory
 
