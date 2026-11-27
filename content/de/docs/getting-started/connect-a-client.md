@@ -69,11 +69,14 @@ Schlüssel als Datei `id_ed25519.pub` unter **Downloads**.
 und füge ihn in das gleichnamige Feld ein: ID-Server, Relay-Server, API-Server
 und Schlüssel.
 
-Trage im normalen RustDesk-Client **API-Server** ein, hier
-`http://desk.example.com:21121`. Bleibt das Feld leer, schickt der Client
-seine API-Aufrufe an Port 21114 auf dem Host des ID-Servers. Eine
-Docker-Installation antwortet dort und öffnet den Port; unter Linux und
-Windows halten die Installer 21114 für Clients geschlossen. Kommen die Aufrufe
+Im normalen RustDesk-Client kann **API-Server** leer bleiben. Der Client
+schickt seine API-Aufrufe dann an Port 21114 auf dem Host des ID-Servers, und
+dort antwortet jede Installationsart mit der Client-API, sobald der Port offen
+ist; die Installer öffnen ihn. Eine Installation von vor der Zeit, als ihr
+Installer 21114 öffnete, öffnet ihn, wenn du den Installer erneut ausführst,
+oder du legst die Regel selbst an, siehe [Ports](/docs/operations/ports).
+**API-Server** einzutragen, hier `http://desk.example.com:21121`, funktioniert
+genauso. Kommen die Aufrufe
 nicht an, verbindet sich das Gerät trotzdem, aber die Konsole bekommt nie
 seinen Namen, sein Betriebssystem oder seine Version, und die Anmeldung im
 Client und sein Adressbuch funktionieren nicht. Ein NeoDesk-Client, den du von
@@ -326,9 +329,16 @@ Was dann passiert, hängt vom Beitrittsmodus des Servers ab:
   Client seine Systeminformationen an den API-Server geschickt hat; bis dahin
   vergleichst du die ID in der Anfrage mit der im RustDesk-Fenster.
 - **Gesperrt**: Nur Geräte mit einem Gerätetoken werden aufgenommen, alle
-  anderen abgewiesen. Der normale RustDesk-Client kann keinen Gerätetoken
-  senden, deshalb kann ein neuer RustDesk-Client in diesem Modus nicht
-  beitreten.
+  anderen abgewiesen. Ein normaler RustDesk-Client, 1.5 oder neuer, tritt mit
+  `rustdesk --deploy --token <device-token>` bei, siehe
+  [Per Skript mit einem Gerätetoken beitreten](/docs/console/enrollment#join-by-script-with-a-device-token).
+
+Solange ein normaler Client auf eine Genehmigung oder ein Token wartet, steht
+in seinem Log „Server requires deployment.“, mit der Bitte,
+`rustdesk --deploy --token` mit einem „api_token“ auszuführen. Gemeint ist ein
+Gerätetoken aus
+**Geräte**, **Computer hinzufügen**, **Gerätetokens**, kein API-Token der
+Konsole. Derselbe Befehl erspart auch im Modus **Verwaltet** das Warten.
 
 Eine neue Installation startet im Modus **Verwaltet**, mit Docker, unter Linux
 und unter Windows. Ein Computer, der mit einer Einladung aus
@@ -420,9 +430,10 @@ Geh diese Punkte der Reihe nach durch:
 - **API-Server.** Er beginnt mit `http://` oder `https://` und endet mit dem
   Port, den **Übersicht** zeigt, also 21121. Der eigene Port der Konsole, 3375
   (5000 bei älteren Installationen), ist der falsche. Bleibt das Feld leer,
-  nutzt der Client 21114, und das antwortet nur bei Docker. Verbindet sich das
-  Gerät, zeigt in der Konsole aber keinen Namen und kein Betriebssystem, ist
-  das Feld meist leer.
+  nutzt der Client 21114, und das muss auf dem Server und in jeder Firewall
+  davor offen sein. Verbindet sich das Gerät, zeigt in der Konsole aber keinen
+  Namen und kein Betriebssystem, ist das Feld meist leer und 21114 antwortet
+  nicht.
 - **Eine öffentliche Adresse.** Erreichen mehrere Computer in einem Büro den
   Server über dieselbe öffentliche Adresse, kann eine Sitzung, die einer von
   ihnen startet, mit „ID does not exist“ fehlschlagen (im deutschen Client

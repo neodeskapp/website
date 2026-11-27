@@ -121,9 +121,14 @@ Einstellungen läuft. Was dann passiert, hängt vom Beitrittsmodus ab:
   Name, Ordner, Tags und Gruppen festgelegt. Höchstens 1000 RustDesk-Clients
   können gleichzeitig warten; solange die Liste so voll ist, kommen neue erst
   hinein, wenn wieder Platz ist.
-- **Gesperrt**: Neue RustDesk-Clients werden abgewiesen. Der normale
-  RustDesk-Client kann keinen Gerätetoken senden, deshalb helfen Tokens aus
-  **Computer hinzufügen**, **Gerätetokens** hier nicht.
+- **Gesperrt**: Neue RustDesk-Clients werden abgewiesen, außer sie treten mit
+  einem Gerätetoken aus **Computer hinzufügen**, **Gerätetokens** bei.
+
+Ein normaler RustDesk-Client, 1.5 oder neuer, tritt einem Server im Modus
+**Verwaltet** oder **Gesperrt** ohne Wartezeit bei, wenn das Skript für die
+Verteilung nach den Einstellungen `rustdesk --deploy --token <device-token>`
+ausführt, mit einem Token pro Computer (**Mehrere erstellen** erzeugt sie).
+Siehe [Per Skript mit einem Gerätetoken beitreten](/docs/console/enrollment#join-by-script-with-a-device-token).
 
 Eine neue Installation startet im Modus **Verwaltet**. Für einen großen
 Rollout normaler Clients kannst du auf **Offen** umstellen, solange die

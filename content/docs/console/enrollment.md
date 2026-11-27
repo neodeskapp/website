@@ -19,7 +19,7 @@ The join mode decides whether a new device can join the server by itself or has 
 
 The side column of **Join requests** shows which mode is on. A mode saved in the console stays across restarts. While none is saved, the server takes the `ENROLLMENT_MODE` environment variable at its start and saves it as the mode, or uses **Open** when the variable isn't set. The installers and the Docker container set `managed` for a new install.
 
-The mode only decides about new devices. A device the server already knows can always register again, in every mode. Tokens are created under **Devices**, **Add computers**, on the **Device tokens** tab. A device that sends a valid token when it registers joins in **Managed** and **Locked** mode without waiting. Tokens are for NeoDesk clients: the stock RustDesk client has no way to send one.
+The mode only decides about new devices. A device the server already knows can always register again, in every mode. Tokens are created under **Devices**, **Add computers**, on the **Device tokens** tab. A device that sends a valid token when it registers joins in **Managed** and **Locked** mode without waiting. NeoDesk clients send it when they register; a stock RustDesk client, 1.5 or newer, sends it with a command, see [Join by script with a device token](#join-by-script-with-a-device-token).
 
 The mode applies to RustDesk clients. New mesh agents wait for approval in the same list, whatever the mode; see [MeshAgent devices](/docs/console/meshagent#install-the-agent-on-a-device).
 
@@ -36,6 +36,42 @@ For accounts with that permission, **Join requests** has **Change the join mode*
 :::
 
 If you switch to **Open** while RustDesk clients are waiting, each of those devices is approved the next time it registers: its request moves to **Approved**, and the activity log records the approval with "joined in open mode" as the reason. Approve them yourself instead when you want to set their name and folder. If you switch to **Locked**, the waiting ones stay blocked until you approve them. The side column says so while it applies.
+
+## Join by script with a device token {#join-by-script-with-a-device-token}
+
+A stock RustDesk client, 1.5 or newer, can join a **Managed** or **Locked** server without waiting, with a device token. Create the token under **Devices**, **Add computers**, on the **Device tokens** tab: **Create token** for one, **Create several** for one per computer. Then, on the computer, with the RustDesk client installed and set up for this server, run it with the token in place of `<device-token>`. On Linux and macOS:
+
+```bash
+sudo rustdesk --deploy --token <device-token>
+```
+
+On Windows, in a Command Prompt run as administrator, in the RustDesk folder:
+
+```bat
+rustdesk.exe --deploy --token <device-token>
+```
+
+A client that isn't installed answers "Installation and administrative privileges required!". The command works in a rollout script too, after the client's settings.
+
+The computer is then approved, as if someone had chosen **Approve** under **Join requests**, and the server binds its key to its ID. `--id <new-id>` deploys it under another ID instead, and the client takes that ID.
+
+The token is not the computer's credential afterwards:
+
+- One token deploys one computer: the first ID it is used for. The **Device** column on **Device tokens** then shows `deploy:<id>`. The token can deploy that computer again, within its uses and its expiry, but nothing else, and it never signs in as that device.
+- A computer the server already knows with the same key gets "Device deployed." again, and nothing changes.
+- Removed, banned and rejected devices stay out.
+
+What the client prints, and what to do:
+
+| The client says | Meaning |
+|---|---|
+| "Device deployed." | Done. |
+| "Server does not require deployment." | The server is in **Open** mode; the computer joins without a token. |
+| "Id `<id>` is already used by another machine on the server." | Another computer has this ID, or waits under it, or the device was renamed. Deploy under another ID with `--id`, or remove the old device. |
+| `{"error":"The device token is invalid, expired, revoked or used up"}` | Make a new token. |
+| `{"error":"This device token belongs to another device"}` | The token deployed another computer already. Make a new one. |
+
+The client sends the request to its **API server**, or to port 21114 on the ID server's host when that field is empty, so that address has to answer from the computer, as for its other API calls. Each address may send 20 such requests a minute, counted together with device registrations; more block the address for five minutes. The activity log records each deploy as **Device enrolled**, and each refused one as **Device registration rejected** with the reason, such as `id_taken` or `deploy_token_rejected`.
 
 ## The list
 

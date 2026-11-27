@@ -66,13 +66,16 @@ In the RustDesk client, open **Settings**, then **Network**. If it shows
 Copy each value with its **Copy** button and paste it into the field of the
 same name: ID server, relay server, API server and key.
 
-Fill in **API server** in a stock RustDesk client, here
-`http://desk.example.com:21121`. Left empty, the client sends its API calls to
-port 21114 on the ID server's host. A Docker install answers there and opens
-the port; on Linux and Windows the installers keep 21114 closed to clients.
-When the calls don't arrive, the device still connects, but the console never
-gets its name, operating system or version, and signing in to the client and
-its address book don't work. A
+In a stock RustDesk client, **API server** can stay empty. The client then
+sends its API calls to port 21114 on the ID server's host, which every install
+type answers with the client API once the port is open; the installers open it.
+An install made before its installer opened 21114 opens it when you run the
+installer again, or you add the rule yourself, see
+[Ports](/docs/operations/ports). Filling in **API server**, here
+`http://desk.example.com:21121`, works as well. When the calls don't arrive,
+the device still connects, but the console never gets its name, operating
+system or version, and signing in to the client and its address book don't
+work. A
 NeoDesk client set up by hand with **API server** left empty uses port 21121
 on the ID server's host, `http://desk.example.com:21121` here. Fill the field
 in there too when the API is at another address, such as a reverse proxy's.
@@ -310,8 +313,15 @@ What happens next depends on the server's join mode:
   until then, compare the ID in the request with the one in the RustDesk
   window.
 - **Locked**: only devices with a device token can join. Others are turned away.
-  The stock RustDesk client has no way to send a device token, so a new
-  RustDesk client can't join in this mode.
+  A stock RustDesk client, 1.5 or newer, joins with
+  `rustdesk --deploy --token <device-token>`, see
+  [Join by script with a device token](/docs/console/enrollment#join-by-script-with-a-device-token).
+
+While a stock client waits for approval or for a token, its log says "Server
+requires deployment." and asks you to run `rustdesk --deploy --token` with an
+"api_token". The token it means is a device token from **Devices**, **Add computers**, **Device tokens**,
+not an API token of the console. The same command skips the wait in
+**Managed** mode.
 
 A new install starts in **Managed**, with Docker, on Linux and on Windows. A
 computer that joins with an invite from **Add a computer** skips the wait in
@@ -396,8 +406,9 @@ Go through these in order:
 - **API server.** Starting with `http://` or `https://` and ending with the
   port that **Overview** shows, 21121. The console's own port, 3375 (5000 on
   older installs), is the wrong one. Left empty, the client uses 21114, which
-  answers on Docker only. When the device connects but shows no name or
-  operating system in the console, the field is usually empty.
+  has to be open on the server and in any firewall in front of it. When the
+  device connects but shows no name or operating system in the console, the
+  field is usually empty and 21114 doesn't answer.
 - **One public address.** When several computers in one office reach the
   server through the same public address, a session started from one of them
   can fail with "ID does not exist". See
