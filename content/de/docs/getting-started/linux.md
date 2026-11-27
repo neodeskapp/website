@@ -76,12 +76,14 @@ nächsten Update prüft der installierte Server die Signatur selbst.
 
 ### Was das Skript fragt {#what-the-script-asks}
 
+Das Skript fragt alles, bevor es etwas installiert:
+
 1. **Datenbank.** SQLite, der Standard, oder PostgreSQL. Für PostgreSQL fragt
-   das Skript nach Host, Port, Datenbank, Benutzer und Passwort, installiert
-   PostgreSQL auf diesem Rechner und legt Benutzer und Datenbank an. Lass den
-   Host beim Standard: Das Skript installiert PostgreSQL immer hier, egal
-   welchen Host du eintippst. Für eine Datenbank auf einem anderen Server
-   installierst du stattdessen mit `--pg-uri`, siehe unten und
+   es, wo die Datenbank ist: **On this machine** installiert PostgreSQL hier
+   und legt die Datenbank und ihren Benutzer an, mit dem Namen, dem Benutzer
+   und dem Passwort, die du angibst (ein leeres Passwort erzeugt eines).
+   **An existing database**, auf diesem oder einem anderen Rechner, nimmt eine
+   Verbindungs-URI wie `postgres://user:password@host:5432/database`. Siehe
    [PostgreSQL](/docs/operations/postgresql).
 2. **Relay-Adresse.** Die Adresse, die Clients für das Relay bekommen: die
    öffentliche IP-Adresse des Servers (der Standard), seine LAN-Adresse für
@@ -90,10 +92,14 @@ nächsten Update prüft der installierte Server die Signatur selbst.
 3. **Verbindungsstrategie.** „P2P first“, der empfohlene Standard, versucht
    eine direkte Verbindung zwischen den beiden Computern, bevor es das Relay
    nutzt. „Relay only“ schickt jede Sitzung über das Relay.
-4. **TLS, am Ende.** Ob TLS an einem Reverse Proxy vor dem Server endet und ob
-   HTTPS jetzt eingerichtet werden soll. Antworte bei beiden mit `n`, um die
-   unten beschriebenen Standardwerte zu behalten. Siehe
+4. **HTTPS.** „Will a reverse proxy (Caddy, nginx) handle HTTPS for the
+   console instead?“ und, wenn nicht, „Replace the self-signed certificate with
+   Let's Encrypt or your own after the install?“. Antworte bei beiden mit `n`,
+   um die unten beschriebenen Standardwerte zu behalten. Siehe
    [Reverse Proxy und TLS](/docs/operations/reverse-proxy-tls).
+
+Dann installiert es, führt den HTTPS-Schritt aus, den du gewählt hast, und
+endet mit dem Admin-Passwort und der Zusammenfassung.
 
 ### Was das Skript macht {#what-the-script-does}
 
@@ -164,9 +170,9 @@ sudo ADMIN_PASSWORD='<admin-password>' bash neodesk.sh --auto
 `sudo bash neodesk.sh --help` listet alle Flags und Variablen.
 
 Das selbstsignierte Zertifikat deckt die öffentliche Adresse des Servers, seine
-LAN-Adresse und `localhost` ab. Ein Hostname, den du als Relay-Adresse
-eintippst, steht nicht darin. Für einen Hostnamen im Zertifikat, an den der
-HTTP-Port der Konsole Browser auch schickt, setzt du `SSL_DOMAIN`, mit dem
+LAN-Adresse, `localhost` und eine Relay-Adresse ab, die du eintippst oder mit
+`--relay-servers` angibst. Für einen weiteren Hostnamen im Zertifikat, an den
+der HTTP-Port der Konsole Browser auch schickt, setzt du `SSL_DOMAIN`, mit dem
 Namen statt `<host-name>`:
 
 ```bash
@@ -174,8 +180,8 @@ sudo SSL_DOMAIN='<host-name>' bash neodesk.sh
 ```
 
 Jeder Lauf des Skripts schreibt ein eigenes Log,
-`/tmp/neodesk_<date>_<time>.log`. Schlägt eine Installation fehl, steht am Ende
-dieser Datei, warum.
+`/tmp/neodesk_<date>_<time>.log`, mit der Ausgabe des Paketmanagers darin.
+Schlägt eine Installation fehl, steht am Ende dieser Datei, warum.
 
 ## Admin-Zugangsdaten {#admin-credentials}
 
@@ -189,16 +195,24 @@ Password: <password>
 ```
 
 Das Passwort besteht aus 32 zufälligen Zeichen. Kopiere es jetzt. Das Skript
-zeigt es nur einmal und entfernt es aus der env-Datei, sobald der Server
-gestartet ist. Geht es verloren, setzt dieser Befehl das Passwort aus
-`ADMIN_PASSWORD` oder ein zufälliges und zeigt es einmal an:
+zeigt es nur einmal, direkt über der Zusammenfassung, und entfernt es aus der
+env-Datei, sobald der Server gestartet ist. Geht es verloren, setzt dieser
+Befehl das Passwort aus `ADMIN_PASSWORD` oder ein zufälliges und zeigt es
+einmal an:
 
 ```bash
 sudo neodesk-setup --reset-password
 ```
 
 Im Menü kannst du unter **Reset admin password** auch selbst eines eintippen,
-mit mindestens 8 Zeichen.
+mit mindestens 8 Zeichen. Hat der Admin auch Handy und Wiederherstellungscodes
+der Zwei-Faktor-Anmeldung verloren, hängst du `--reset-two-factor` an: Das
+schaltet auch die Zwei-Faktor-Anmeldung des Kontos aus. Siehe
+[Wenn der einzige Admin ausgesperrt ist](/docs/people/two-factor#if-the-only-admin-is-locked-out).
+
+```bash
+sudo neodesk-setup --reset-password --reset-two-factor
+```
 
 ## Adresse für die erste Anmeldung {#first-sign-in-address}
 
@@ -209,10 +223,11 @@ NeoDesk is installed
 
   Web console:   https://203.0.113.10:5443  (http://203.0.113.10:3375 leads there)
                  The certificate is self-signed, so the browser warns once.
-  First sign-in: user admin, with the password shown above (it is not shown again)
+  First sign-in: user admin, with the password shown above (it is not shown again;
+                 lost it? sudo neodesk-setup --reset-password)
   RustDesk clients (Settings > Network > ID/Relay server):
     ID server:     203.0.113.10
-    Relay server:  203.0.113.10
+    Relay server:  203.0.113.10:21117
     API server:    http://203.0.113.10:21121
     Key:           <the server's public key>
   Log:           sudo journalctl -u neodesk-server -f
@@ -228,11 +243,11 @@ wegen des Zertifikats, weil keine Stelle, der er vertraut, es signiert hat.
 Die RustDesk-Zeilen sind das, was Clients brauchen, siehe
 [Einen RustDesk-Client verbinden](/docs/getting-started/connect-a-client).
 
-Der einfache Port 3375 schickt den Browser immer an die Adresse in dieser
-Zeile, meist die öffentliche IP-Adresse. Hinter einem Router ohne Hairpin-NAT
-funktioniert diese Adresse in deinem eigenen Netzwerk nicht. Öffne stattdessen
-direkt die LAN-Adresse über HTTPS, `https://<lan-address>:5443`; das
-Zertifikat deckt sie ab.
+In deinem eigenen Netzwerk nimmst du die LAN-Adresse des Servers:
+`http://<lan-address>:3375` führt zu `https://<lan-address>:5443`, und das
+Zertifikat deckt sie ab. Auf dem Server selbst führt `http://localhost:3375` zu
+`https://localhost:5443`. Jeder andere Name auf dem einfachen Port führt zur
+Adresse in der Zeile **Web console**.
 
 Weiter geht es mit [Die erste Anmeldung](/docs/getting-started/first-sign-in).
 
@@ -243,7 +258,7 @@ Weiter geht es mit [Die erste Anmeldung](/docs/getting-started/first-sign-in).
 | `/opt/neodesk` | Das Binary `neodesk-server`, die Datenbank `db_v2.sqlite3`, das Schlüsselpaar `id_ed25519` und `id_ed25519.pub`, der API-Schlüssel `.api_key`, die Schlüsseldatei der gespeicherten Anmeldung `.device_vault_key` und `ssl/` |
 | `/opt/NeoDeskConsole` | Die Einstellungsdatei `.env` und der Ordner `data/` der Konsole |
 | `/etc/systemd/system/neodesk-server.service` | Der Dienst. Er läuft als Benutzer `neodesk` und liest `/opt/NeoDeskConsole/.env`. |
-| `/opt/neodesk-backups` | Backups, die das Skript anlegt, zum Beispiel vor einem Update. Bis 3.6.0-rc.4 lagen sie in `/opt/rustdesk-backups`; der erste Lauf des neuen Skripts verschiebt sie hierher. |
+| `/opt/neodesk-backups` | Backups, die das Skript vor einem Update auf ein neues Release und bei der Deinstallation anlegt. Nur root kann sie lesen (der Ordner hat `0700`, jedes Archiv `0600`), weil sie die Schlüssel und Einstellungen des Servers enthalten. Die neuesten fünf bleiben; `BACKUP_KEEP=<number>` behält eine andere Zahl, `BACKUP_KEEP=0` alle. Bis 3.6.0-rc.4 lagen sie in `/opt/rustdesk-backups`; der erste Lauf des neuen Skripts verschiebt sie hierher. |
 | `/usr/local/sbin/neodesk-setup` | Das Skript, als Befehl für später. Bis 3.6.0-rc.4 war es `/usr/local/sbin/neodesk`. |
 | `/usr/local/bin/neodesk` | Die Kommandozeile, eine Kopie des Server-Binarys, die jeder Benutzer ausführen kann |
 
@@ -277,9 +292,10 @@ das Menü.
 `--uninstall` macht ein Backup, entfernt dann den Dienst und behält die Daten.
 Es listet, was auf dem Rechner übrig bleibt. `--uninstall --purge` löscht
 außerdem `/opt/neodesk`, `/opt/NeoDeskConsole` und die Befehle `neodesk-setup`
-und `neodesk`. Die Backups in `/opt/neodesk-backups` bleiben. Bei einer
-Installation mit PostgreSQL bleiben auch die Datenbank und PostgreSQL, selbst
-wenn die Liste sie nicht nennt. So löschst du die Datenbank und ihren Benutzer
+und `neodesk`. In einem Terminal fragt es, ob es auch die Backups in
+`/opt/neodesk-backups` löschen soll; ohne Terminal behält es sie. Bei einer
+Installation mit PostgreSQL bleiben die Datenbank, ihr Benutzer und PostgreSQL,
+und die Liste sagt, wie du die Datenbank und ihren Benutzer löschst
 (`neodesk`, außer du hast andere Namen gewählt):
 
 ```bash

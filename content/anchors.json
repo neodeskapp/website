@@ -1193,7 +1193,8 @@
 		"what-it-changes",
 		"when-not-to-use-it",
 		"turn-it-off",
-		"when-the-certificate-doesnt-come"
+		"when-the-certificate-doesnt-come",
+		"the-host-firewall"
 	],
 	"getting-started/docker/synology": [
 		"before-you-start",

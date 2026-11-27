@@ -20,8 +20,9 @@ hand. Building the image from the repository is covered at the end.
   `docker compose version` shows it. The compose file reads its settings from a
   `.env` file, which older versions can't do.
 - Access to `ghcr.io`, where the image is published.
-- Free ports on the host: 3375 and 5443 for the console, 21115 to 21119, 21121
-  and 21122 over TCP, and 21116 over UDP. The container publishes all of them.
+- Free ports on the host: 3375 and 5443 for the console; 21114, the API for
+  RustDesk clients whose **API server** field is empty; 21115 to 21119, 21121
+  and 21122 over TCP; and 21116 over UDP. The container publishes all of them.
   [HTTPS with Let's Encrypt](#https-with-lets-encrypt) needs 80 and 443 as
   well.
 
@@ -34,12 +35,8 @@ get.docker.com when it is missing. It stops when Compose is older than 2.24.
 curl -fsSL https://neode.sk/install.sh | sudo bash
 ```
 
-This saves `neodesk-docker.sh` in `/opt/neodesk/docker` and runs it there.
-When ufw or firewalld is active, it then opens 3375, 21115 to 21119, 21121
-and 21122 over TCP and 21116 over UDP, and 5443 only when `HTTPS_ENABLED=true`
-is set. It opens 21122, the CDAP gateway's port, whether the gateway is on or
-off. With `--domain` it opens 80 and 443 instead of the console's ports. To read
-the script before it runs, download it and start it yourself:
+This saves `neodesk-docker.sh` in `/opt/neodesk/docker` and runs it there. To
+read the script before it runs, download it and start it yourself:
 
 ```bash
 curl -fsSL https://neode.sk/neodesk-docker.sh -o neodesk-docker.sh
@@ -53,6 +50,8 @@ What the script does:
 - It looks up the address clients reach this server at and saves it as
   `RELAY_SERVERS` in `.env`. It asks checkip.amazonaws.com, then api.ipify.org.
   When neither answers, it uses the LAN address and warns.
+- When ufw or firewalld is active, it opens the ports there before the
+  container starts, see [The host firewall](#the-host-firewall).
 - It pulls the image, starts the container and waits up to three minutes until
   the API and the console answer.
 - It prints the console's address, the admin password, the four values for
@@ -63,6 +62,23 @@ The admin password is shown once, at the end of the first install. Copy it.
 
 Run the script again later to update the install; see
 [Updating](/docs/operations/updating).
+
+### The host firewall {#the-host-firewall}
+
+When ufw or firewalld is active, the script opens 21114 to 21119, 21121 and
+21122 over TCP and 21116 over UDP, and the console's 3375. It opens 5443 only
+when `HTTPS_ENABLED=true` is set, and leaves the console's ports closed when a
+reverse proxy is in front (`TRUST_PROXY`) or the console answers on this host
+only (`NEODESK_CONSOLE_BIND=127.0.0.1`). With `--domain` it opens 80 and 443
+instead. It opens 21122, the CDAP gateway's port, whether the gateway is on or
+off. The rules carry the comment "NeoDesk port ...".
+
+A later run closes the rules for ports the install no longer serves, so
+`--no-traefik` closes 80 and 443, and `uninstall` closes all of them.
+`--skip-firewall` leaves ufw and firewalld as they are.
+
+The rules matter for IPv6: Docker publishes IPv4 ports past ufw and firewalld,
+but IPv6 visitors come in through the host firewall, which decides.
 
 ### Options
 
@@ -75,9 +91,11 @@ Run the script again later to update the install; see
 | `--postgres` | Installs on PostgreSQL instead of SQLite, in a second container. |
 | `--dir <path>` | Installs into this folder instead of `/opt/neodesk/docker`. |
 | `--no-install-docker` | Stops with an error when Docker is missing instead of installing it. |
+| `--skip-firewall` | Leaves ufw and firewalld as they are, see [The host firewall](#the-host-firewall). |
+| `--import-keys <folder>` | Uses the key pair of a RustDesk server, `id_ed25519` and `id_ed25519.pub` in that folder, instead of a new one, so its clients keep working. See [Migrate from a RustDesk server](/docs/getting-started/migrate-from-rustdesk). |
 | `--domain <domain>` | Serves the console over HTTPS at this DNS name, with a certificate from Let's Encrypt. See [HTTPS with Let's Encrypt](#https-with-lets-encrypt). |
-| `--email <email-address>` | The contact address of your Let's Encrypt account. Needed with `--domain`. |
-| `--letsencrypt-staging` | Gets the certificate from Let's Encrypt's staging server, which browsers don't trust. For a test run. |
+| `--email <email-address>` | Optional: the contact address of your Let's Encrypt account. |
+| `--letsencrypt-staging` | Gets the certificate from Let's Encrypt's staging server, which browsers don't trust. For a test run; a later run without it gets a trusted certificate. |
 | `--no-traefik` | Takes HTTPS with Let's Encrypt out again. |
 
 To choose the admin password yourself, put it after `sudo`, because `sudo` drops
@@ -94,11 +112,16 @@ only serves your local network:
 curl -fsSL https://neode.sk/install.sh | sudo bash -s -- --relay-mode local
 ```
 
-The two installers name three of these options differently: `install.sh` takes
-`--relay-servers`, `--version` and `--letsencrypt-email` where
-`neodesk-docker.sh` takes `--relay`, `--tag` and `--email`, and passes them on
-under the script's names. Its other options here are `--relay-mode`,
-`--admin-password`, `--domain` and `--letsencrypt-staging`.
+The two installers name two of these options differently: `install.sh` takes
+`--relay-servers` and `--version` where `neodesk-docker.sh` takes `--relay` and
+`--tag`, and passes them on under the script's names. Its other options here
+are `--relay-mode`, `--admin-password`, `--skip-firewall`, `--import-keys`,
+`--domain`, `--email`, `--letsencrypt-staging` and `--no-traefik`. This lists
+them all:
+
+```bash
+curl -fsSL https://neode.sk/install.sh | sudo bash -s -- --help
+```
 
 ### Other commands of the script
 
@@ -108,7 +131,7 @@ under the script's names. Its other options here are `--relay-mode`,
 | `status` | Shows the container, its health, the version and the values for clients. |
 | `logs` | Follows the container's log. |
 | `backup` | Stops the container, saves the data volumes as a `.tar.gz` in `backups` in the install folder, and starts it again. It keeps the last five. |
-| `reset-password` | Gives `admin` a new random password and prints it once. `--user <name>` picks another account. |
+| `reset-password` | Gives `admin` a new random password and prints it once. `--user <name>` picks another account, and `--reset-two-factor` also turns off the account's two-factor sign-in, for an admin who lost the phone and the recovery codes. |
 | `postgres` | Moves the install from SQLite to PostgreSQL; see [PostgreSQL](/docs/operations/postgresql). |
 | `uninstall` | Removes the containers. The volumes, the image and the folder stay; `--purge` also deletes the volumes, after a backup. `--purge` asks you to type `delete` first; without a terminal, as in a script, it needs `--yes` instead. |
 | `menu` | The same commands as a menu. |
@@ -117,8 +140,7 @@ After the one-line install the script is in `/opt/neodesk/docker`. For example,
 to see the status:
 
 ```bash
-cd /opt/neodesk/docker
-sudo bash neodesk-docker.sh status
+sudo bash /opt/neodesk/docker/neodesk-docker.sh status
 ```
 
 `--help` lists every command and option.
@@ -142,8 +164,8 @@ docker compose up -d
 ```
 
 Docker pulls the image and starts the container. Its health check asks the API and
-the console whether they answer, and the status turns to healthy. That takes up
-to a minute and a half after the start, even when the console answers sooner:
+the console every 10 seconds whether they answer, and the status turns to
+healthy soon after the server is ready:
 
 ```bash
 docker compose ps
@@ -169,7 +191,8 @@ docker compose up -d
 | `NEODESK_IMAGE_TAG` | The image tag. `latest`, the default, is the newest release, or the newest pre-release while there is no stable release; a version number pins one. |
 | `NEODESK_CONSOLE_PORT` | The host port of the console, 3375 by default. Up to 3.6.0-rc.4 it was 5000. |
 | `NEODESK_CONSOLE_HTTPS_PORT` | The host port of the console's HTTPS, 5443 by default. The install checks that it is free, also while HTTPS is off. |
-| `NEODESK_CONSOLE_BIND` | The host address the console is published on, for example `127.0.0.1` behind a reverse proxy on the same machine. |
+| `NEODESK_CONSOLE_BIND` | The host address the console is published on, for example `127.0.0.1` (or `[::1]` for IPv6) behind a reverse proxy on the same machine. Without it, the console answers on every IPv4 and IPv6 address. |
+| `NEODESK_IPV6` | `true` gives the containers' network IPv6, so the activity log and sign-in lockouts see IPv6 visitors' own addresses instead of the network's gateway, such as `172.18.0.1`. Needs Docker Engine 27 or newer; older Docker Compose versions need `docker compose down` before it changes. |
 | `ADMIN_PASSWORD` | The admin's password at the first start. |
 | `TRUST_PROXY` | `1` when the console is behind one reverse proxy. |
 
@@ -267,64 +290,59 @@ It needs:
   an IP address or a name without a dot.
 - Ports 80 and 443, free on the host and reachable from the internet. Let's
   Encrypt checks the name over port 80.
-- An email address for your Let's Encrypt account. Let's Encrypt no longer
-  sends expiry notices to it, and it refuses addresses at `example.com`, so
-  don't copy the address from the examples.
+- Optionally an email address, the contact of your Let's Encrypt account.
+  Let's Encrypt sends no expiry mails any more and Traefik renews by itself, so
+  you can leave it out. The script refuses addresses at example.com,
+  example.net and example.org and at reserved names such as `.test` or
+  `.local`.
 
-For a new install, put the DNS name in place of `<domain>` and your email
-address in place of `<email-address>`:
-
-```bash
-curl -fsSL https://neode.sk/install.sh | sudo bash -s -- --domain <domain> --letsencrypt-email <email-address>
-```
-
-For an install that runs already, run the script in `/opt/neodesk/docker`, with
-the same values in place of `<domain>` and `<email-address>`. It updates the
-install as `update` does, backup included, and turns HTTPS on:
+For a new install, put the DNS name in place of `<domain>`:
 
 ```bash
-sudo bash neodesk-docker.sh --domain <domain> --email <email-address>
+curl -fsSL https://neode.sk/install.sh | sudo bash -s -- --domain <domain>
 ```
+
+For an install that runs already, run the script with the same value in place
+of `<domain>`. With the image it runs already, it applies the change without
+stopping NeoDesk and without a backup; only a new image is backed up and
+stopped first, as `update` does:
+
+```bash
+sudo bash /opt/neodesk/docker/neodesk-docker.sh --domain <domain>
+```
+
+Add `--email <email-address>` to either command for a contact address.
 
 The script stops when another program has port 80 or 443, and warns when the
-name doesn't point at this server yet. It then waits up to two minutes for the
-certificate, and the summary shows the console at `https://<domain>`. When the
-certificate hasn't come by then, it warns. Traefik's log, in
-`/opt/neodesk/docker`, says why; look for the lines with `ERR`:
-
-```bash
-docker compose logs traefik
-```
+name doesn't point at any of this server's IPv4 and IPv6 addresses. It then
+waits up to two minutes for the certificate, and the summary shows the console
+at `https://<domain>`. With `--letsencrypt-staging` it reports success only for
+a certificate of the staging server.
 
 ### When the certificate doesn't come {#when-the-certificate-doesnt-come}
 
-After a failed attempt, Traefik can wait a long time before it tries again.
-Once DNS points at the server and ports 80 and 443 are open, restart Traefik
-in `/opt/neodesk/docker`, and it gets the certificate within seconds:
+When the certificate hasn't come within the two minutes, the script warns and
+prints the cause from Traefik's last try, such as
+`no valid A records found for <domain>`. Traefik doesn't try again soon after a
+failure. Once DNS points at the server and ports 80 and 443 reach it, run the
+script with `--domain` again, which makes the Traefik container again and has
+it ask again, or restart Traefik:
 
 ```bash
-docker compose restart traefik
+cd /opt/neodesk/docker && docker compose restart traefik
 ```
 
-Changing the domain needs the same push. A run of the script with a new
-`--domain` writes the name into `.env`, but the running Traefik keeps serving
-the old name. After the script, or after you change `NEODESK_DOMAIN` by hand,
-recreate Traefik:
+Traefik's log says more; look for the lines with `ERR`:
 
 ```bash
-docker compose up -d --force-recreate traefik
+cd /opt/neodesk/docker && docker compose logs traefik
 ```
 
-A run without `--letsencrypt-staging` after a staging run keeps the staging
-certificate, which browsers don't trust, until shortly before it expires. To get
-a trusted one, take Traefik out, delete its certificate volume and turn HTTPS on
-again, with your values in place of `<domain>` and `<email-address>`:
-
-```bash
-sudo bash neodesk-docker.sh --no-traefik
-sudo docker volume rm neodesk-traefik-letsencrypt
-sudo bash neodesk-docker.sh --domain <domain> --email <email-address>
-```
+A run of the script with a new `--domain` moves the console to the new name,
+and a run without `--letsencrypt-staging` after a staging run gets a trusted
+certificate: the script moves the staging server's account and certificate
+aside, as `acme.json.other-server-*` in the volume, and Traefik asks the
+production server.
 
 ### What it changes
 
@@ -334,7 +352,7 @@ The script writes these settings into `.env`:
 |---------|-------|
 | `COMPOSE_PROFILES` | Gets `traefik`, which starts the Traefik container. |
 | `NEODESK_DOMAIN` | The DNS name. |
-| `LETSENCRYPT_EMAIL` | The email address. |
+| `LETSENCRYPT_EMAIL` | The email address, when you gave one. |
 | `NEODESK_CONSOLE_BIND` | `127.0.0.1`: the console's own ports, 3375 and 5443, answer only on the host itself. |
 | `TRUST_PROXY` | `1`: the console takes each visitor's address from Traefik. |
 | `PANEL_PUBLIC_URL` | `https://<domain>`, for the links in mails, unless you set another address there yourself. |
@@ -350,7 +368,8 @@ on 21121 stay as they are, so clients keep their values and ports.
 
 To set it up with the compose file by hand, put these lines into `.env`, with
 the DNS name in place of `<domain>` and your email address in place of
-`<email-address>`. With PostgreSQL, the first line is
+`<email-address>`, or leave the `LETSENCRYPT_EMAIL` line out. With PostgreSQL,
+the first line is
 `COMPOSE_PROFILES=traefik,postgres`.
 
 ```ini
@@ -368,8 +387,23 @@ Then recreate the containers:
 docker compose up -d
 ```
 
-When you change `NEODESK_DOMAIN` later, `docker compose up -d` doesn't pick up
-the new name; use `docker compose up -d --force-recreate traefik`.
+`docker compose up -d` also makes the Traefik container again after you change
+`NEODESK_DOMAIN`. An older compose file doesn't: there, download the compose
+file again, or recreate Traefik yourself:
+
+```bash
+docker compose up -d --force-recreate traefik
+```
+
+To move from the staging server to the production server by hand, stop
+Traefik, delete `acme.json` in the volume `neodesk-traefik-letsencrypt`, and
+start it again:
+
+```bash
+docker compose stop traefik
+sudo rm "$(docker volume inspect -f '{{ .Mountpoint }}' neodesk-traefik-letsencrypt)/acme.json"
+docker compose up -d
+```
 
 ### When not to use it
 
@@ -381,13 +415,12 @@ the new name; use `docker compose up -d --force-recreate traefik`.
 
 ### Turn it off
 
-In `/opt/neodesk/docker`:
-
 ```bash
-sudo bash neodesk-docker.sh --no-traefik
+sudo bash /opt/neodesk/docker/neodesk-docker.sh --no-traefik
 ```
 
-This removes the Traefik container and takes `traefik` out of
+This removes the Traefik container, closes 80 and 443 in the host firewall, and
+takes `traefik` out of
 `COMPOSE_PROFILES`. It removes `NEODESK_DOMAIN`, `LETSENCRYPT_CA_SERVER` and
 `TRUST_PROXY` from `.env`, and `NEODESK_CONSOLE_BIND` and `PANEL_PUBLIC_URL`
 while they still have the values it set, so the console is published on port
@@ -461,8 +494,15 @@ docker compose logs -f neodesk
 The container has the restart policy `unless-stopped`: it comes back after a
 reboot of the host unless you stopped it.
 
+A compose file of your own that you copied from an older one needs two lines
+the current file has: `- "21114:21114"` under the `neodesk` service's `ports`,
+for RustDesk clients without an API server, and `KILL` under its `cap_add`,
+so that `docker stop` shuts the server down cleanly.
+
 The first lines of the log show the version, the database and the relay address.
-On the first start they also show the join mode.
+On the first start they also show the join mode. When setting up the database
+takes more than a few seconds, the log says "Database: setting up its tables;
+the first start takes up to a minute..." and then how long it took.
 
 ## Join mode {#enrollment-mode}
 
