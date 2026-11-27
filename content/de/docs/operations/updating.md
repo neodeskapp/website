@@ -37,12 +37,11 @@ curl -fsSL https://neode.sk/install.sh | sudo bash -s -- --version latest
 Unter Windows öffnest du PowerShell als Administrator, lädst den Installer herunter und startest sein Update:
 
 ```powershell
-Invoke-WebRequest https://neode.sk/neodesk.ps1 -OutFile neodesk.ps1 -UseBasicParsing
+Invoke-WebRequest https://neode.sk/neodesk.ps1 -OutFile $env:TEMP\neodesk.ps1 -UseBasicParsing
+powershell -NoProfile -ExecutionPolicy Bypass -File $env:TEMP\neodesk.ps1 -Update
 ```
 
-```powershell
-.\neodesk.ps1 -Update
-```
+`-ExecutionPolicy Bypass` lässt das Skript auch laufen, wo die Ausführungsrichtlinie Skripte sperrt, wie unter Windows 10 und 11 standardmäßig.
 
 Er speichert sich als `C:\NeoDesk\neodesk.ps1` und legt `neodesk` in den `Path` des Rechners.
 
@@ -154,10 +153,10 @@ Ohne Optionen ist das neue Binary das neueste Release aus dem Kanal der Installa
 In PowerShell als Administrator:
 
 ```powershell
-& 'C:\NeoDesk\neodesk.ps1' -Update
+powershell -NoProfile -ExecutionPolicy Bypass -File C:\NeoDesk\neodesk.ps1 -Update
 ```
 
-Es läuft wie das Update unter Linux ab: ein Backup nach `C:\NeoDesk-Backups`, das neue Binary, wobei das alte als `.prev` bleibt, die env-Datei zusammengeführt, der Dienst `NeoDeskServer` neu geschrieben und neu gestartet, das alte Binary zurück, wenn das neue scheitert, und die Kopie des Skripts durch das `neodesk.ps1` des Releases ersetzt, das es installiert hat. `-Channel`, `-FromSource` und `-Binary <path>` funktionieren wie unter Linux.
+Es läuft wie das Update unter Linux ab: ein Backup nach `C:\NeoDesk-Backups`, das neue Binary, wobei das alte als `.prev` bleibt, die env-Datei zusammengeführt, der Dienst oder die geplante Aufgabe `NeoDeskServer` neu geschrieben und neu gestartet, das alte Binary zurück, wenn das neue scheitert, und die Kopie des Skripts durch das `neodesk.ps1` des Releases ersetzt, das es installiert hat. `-Channel`, `-FromSource` und `-Binary <path>` funktionieren wie unter Linux.
 
 ## Die Seite „Updates“ in der Konsole {#the-updates-page-in-the-console}
 

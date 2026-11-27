@@ -8,11 +8,11 @@ Diese Seite geht die Einstellungen durch, die einen Server im Internet sicherer 
 
 ## Die Konsole hinter TLS halten {#keep-the-console-behind-tls}
 
-Die Konsole spricht auf Port 3375 unverschlüsseltes HTTP (5000 bei Installationen unter Linux und Windows von vor 3.6.0-rc.5). Setze einen Reverse Proxy mit Zertifikat davor und lass nur den Proxy an den Port; siehe [Die Konsole lokal halten](/docs/operations/reverse-proxy-tls#keep-the-console-local).
+Die Konsole spricht auf Port 3375 unverschlüsseltes HTTP (5000 bei Installationen unter Linux und Windows von vor 3.6.0-rc.5). Die Installer für Linux und Windows fügen HTTPS auf 5443 mit einem selbst signierten Zertifikat hinzu, vor dem Browser warnen. Setze einen Reverse Proxy mit Zertifikat davor und lass nur den Proxy an den Port; siehe [Die Konsole lokal halten](/docs/operations/reverse-proxy-tls#keep-the-console-local).
 
 Setze `TRUST_PROXY` nur, wenn niemand außer dem Proxy die Konsole erreicht. Ist es eingeschaltet, kann jeder, der die Konsole direkt erreicht, eine beliebige Client-Adresse vorgeben, und die Anmeldelimits zählen diese Adresse. Die API des Servers ist strenger und glaubt nur den Adressen in `TRUSTED_PROXIES`. Siehe [Dem Proxy vertrauen](/docs/operations/reverse-proxy-tls#trusting-the-proxy).
 
-Die Konsole sendet `Strict-Transport-Security` nur, wenn sie HTTPS selbst ausliefert. Hinter einem Proxy fügst du den Header dort hinzu, zum Beispiel in nginx:
+Die Konsole sendet `Strict-Transport-Security` nur, wenn sie HTTPS selbst ausliefert, und Traefik sendet den Header unter Docker mit `--domain`. Hinter einem eigenen Proxy fügst du ihn dort hinzu, wie es die Beispiele für [nginx](/docs/operations/reverse-proxy-tls#nginx) und [Caddy](/docs/operations/reverse-proxy-tls#caddy) tun. In nginx:
 
 ```nginx
 add_header Strict-Transport-Security "max-age=31536000" always;
@@ -20,7 +20,7 @@ add_header Strict-Transport-Security "max-age=31536000" always;
 
 ## Neue Geräte nur mit Freigabe zulassen {#admit-new-devices-only-with-approval}
 
-Im Registrierungsmodus `managed` wartet ein neues Gerät unter **Registrierungsanfragen**, bis jemand es freigibt; `locked` lässt nur Geräte mit gültigem Token zu. Die Installer und ein neues Docker-Volume starten in `managed`. Siehe [Registrierungsmodi](/docs/console/enrollment#enrollment-modes).
+Im Beitrittsmodus `managed` wartet ein neues Gerät unter **Beitrittsanfragen**, bis jemand es freigibt; `locked` lässt nur Geräte mit gültigem Token zu. Die Installer und ein neues Docker-Volume starten in `managed`. Siehe [Beitrittsmodi](/docs/console/enrollment#enrollment-modes).
 
 Nach dem ersten Start gewinnt der in der Konsole gewählte Modus gegen `ENROLLMENT_MODE`. Soll die Variable bei jedem Start gewinnen, sodass eine Änderung in der Konsole nur bis zum nächsten Neustart gilt, setze zusätzlich `ENROLLMENT_MODE_ENV_OVERRIDE=Y`.
 
@@ -35,7 +35,7 @@ Standardmäßig kann jedes registrierte Gerät eine Sitzung zu einem anderen sta
 - **Nur angemeldete RustDesk-Apps können Sitzungen starten**: Die RustDesk-App muss an einem NeoDesk-Konto angemeldet sein. Ohne gültige Anmeldung lehnt der Server die Sitzung ab und loggt `Rejected outbound from ...` mit `reason=initiator_login_required`. Sitzungen aus dem Browser sind nicht betroffen.
 - **Nur Konten, die sich mit Geräten verbinden dürfen, können Sitzungen starten**: Das Konto, an dem die App angemeldet ist, braucht außerdem die Berechtigung, sich mit Geräten zu verbinden. Der Server liest die Rolle des Kontos bei jeder neuen Sitzung, eine geänderte Rolle gilt also sofort.
 
-Klicke nach dem Ändern auf **Verbindungsstrategie speichern**. Beide Schalter gibt es auch als Variablen, `LOGGED_IN_ONLY_INITIATOR` und `OPERATOR_ONLY_OUTBOUND`; siehe [Verbindungen](/docs/operations/configuration#connections).
+Klicke nach dem Ändern auf **Änderungen speichern**. Beide Schalter gibt es auch als Variablen, `LOGGED_IN_ONLY_INITIATOR` und `OPERATOR_ONLY_OUTBOUND`; siehe [Verbindungen](/docs/operations/configuration#connections).
 
 Lass **Geräte mit gemeinsamer öffentlicher IP-Adresse Sitzungen ohne Anmeldung starten lassen** aus. Ohne diese Option gilt: Teilen sich mehrere Geräte eine öffentliche Adresse und kann die App nicht zeigen, welches davon sie ist, lehnt der Server die Sitzung ab (`reason=initiator_ambiguous_same_nat`), statt eines davon auszuwählen.
 
@@ -60,7 +60,7 @@ Für CDAP-Geräte-Agents schaltet `CDAP_TLS_REQUIRED=Y` mit `TLS_CERT` und `TLS_
 
 ## Adressen und Geräte sperren {#block-addresses-and-devices}
 
-Sperren und Blockaden, die du in der Konsole setzt, liegen in der Datenbank. Für eine Liste, die du selbst pflegst, liest der Server eine Datei mit einem Eintrag pro Zeile: eine IP-Adresse, ein Adressbereich oder `id:` und eine Geräte-ID, jeweils mit einem optionalen Grund nach einem Komma. Das ist `blocklist.txt` neben der Schlüsseldatei des Servers (`/opt/neodesk/data/blocklist.txt` unter Docker) oder die Datei, die `BLOCKLIST_FILE` nennt. **Einstellungen**, **Erweitert** bearbeitet genau diese Datei als **Sperrliste des Servers (blocklist.txt)**.
+Sperren und Blockaden, die du in der Konsole setzt, liegen in der Datenbank. Für eine Liste, die du selbst pflegst, liest der Server eine Datei mit einem Eintrag pro Zeile: eine IP-Adresse, ein Adressbereich oder `id:` und eine Geräte-ID, jeweils mit einem optionalen Grund nach einem Komma. Das ist `blocklist.txt` neben der Schlüsseldatei des Servers (`/opt/neodesk/data/blocklist.txt` unter Docker) oder die Datei, die `BLOCKLIST_FILE` nennt. **Server**, **Konfigurationsdateien** bearbeitet genau diese Datei als **Sperrliste des Servers (blocklist.txt)**.
 
 ```text
 # Lines starting with # are comments
@@ -78,7 +78,7 @@ sudo systemctl kill -s HUP neodesk-server
 ## Die Geheimnisse schützen {#protect-the-secrets}
 
 - Das Schlüsselpaar, `.api_key`, `mesh_agent_server.pem` und die env-Datei mit `SESSION_SECRET`, `REMOTE_TARGET_VAULT_KEY` und dem Datenbankpasswort sind Geheimnisse, ebenso die Backups der Konsole, die sie enthalten. Bewahre sie auf wie Passwörter; siehe [Backup und Wiederherstellung](/docs/operations/backup).
-- Der API-Schlüssel des Servers unter **Einstellungen**, **Client-Einrichtung**, **Für Skripte** darf fast alles auf dem Server. Konten, Rollenberechtigungen, API-Schlüssel und zweite Faktoren kann er nicht ändern, und ganz sehen ihn nur Konten mit der Rolle Super-Admin oder Administrator. Gib ihn nur Skripten, die ihn brauchen; siehe [API-Schlüssel](/docs/development/api#api-keys).
+- Der **API-Schlüssel des Servers** unter **Geräte**, **Computer hinzufügen**, **Manuelle Einrichtung**, **Für Skripte** darf fast alles auf dem Server. Konten, Rollenberechtigungen, API-Schlüssel und zweite Faktoren kann er nicht ändern, und ganz sehen ihn nur Konten mit der Rolle Super-Admin oder Administrator. Gib ihn nur Skripten, die ihn brauchen; siehe [API-Schlüssel](/docs/development/api#api-keys).
 - Eine vollständige Sicherung enthält jedes Geheimnis. Deshalb laden nur Konten mit der Rolle Super-Admin oder Administrator eine herunter, stellen sie wieder her oder planen sie. Siehe [Die Seite „Sicherung“ in der Konsole](/docs/operations/backup#the-backup-page-in-the-console).
 - Einige Einstellungen werden nur auf dem Host des Servers gesetzt: die Release-Schlüssel und Signaturschalter (`UPDATE_MANIFEST_PUBLIC_KEY`, `UPDATE_REQUIRE_SIGNED_MANIFEST`, `NEODESK_SUPPORT_RELEASE_PUBLIC_KEY`), der Signatur-Seed und der Build-Befehl eigener Clients (`NEODESK_CUSTOM_CLIENT_SIGNING_SEED`, `NEODESK_CLIENT_BUILD_COMMAND`) und die Geheimnisse `SESSION_SECRET`, `PANEL_TRUST_SECRET`, `ORG_PEER_VAULT_KEY`, `REMOTE_TARGET_VAULT_KEY`, `UPDATE_GITHUB_TOKEN` und `NEODESK_GITHUB_TOKEN`. Die Konsole schreibt sie nicht: **Server**, **Konfigurationsdateien** speichert keine env-Datei, die einen davon hinzufügt, ändert oder entfernt, und die Einstellungs-API ebenso wenig. Eine gestohlene Admin-Sitzung kann den Updater so nicht dazu bringen, ihrem eigenen Release-Schlüssel zu vertrauen. Ändere sie in der env-Datei auf dem Server und starte ihn neu.
 - Lass `SMTP_TLS_VERIFY` eingeschaltet, damit die Konsole das Zertifikat des Mailservers prüft.

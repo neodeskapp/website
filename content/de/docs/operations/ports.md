@@ -43,7 +43,7 @@ Bis 3.6.0-rc.4 war der Standardport der Konsole 5000. Welche Installationen gewe
 
 Clients nutzen 21121 bei jeder Installationsart. Unter Docker lauscht dort die API des Servers selbst. Bei einer Installation unter Linux oder Windows lauscht die API des Servers auf 21114, und die Konsole beantwortet die Client-API auf 21121 und reicht sie an 21114 weiter. Die Installer öffnen 21121, und die Konsole gibt den Clients `http://<server-address>:21121` als API-Server. **Was Clients jetzt erhalten** unter **Einstellungen**, **Allgemein** zeigt die Adresse, die gerade gilt.
 
-In einem normalen RustDesk-Client kann **API-Server** leer bleiben oder `http://<server-address>:21121` sein; beides funktioniert. Bleibt das Feld leer, schickt der Client seine API-Aufrufe über den ID-Server auf 21116.
+In einem normalen RustDesk-Client setzt du **API-Server** auf `http://<server-address>:21121`. Bleibt das Feld leer, schickt der Client seine API-Aufrufe an Port 21114 auf der Adresse des ID-Servers, den Docker nicht veröffentlicht und die Installer nicht öffnen. Das Gerät verbindet sich dann zwar, aber die Konsole zeigt es ohne Hostname, Betriebssystem und Version, und Anmeldung und Adressbuch im Client funktionieren nicht.
 
 Das selbst signierte Zertifikat der Installer wird auf 21121 nicht genutzt. Die Installer setzen `RUSTDESK_API_TLS=false` in der env-Datei, was den Port bei unverschlüsseltem HTTP hält, weil RustDesk-Clients kein selbst signiertes Zertifikat akzeptieren. Hast du in `SSL_CERT_PATH` und `SSL_KEY_PATH` ein Zertifikat, dem die Clients vertrauen, setze `RUSTDESK_API_TLS=auto`. Nach einem Neustart liefert 21121 dann HTTPS aus, und die Clients bekommen eine `https://`-Adresse.
 
@@ -72,6 +72,13 @@ sudo ufw allow 21117/tcp
 sudo ufw allow 21121/tcp
 ```
 
+Öffne auch den Port der Konsole, solange kein Reverse Proxy davor steht, sonst erreichst du die Konsole von anderen Rechnern aus nicht: `3375/tcp`, und `5443/tcp` bei einer Installation unter Linux oder Windows, wo die Konsole darauf HTTPS ausliefert.
+
+```bash
+sudo ufw allow 3375/tcp
+sudo ufw allow 5443/tcp
+```
+
 Füge `21118/tcp` und `21119/tcp` nur für Clients hinzu, die WebSocket nutzen, `21122/tcp` für CDAP-Agents und 443 auf dem Rechner, auf dem dein Reverse Proxy läuft.
 
 Mit firewalld:
@@ -80,8 +87,12 @@ Mit firewalld:
 sudo firewall-cmd --permanent --add-port=21115-21117/tcp
 sudo firewall-cmd --permanent --add-port=21116/udp
 sudo firewall-cmd --permanent --add-port=21121/tcp
+sudo firewall-cmd --permanent --add-port=3375/tcp
+sudo firewall-cmd --permanent --add-port=5443/tcp
 sudo firewall-cmd --reload
 ```
+
+Die Zeilen mit 3375 und 5443 sind für die Konsole, solange kein Reverse Proxy davor steht.
 
 Der Linux-Installer öffnet die Ports selbst, wenn ufw oder firewalld aktiv ist, und legt iptables-Regeln nur an, wenn keins von beiden installiert ist. Ein ufw oder firewalld, das installiert, aber ausgeschaltet ist, bleibt, wie es ist, ohne neue Regeln. Er öffnet 21115 bis 21117 über TCP, 21116 über UDP, den Port 21121 der Client-API, 21122, außer die env-Datei setzt `CDAP_ENABLED=N`, sowie den Port der Konsole (3375 bei einer neuen Installation) und, mit eingeschaltetem HTTPS, 5443. Ist `TRUST_PROXY` eingeschaltet, lässt er die Ports der Konsole geschlossen. Die Ports von ID-Server und Relay nimmt er aus der env-Datei, und am Ende gibt er die Liste für eine Firewall außerhalb des Rechners aus, etwa die deines Cloud-Anbieters.
 
@@ -102,7 +113,10 @@ In PowerShell als Administrator:
 ```powershell
 New-NetFirewallRule -DisplayName "NeoDesk TCP" -Direction Inbound -Protocol TCP -LocalPort 21115,21116,21117,21121 -Action Allow
 New-NetFirewallRule -DisplayName "NeoDesk UDP" -Direction Inbound -Protocol UDP -LocalPort 21116 -Action Allow
+New-NetFirewallRule -DisplayName "NeoDesk console" -Direction Inbound -Protocol TCP -LocalPort 3375,5443 -Action Allow
 ```
+
+Die letzte Zeile öffnet die Konsole, solange kein Reverse Proxy davor steht.
 
 Der Windows-Installer legt eingehende Regeln für dieselben Ports an wie der Linux-Installer. Ihre Namen beginnen mit „NeoDesk - “, gefolgt vom Zweck des Ports.
 
@@ -129,7 +143,13 @@ Der Port der Konsole:
   docker compose up -d
   ```
 
-- Linux und Windows: Setze `CONSOLE_PORT` (und `HTTPS_PORT`) in der env-Datei und starte den Dienst neu.
+- Linux und Windows: Setze `CONSOLE_PORT` (und `HTTPS_PORT`) in der env-Datei und starte den Dienst neu. Unter Linux:
+
+  ```bash
+  sudo systemctl restart neodesk-server
+  ```
+
+  Unter Windows startest du den Dienst oder die geplante Aufgabe `NeoDeskServer` neu, wie [Dateien und der Dienst](/docs/getting-started/windows#files-and-the-service) zeigt.
 
 Die RustDesk-Ports lassen sich auch verlegen, aber dann braucht jeder Client den Port in seinen Serveradressen. Behalte deshalb die Standardwerte, solange nichts anderes sie belegt.
 

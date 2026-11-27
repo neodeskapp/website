@@ -40,12 +40,11 @@ curl -fsSL https://neode.sk/install.sh | sudo bash -s -- --version latest
 On Windows, open PowerShell as Administrator, download the installer and run its update:
 
 ```powershell
-Invoke-WebRequest https://neode.sk/neodesk.ps1 -OutFile neodesk.ps1 -UseBasicParsing
+Invoke-WebRequest https://neode.sk/neodesk.ps1 -OutFile $env:TEMP\neodesk.ps1 -UseBasicParsing
+powershell -NoProfile -ExecutionPolicy Bypass -File $env:TEMP\neodesk.ps1 -Update
 ```
 
-```powershell
-.\neodesk.ps1 -Update
-```
+`-ExecutionPolicy Bypass` lets the script run where the execution policy blocks scripts, as it does on Windows 10 and 11 by default.
 
 It saves itself as `C:\NeoDesk\neodesk.ps1` and puts `neodesk` on the machine's `Path`.
 
@@ -157,10 +156,10 @@ Without options, the new binary is the newest release of the install's channel, 
 In PowerShell as Administrator:
 
 ```powershell
-& 'C:\NeoDesk\neodesk.ps1' -Update
+powershell -NoProfile -ExecutionPolicy Bypass -File C:\NeoDesk\neodesk.ps1 -Update
 ```
 
-It works like the Linux update: a backup to `C:\NeoDesk-Backups`, the new binary with the old one kept as `.prev`, the env file merged, the service `NeoDeskServer` written again and restarted, the old binary back if the new one fails, and the copy of the script replaced with the `neodesk.ps1` of the release it installed. `-Channel`, `-FromSource` and `-Binary <path>` work as on Linux.
+It works like the Linux update: a backup to `C:\NeoDesk-Backups`, the new binary with the old one kept as `.prev`, the env file merged, the service or scheduled task `NeoDeskServer` written again and restarted, the old binary back if the new one fails, and the copy of the script replaced with the `neodesk.ps1` of the release it installed. `-Channel`, `-FromSource` and `-Binary <path>` work as on Linux.
 
 ## The Updates page in the console
 

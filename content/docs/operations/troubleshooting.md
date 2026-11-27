@@ -23,23 +23,45 @@ The server and the console write one log.
   journalctl -u neodesk-server -f
   ```
 
-- Windows: `C:\NeoDesk\logs\server.log`.
+- Windows: `C:\NeoDesk\logs\server.log`. The **Diagnostics** item in the menu of `C:\NeoDesk\neodesk.ps1` checks the ports and the service.
+
+The Linux installer also keeps a log of each run, `/tmp/neodesk_<date>_<time>.log`. Look there when an install or update stops with an error.
 
 `LOG_LEVEL` in the env file decides how much the log holds; a new install sets `info`. With `warn` or `error`, the lines at info level don't show, such as the start summary, `[console] listening on ...` and most lines quoted on this page. Set `LOG_LEVEL=info` in `/opt/NeoDeskConsole/.env` or `C:\NeoDeskConsole\.env` and restart the service to see them.
 
 ## Health checks
 
-The console answers `/health` and the API answers `/api/health`, both without signing in. On a Linux or Windows install made before 3.6.0-rc.5, put the console's port 5000 in place of 3375:
+The console answers `/health` and the API answers `/api/health`, both without signing in. Where the console answers depends on the install type, because the Linux and Windows installers turn on HTTPS with a self-signed certificate.
+
+Docker, where the console speaks plain HTTP on 3375:
 
 ```bash
 curl http://localhost:3375/health
 curl http://localhost:21121/api/health
 ```
 
+Linux, where the console is on 5443 and the plain port 3375 only redirects there. `-k` accepts the self-signed certificate:
+
+```bash
+curl -k https://localhost:5443/health
+curl http://localhost:21121/api/health
+```
+
+Windows, in PowerShell. Type `curl.exe`, because `curl` alone is another command in Windows PowerShell:
+
+```powershell
+curl.exe -k https://localhost:5443/health
+curl.exe http://localhost:21121/api/health
+```
+
+Each answers with JSON:
+
 ```text
 {"status":"ok","timestamp":"..."}
 {"status":"ok","version":"..."}
 ```
+
+On Linux and Windows, `curl http://localhost:3375/health` answers `Temporary Redirect` instead. Use the Docker line on an install whose console runs without HTTPS, such as one behind a reverse proxy. On a Linux or Windows install made before 3.6.0-rc.5, put the console's port 5000 in place of 3375.
 
 Port 21121 answers on every install type; on Linux and Windows the console passes the request on to the server's API on 21114. In Docker, `docker compose ps` shows the container as healthy when both answer.
 
@@ -49,17 +71,24 @@ The binary can check the health addresses and ports in one go and prints a PASS 
 docker compose exec neodesk neodesk-server check --port 21116 --port 21117
 ```
 
-On a Linux install, name the API's port:
+On a Linux install, name the API's port and the console's HTTPS address. `--insecure` accepts the self-signed certificate:
 
 ```bash
-sudo /opt/neodesk/neodesk-server check --api http://127.0.0.1:21114/api/health --port 21116 --port 21117
+sudo /opt/neodesk/neodesk-server check --api http://127.0.0.1:21114/api/health --panel https://127.0.0.1:5443/health --insecure --port 21116 --port 21117
+```
+
+On Windows, in PowerShell as Administrator, this is the check the installer runs:
+
+```powershell
+& C:\NeoDesk\neodesk-server.exe check --api http://127.0.0.1:21114/api/health --panel https://127.0.0.1:5443/health --insecure --port 127.0.0.1:21116 --port 127.0.0.1:21117
 ```
 
 `/api/health/detail` and `/metrics` give more, but only to the addresses in `METRICS_IP_ALLOWLIST` or with an API key.
 
 ## The console does not open
 
-- Use `http://`, not `https://`, unless you set up HTTPS. The console's port speaks plain HTTP: 3375, or 5000 on a Linux or Windows install made before 3.6.0-rc.5.
+- Use the address for your install type. Docker: `http://<server-address>:3375`, plain HTTP, unless you set up HTTPS. Linux and Windows: `https://<server-address>:5443`, because the installers turn on HTTPS with a self-signed certificate, which the browser warns about. Their plain port, 3375 (or 5000 on an install made before 3.6.0-rc.5), only redirects there.
+- The plain port redirects to the host in `PANEL_PUBLIC_HOST`, which the installers set to the address clients use, often the public IP address. From inside the same network that address may not answer, for example behind a router without hairpin NAT. Open `https://<lan-address>:5443` directly; the installers' certificate covers the machine's LAN address too.
 - A Docker install that answered on 5000 moves to 3375 at its first update to 3.6.0-rc.5 or later, unless `NEODESK_CONSOLE_PORT` in its `.env` names a port. See [The console's port after the update](/docs/operations/updating#the-consoles-port-after-the-update).
 - With `CONSOLE_PORT=0` the console is off. A minimal install (`--minimal`) sets that.
 - With `HOST=127.0.0.1` the console answers only on the machine itself, which is what you want behind a reverse proxy on the same machine.
@@ -83,9 +112,23 @@ read -rs NEWPASS
 printf '%s\n' "$NEWPASS" | sudo -u neodesk env NEODESK_ENV_FILE=/opt/NeoDeskConsole/.env /opt/neodesk/neodesk-server reset-password admin
 ```
 
-On Windows, run `C:\NeoDesk\neodesk.ps1` as Administrator and choose **Reset admin password**.
+On Windows, open PowerShell as Administrator, start the script's menu and choose **Reset admin password**. It resets the account `admin`, to a random password or one you type. `-ExecutionPolicy Bypass` lets the script run in any new window, also where scripts are blocked:
 
-`reset-password` works on SQLite and PostgreSQL and takes effect at once. It reads the password from standard input and refuses to read it from a terminal, so that it never shows. The password needs at least 8 characters, the same rule as everywhere else. Without an account of that name, it creates one with the admin role. It does not turn off two-factor sign-in; for that, see [Two-factor sign-in](/docs/people/two-factor). A lock from failed attempts ends by itself, 15 minutes after the last one.
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File C:\NeoDesk\neodesk.ps1
+```
+
+The server's own command works on Windows too, for any account name. Type the password at the prompt; it doesn't show:
+
+```powershell
+$env:NEODESK_ENV_FILE = 'C:\NeoDeskConsole\.env'
+$pass = Read-Host 'New password' -AsSecureString
+[Net.NetworkCredential]::new('', $pass).Password | & C:\NeoDesk\neodesk-server.exe reset-password admin
+```
+
+`reset-password` works on SQLite and PostgreSQL and takes effect at once. It reads the password from standard input and refuses to read it from a terminal, so that it never shows. The password needs at least 8 characters, the same rule as everywhere else. Without an account of that name, it creates one with the admin role. A lock from failed attempts ends by itself, 15 minutes after the last one.
+
+`reset-password` leaves two-factor sign-in as it is. When the only admin has lost both the phone and the recovery codes, give the command a name that doesn't exist yet, such as `recovery`, to create a second admin account. Sign in with it, open **People**, **Users**, and in the first account's row menu choose **Turn off two-factor sign-in…**, or **Reset two-factor sign-in…** when two-factor sign-in is required for it. Then delete the extra account. See [Two-factor sign-in](/docs/people/two-factor).
 
 ## Sign-in says "Too many attempts"
 
@@ -99,12 +142,12 @@ Behind a reverse proxy without `TRUST_PROXY`, all people share the proxy's addre
 
 ## Clients show "not ready" or cannot connect
 
-- Compare the client's ID server and Key with **What clients get now** under **Settings**, **General**. See [Connect a client](/docs/getting-started/connect-a-client).
+- Compare the client's ID server and Key with **Client setup** on the **Overview**. **What clients get now** under **Settings**, **General** shows the same addresses, but not the key. See [Connect a client](/docs/getting-started/connect-a-client).
 - Make sure the client's network reaches port 21116 over TCP and UDP, and 21115.
 - In the `managed` and `locked` join modes, a new device cannot register until someone approves it under **Join requests**. A new install starts in `managed`. The log shows `Rejected new peer <id> from <address> (enrollment policy)`. See [Join requests](/docs/console/enrollment).
 - `Rate limited RegisterPk for new peer` in the log means more than `SIGNAL_RATE_LIMIT_PER_IP` new devices (20 a minute) registered from one address. Raise it when many devices share a public address.
 - If the server lost its key file, it made a new key, and clients with the old one cannot connect. Restore the old key file or give clients the new key; see [why the key file matters](/docs/operations/backup#why-the-key-file-matters).
-- A RustDesk client shows online in the console, but without host name, user or OS, or signing in from it fails: its **API server** names the wrong address or port. Leave it empty or set it to `http://<server-address>:21121` in the client's network settings. See [the API port](/docs/operations/ports#the-api-port-on-linux-and-windows).
+- A RustDesk client shows online in the console, but without host name, user or OS, or signing in from it fails: its **API server** names the wrong address or port. Set it to `http://<server-address>:21121` in the client's network settings. Left empty, the stock RustDesk client calls port 21114 on the ID server's address, which the installers don't open and Docker doesn't publish. See [the API port](/docs/operations/ports#the-api-port-on-linux-and-windows).
 - The first time a client registers after the server started, the log shows `[signal] New peer registered: <id> from <address>`.
 - `Rejected outbound from <address> (... reason=...)` names why the server refused to start a session for the computer that asked. `initiator_pending_enrollment`: it waits under **Join requests**. `initiator_not_registered`: no device registered with this server from that address. `initiator_banned`: the device is banned. `initiator_ambiguous_same_nat`: several devices share the public address of the computer that asked, as in an office behind one router, and the server can't tell which one it is. The client then shows "ID does not exist". Setting `ALLOW_SHARED_NAT_INITIATOR=Y` lets a computer at such an address start sessions anyway, without the server knowing which device asked; see [Configuration](/docs/operations/configuration).
 - A computer that was set up again or reset can come back with its old ID and a new key. The log shows `[signal] PK mismatch for <id>`, and the console shows the device offline with a **New key** notice on its **Overview** tab. Approve the new key or delete the device; see [A reinstalled or reset computer](/docs/console/add-a-computer#a-reinstalled-or-reset-computer).
@@ -113,6 +156,8 @@ Behind a reverse proxy without `TRUST_PROXY`, all people share the proxy's addre
 ## The server's key
 
 At every start the server logs its public key as `Server public key: <key>`. The **Key** in every client must be the same.
+
+The key pair is `id_ed25519` and `id_ed25519.pub`: in `/opt/neodesk/` on Linux, in `C:\NeoDesk\` on Windows, and in Docker in the volume `neodesk-data`, which the container mounts at `/opt/neodesk/data/`.
 
 - `Failed to initialize keypair: keys: public key file does not match private key`, and the server does not start: `id_ed25519.pub` does not belong to `id_ed25519`, for example because only one of the two was replaced. Put back the pair that belongs together.
 - `Failed to initialize keypair: keys: failed to read private key ...`: the account the server runs as cannot read `id_ed25519`. On Linux, start the installer's menu and choose **Repair installation**, then **Repair permissions**:
@@ -141,7 +186,13 @@ So when **Public relay server** holds a wrong address, correct it there; `RELAY_
   docker compose up -d
   ```
 
-- On Linux and Windows the installer put the relay address into the service's arguments at install time, the public or the LAN address. If it is wrong or your public address changed, set `RELAY_SERVERS` in the env file, which wins over the argument, and restart the service.
+- On Linux and Windows the installer put the relay address into the service's arguments at install time, the public or the LAN address. If it is wrong or your public address changed, set `RELAY_SERVERS` in the env file, which wins over the argument, and restart the service. On Linux:
+
+  ```bash
+  sudo systemctl restart neodesk-server
+  ```
+
+  On Windows the service or scheduled task is `NeoDeskServer`; [Files and the service](/docs/getting-started/windows#files-and-the-service) shows how to restart either.
 - Port 21117 has to be open for TCP.
 - `[relay] Pair timeout for UUID ...` in the log means only one device reached the relay within 30 seconds. The other one cannot reach the relay address.
 - `[relay] Pair established: <address> <-> <address>` means both devices reached the relay and it carries the session.
@@ -150,7 +201,7 @@ So when **Public relay server** holds a wrong address, correct it there; `RELAY_
 
 Signed out right after signing in:
 
-- One account may have one session at a time (`SESSION_MAX_PER_USER=1`). Signing in with the same account in another browser ends the earlier session.
+- With **One session per account** on under **Settings**, **Sign-in**, or with `SESSION_MAX_PER_USER=1`, an account may have one session at a time. Signing in with the same account in another browser ends the earlier session.
 - With `HTTPS_ENABLED=true` and a certificate, the plain port only redirects to the console's own HTTPS port, and a proxy that sends requests to the plain port gets no console. Behind a proxy, see [Secure cookies](/docs/operations/reverse-proxy-tls#secure-cookies).
 - A new session secret signs everyone out. Without `SESSION_SECRET` the console keeps it in its data folder, so a lost `neodesk-console-data` volume makes a new one.
 
