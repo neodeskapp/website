@@ -22,12 +22,12 @@ Someone without a console account can use the viewer through a [guest access lin
 
 ### Working on other pages
 
-Each device is a tab in the viewer's bar, and **New connection** adds another. When you open another page of the console, the sessions stay connected. A strip under the top bar lists them under **Open sessions**: click one to go back to it, or close it with its close button or a middle click. While a session is not on screen, it gets no keys, no mouse and no clipboard from this computer.
+Each device is a tab in the viewer's bar, and **New connection**, the + next to the tabs, adds another. When you open another page of the console, the sessions stay connected. A strip under the top bar lists them under **Open sessions**: click one to go back to it, or close it with its close button or a middle click. While a session is not on screen, it gets no keys, no mouse and no clipboard from this computer.
 
 The viewer's bar also has:
 
 - **Hide the sidebar** and **Show the sidebar**, which fold the console's sidebar away to give the screen more room. This browser remembers the choice.
-- **Open in new tab**, which moves the session to a browser tab of its own: it connects again there and ends in the console.
+- **Open in new tab**, under **More** while a session shows its screen, which moves the session to a browser tab of its own: it connects again there and ends in the console.
 - **Full screen**, or F11, where the console's own bars step aside too.
 
 When you close the last session, the viewer goes back to the console. Signing out ends every session; the question before it says how many are open: "Your open remote sessions end too (2)." Closing the browser tab ends them as well.
@@ -75,32 +75,36 @@ When the device asks for a password, enter the one set in RustDesk on that devic
 
 While the password form shows, the viewer already asks the device without a password. A computer where the person there accepts sessions by clicking shows its prompt at once, and once they accept, the session opens without a password.
 
-When a computer that shares several Windows sessions asks which one to show, the viewer takes the one that is current on the computer, so the picture comes without a question. **Windows sessions** under **Actions** switches to another.
+When a computer that shares several Windows sessions asks which one to show, the viewer takes the one that is current on the computer, so the picture comes without a question. **Windows sessions** under **Keys** switches to another.
 
 For a RustDesk device, the viewer stops before it sends a password if the connection to the device can't be secured. **Session info** shows whether a running session is end-to-end encrypted.
 
 ## During a session
 
-**Controls**, or F8, shows the row of session controls, and **Keep open** keeps it there:
+While a session shows its screen, the session controls sit at the end of the viewer's bar. F8 leaves the remote screen and moves to them.
 
 | Control | What it does |
 |---|---|
-| **Actions** | **Ctrl+Alt+Del**, **Lock screen**, **Restart remote device**, **Refresh screen**, **Paste clipboard**, **Reset keyboard**, **Windows key**, **Alt+Tab**, **Block input**, and **Windows sessions** when the device has several |
-| **Type text** | Types text on the remote keyboard, for example a password. Ctrl+Enter sends it |
-| **Display** | **Image quality** (**Best**, **Balanced**, **Performance**), **Frame rate** (30, 60 or **Adaptive**), **Scaling**, **Keyboard mode**, **Video codec**, and the options **Show remote cursor**, **Lock after session**, **Privacy mode** and **Disable clipboard** |
-| **Displays** | For a device that sends several displays at once: the layout, the display you work on, a window of its own for a display, and virtual displays. See [Several displays](#several-displays) |
-| **Monitors** | For other devices: picks the screen to show, and adds or removes virtual displays when the device supports them. A device with two to four screens gets one button per screen instead |
+| **Displays** | Picks the screen to show, and adds or removes virtual displays when the device supports them. For a device that sends several displays at once, also the layout, the display you work on and a window of its own for a display, see [Several displays](#several-displays). It shows when the device has more than one screen or supports virtual displays |
+| **Keys** | **Ctrl+Alt+Del**, **Windows key**, **Alt+Tab**, **Lock screen**, **Type text**, **Paste clipboard**, **Block input**, **Reset keyboard**, and **Windows sessions** when the device has several. **Type text** types text on the remote keyboard, for example a password; Ctrl+Enter sends it |
+| **View** | **Image quality** (**Best**, **Balanced**, **Performance**), **Scaling**, **Show remote cursor** and **Mute sound**. **Advanced settings** adds **Frame rate** (30, 60 or **Adaptive**), **Keyboard mode** and **Video codec**, and stays on in this browser once you choose it |
 | **Chat** | Messages appear on the device's screen; replies show here. With **Answer support chat**, both go into the computer's conversation, see [Chat](/docs/console/chat#in-a-remote-session) |
 | **File transfer** | Copies files between this computer and the device |
-| **Session info** | The device, the connection, encryption, round trip time, frame rate, screen size and video format |
-| Sound, **Record**, **View only** | Turn the sound on or off, record the session, or watch without sending input |
+| **More** | **Record the session**, **View only**, **Privacy mode**, **Disable clipboard**, **Lock after session**, **Session info**, **Refresh screen**, **Open in new tab** inside the console, and **Restart remote device** |
+| **Full screen** | The same as F11 |
 | **Disconnect** | Ends the session |
+
+**Session info** shows the device, the connection, encryption, round trip time, frame rate, screen size and video format.
+
+While a setting is on, it also shows at the start of the controls: **Recording**, **View only**, **Input blocked**, **Privacy mode** or **Sound off**. A click there turns it off again.
+
+In a narrower window the controls keep their icons and show their names as tooltips. Below 760 pixels, **Chat** and **File transfer** move into **More**.
 
 Files go both ways through **File transfer**; text and images go through the clipboard, see [Copy and paste](#copy-and-paste).
 
 **Record** records the screen in the browser. When you stop, the recording downloads to this computer as a WebM file. In a MeshAgent session, **Record** instead turns recording on the server on or off, and the session reconnects.
 
-Not every control works on every connection. **Type text** works in RustDesk and CDAP sessions and says it is not available in the others. What an RDP or VNC session can do is in [RDP and VNC targets](/docs/console/remote-targets#in-the-viewer). A view-only guest link has no **Actions**, **Type text**, **Chat** or **File transfer**.
+Not every control works on every connection. **Type text** works in RustDesk and CDAP sessions and says it is not available in the others. What an RDP or VNC session can do is in [RDP and VNC targets](/docs/console/remote-targets#in-the-viewer). A view-only guest link has no **Keys**, **Chat** or **File transfer**.
 
 **Image quality**, **Frame rate**, **Scaling**, **Keyboard mode**, **Video codec** and, on a Mac, **Send Cmd as Ctrl for common shortcuts** are remembered for your account in this browser and apply to the next session too.
 
@@ -111,12 +115,11 @@ Copy and paste work both ways, for text and images, with the usual keys and no b
 - From this computer to the remote one: press Ctrl+V in the remote screen. The viewer sends this computer's clipboard first, then the remote computer pastes it. This works in every browser, also over plain HTTP.
 - From the remote computer to this one: copy there as usual. The copy reaches this computer's clipboard at once when the browser lets the page write it: Chrome and Edge while the viewer has the focus, Firefox within 5 seconds of a key press or click in the viewer. Otherwise it waits, and arrives with your next key press or click in the remote screen.
 
-The session bar shows the clipboard's state, and a click on it does what the state needs:
+When the clipboard is off or waits for you, the session bar shows its state, and a click on it does what the state needs:
 
 | State | What a click does |
 |---|---|
-| **Clipboard on** | Turns the clipboard off, the same as **Disable clipboard** under **Display** |
-| **Clipboard off** | Turns it on again. When the remote computer or this server turned it off for the session, or the session is view only, the bar only says so |
+| **Clipboard off** | Turns it on again, the same as **Disable clipboard** under **More**. When the remote computer or this server turned it off for the session, the bar only says so. While the session is view only, **View only** shows instead |
 | **Allow clipboard** | In Chrome and Edge: asks the browser once to let the page read the clipboard. After that, what you copy here also reaches the remote computer as soon as you come back to the viewer |
 | **Copy here** | Something was copied on the remote computer and waits: the click copies it to this computer |
 
@@ -124,13 +127,13 @@ Text up to 4 MB and images up to 8 MB go to the remote computer, and the remote 
 
 Over plain HTTP the browser gives the page no clipboard access. Ctrl+V in the remote screen still sends text and images. Text copied on the remote computer reaches this computer with your next key press or click in the remote screen; images can't. The viewer says this once per browser.
 
-**Paste clipboard** under **Actions** sends this computer's clipboard too. When the browser doesn't let the page read it, the viewer says to press Ctrl+V in the remote screen instead.
+**Paste clipboard** under **Keys** sends this computer's clipboard too. When the browser doesn't let the page read it, the viewer says to press Ctrl+V in the remote screen instead.
 
 A copy made in Notepad on a Windows computer with the NeoDesk client has been seen to reach the viewer only with the next copy, one copy late.
 
 ## Several displays
 
-A RustDesk device of version 1.2.4 or later, the NeoDesk client included, sends all its displays in one session. When such a device has more than one display, the controls row has **Displays** in place of **Monitors**. Older devices switch between their screens one at a time, as in the table above.
+A RustDesk device of version 1.2.4 or later, the NeoDesk client included, sends all its displays in one session. When such a device has more than one display, **Displays** in the viewer's bar has the parts below. Older devices switch between their screens one at a time in the same menu.
 
 **Displays** has these parts:
 
@@ -149,7 +152,7 @@ On the remote screen, Ctrl+Alt+Shift with a number from 1 to 9 picks a display, 
 
 ## Keyboard
 
-What you type goes to the device. In a session with a RustDesk device, **Keyboard mode** under **Display** decides how:
+What you type goes to the device. In a session with a RustDesk device, **Keyboard mode** under **View**, **Advanced settings**, decides how:
 
 | Mode | What the device gets |
 |---|---|
@@ -159,11 +162,11 @@ What you type goes to the device. In a session with a RustDesk device, **Keyboar
 
 If characters come out wrong, for example because this computer and the device use different keyboard layouts, try another mode.
 
-When a key seems stuck on a RustDesk device, for example everything comes out in capitals or as shortcuts, choose **Reset keyboard** under **Actions**. It releases every key the viewer still holds down, and Shift, Ctrl, Alt and the Windows key in any case. The viewer also releases the keys it holds when you switch to another window or browser tab.
+When a key seems stuck on a RustDesk device, for example everything comes out in capitals or as shortcuts, choose **Reset keyboard** under **Keys**. It releases every key the viewer still holds down, and Shift, Ctrl, Alt and the Windows key in any case. The viewer also releases the keys it holds when you switch to another window or browser tab.
 
-On a Mac, Cmd with C, V, X, A, Z, S or F goes to a remote computer that isn't a Mac as Ctrl with the same key, so copy, paste, undo, save and find work as there. **Send Cmd as Ctrl for common shortcuts** under **Display**, next to **Keyboard mode**, turns this off. It shows only on a Mac and is on by default.
+On a Mac, Cmd with C, V, X, A, Z, S or F goes to a remote computer that isn't a Mac as Ctrl with the same key, so copy, paste, undo, save and find work as there. **Send Cmd as Ctrl for common shortcuts** under **View**, **Advanced settings**, next to **Keyboard mode**, turns this off. It shows only on a Mac and is on by default.
 
-The browser keeps some shortcuts for itself. In full screen, Chrome and Edge pass them to the remote computer. Firefox and Safari can't, so in full screen the viewer says "This browser keeps some shortcuts for itself, also in full screen: Ctrl+W, Ctrl+T, Ctrl+N, the Windows key, and Esc leaves full screen. Actions sends the Windows key, Alt+Tab and Ctrl+Alt+Del to the remote computer." **Windows key**, **Alt+Tab** and **Ctrl+Alt+Del** under **Actions** work in every browser.
+The browser keeps some shortcuts for itself. In full screen, Chrome and Edge pass them to the remote computer. Firefox and Safari can't, so in full screen the viewer says "This browser keeps some shortcuts for itself, also in full screen: Ctrl+W, Ctrl+T, Ctrl+N, the Windows key, and Esc leaves full screen. Keys sends the Windows key, Alt+Tab and Ctrl+Alt+Del to the remote computer." **Windows key**, **Alt+Tab** and **Ctrl+Alt+Del** under **Keys** work in every browser.
 
 A touchpad scrolls the remote computer one notch for each step of a swipe, in Chrome, Edge and Firefox alike.
 

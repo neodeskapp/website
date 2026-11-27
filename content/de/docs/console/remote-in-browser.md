@@ -21,12 +21,12 @@ Wer kein Konto in der Konsole hat, kann den Viewer über einen [Gastzugriff-Link
 
 ### Auf anderen Seiten arbeiten {#working-on-other-pages}
 
-Jedes Gerät ist ein Tab in der Leiste des Viewers, und **Neue Verbindung** fügt einen weiteren hinzu. Öffnest du eine andere Seite der Konsole, bleiben die Sitzungen verbunden. Eine Leiste unter der oberen Leiste listet sie unter **Offene Sitzungen**: Klick auf eine, um zu ihr zurückzukehren, oder schließ sie mit ihrer Schaltfläche zum Schließen oder einem Klick mit der mittleren Maustaste. Solange eine Sitzung nicht zu sehen ist, bekommt sie von diesem Computer keine Tasten, keine Maus und keine Zwischenablage.
+Jedes Gerät ist ein Tab in der Leiste des Viewers, und **Neue Verbindung**, das + neben den Tabs, fügt einen weiteren hinzu. Öffnest du eine andere Seite der Konsole, bleiben die Sitzungen verbunden. Eine Leiste unter der oberen Leiste listet sie unter **Offene Sitzungen**: Klick auf eine, um zu ihr zurückzukehren, oder schließ sie mit ihrer Schaltfläche zum Schließen oder einem Klick mit der mittleren Maustaste. Solange eine Sitzung nicht zu sehen ist, bekommt sie von diesem Computer keine Tasten, keine Maus und keine Zwischenablage.
 
 Die Leiste des Viewers hat außerdem:
 
 - **Seitenleiste ausblenden** und **Seitenleiste einblenden**, die die Seitenleiste der Konsole wegklappen, damit der Bildschirm mehr Platz hat. Dieser Browser merkt sich die Wahl.
-- **In neuem Tab öffnen**, das die Sitzung in einen eigenen Browser-Tab verschiebt: Sie verbindet sich dort neu und endet in der Konsole.
+- **In neuem Tab öffnen**, unter **More**, solange eine Sitzung ihren Bildschirm zeigt, das die Sitzung in einen eigenen Browser-Tab verschiebt: Sie verbindet sich dort neu und endet in der Konsole.
 - **Vollbild** oder F11, wobei auch die Leisten der Konsole Platz machen.
 
 Schließt du die letzte Sitzung, kehrt der Viewer zur Konsole zurück. Abmelden beendet jede Sitzung; die Frage davor sagt, wie viele offen sind: „Deine offenen Fernsitzungen enden ebenfalls (2).“ Auch das Schließen des Browser-Tabs beendet sie.
@@ -74,32 +74,36 @@ Fragt das Gerät nach einem Passwort, gib das ein, das in RustDesk auf diesem Ge
 
 Solange das Passwortformular zu sehen ist, fragt der Viewer das Gerät schon ohne Passwort an. Ein Computer, an dem die Person Sitzungen per Klick annimmt, zeigt ihr seine Frage sofort, und nimmt sie an, öffnet sich die Sitzung ohne Passwort.
 
-Fragt ein Computer, der mehrere Windows-Sitzungen teilt, welche er zeigen soll, nimmt der Viewer die, die auf dem Computer gerade aktiv ist, sodass das Bild ohne Rückfrage kommt. **Windows-Sitzungen** unter **Aktionen** wechselt zu einer anderen.
+Fragt ein Computer, der mehrere Windows-Sitzungen teilt, welche er zeigen soll, nimmt der Viewer die, die auf dem Computer gerade aktiv ist, sodass das Bild ohne Rückfrage kommt. **Windows-Sitzungen** unter **Keys** wechselt zu einer anderen.
 
 Bei einem RustDesk-Gerät bricht der Viewer ab, bevor er ein Passwort sendet, wenn sich die Verbindung zum Gerät nicht absichern lässt. **Sitzungsinfo** zeigt, ob eine laufende Sitzung Ende-zu-Ende-verschlüsselt ist.
 
 ## Während einer Sitzung {#during-a-session}
 
-**Steuerung** oder F8 blendet die Leiste mit den Sitzungssteuerungen ein, und **Geöffnet lassen** hält sie dort:
+Solange eine Sitzung ihren Bildschirm zeigt, stehen die Sitzungssteuerungen am Ende der Leiste des Viewers. F8 verlässt den entfernten Bildschirm und springt zu ihnen.
 
 | Steuerung | Was sie tut |
 |---|---|
-| **Aktionen** | **Ctrl+Alt+Del**, **Bildschirm sperren**, **Entferntes Gerät neu starten**, **Bild neu laden**, **Zwischenablage einfügen**, **Tastatur zurücksetzen**, **Windows-Taste**, **Alt+Tab**, **Eingabe sperren** und **Windows-Sitzungen**, wenn das Gerät mehrere hat |
-| **Text eintippen** | Tippt Text auf der entfernten Tastatur, zum Beispiel ein Passwort. Strg+Enter sendet ihn |
-| **Anzeige** | **Bildqualität** (**Beste**, **Ausgewogen**, **Leistung**), **Bildrate** (30, 60 oder **Automatisch anpassen**), **Skalierung**, **Tastaturmodus**, **Videocodec** und die Optionen **Entfernten Mauszeiger zeigen**, **Nach der Sitzung sperren**, **Privatsphäre-Modus** und **Zwischenablage abschalten** |
-| **Bildschirme** | Für ein Gerät, das mehrere Bildschirme zugleich schickt: die Anordnung, der Bildschirm, auf dem du arbeitest, ein eigenes Fenster für einen Bildschirm und virtuelle Bildschirme. Siehe [Mehrere Bildschirme](#several-displays) |
-| **Monitore** | Für andere Geräte: wählt den Bildschirm, der angezeigt wird, und fügt virtuelle Bildschirme hinzu oder entfernt sie, wenn das Gerät das unterstützt. Ein Gerät mit zwei bis vier Bildschirmen bekommt stattdessen eine Schaltfläche pro Bildschirm |
+| **Bildschirme** | Wählt den Bildschirm, der angezeigt wird, und fügt virtuelle Bildschirme hinzu oder entfernt sie, wenn das Gerät das unterstützt. Für ein Gerät, das mehrere Bildschirme zugleich schickt, auch die Anordnung, der Bildschirm, auf dem du arbeitest, und ein eigenes Fenster für einen Bildschirm, siehe [Mehrere Bildschirme](#several-displays). Erscheint, wenn das Gerät mehr als einen Bildschirm hat oder virtuelle Bildschirme unterstützt |
+| **Keys** | **Ctrl+Alt+Del**, **Windows-Taste**, **Alt+Tab**, **Bildschirm sperren**, **Text eintippen**, **Zwischenablage einfügen**, **Eingabe sperren**, **Tastatur zurücksetzen** und **Windows-Sitzungen**, wenn das Gerät mehrere hat. **Text eintippen** tippt Text auf der entfernten Tastatur, zum Beispiel ein Passwort; Strg+Enter sendet ihn |
+| **View** | **Bildqualität** (**Beste**, **Ausgewogen**, **Leistung**), **Skalierung**, **Entfernten Mauszeiger zeigen** und **Ton aus**. **Advanced settings** zeigt dazu **Bildrate** (30, 60 oder **Automatisch anpassen**), **Tastaturmodus** und **Videocodec** und bleibt in diesem Browser an, wenn du es einmal wählst |
 | **Chat** | Nachrichten erscheinen auf dem Bildschirm des Geräts; Antworten erscheinen hier. Mit **Support-Chat beantworten** landen beide in der Unterhaltung des Computers, siehe [Chat](/docs/console/chat#in-a-remote-session) |
 | **Dateiübertragung** | Kopiert Dateien zwischen diesem Computer und dem Gerät |
-| **Sitzungsinfo** | Das Gerät, die Verbindung, Verschlüsselung, Round-Trip-Zeit, Bildrate, Bildschirmgröße und Videoformat |
-| Ton, **Aufnehmen**, **Nur ansehen** | Schalten den Ton ein oder aus, zeichnen die Sitzung auf oder lassen dich zusehen, ohne Eingaben zu senden |
+| **More** | **Record the session**, **Nur ansehen**, **Privatsphäre-Modus**, **Zwischenablage abschalten**, **Nach der Sitzung sperren**, **Sitzungsinfo**, **Bild neu laden**, **In neuem Tab öffnen** in der Konsole und **Entferntes Gerät neu starten** |
+| **Vollbild** | Dasselbe wie F11 |
 | **Trennen** | Beendet die Sitzung |
+
+**Sitzungsinfo** zeigt das Gerät, die Verbindung, Verschlüsselung, Round-Trip-Zeit, Bildrate, Bildschirmgröße und Videoformat.
+
+Solange eine Einstellung an ist, steht sie auch am Anfang der Steuerungen: **Recording**, **Nur ansehen**, **Input blocked**, **Privatsphäre-Modus** oder **Sound off**. Ein Klick darauf schaltet sie wieder aus.
+
+In einem schmaleren Fenster behalten die Steuerungen ihre Symbole und zeigen ihre Namen als Tooltip. Unter 760 Pixeln wandern **Chat** und **Dateiübertragung** in **More**.
 
 Dateien gehen über **Dateiübertragung** in beide Richtungen, Text und Bilder über die Zwischenablage, siehe [Kopieren und Einfügen](#copy-and-paste).
 
-**Aufnehmen** zeichnet den Bildschirm im Browser auf. Wenn du die Aufnahme stoppst, wird sie als WebM-Datei auf diesen Computer heruntergeladen. In einer MeshAgent-Sitzung schaltet **Aufnehmen** stattdessen die Aufzeichnung auf dem Server ein oder aus, und die Sitzung verbindet sich neu.
+**Record the session** zeichnet den Bildschirm im Browser auf. Wenn du die Aufnahme stoppst, wird sie als WebM-Datei auf diesen Computer heruntergeladen. In einer MeshAgent-Sitzung schaltet **Record the session** stattdessen die Aufzeichnung auf dem Server ein oder aus, und die Sitzung verbindet sich neu.
 
-Nicht jede Steuerung funktioniert bei jeder Verbindung. **Text eintippen** funktioniert in RustDesk- und CDAP-Sitzungen und meldet in den anderen, dass es nicht verfügbar ist. Was eine RDP- oder VNC-Sitzung kann, steht in [RDP- und VNC-Ziele](/docs/console/remote-targets#in-the-viewer). Ein Gastlink nur zum Ansehen bietet weder **Aktionen** noch **Text eintippen**, **Chat** oder **Dateiübertragung**.
+Nicht jede Steuerung funktioniert bei jeder Verbindung. **Text eintippen** funktioniert in RustDesk- und CDAP-Sitzungen und meldet in den anderen, dass es nicht verfügbar ist. Was eine RDP- oder VNC-Sitzung kann, steht in [RDP- und VNC-Ziele](/docs/console/remote-targets#in-the-viewer). Ein Gastlink nur zum Ansehen bietet weder **Keys** noch **Chat** oder **Dateiübertragung**.
 
 **Bildqualität**, **Bildrate**, **Skalierung**, **Tastaturmodus**, **Videocodec** und auf einem Mac **Cmd bei gängigen Tastenkürzeln als Strg senden** werden für dein Konto in diesem Browser gespeichert und gelten auch für die nächste Sitzung.
 
@@ -110,12 +114,11 @@ Kopieren und Einfügen gehen in beide Richtungen, für Text und Bilder, mit den 
 - Von diesem Computer zum entfernten: Drück Strg+V im entfernten Bildschirm. Der Viewer schickt zuerst die Zwischenablage dieses Computers, dann fügt der entfernte Computer sie ein. Das geht in jedem Browser, auch über einfaches HTTP.
 - Vom entfernten Computer zu diesem: Kopier dort wie gewohnt. Die Kopie landet sofort in der Zwischenablage dieses Computers, wenn der Browser die Seite hineinschreiben lässt: Chrome und Edge, solange der Viewer den Fokus hat, Firefox bis 5 Sekunden nach einem Tastendruck oder Klick im Viewer. Sonst wartet sie und kommt mit deinem nächsten Tastendruck oder Klick im entfernten Bildschirm.
 
-Die Leiste der Sitzung zeigt den Zustand der Zwischenablage, und ein Klick darauf tut, was der Zustand braucht:
+Ist die Zwischenablage aus oder wartet sie auf dich, zeigt die Leiste der Sitzung ihren Zustand, und ein Klick darauf tut, was der Zustand braucht:
 
 | Zustand | Was ein Klick tut |
 |---|---|
-| **Zwischenablage an** | Schaltet die Zwischenablage aus, wie **Zwischenablage abschalten** unter **Anzeige** |
-| **Zwischenablage aus** | Schaltet sie wieder ein. Hat der entfernte Computer oder dieser Server sie für die Sitzung ausgeschaltet, oder ist die Sitzung nur zum Ansehen, sagt die Leiste das nur |
+| **Zwischenablage aus** | Schaltet sie wieder ein, wie **Zwischenablage abschalten** unter **More**. Hat der entfernte Computer oder dieser Server sie für die Sitzung ausgeschaltet, sagt die Leiste das nur. Ist die Sitzung nur zum Ansehen, steht stattdessen **Nur ansehen** dort |
 | **Zwischenablage erlauben** | In Chrome und Edge: Bittet den Browser einmal, die Seite die Zwischenablage lesen zu lassen. Danach kommt auch das, was du hier kopierst, auf den entfernten Computer, sobald du zum Viewer zurückkehrst |
 | **Hierher kopieren** | Auf dem entfernten Computer wurde etwas kopiert und wartet: Der Klick kopiert es auf diesen Computer |
 
@@ -123,13 +126,13 @@ Text bis 4 MB und Bilder bis 8 MB gehen an den entfernten Computer, und der entf
 
 Über einfaches HTTP gibt der Browser der Seite keinen Zugriff auf die Zwischenablage. Strg+V im entfernten Bildschirm schickt trotzdem Text und Bilder. Text, der auf dem entfernten Computer kopiert wurde, kommt mit deinem nächsten Tastendruck oder Klick im entfernten Bildschirm auf diesen Computer; Bilder nicht. Der Viewer sagt das einmal pro Browser.
 
-**Zwischenablage einfügen** unter **Aktionen** schickt die Zwischenablage dieses Computers ebenfalls. Lässt der Browser die Seite sie nicht lesen, sagt der Viewer, dass du stattdessen Strg+V im entfernten Bildschirm drücken sollst.
+**Zwischenablage einfügen** unter **Keys** schickt die Zwischenablage dieses Computers ebenfalls. Lässt der Browser die Seite sie nicht lesen, sagt der Viewer, dass du stattdessen Strg+V im entfernten Bildschirm drücken sollst.
 
 Eine Kopie aus dem Editor (Notepad) auf einem Windows-Computer mit dem NeoDesk-Client kam in Tests erst mit der nächsten Kopie im Viewer an, eine Kopie zu spät.
 
 ## Mehrere Bildschirme {#several-displays}
 
-Ein RustDesk-Gerät ab Version 1.2.4, der NeoDesk-Client eingeschlossen, schickt alle seine Bildschirme in einer Sitzung. Hat so ein Gerät mehr als einen Bildschirm, steht in der Steuerleiste **Bildschirme** statt **Monitore**. Ältere Geräte wechseln ihre Bildschirme einzeln, wie in der Tabelle oben.
+Ein RustDesk-Gerät ab Version 1.2.4, der NeoDesk-Client eingeschlossen, schickt alle seine Bildschirme in einer Sitzung. Hat so ein Gerät mehr als einen Bildschirm, hat **Bildschirme** in der Leiste des Viewers die Teile unten. Ältere Geräte wechseln ihre Bildschirme im selben Menü einzeln.
 
 **Bildschirme** hat diese Teile:
 
@@ -148,7 +151,7 @@ Auf dem entfernten Bildschirm wählt Strg+Alt+Umschalt mit einer Zahl von 1 bis 
 
 ## Tastatur {#keyboard}
 
-Was du tippst, geht an das Gerät. In einer Sitzung mit einem RustDesk-Gerät entscheidet **Tastaturmodus** unter **Anzeige**, wie:
+Was du tippst, geht an das Gerät. In einer Sitzung mit einem RustDesk-Gerät entscheidet **Tastaturmodus** unter **View**, **Advanced settings**, wie:
 
 | Modus | Was das Gerät bekommt |
 |---|---|
@@ -158,11 +161,11 @@ Was du tippst, geht an das Gerät. In einer Sitzung mit einem RustDesk-Gerät en
 
 Kommen Zeichen falsch an, zum Beispiel weil dieser Computer und das Gerät unterschiedliche Tastaturlayouts nutzen, probiere einen anderen Modus.
 
-Scheint auf einem RustDesk-Gerät eine Taste zu hängen, etwa weil alles in Großbuchstaben oder als Tastenkürzel ankommt, wähle **Tastatur zurücksetzen** unter **Aktionen**. Das lässt jede Taste los, die der Viewer noch gedrückt hält, und in jedem Fall Shift, Strg, Alt und die Windows-Taste. Der Viewer lässt gehaltene Tasten auch los, wenn du zu einem anderen Fenster oder Browser-Tab wechselst.
+Scheint auf einem RustDesk-Gerät eine Taste zu hängen, etwa weil alles in Großbuchstaben oder als Tastenkürzel ankommt, wähle **Tastatur zurücksetzen** unter **Keys**. Das lässt jede Taste los, die der Viewer noch gedrückt hält, und in jedem Fall Shift, Strg, Alt und die Windows-Taste. Der Viewer lässt gehaltene Tasten auch los, wenn du zu einem anderen Fenster oder Browser-Tab wechselst.
 
-Auf einem Mac geht Cmd mit C, V, X, A, Z, S oder F an einen entfernten Computer, der kein Mac ist, als Strg mit derselben Taste, sodass Kopieren, Einfügen, Rückgängig, Speichern und Suchen wie dort funktionieren. **Cmd bei gängigen Tastenkürzeln als Strg senden** unter **Anzeige**, neben **Tastaturmodus**, schaltet das ab. Die Option erscheint nur auf einem Mac und ist standardmäßig an.
+Auf einem Mac geht Cmd mit C, V, X, A, Z, S oder F an einen entfernten Computer, der kein Mac ist, als Strg mit derselben Taste, sodass Kopieren, Einfügen, Rückgängig, Speichern und Suchen wie dort funktionieren. **Cmd bei gängigen Tastenkürzeln als Strg senden** unter **View**, **Advanced settings**, neben **Tastaturmodus**, schaltet das ab. Die Option erscheint nur auf einem Mac und ist standardmäßig an.
 
-Der Browser behält einige Tastenkürzel für sich. Im Vollbild geben Chrome und Edge sie an den entfernten Computer weiter. Firefox und Safari können das nicht, deshalb sagt der Viewer dort im Vollbild „Dieser Browser behält einige Tastenkürzel für sich, auch im Vollbild: Strg+W, Strg+T, Strg+N, die Windows-Taste, und Esc beendet das Vollbild. Aktionen sendet die Windows-Taste, Alt+Tab und Strg+Alt+Entf an den entfernten Computer.“ **Windows-Taste**, **Alt+Tab** und **Ctrl+Alt+Del** unter **Aktionen** funktionieren in jedem Browser.
+Der Browser behält einige Tastenkürzel für sich. Im Vollbild geben Chrome und Edge sie an den entfernten Computer weiter. Firefox und Safari können das nicht, deshalb sagt der Viewer dort im Vollbild „This browser keeps some shortcuts for itself, also in full screen: Ctrl+W, Ctrl+T, Ctrl+N, the Windows key, and Esc leaves full screen. Keys sends the Windows key, Alt+Tab and Ctrl+Alt+Del to the remote computer.“ **Windows-Taste**, **Alt+Tab** und **Ctrl+Alt+Del** unter **Keys** funktionieren in jedem Browser.
 
 Ein Touchpad scrollt den entfernten Computer um eine Raste pro Schritt einer Wischbewegung, in Chrome, Edge und Firefox gleich.
 

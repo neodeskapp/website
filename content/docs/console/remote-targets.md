@@ -52,7 +52,7 @@ With a fingerprint in **Trusted certificate fingerprint**, the server checks the
 
 ## In the viewer
 
-An RDP or VNC session shows the screen and passes the mouse and the keyboard. Text you paste onto the screen goes to the computer's clipboard, and text copied on the computer reaches this computer's clipboard when the browser allows it. There is no sound, no file transfer and no choice of screens, and **Type text** isn't available. Of the settings under **Display**, only **Disable clipboard** has an effect; **View only** works as in other sessions.
+An RDP or VNC session shows the screen and passes the mouse and the keyboard. Text you paste onto the screen goes to the computer's clipboard, and text copied on the computer reaches this computer's clipboard when the browser allows it. There is no sound, no file transfer and no choice of screens, and **Type text** isn't available. Of the display settings, only **Disable clipboard** under **More** has an effect; **View only** works as in other sessions.
 
 A person's **Client features** in [panel access](/docs/people/permissions#console-access) narrow the session. Without **Remote control** the session is view only, and without **Clipboard** nothing is copied in either direction.
 
