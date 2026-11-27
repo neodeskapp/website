@@ -3,6 +3,7 @@ title: neodesk dataguard
 description: 7 commands. Data guard policies and the events devices report.
 order: 17
 quoted: true
+icon: encrypted
 ---
 
 Data guard policies and the events devices report.

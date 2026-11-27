@@ -3,6 +3,7 @@ title: neodesk automation
 description: 13 commands. Alert rules, alerts, queued device commands and alert mail.
 order: 7
 quoted: true
+icon: notifications_active
 ---
 
 Alert rules, alerts, queued device commands and alert mail.

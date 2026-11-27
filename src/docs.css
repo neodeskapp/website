@@ -273,22 +273,25 @@
   padding-top: 22px;
   border-top: 1px solid var(--rule);
 }
-/* The arrow sits beside both lines of the link, on the side it points to */
+/* The other page's icon or logo sits beside both lines of the link, on the outer side */
 .pager a {
   display: grid;
   grid-template-columns: auto 1fr;
   column-gap: 12px;
   align-items: center;
+  align-content: start;
   max-width: 48%;
   font-weight: 600;
   text-decoration: none;
 }
-.pager-icon { grid-row: 1 / 3; color: var(--muted); }
-.pager a:hover .pager-icon { color: var(--teal); }
+.pager a > .pager-icon, .pager a > img { grid-row: 1 / 3; width: 24px; height: 24px; max-width: none; }
+.pager-icon { color: var(--blue); }
+.pager-icon svg { display: block; }
+.pager a > img.boxed { box-sizing: border-box; border-radius: 6px; border: 1px solid var(--rule); }
 .pager a:hover .pager-title { text-decoration: underline; text-decoration-color: var(--teal); text-decoration-thickness: 2px; }
 .pager-label { font-size: 14px; font-weight: 400; color: var(--muted); }
 .pager-next { margin-left: auto; text-align: right; grid-template-columns: 1fr auto; }
-.pager-next .pager-icon { grid-column: 2; }
+.pager-next > .pager-icon, .pager-next > img { grid-column: 2; }
 
 /* The 404 page: the mark as a large graphic inside the page's column, the area both
    shapes share left out */

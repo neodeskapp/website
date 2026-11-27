@@ -3,6 +3,7 @@ title: neodesk toolkit
 description: 8 commands. Small network and text tools.
 order: 56
 quoted: true
+icon: handyman
 ---
 
 Small network and text tools.

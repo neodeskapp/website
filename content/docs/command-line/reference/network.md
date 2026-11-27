@@ -3,6 +3,7 @@ title: neodesk network
 description: 15 commands. Network checks: targets, monitoring, ping and port tests.
 order: 34
 quoted: true
+icon: network_check
 ---
 
 Network checks: targets, monitoring, ping and port tests.

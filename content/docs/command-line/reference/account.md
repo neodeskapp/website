@@ -3,6 +3,7 @@ title: neodesk account
 description: 3 commands. You: the account and permissions the token acts with.
 order: 1
 quoted: true
+icon: person
 ---
 
 You: the account and permissions the token acts with.

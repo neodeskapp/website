@@ -3,6 +3,7 @@ title: neodesk pairing
 description: 5 commands. Pairing codes for agents.
 order: 36
 quoted: true
+icon: password
 ---
 
 Pairing codes for agents.

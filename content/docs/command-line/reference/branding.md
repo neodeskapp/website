@@ -3,6 +3,7 @@ title: neodesk branding
 description: 17 commands. The console's look: logo, colors, profiles and fonts.
 order: 10
 quoted: true
+icon: palette
 ---
 
 The console's look: logo, colors, profiles and fonts.

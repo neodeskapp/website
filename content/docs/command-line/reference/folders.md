@@ -3,6 +3,7 @@ title: neodesk folders
 description: 6 commands. Folders that sort devices.
 order: 25
 quoted: true
+icon: folder
 ---
 
 Folders that sort devices.

@@ -3,6 +3,7 @@ title: neodesk client-branding
 description: 2 commands. Name, logo and links the desktop clients show.
 order: 14
 quoted: true
+icon: brush
 ---
 
 Name, logo and links the desktop clients show.

@@ -3,6 +3,7 @@ title: neodesk cross-platform
 description: 3 commands. What each device platform supports.
 order: 15
 quoted: true
+icon: devices_other
 ---
 
 What each device platform supports.

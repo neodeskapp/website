@@ -3,6 +3,7 @@ title: neodesk updates
 description: 16 commands. Server updates and the backups taken before them.
 order: 58
 quoted: true
+icon: update
 ---
 
 Server updates and the backups taken before them.

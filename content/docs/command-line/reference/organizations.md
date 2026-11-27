@@ -3,6 +3,7 @@ title: neodesk organizations
 description: 26 commands. Organizations with their users, devices and settings.
 order: 35
 quoted: true
+icon: corporate_fare
 ---
 
 Organizations with their users, devices and settings.

@@ -3,6 +3,7 @@ title: neodesk cdap
 description: 10 commands. CDAP devices, their widgets and commands.
 order: 11
 quoted: true
+icon: settings_input_component
 ---
 
 CDAP devices, their widgets and commands.

@@ -3,6 +3,7 @@ title: neodesk tenants
 description: 12 commands. Tenants with their devices and users.
 order: 54
 quoted: true
+icon: apartment
 ---
 
 Tenants with their devices and users.

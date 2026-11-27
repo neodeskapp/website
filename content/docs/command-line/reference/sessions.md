@@ -3,6 +3,7 @@ title: neodesk sessions
 description: 4 commands. Console sign-ins: the browsers and devices an account is signed in on.
 order: 48
 quoted: true
+icon: login
 ---
 
 Console sign-ins: the browsers and devices an account is signed in on.

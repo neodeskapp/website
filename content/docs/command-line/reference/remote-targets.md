@@ -3,6 +3,7 @@ title: neodesk remote-targets
 description: 11 commands. RDP, VNC and SSH targets.
 order: 41
 quoted: true
+icon: lan
 ---
 
 RDP, VNC and SSH targets.

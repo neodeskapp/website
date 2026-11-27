@@ -3,6 +3,7 @@ title: neodesk fleet
 description: 23 commands. Fleet tasks, workflows, compliance and resources.
 order: 24
 quoted: true
+icon: assignment
 ---
 
 Fleet tasks, workflows, compliance and resources.

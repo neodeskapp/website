@@ -3,6 +3,7 @@ title: neodesk mesh
 description: 16 commands. MeshCentral devices, groups and recordings.
 order: 33
 quoted: true
+icon: hub
 ---
 
 MeshCentral devices, groups and recordings.

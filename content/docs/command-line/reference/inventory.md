@@ -3,6 +3,7 @@ title: neodesk inventory
 description: 2 commands. Hardware and software inventory of devices.
 order: 29
 quoted: true
+icon: inventory_2
 ---
 
 Hardware and software inventory of devices.

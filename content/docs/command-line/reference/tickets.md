@@ -3,6 +3,7 @@ title: neodesk tickets
 description: 11 commands. Tickets with comments and attachments.
 order: 55
 quoted: true
+icon: confirmation_number
 ---
 
 Tickets with comments and attachments.

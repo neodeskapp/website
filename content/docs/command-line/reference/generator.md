@@ -3,6 +3,7 @@ title: neodesk generator
 description: 18 commands. The support client generator: bundles and builds.
 order: 26
 quoted: true
+icon: build
 ---
 
 The support client generator: bundles and builds.

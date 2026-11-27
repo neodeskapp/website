@@ -3,6 +3,7 @@ title: neodesk user-groups
 description: 4 commands. User groups.
 order: 59
 quoted: true
+icon: groups
 ---
 
 User groups.

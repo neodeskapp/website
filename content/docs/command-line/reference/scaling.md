@@ -3,6 +3,7 @@ title: neodesk scaling
 description: 12 commands. Relay servers and scaling rules.
 order: 46
 quoted: true
+icon: cell_tower
 ---
 
 Relay servers and scaling rules.

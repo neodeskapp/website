@@ -3,6 +3,7 @@ title: neodesk devices
 description: 31 commands. Devices: list, details, notes, tags, bans, connection settings.
 order: 22
 quoted: true
+icon: devices
 ---
 
 Devices: list, details, notes, tags, bans, connection settings.

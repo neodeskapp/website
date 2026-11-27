@@ -3,6 +3,7 @@ title: neodesk guest-links
 description: 3 commands. Guest links that let someone without an account connect.
 order: 27
 quoted: true
+icon: add_link
 ---
 
 Guest links that let someone without an account connect.

@@ -3,6 +3,7 @@ title: neodesk users
 description: 10 commands. Console accounts: create, change, disable, delete.
 order: 60
 quoted: true
+icon: group
 ---
 
 Console accounts: create, change, disable, delete.

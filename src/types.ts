@@ -113,4 +113,7 @@ export interface Pager {
 	label: string;
 	title: string;
 	href: string;
+	/** The other page's icon or logo, as in the section lists */
+	icon?: string;
+	logo?: string;
 }

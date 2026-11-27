@@ -3,6 +3,7 @@ title: neodesk agents
 description: 7 commands. NeoDesk agent releases, templates and installer files.
 order: 3
 quoted: true
+icon: package_2
 ---
 
 NeoDesk agent releases, templates and installer files.

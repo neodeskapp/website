@@ -3,6 +3,7 @@ title: neodesk remote
 description: 1 command. Remote sessions in progress.
 order: 40
 quoted: true
+icon: desktop_windows
 ---
 
 Remote sessions in progress.
