@@ -39,7 +39,7 @@ The console's default port is 3375 since 3.6.0-rc.5; it was 5000. The examples o
 ## What goes through the proxy
 
 - The console on port 3375: its pages, its API under `/api/`, and its WebSockets under `/ws/`, which carry remote desktop in the browser and live updates. The proxy has to pass WebSocket upgrades.
-- If you want clients to get an HTTPS API address, the API port as well, on a host name of its own. See [HTTPS for the client API](#https-for-the-client-api).
+- The client API, which the console's port also serves under `/client-api`, so the same host name carries it. See [HTTPS for the client API](#https-for-the-client-api).
 
 The ID server (21116, TCP and UDP), the relay (21117) and the NAT test (21115) speak the RustDesk protocol, not HTTP. An HTTP proxy cannot carry them, so clients connect to those ports directly. See [Ports and firewall](/docs/operations/ports).
 
@@ -169,7 +169,11 @@ The console marks its session and form cookies Secure when the request came over
 
 ## HTTPS for the client API
 
-To give clients an HTTPS API address, route a second host name through the proxy to the client API port, 21121 on every install type. The API needs its own host name because the console has its own `/api/` paths. For nginx, add this server block next to the one above, with the API's host name in place of `<api-address>`:
+The console's port serves the client API under `/client-api` as well, the same API as port 21121. A proxy that sends every path to the console, as in the examples above, carries it already. Enter `https://<server-address>/client-api` as **Public API URL** under **Settings**, **General**, and new clients get that address. The installer's **External reverse proxy** setting sets it for you, unless an API address was set before.
+
+This needs the client API turned on (`API_ENABLED`, on by default). Clients set up with `http://<server-address>:21121` keep working on port 21121.
+
+If you'd rather give the API a host name of its own, route a second host name through the proxy to the client API port, 21121 on every install type. For nginx, add this server block next to the one above, with the API's host name in place of `<api-address>`:
 
 ```nginx
 server {
@@ -201,7 +205,7 @@ For Caddy, with the API's host name in place of `<api-address>`:
 }
 ```
 
-Then enter `https://<api-address>` as **Public API URL** under **Settings**, **General**, and set `TRUSTED_PROXIES` as described above.
+Then enter `https://<api-address>` as **Public API URL** under **Settings**, **General**, and set `TRUSTED_PROXIES` as described above, because the proxy sends these requests to the server's own port.
 
 The server can also serve TLS on its API port itself, with `TLS_API=Y`, `TLS_CERT` and `TLS_KEY`. The port then takes HTTPS only, and clients set up with an `http://` address fail. `TLS_SIGNAL=Y` and `TLS_RELAY=Y` are different: they add TLS to the ID server and relay ports and still take plain connections there.
 
