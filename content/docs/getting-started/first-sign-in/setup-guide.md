@@ -33,7 +33,7 @@ do itself, so another admin can see fewer than eight.
 | **Change the first password** | **Your account**, **Password** | The first admin's password is no longer the one the install made |
 | **Turn on two-factor sign-in** | **Your account**, **Two-factor sign-in** | Your account has two-factor sign-in on |
 | **Set the address clients use** | **Settings**, **General**, **Public client endpoints** | The address clients get is one other computers can reach |
-| **Put HTTPS in front of the console** | [Reverse proxy and TLS](/docs/operations/reverse-proxy-tls), in a new tab | You opened the console over HTTPS, or the console serves HTTPS itself |
+| **Put HTTPS in front of the console** | On Docker [HTTPS with Let's Encrypt on Docker](/docs/operations/reverse-proxy-tls#https-with-lets-encrypt-on-docker), on Linux and Windows [HTTPS without a proxy](/docs/operations/reverse-proxy-tls#https-without-a-proxy), in a new tab | You opened the console over HTTPS, or the console serves HTTPS itself |
 | **Add your first computer** | **Add a computer**, right on the overview | The server has a device |
 | **Open a remote session** | **All devices** | The server has seen a remote session |
 | **Add the people who help** | **Users** | Another account that is not disabled exists, or single sign-on or LDAP is on |
@@ -58,9 +58,12 @@ says "All steps are done. You can hide the guide now."
 ### When a step counts as done
 
 **Set the address clients use** looks at the address the server gives clients
-when nobody names one. It stays open while that address is `localhost`, a
-loopback address or `0.0.0.0`, a name without a dot (such as a container's
-name), or a name that ends in `.local`. Set the address under
+when nobody names one, which takes `PANEL_PUBLIC_HOST` and then the first
+address in `RELAY_SERVERS`. On Docker the installer writes the address it found
+into `RELAY_SERVERS`, so the step is done right after the install when that
+address is one other computers reach. It stays open while the address is
+`localhost`, a loopback address or `0.0.0.0`, a name without a dot (such as a
+container's name), or a name that ends in `.local`. Set the address under
 **Public client endpoints**, as
 [Set the address clients use](/docs/getting-started/first-sign-in#set-the-address-clients-use)
 describes.
@@ -75,10 +78,10 @@ Linux and Windows scripts set it up on 5443.
 **Open a remote session** counts any session to any device: one the server
 set up, in the browser or in an app, or one a client reported.
 
-**Make a backup** counts the backups the console makes: a download from
-**Server**, **Backups**, or a scheduled backup that succeeded. The backups of
-the Docker script (`neodesk-docker.sh backup`, and the one it makes before an
-update) and of the Linux installer don't tick it.
+**Make a backup** counts the backups the console makes: one under **Server**,
+**Backups**, made by hand or on a schedule. The step's hint in the guide says
+the same. The backups of the Docker script (`neodesk-docker.sh backup`, and the
+one it makes before an update) and of the Linux installer don't tick it.
 
 A session, a backup and a changed first password stay done once the guide has
 seen them, even after their trace has left the logs.
@@ -90,7 +93,9 @@ Click a step. Most steps open a page of the console with a line above it:
 you back to the overview. **Add your first computer** opens
 [Add a computer](/docs/console/add-a-computer) on the overview itself, and
 **Put HTTPS in front of the console** opens the docs in a new tab, because
-HTTPS is set up outside the console.
+HTTPS is set up outside the console: on a Docker install the section on the
+install script's `--domain`, on Linux and Windows the one on the console's own
+HTTPS.
 
 The overview checks the steps every 30 seconds while its tab is open, and when
 **Add a computer** closes.

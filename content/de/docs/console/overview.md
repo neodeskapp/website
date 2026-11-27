@@ -27,6 +27,8 @@ Dieser Abschnitt zeigt, wie viele Geräte der Server kennt, zum Beispiel „30 G
 
 Jede Zahl ist ein Link zur Geräteliste mit dem passenden Statusfilter. **Geräteliste öffnen** öffnet [die Geräteliste](/docs/console/devices) ohne Filter.
 
+Auf einem Server ohne Geräte sagt der Abschnitt statt des Balkens „Noch keine Geräte.“ Konten, die Geräte freigeben dürfen, bekommen darunter **Computer hinzufügen** und **Neue Computer unter Beitrittsanfragen freigeben**.
+
 Konten, die keine Geräte sehen dürfen, bekommen diesen Abschnitt nicht.
 
 ## Verlauf {#trends}
@@ -46,9 +48,11 @@ Der Verlauf erscheint für Konten, die die Seiten unter **Aktivität** öffnen d
 
 Die Seitenspalte enthält die vier Werte, die ein RustDesk-Client braucht: **ID-Server**, **Relay-Server**, **API-Server** und **Schlüssel**. Jeder Wert hat eine Schaltfläche **Kopieren**. Der Schlüssel bleibt verborgen, bis du auf **Anzeigen** klickst.
 
-**Client-Serveradresse** ist die Adresse, aus der die Werte gebildet werden. Gib eine andere Adresse ein und klicke auf **Werte anzeigen**, um die Werte für diese Adresse zu bekommen, zum Beispiel wenn Clients den Server unter einem anderen Namen erreichen. Das ändert nur, was die Seite zeigt; die Einstellung des Servers selbst liegt unter **Einstellungen**, **Allgemein**, **Öffentliche Client-Endpunkte**. Sind die Adressen dort gesetzt, ist das Feld gesperrt, und ein Link führt dich zur Einstellung.
+**Client-Serveradresse** ist die Adresse, aus der die Werte gebildet werden. Gib eine andere Adresse ein und klicke auf **Werte anzeigen**, um die Werte für diese Adresse zu bekommen, zum Beispiel wenn Clients den Server unter einem anderen Namen erreichen. Das ändert nur, was die Seite zeigt; die Einstellung des Servers selbst liegt unter **Einstellungen**, **Allgemein**, **Öffentliche Client-Endpunkte**. Ist dort nichts gesetzt, nehmen die Werte die Adresse, die der Installer in `RELAY_SERVERS` gespeichert hat, vor der Adresse, über die du die Konsole geöffnet hast, siehe [Die Adresse für die Clients festlegen](/docs/getting-started/first-sign-in#set-the-address-clients-use). Ist **Öffentlicher ID-Server** gesetzt, ist das Feld gesperrt, und der Hinweis sagt „Der ID-Server ist unter Einstellungen, Öffentliche Client-Endpunkte festgelegt.“; **Öffentlicher Relay-Server** oder **Öffentliche API-URL** allein lassen das Feld offen.
 
 Zeigen die Werte nur auf diesen Computer (localhost), warnt ein Hinweis, dass andere Computer und Handys sie nicht erreichen.
+
+Konten, die Geräte freigeben dürfen, finden **Computer hinzufügen** ganz oben in der Liste unter den Werten. Es öffnet [Computer hinzufügen](/docs/console/add-a-computer) auf der Übersicht, für einen Einladungslink, der NeoDesk installiert und den Computer mit diesem Server verbindet.
 
 Die Schaltflächen unter den Werten:
 

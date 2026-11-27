@@ -12,6 +12,8 @@ Die Überschrift sagt, wie viele Geräte es gibt und wie viele davon online sind
 
 Um einen Client auf einen neuen Computer zu bringen, klicke über der Liste auf **Computer hinzufügen**: Das erzeugt einen Einladungslink, der den Client installiert und den Computer mit diesem Server verbindet. Siehe [Computer hinzufügen](/docs/console/add-a-computer).
 
+Auf einem Server ohne Geräte sagt die Liste „Noch keine Geräte.“ Konten, die Geräte freigeben dürfen, bekommen darunter zwei Wege zum ersten: **Computer hinzufügen** und **Neue Computer unter Beitrittsanfragen freigeben**, wo RustDesk-Clients im Beitrittsmodus **Verwaltet** warten. Der Abschnitt **Geräte** auf **Übersicht** zeigt dasselbe.
+
 ## Suchen {#searching}
 
 Tippe in **ID, Name, Benutzer oder Tag suchen**. Die Suche durchsucht die ID, den Anzeigenamen, den Hostnamen, den Benutzer, die Plattform, den Typ, die Tags, die Notiz und die IP-Adresse. Jedes Wort, das du eingibst, muss irgendwo vorkommen, in beliebiger Reihenfolge. Groß- und Kleinschreibung spielt keine Rolle.

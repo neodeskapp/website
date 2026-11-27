@@ -107,7 +107,7 @@ Unter Windows funktioniert auch ein UNC-Pfad wie `\\<nas-address>\backups`, wenn
 
 ## Kaltes Backup einer Docker-Installation {#cold-backup-of-a-docker-install}
 
-Stoppst du den Container vorher, bekommst du eine konsistente Kopie von allem. Bei einer Installation mit dem Skript erledigt das `sudo bash neodesk-docker.sh backup`. Es stoppt den Container, speichert beide Volumes als eine `.tar.gz` mit einer Kopie von `docker-compose.yml`, `docker-compose.override.yml` und `.env` in `backups` im Installationsordner und startet den Container wieder. Mit PostgreSQL kommt ein Dump der Datenbank dazu. Es behält die letzten fünf Backups. Siehe [Installation mit Docker](/docs/getting-started/docker#other-commands-of-the-script).
+Stoppst du den Container vorher, bekommst du eine konsistente Kopie von allem. Bei einer Installation mit dem Skript erledigt das `sudo bash neodesk-docker.sh backup`. Es stoppt den Container, speichert beide Volumes als eine `.tar.gz` mit einer Kopie von `docker-compose.yml`, `docker-compose.override.yml` und `.env` in `backups` im Installationsordner und startet den Container wieder. Mit PostgreSQL kommt ein Dump der Datenbank dazu. Es behält die letzten fünf Backups. Diese Backups erscheinen nicht unter **Server**, **Sicherungen** in der Konsole und haken den Schritt **Sicherung erstellen** der Einrichtungsanleitung nicht ab. Siehe [Installation mit Docker](/docs/getting-started/docker#other-commands-of-the-script).
 
 Von Hand führst du das im Ordner mit der Compose-Datei aus:
 

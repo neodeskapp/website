@@ -13,6 +13,8 @@ The heading says how many devices there are and how many of them are online. Sta
 
 To get a client onto a new computer, click **Add a computer** above the list: it makes an invite link that installs the client and joins the computer to this server. See [Add a computer](/docs/console/add-a-computer).
 
+On a server without devices the list says "No devices yet." Accounts that may approve devices get two ways to the first one below it: **Add a computer**, and **Approve new computers under Join requests**, where RustDesk clients wait in the **Managed** join mode. The **Devices** section of **Overview** shows the same.
+
 ## Searching
 
 Type into **Search by ID, name, user or tag**. The search looks through the ID, the display name, the hostname, the user, the platform, the type, the tags, the note and the IP address. Every word you type has to appear somewhere, in any order. Case doesn't matter.

@@ -36,7 +36,7 @@ eventuell weniger als acht.
 | **Erstes Passwort ändern** | **Dein Konto**, **Passwort** | Das Passwort des ersten Admins nicht mehr das ist, das die Installation erzeugt hat |
 | **Zwei-Faktor-Anmeldung einschalten** | **Dein Konto**, **Zwei-Faktor-Anmeldung** | Dein Konto die Zwei-Faktor-Anmeldung eingeschaltet hat |
 | **Adresse für Clients festlegen** | **Einstellungen**, **Allgemein**, **Öffentliche Client-Endpunkte** | Die Adresse, die Clients bekommen, für andere Computer erreichbar ist |
-| **HTTPS vor die Konsole setzen** | [Reverse Proxy und TLS](/docs/operations/reverse-proxy-tls), in einem neuen Tab | Du die Konsole über HTTPS geöffnet hast oder die Konsole selbst HTTPS anbietet |
+| **HTTPS vor die Konsole setzen** | Unter Docker [HTTPS mit Let's Encrypt unter Docker](/docs/operations/reverse-proxy-tls#https-with-lets-encrypt-on-docker), unter Linux und Windows [HTTPS ohne Proxy](/docs/operations/reverse-proxy-tls#https-without-a-proxy), in einem neuen Tab | Du die Konsole über HTTPS geöffnet hast oder die Konsole selbst HTTPS anbietet |
 | **Ersten Computer hinzufügen** | **Computer hinzufügen**, direkt auf der Übersicht | Der Server ein Gerät hat |
 | **Eine Fernsitzung öffnen** | **Alle Geräte** | Der Server eine Fernsitzung gesehen hat |
 | **Weitere Personen hinzufügen** | **Benutzer** | Es ein weiteres Konto gibt, das nicht deaktiviert ist, oder Single Sign-on oder LDAP eingeschaltet ist |
@@ -63,8 +63,11 @@ Du kannst die Anleitung jetzt ausblenden.“
 ### Wann ein Schritt als erledigt gilt {#when-a-step-counts-as-done}
 
 **Adresse für Clients festlegen** prüft die Adresse, die der Server Clients
-gibt, wenn niemand eine nennt. Der Schritt bleibt offen, solange diese Adresse
-`localhost` ist, eine Loopback-Adresse oder `0.0.0.0`, ein Name ohne Punkt
+gibt, wenn niemand eine nennt, und die nimmt `PANEL_PUBLIC_HOST` und dann die
+erste Adresse in `RELAY_SERVERS`. Unter Docker schreibt der Installer die
+Adresse, die er ermittelt hat, in `RELAY_SERVERS`, der Schritt ist also gleich
+nach der Installation erledigt, wenn andere Computer diese Adresse erreichen.
+Er bleibt offen, solange die Adresse `localhost` ist, eine Loopback-Adresse oder `0.0.0.0`, ein Name ohne Punkt
 (etwa der eines Containers) oder ein Name, der auf `.local` endet. Leg die
 Adresse unter **Öffentliche Client-Endpunkte** fest, wie
 [Die Adresse für die Clients festlegen](/docs/getting-started/first-sign-in#set-the-address-clients-use)
@@ -81,9 +84,9 @@ anbietet, so wie die Skripte für Linux und Windows sie auf 5443 einrichten.
 Server aufgebaut hat, im Browser oder in einer App, oder eine, die ein Client
 gemeldet hat.
 
-**Sicherung erstellen** zählt die Sicherungen, die die Konsole erstellt: einen
-Download unter **Server**, **Sicherungen** oder eine geplante Sicherung, die
-geklappt hat. Die Sicherungen des Docker-Skripts (`neodesk-docker.sh backup`
+**Sicherung erstellen** zählt die Sicherungen, die die Konsole erstellt: eine
+unter **Server**, **Sicherungen**, von Hand oder nach Zeitplan. Der Hinweis des
+Schritts in der Anleitung sagt dasselbe. Die Sicherungen des Docker-Skripts (`neodesk-docker.sh backup`
 und die, die es vor einem Update anlegt) und des Linux-Installers haken den
 Schritt nicht ab.
 
@@ -99,7 +102,9 @@ Schritts nach „Schritt:“. Die Zeile bringt dich zurück zur Übersicht.
 **Ersten Computer hinzufügen** öffnet
 [Computer hinzufügen](/docs/console/add-a-computer) direkt auf der Übersicht,
 und **HTTPS vor die Konsole setzen** öffnet die Doku in einem neuen Tab, weil
-HTTPS außerhalb der Konsole eingerichtet wird.
+HTTPS außerhalb der Konsole eingerichtet wird: bei einer Docker-Installation
+den Abschnitt zu `--domain` des Installationsskripts, unter Linux und Windows
+den zum eigenen HTTPS der Konsole.
 
 Die Übersicht prüft die Schritte alle 30 Sekunden, solange ihr Tab offen ist,
 und wenn **Computer hinzufügen** sich schließt.

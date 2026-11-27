@@ -99,10 +99,20 @@ offers **Use a recovery code instead**. More in
 ## Set the address clients use
 
 The values a RustDesk client needs are on **Overview**, under **Client setup**.
-The console works out the server's address by itself, for example from the
-address you opened the console with. That is wrong when clients reach the
-server under another name: when you opened the console as `localhost`, or when
-a reverse proxy or a router stands in between.
+Without a saved address, the console works out the server's address by itself,
+taking the first of these that has a value:
+
+1. `PANEL_PUBLIC_HOST` in the server's environment.
+2. The first address in `RELAY_SERVERS`. The Docker installer writes the
+   address it found there, so on Docker the console shows the address the
+   installer printed.
+3. The host of the console's own API address.
+4. The address you opened the console with.
+
+A host only this machine reaches, such as `localhost`, `127.0.0.1` or a name
+without a dot, is skipped. The result is wrong when clients reach the server
+under another name, for example when a reverse proxy, a CDN or a router stands
+in between.
 
 To set the address for every client:
 
@@ -117,8 +127,10 @@ To set the address for every client:
 The side column, **What clients get now**, shows the result. The new addresses
 apply right away to the client setup values, QR codes and install commands.
 Devices that are already set up keep their old address until you set them up
-again. While any of these fields has a value, the **Client server address**
-field on **Overview** is locked.
+again. While **Public ID server** has a value, the **Client server address**
+field on **Overview** is locked. **Public relay server** or **Public API URL**
+alone don't lock it: the field still changes the ID server and the relay for
+that tab, and the fixed values stay as you set them.
 
 ## Find your way around
 
