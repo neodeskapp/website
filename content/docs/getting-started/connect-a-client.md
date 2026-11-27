@@ -318,17 +318,63 @@ change them, and [Devices](/docs/console/devices) covers the device list.
 
 ## Sign in from the client
 
-People with an account on the server can sign in to the RustDesk client with
-its username and password. The client then gets their address book from the
-server. Members of an organization also get the contacts it shares, see
+People with an account on the server can sign in to the client. The client
+then gets their address book from the server. Members of an organization also
+get the contacts it shares, see
 [The shared address book](/docs/people/organizations#the-shared-address-book).
+
+### Sign in through the browser
+
+The sign-in dialog of the NeoDesk client starts with **Sign in with NeoDesk**.
+The stock RustDesk client shows the same option as **Continue with NeoDesk**
+under the password form.
+
+1. Click **Sign in with NeoDesk**. The client opens the web console in the
+   computer's browser and shows "Waiting for you to allow the sign-in in the
+   browser".
+2. If the browser isn't signed in to the console, sign in there first, the
+   way you always do: password, two-factor code or
+   [single sign-on](/docs/people/oidc). The console then comes back to the
+   request.
+3. The page **Sign in to the NeoDesk app** shows the computer that asks: its
+   name, system, NeoDesk ID, IP address and when it asked. Check that it is
+   the computer in front of you, then click **Allow**.
+4. The page says "The app is signed in" and the client is signed in as you.
+   You can close the tab.
+
+Click **Allow** only for a sign-in you just started yourself. Someone who
+sends you such a link wants their own computer signed in to your account;
+click **Deny** then. **Deny** ends the request, and the client shows "Sign-in
+was declined in the browser".
+
+A request lasts five minutes and can be answered once. After that the page
+says "This sign-in has ended" and the client asks you to start again. When the
+account is disabled, or has to set up two-factor sign-in or choose a new
+password first, the page says so and the client is not signed in.
+
+The link in the browser points at the console's address: **Console address**
+under **Settings**, **Single sign-on** when it is set, otherwise
+`PANEL_PUBLIC_URL` or `PUBLIC_URL` (see
+[Configuration](/docs/operations/configuration)). Without any of these, the
+server uses the host name the client reached it at, with the console's port.
+Behind a reverse proxy, set `PANEL_PUBLIC_URL` to the public address; the
+installer does that when it sets up the proxy. When the server finds no
+address at all, the client shows "The web console's address is not set."
+
+Allowed and denied requests are in the console's audit log, and the sign-in
+of the client is recorded with the method `console_device_login`.
+
+### Sign in with a password
+
+The client's sign-in dialog also takes the account's username and password.
 When the account uses two-factor sign-in, the client asks for the code too.
+Accounts that use single sign-on can't sign in with a password; they use the
+browser, or the provider's own button when
+[single sign-on](/docs/people/oidc#single-sign-on-in-the-client) is on.
 
 How long the client stays signed in is set under **Settings**, **Sign-in**,
 **RustDesk client sessions**, see
 [Sessions and failed sign-ins](/docs/people/users-and-roles#sessions-and-failed-sign-ins).
-Accounts that use single sign-on sign in to the client through their provider,
-see [Single sign-on with OIDC](/docs/people/oidc).
 
 ## It does not connect
 

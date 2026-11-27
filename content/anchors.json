@@ -1158,7 +1158,9 @@
 		"fedora-rhel-rocky-linux-and-almalinux",
 		"opensuse-and-sles",
 		"release-candidates",
-		"remove"
+		"remove",
+		"sign-in-through-the-browser",
+		"sign-in-with-a-password"
 	],
 	"getting-started/connect-a-client/many-computers": [
 		"with-one-invite",
@@ -1394,7 +1396,8 @@
 		"what-people-see",
 		"single-sign-on-in-the-rustdesk-client",
 		"example-with-a-generic-provider",
-		"test-it"
+		"test-it",
+		"single-sign-on-in-the-client"
 	],
 	"people/organizations": [
 		"what-membership-does-and-does-not-do",

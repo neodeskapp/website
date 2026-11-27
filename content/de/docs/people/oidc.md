@@ -83,9 +83,11 @@ Hinter einem Reverse Proxy sieht die Konsole die Adresse des Proxys, es sei denn
 
 Um eine einzelne Person von der Anmeldung per Single Sign-on abzuhalten, deaktiviere ihr Konto auf der Seite Benutzer (siehe [Konto deaktivieren](/docs/people/users-and-roles#disable-an-account)). Löschen reicht nicht, solange **Benutzer automatisch erstellen** eingeschaltet ist, denn die nächste Anmeldung legt ein neues Konto an.
 
-## Single Sign-on im RustDesk-Client {#single-sign-on-in-the-rustdesk-client}
+## Single Sign-on im Client {#single-sign-on-in-the-client alias=single-sign-on-in-the-rustdesk-client}
 
-Ist Single Sign-on eingeschaltet, bietet der Server es RustDesk-Clients als zweiten Weg zur Anmeldung an, benannt nach dem **Text der Schaltfläche** oder, ohne ihn, SSO. Der Client öffnet den Anbieter im Browser des Computers. Nach der Anmeldung dort zeigt der Browser „Sign-in successful“ und „You can close this window and return to RustDesk.“, und der Client ist angemeldet.
+Am einfachsten kommen Single-Sign-on-Konten mit **Mit NeoDesk anmelden** in die Desktop-App: Sie öffnet die Konsole im Browser, die Person meldet sich dort über den Anbieter an und klickt auf **Erlauben**. Beim Anbieter ist dafür nichts weiter nötig; siehe [Über den Browser anmelden](/docs/getting-started/connect-a-client#sign-in-through-the-browser).
+
+Ist Single Sign-on eingeschaltet, bietet der Server dem Client außerdem den Anbieter selbst an, benannt nach dem **Text der Schaltfläche** oder, ohne ihn, SSO. Im NeoDesk-Client steht er unter dem Passwortformular; **Mit NeoDesk anmelden** bleibt vorn. Lautet der **Text der Schaltfläche** `NeoDesk`, zeigt der Client den Anbieter als `NeoDesk SSO`, damit sich die beiden nicht verwechseln lassen. Der Client öffnet den Anbieter im Browser des Computers. Nach der Anmeldung dort zeigt der Browser „Sign-in successful“ und „You can close this window and return to RustDesk.“, und der Client ist angemeldet.
 
 Der Client nutzt dieselben Einstellungen, dieselbe **Weiterleitungs-URL** und dieselben Konten wie die Konsole, du registrierst beim Anbieter also nichts weiter. Er braucht Folgendes:
 

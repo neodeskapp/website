@@ -337,18 +337,66 @@ sie änderst. Mehr zur Geräteliste steht unter
 
 ## Im Client anmelden {#sign-in-from-the-client}
 
-Wer ein Konto auf dem Server hat, kann sich im RustDesk-Client mit Benutzername
-und Passwort dieses Kontos anmelden. Der Client holt dann das zugehörige
-Adressbuch vom Server. Mitglieder einer Organisation bekommen auch die Kontakte, die sie
-teilt, siehe
+Wer ein Konto auf dem Server hat, kann sich im Client anmelden. Der Client holt
+dann das zugehörige Adressbuch vom Server. Mitglieder einer Organisation
+bekommen auch die Kontakte, die sie teilt, siehe
 [Das gemeinsame Adressbuch](/docs/people/organizations#the-shared-address-book).
-Nutzt das Konto die Zwei-Faktor-Anmeldung, fragt der Client auch nach dem Code.
+
+### Über den Browser anmelden {#sign-in-through-the-browser}
+
+Der Anmeldedialog des NeoDesk-Clients beginnt mit **Mit NeoDesk anmelden**.
+Der normale RustDesk-Client zeigt dieselbe Möglichkeit als NeoDesk unter dem
+Passwortformular.
+
+1. Klicke auf **Mit NeoDesk anmelden**. Der Client öffnet die Webkonsole im
+   Browser des Computers und zeigt „Warte darauf, dass du die Anmeldung im
+   Browser erlaubst“.
+2. Ist der Browser nicht bei der Konsole angemeldet, meldest du dich dort
+   zuerst an, wie sonst auch: mit Passwort, Zwei-Faktor-Code oder
+   [Single Sign-on](/docs/people/oidc). Die Konsole kehrt danach zur Anfrage
+   zurück.
+3. Die Seite **Bei der NeoDesk-App anmelden** zeigt den Computer, der fragt:
+   Name, System, NeoDesk-ID, IP-Adresse und wann er gefragt hat. Prüfe, dass es
+   der Computer vor dir ist, und klicke auf **Erlauben**.
+4. Die Seite sagt „Die App ist angemeldet“, und der Client ist mit deinem Konto
+   angemeldet. Den Tab kannst du schließen.
+
+Klicke nur dann auf **Erlauben**, wenn du die Anmeldung gerade selbst
+gestartet hast. Wer dir so einen Link schickt, will seinen eigenen Computer an
+deinem Konto anmelden; klicke dann auf **Ablehnen**. **Ablehnen** beendet die
+Anfrage, und der Client meldet, dass die Anmeldung im Browser abgelehnt wurde.
+
+Eine Anfrage gilt fünf Minuten und lässt sich einmal beantworten. Danach sagt
+die Seite „Diese Anmeldung ist beendet“, und der Client bittet dich, neu zu
+beginnen. Ist das Konto deaktiviert oder muss es erst die
+Zwei-Faktor-Anmeldung einrichten oder ein neues Passwort wählen, sagt die
+Seite das, und der Client wird nicht angemeldet.
+
+Der Link im Browser führt zur Adresse der Konsole: **Konsolenadresse** unter
+**Einstellungen**, **Single Sign-on**, wenn sie gesetzt ist, sonst
+`PANEL_PUBLIC_URL` oder `PUBLIC_URL` (siehe
+[Konfiguration](/docs/operations/configuration)). Fehlt all das, nimmt der
+Server den Hostnamen, unter dem der Client ihn erreicht hat, mit dem Port der
+Konsole. Hinter einem Reverse Proxy setzt du `PANEL_PUBLIC_URL` auf die
+öffentliche Adresse; das Installationsskript tut das, wenn es den Proxy
+einrichtet. Findet der Server gar keine Adresse, zeigt der Client „The web
+console's address is not set.“
+
+Erlaubte und abgelehnte Anfragen stehen im Audit-Log der Konsole, die
+Anmeldung des Clients mit der Methode `console_device_login`.
+
+### Mit Passwort anmelden {#sign-in-with-a-password}
+
+Der Anmeldedialog des Clients nimmt auch Benutzername und Passwort des Kontos.
+Nutzt das Konto die Zwei-Faktor-Anmeldung, fragt der Client auch nach dem
+Code. Konten mit Single Sign-on können sich nicht mit Passwort anmelden; sie
+nutzen den Browser oder die Schaltfläche des Anbieters, wenn
+[Single Sign-on](/docs/people/oidc#single-sign-on-in-the-client) eingeschaltet
+ist.
 
 Wie lange der Client angemeldet bleibt, legst du unter **Einstellungen**,
 **Anmeldung**, **RustDesk-Clientsitzungen** fest, siehe
 [Sitzungen und fehlgeschlagene Anmeldungen](/docs/people/users-and-roles#sessions-and-failed-sign-ins).
-Konten mit Single Sign-on melden sich im Client über ihren Anbieter an, siehe
-[Single Sign-on mit OIDC](/docs/people/oidc).
 
 ## Der Client verbindet sich nicht {#it-does-not-connect}
 
