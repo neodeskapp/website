@@ -1160,6 +1160,14 @@
 		"release-candidates",
 		"remove"
 	],
+	"getting-started/connect-a-client/linux-login-screen": [
+		"how-it-works",
+		"step-by-step",
+		"tested",
+		"limits",
+		"x11-fallback",
+		"turn-off"
+	],
 	"getting-started/connect-a-client/many-computers": [
 		"with-one-invite",
 		"with-the-stock-rustdesk-client",
