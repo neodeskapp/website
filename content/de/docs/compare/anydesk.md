@@ -2,6 +2,7 @@
 title: NeoDesk und AnyDesk im Vergleich
 description: Eine selbst gehostete Alternative zu AnyDesk. Wie sich NeoDesk und AnyDesk bei Hosting, Tarifen, Anmeldung und Plattformen unterscheiden.
 order: 5
+seoTitle: Kostenlose AnyDesk-Alternative zum Selbsthosten
 og: comparison
 product: AnyDesk
 logo: anydesk.svg

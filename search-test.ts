@@ -27,6 +27,7 @@ const CASES: Record<string, [string, string][]> = {
 		['devices list', '/docs/command-line/reference/devices/#neodesk-devices-list'],
 		['RELAY_SERVERS', '/docs/operations/configuration/#addresses-and-ports'],
 		['two-factor', '/docs/people/two-factor/'],
+		['rustdesk web console', '/docs/use-cases/rustdesk-web-console/'],
 		['--include-deleted', '/docs/command-line/reference/devices/#neodesk-devices-list']
 	],
 	'/de/docs/': [

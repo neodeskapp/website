@@ -43,6 +43,14 @@ export const ANSWERS: Record<string, Answer[]> = {
 			a: 'Yes. It is open source under the AGPL-3.0, there is no paid version, and every feature is in the release everyone gets. See [Price and support](/docs/project/license#price-and-support).'
 		},
 		{
+			q: 'Is there a free web console for RustDesk?',
+			a: 'Yes, NeoDesk. RustDesk\'s free server, hbbs and hbbr, has no console, and RustDesk\'s own console comes with the paid Server Pro. NeoDesk is a free server for the stock RustDesk client with the console built in: the device list, accounts and the address book in the client, LDAP or OIDC sign-in, approval of new devices and an audit log. See [A free web console for your RustDesk clients](/docs/use-cases/rustdesk-web-console).'
+		},
+		{
+			q: 'Is NeoDesk a free alternative to RustDesk Server Pro?',
+			a: 'For most of what Pro is bought for, yes: a web console, accounts, two-factor sign-in, LDAP and OIDC, the address book and an audit log, with no license fee, no user or device limit and no license check. Pro has several relay servers and a custom client generator, which NeoDesk doesn\'t. See [NeoDesk and RustDesk Server Pro compared](/docs/compare/rustdesk-server-pro).'
+		},
+		{
 			q: 'Is there paid support?',
 			a: 'Yes, on request: paid support and help with a setup are available at support@neode.sk. Help with questions and bugs is free on the [NeoDesk Discord](https://discord.gg/nwERSawufr) and in the [discussions on GitHub](https://github.com/neodeskapp/neodesk/discussions).'
 		},
@@ -87,6 +95,14 @@ export const ANSWERS: Record<string, Answer[]> = {
 		{
 			q: 'Ist NeoDesk kostenlos?',
 			a: 'Ja. Es ist Open Source unter der AGPL-3.0, es gibt keine bezahlte Version, und jede Funktion steckt in dem Release, das alle bekommen. Mehr unter [Preis und Support](/docs/project/license#price-and-support).'
+		},
+		{
+			q: 'Gibt es eine kostenlose Web-Konsole für RustDesk?',
+			a: 'Ja, NeoDesk. Der kostenlose Server von RustDesk, hbbs und hbbr, hat keine Konsole, und die Konsole von RustDesk gehört zum bezahlten Server Pro. NeoDesk ist ein kostenloser Server für den normalen RustDesk-Client mit eingebauter Konsole: Geräteliste, Konten und Adressbuch im Client, Anmeldung über LDAP oder OIDC, Freigabe neuer Geräte und ein Audit-Protokoll. Mehr unter [Eine kostenlose Web-Konsole für deine RustDesk-Clients](/docs/use-cases/rustdesk-web-console).'
+		},
+		{
+			q: 'Ist NeoDesk eine kostenlose Alternative zu RustDesk Server Pro?',
+			a: 'Für das meiste, wofür man Pro kauft, ja: Web-Konsole, Konten, Zwei-Faktor-Anmeldung, LDAP und OIDC, Adressbuch und Audit-Protokoll, ohne Lizenzgebühr, ohne Grenze für Benutzer oder Geräte und ohne Lizenzprüfung. Pro hat mehrere Relay-Server und einen Generator für eigene Clients, NeoDesk nicht. Mehr unter [NeoDesk und RustDesk Server Pro im Vergleich](/docs/compare/rustdesk-server-pro).'
 		},
 		{
 			q: 'Gibt es bezahlten Support?',

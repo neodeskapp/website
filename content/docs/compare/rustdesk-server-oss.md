@@ -2,6 +2,7 @@
 title: NeoDesk and RustDesk Server OSS compared
 description: RustDesk's free server is hbbs and hbbr. NeoDesk does their job in one program and adds a web console, accounts and sign-in. Facts and moving over.
 order: 2
+seoTitle: RustDesk server with a web console: NeoDesk and OSS
 og: comparison
 product: RustDesk Server OSS
 logo: rustdesk.svg

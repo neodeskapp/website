@@ -1502,5 +1502,11 @@
 		"let-someone-else-in-for-a-while",
 		"keep-track-and-bill-the-work",
 		"before-you-start"
+	],
+	"use-cases/rustdesk-web-console": [
+		"what-the-console-does-for-rustdesk-clients",
+		"set-it-up",
+		"already-running-hbbs-and-hbbr",
+		"next-to-rustdesk-server-pro"
 	]
 }

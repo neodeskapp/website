@@ -2,6 +2,7 @@
 title: NeoDesk und RustDesk Server Pro im Vergleich
 description: NeoDesk ist eine freie Open-Source-Alternative zu RustDesk Server Pro. Was beide können, was Pro besser macht, Lizenzen, Preise und der Umzug.
 order: 1
+seoTitle: Kostenlose Alternative zu RustDesk Server Pro: NeoDesk
 og: comparison
 product: RustDesk Server Pro
 logo: rustdesk.svg
