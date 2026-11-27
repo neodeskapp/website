@@ -59,13 +59,19 @@ sudo neodesk-setup --set-config TRUST_PROXY=Y --set-config LOG_LEVEL=info
 
 ## Windows
 
-The installer registers the service `NeoDeskServer`. Its env file is `C:\NeoDeskConsole\.env`, and the service sets `NEODESK_ENV_FILE`, `GO_API_PORT=21114` and `MESH_ENABLED=Y` itself. Edit the file, then restart the service:
+The installer registers `NeoDeskServer`, a Windows service when NSSM is installed and a scheduled task otherwise. Its env file is `C:\NeoDeskConsole\.env`, and the service or task sets `NEODESK_ENV_FILE`, `GO_API_PORT=21114` and `MESH_ENABLED=Y` itself. Edit the file, then restart the server. As a service:
 
 ```powershell
 Restart-Service NeoDeskServer
 ```
 
-`& 'C:\NeoDesk\neodesk.ps1' -SetConfig KEY=VALUE`, in PowerShell as Administrator, changes template settings, like `--set-config` on Linux.
+For the scheduled task, see [Files and the service](/docs/getting-started/windows#files-and-the-service).
+
+In PowerShell as Administrator, this changes template settings, like `--set-config` on Linux:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File C:\NeoDesk\neodesk.ps1 -SetConfig KEY=VALUE
+```
 
 ## Addresses and ports
 

@@ -24,6 +24,8 @@ Die Ein-Zeilen-Installation nimmt dasselbe als `--domain` und `--letsencrypt-ema
 
 Nimm stattdessen einen eigenen Proxy, wenn ein anderer Webserver auf dem Host schon die Ports 80 und 443 belegt, oder wenn der Server aus dem Internet nicht auf Port 80 erreichbar ist, über den Let's Encrypt den Namen prüft.
 
+Das Compose-Netz hat kein IPv6, deshalb reicht Docker Besucher, die über IPv6 kommen, über seinen eigenen Proxy an Traefik weiter. Die Konsole sieht dann jeden von ihnen als das Gateway des Docker-Netzes, etwa `172.18.0.1`: Das Aktivitätsprotokoll zeigt diese Adresse, und die Anmeldelimits zählen alle Besucher über IPv6 als einen. Besucher über IPv4 behalten ihre eigene Adresse.
+
 ## An welchen Port der Proxy weiterleitet {#which-port-the-proxy-forwards-to}
 
 Der Standardport der Konsole ist seit 3.6.0-rc.5 3375; vorher war es 5000. Die Beispiele auf dieser Seite nutzen 3375.
@@ -93,10 +95,12 @@ server {
     # The console takes backups of up to 200 MB for a restore
     client_max_body_size 200m;
 
+    add_header Strict-Transport-Security "max-age=31536000" always;
+
     location / {
         proxy_pass http://127.0.0.1:3375;
         proxy_http_version 1.1;
-        proxy_set_header Host $host;
+        proxy_set_header Host $http_host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $remote_addr;
         proxy_set_header X-Forwarded-Proto $scheme;
@@ -108,7 +112,7 @@ server {
 }
 ```
 
-Die langen Timeouts halten Remote-Sitzungen im Browser offen. `$proxy_add_x_forwarded_for` funktioniert genauso wie `$remote_addr`: Die Konsole und die API des Servers gehen `X-Forwarded-For` von rechts durch und nehmen die erste Adresse, die kein vertrauenswürdiger Proxy ist. Einträge, die ein Client selbst geschrieben hat, zählen deshalb nicht.
+Die langen Timeouts halten Remote-Sitzungen im Browser offen. `$http_host` reicht den Hostnamen mit seinem Port weiter: Die Konsole nimmt einen WebSocket nur von ihrer eigenen Adresse an, und `$host` von nginx lässt den Port weg. Auf einem anderen Proxy-Port als 443 würde dann jeder WebSocket mit 403 scheitern, und mit ihm Live-Updates, Chat und Remote Desktop im Browser. `Strict-Transport-Security` sagt Browsern, diesen Namen ab dann nur noch über HTTPS aufzurufen. `$proxy_add_x_forwarded_for` funktioniert genauso wie `$remote_addr`: Die Konsole und die API des Servers gehen `X-Forwarded-For` von rechts durch und nehmen die erste Adresse, die kein vertrauenswürdiger Proxy ist. Einträge, die ein Client selbst geschrieben hat, zählen deshalb nicht.
 
 Prüfe die Konfiguration und lade sie:
 
@@ -117,17 +121,20 @@ sudo nginx -t
 sudo systemctl reload nginx
 ```
 
+Setze dann `TRUST_PROXY` wie unter [Dem Proxy vertrauen](#trusting-the-proxy).
+
 ## Caddy {#caddy}
 
 Caddy holt und erneuert das Zertifikat selbst, reicht WebSocket-Upgrades durch und setzt die Forwarded-Header. Füge das hier in `/etc/caddy/Caddyfile` ein und setze für `<server-address>` den Hostnamen der Konsole ein:
 
 ```caddy
 <server-address> {
+	header Strict-Transport-Security "max-age=31536000"
 	reverse_proxy 127.0.0.1:3375
 }
 ```
 
-Lade Caddy dann neu:
+Die Zeile `header` sorgt dafür, dass Browser diesen Namen ab dann nur noch über HTTPS aufrufen; von selbst sendet Caddy sie nicht. Lade Caddy dann neu und setze `TRUST_PROXY` wie unter [Dem Proxy vertrauen](#trusting-the-proxy):
 
 ```bash
 sudo systemctl reload caddy
@@ -135,12 +142,18 @@ sudo systemctl reload caddy
 
 ## Dem Proxy vertrauen {#trusting-the-proxy}
 
-Hinter einem Proxy erreicht jede Anfrage NeoDesk von der Adresse des Proxys. `TRUST_PROXY` sagt NeoDesk, die Adresse des Clients, das Schema und den Host stattdessen aus den Headern des Proxys zu nehmen. Ohne die Variable zählen die Anmeldelimits und Sperren jeden Menschen als den Proxy, und das Aktivitätsprotokoll zeigt die Adresse des Proxys.
+Hinter einem Proxy erreicht jede Anfrage NeoDesk von der Adresse des Proxys. `TRUST_PROXY` sagt NeoDesk, die Adresse des Clients, das Schema und den Host stattdessen aus den Headern des Proxys zu nehmen.
+
+Setze die Variable bei jedem eigenen Proxy. Ohne sie funktioniert die Konsole, und nichts warnt dich, aber:
+
+- die Sitzungs-Cookies sind nicht als Secure markiert, weil die Konsole dem `X-Forwarded-Proto: https` des Proxys nicht glaubt,
+- die Anmeldelimits und Sperren zählen jeden Menschen als den Proxy,
+- das Aktivitätsprotokoll zeigt für alle die Adresse des Proxys.
 
 Zwei Teile des Servers lesen sie:
 
 - Die Konsole liest nur `TRUST_PROXY`. Ein eingeschalteter Wert wie `Y`, `true` oder `1` vertraut einem Proxy davor, eine größere Zahl entsprechend vielen. Eine kommagetrennte Liste von Adressen oder Adressbereichen (oder `loopback`, `linklocal`, `uniquelocal`) vertraut Proxys mit diesen Adressen.
-- Die API- und WebSocket-Ports des Servers lesen weitergeleitete Header nur mit eingeschaltetem `TRUST_PROXY` und nur von den Adressen in `TRUSTED_PROXIES`. Ohne `TRUSTED_PROXIES` loggt der Server eine Warnung und ignoriert die Header. Das betrifft Anfragen, die der Proxy an die eigenen Ports des Servers schickt, etwa beim API-Host weiter unten.
+- Die API- und WebSocket-Ports des Servers lesen weitergeleitete Header nur mit eingeschaltetem `TRUST_PROXY` und nur von den Adressen in `TRUSTED_PROXIES`. Ohne `TRUSTED_PROXIES` loggt der Server eine Warnung und ignoriert die Header. Das betrifft Anfragen, die der Proxy an die eigenen Ports des Servers schickt, etwa beim API-Host weiter unten. Die Traefik-Einrichtung des Docker-Installationsskripts loggt diese Warnung auch; dort ist sie harmlos, weil Traefik nur die Konsole trägt.
 
 `Y` funktioniert für beide Teile. Für einen Proxy auf demselben Rechner wie eine Installation unter Linux oder Windows trägst du das in die env-Datei ein:
 
@@ -185,7 +198,7 @@ server {
     location / {
         proxy_pass http://127.0.0.1:21121;
         proxy_http_version 1.1;
-        proxy_set_header Host $host;
+        proxy_set_header Host $http_host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $remote_addr;
         proxy_set_header X-Forwarded-Proto $scheme;
@@ -220,6 +233,8 @@ Die Installer für Linux und Windows richten das bei einer neuen Installation mi
 ## Die Adressen prüfen, die Clients bekommen {#check-the-addresses-clients-get}
 
 Öffne **Einstellungen**, **Allgemein**. Trage unter **Öffentliche Client-Endpunkte** den Hostnamen, den Clients für den ID-Server nutzen, als **Öffentlicher ID-Server** ein. Hast du die API über den Proxy geleitet, trage deine API-Adresse als **Öffentliche API-URL** ein. **Was Clients jetzt erhalten** rechts daneben zeigt die Werte, die die Client-Einrichtung, die QR-Codes und die Installationsbefehle nutzen.
+
+Ohne **Öffentlicher ID-Server** nimmt die Konsole den Host aus `PANEL_PUBLIC_HOST`, aus ihrer API-Adresse oder aus der Adresse, die der Browser genutzt hat. Hinter einem Proxy ist das oft der eigene Hostname der Konsole. Clients bekommen diesen Namen dann für ID-Server und Relay, und das funktioniert nur, wenn der Name auch direkt zu den Ports 21115 bis 21117 des Servers führt. Das tut er nicht, wenn ein CDN oder ein Proxy auf einem anderen Rechner für den Namen antwortet, oder wenn der Name nur eine IPv6-Adresse hat und Clients über IPv4 kommen. Trage dann die eigene Adresse des Servers, etwa seine öffentliche IP-Adresse, als **Öffentlicher ID-Server** ein.
 
 ![Die allgemeinen Einstellungen mit den öffentlichen Client-Endpunkten und dem, was Clients jetzt erhalten](shot:settings)
 

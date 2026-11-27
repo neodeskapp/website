@@ -26,6 +26,8 @@ The one-line install takes the same as `--domain` and `--letsencrypt-email`. The
 
 Use your own proxy instead when another web server already has ports 80 and 443 on the host, or when the server can't be reached from the internet on port 80, where Let's Encrypt checks the name.
 
+The compose network has no IPv6, so Docker hands visitors who come over IPv6 to Traefik through its own proxy. The console then sees each of them as the Docker network's gateway, such as `172.18.0.1`: the activity log shows that address, and the sign-in limits count all IPv6 visitors as one. Visitors over IPv4 keep their own address.
+
 ## Which port the proxy forwards to
 
 The console's default port is 3375 since 3.6.0-rc.5; it was 5000. The examples on this page use 3375.
@@ -95,10 +97,12 @@ server {
     # The console takes backups of up to 200 MB for a restore
     client_max_body_size 200m;
 
+    add_header Strict-Transport-Security "max-age=31536000" always;
+
     location / {
         proxy_pass http://127.0.0.1:3375;
         proxy_http_version 1.1;
-        proxy_set_header Host $host;
+        proxy_set_header Host $http_host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $remote_addr;
         proxy_set_header X-Forwarded-Proto $scheme;
@@ -110,7 +114,7 @@ server {
 }
 ```
 
-The long timeouts keep remote sessions in the browser open. `$proxy_add_x_forwarded_for` works as well as `$remote_addr`: the console and the server's API walk `X-Forwarded-For` from the right and take the first address that is not a trusted proxy, so entries a client wrote itself don't count.
+The long timeouts keep remote sessions in the browser open. `$http_host` passes the host name with its port: the console accepts a WebSocket only from its own address, and nginx's `$host` drops the port, so on a proxy port other than 443 every WebSocket would fail with 403, and with it live updates, chat and remote desktop in the browser. `Strict-Transport-Security` tells browsers to use HTTPS for this name from then on. `$proxy_add_x_forwarded_for` works as well as `$remote_addr`: the console and the server's API walk `X-Forwarded-For` from the right and take the first address that is not a trusted proxy, so entries a client wrote itself don't count.
 
 Check and load the configuration:
 
@@ -119,17 +123,20 @@ sudo nginx -t
 sudo systemctl reload nginx
 ```
 
+Then set `TRUST_PROXY` as in [Trusting the proxy](#trusting-the-proxy).
+
 ## Caddy
 
 Caddy gets and renews the certificate itself, passes WebSocket upgrades and sets the forwarded headers. Add this to `/etc/caddy/Caddyfile`, with the console's host name in place of `<server-address>`:
 
 ```caddy
 <server-address> {
+	header Strict-Transport-Security "max-age=31536000"
 	reverse_proxy 127.0.0.1:3375
 }
 ```
 
-Then reload it:
+The `header` line makes browsers use HTTPS for this name from then on; Caddy doesn't send it by itself. Then reload Caddy and set `TRUST_PROXY` as in [Trusting the proxy](#trusting-the-proxy):
 
 ```bash
 sudo systemctl reload caddy
@@ -137,12 +144,18 @@ sudo systemctl reload caddy
 
 ## Trusting the proxy
 
-Behind a proxy, every request reaches NeoDesk from the proxy's address. `TRUST_PROXY` tells NeoDesk to take the client's address, the scheme and the host from the proxy's headers instead. Without it, the sign-in limits and lockouts count every person as the proxy, and the activity log shows the proxy's address.
+Behind a proxy, every request reaches NeoDesk from the proxy's address. `TRUST_PROXY` tells NeoDesk to take the client's address, the scheme and the host from the proxy's headers instead.
+
+Set it with every proxy of your own. Without it the console works, and nothing warns you, but:
+
+- the session cookies are not marked Secure, because the console doesn't believe the proxy's `X-Forwarded-Proto: https`,
+- the sign-in limits and lockouts count every person as the proxy,
+- the activity log shows the proxy's address for everyone.
 
 Two parts of the server read it:
 
 - The console reads `TRUST_PROXY` alone. An on value such as `Y`, `true` or `1` trusts one proxy in front of it; a larger number trusts that many; a comma-separated list of addresses or ranges (or `loopback`, `linklocal`, `uniquelocal`) trusts proxies with those addresses.
-- The server's API and WebSocket ports read forwarded headers only with `TRUST_PROXY` on and only from the addresses in `TRUSTED_PROXIES`. Without `TRUSTED_PROXIES` the server logs a warning and ignores the headers. This matters for requests the proxy sends to the server's own ports, such as the API host below.
+- The server's API and WebSocket ports read forwarded headers only with `TRUST_PROXY` on and only from the addresses in `TRUSTED_PROXIES`. Without `TRUSTED_PROXIES` the server logs a warning and ignores the headers. This matters for requests the proxy sends to the server's own ports, such as the API host below. The Traefik setup of the Docker install script logs that warning too; there it is harmless, because Traefik carries only the console.
 
 `Y` works for both parts. For a proxy on the same machine as a Linux or Windows install, put this in the env file:
 
@@ -187,7 +200,7 @@ server {
     location / {
         proxy_pass http://127.0.0.1:21121;
         proxy_http_version 1.1;
-        proxy_set_header Host $host;
+        proxy_set_header Host $http_host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $remote_addr;
         proxy_set_header X-Forwarded-Proto $scheme;
@@ -222,6 +235,8 @@ The Linux and Windows installers set this up on a new install with a self-signed
 ## Check the addresses clients get
 
 Open **Settings**, **General**. Under **Public client endpoints**, enter the host name clients use for the ID server as **Public ID server**, and your API address as **Public API URL** if you proxied the API. **What clients get now** on the right shows the values the client setup, the QR codes and the install commands use.
+
+Without **Public ID server**, the console takes the host from `PANEL_PUBLIC_HOST`, from its API address, or from the address the browser used. Behind a proxy that is often the console's own host name. Clients then get that name for the ID server and relay, which works only when the name also leads straight to the server's ports 21115 to 21117. It doesn't when a CDN or a proxy on another machine answers for the name, or when the name has only an IPv6 address and clients come over IPv4. Then enter the server's own address, such as its public IP address, as **Public ID server**.
 
 ![The General settings with the public client endpoints and what clients get now](shot:settings)
 
