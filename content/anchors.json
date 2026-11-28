@@ -883,6 +883,24 @@
 		"what-the-person-sees",
 		"what-a-session-gives-you"
 	],
+	"console/receiver-app": [
+		"deploy-it",
+		"the-token",
+		"the-download",
+		"install-it-silently",
+		"what-happens-on-the-computer",
+		"unattended-access",
+		"removing-the-app",
+		"the-offer-after-quick-support",
+		"where-you-answer"
+	],
+	"console/receiver-app/using-the-app": [
+		"open-the-app",
+		"get-help",
+		"messages",
+		"my-tickets",
+		"the-bar-at-the-top-of-the-screen"
+	],
 	"console/remote-in-browser": [
 		"opening-the-viewer",
 		"what-it-needs",

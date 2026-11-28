@@ -72,3 +72,7 @@ the file, check that it names you, and click **Allow**. When they are done,
 they click **Stop** at the top of their screen or close the app. The app
 comes from the same signed client releases as
 [Add a computer](/docs/console/add-a-computer#what-the-person-sees).
+
+After the session, the app on Windows can offer to stay on the computer as
+the receiver app, which then joins your server. See
+[The offer after quick support](/docs/console/receiver-app#the-offer-after-quick-support).

@@ -36,7 +36,9 @@ RustDesk-Client nimmst du stattdessen die Werte unter **Geräte**,
 **Computer hinzufügen** sammelt alle Wege, auf denen ein Computer auf den Server
 kommt, jeden als Tab für die Konten, die ihn nutzen dürfen:
 **Einladungen und Installationslinks**, **Gerätetokens**, **Kopplungscodes**,
-**Support-Agenten** und **Manuelle Einrichtung**.
+**Support-Agenten**, **Empfänger-App** und **Manuelle Einrichtung**.
+**Empfänger-App** installiert die App für die Person am Computer still auf
+vielen Windows-Computern; siehe [Die Empfänger-App](/docs/console/receiver-app).
 
 Jedes Feld der Einladung ist optional:
 

@@ -11,6 +11,11 @@ die Konsole die vier Werte als eine Konfigurationszeichenfolge, dazu ein
 PowerShell-Skript, das sie unter Windows anwendet. Diese Seite beschreibt
 beides und was passiert, wenn viele neue Geräte auf einmal beitreten.
 
+Um die Empfänger-App, die App für die Person am Computer, mit Intune,
+Gruppenrichtlinie oder einem RMM-Werkzeug auf viele Windows-Computer zu
+bringen, nimm ihr MSI mit einem Rollout-Token; siehe
+[Die Empfänger-App](/docs/console/receiver-app#install-it-silently).
+
 ## Mit einer Einladung {#with-one-invite}
 
 1. Öffne **Geräte**, dann **Alle Geräte**, und wähle **Computer hinzufügen**.

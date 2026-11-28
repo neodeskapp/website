@@ -34,7 +34,10 @@ Open **Add a computer** from one of these places:
 
 **Add computers** gathers every way a computer gets onto the server, each as a
 tab for the accounts that may use it: **Invites and install links**,
-**Device tokens**, **Pairing codes**, **Support agents** and **Manual setup**.
+**Device tokens**, **Pairing codes**, **Support agents**, **Receiver app** and
+**Manual setup**. **Receiver app** installs the app for the person at the
+computer silently on many Windows computers; see
+[The receiver app](/docs/console/receiver-app).
 
 Every field of the invite is optional:
 

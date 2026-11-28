@@ -78,3 +78,7 @@ den Schritten: die Datei öffnen, prüfen, dass dort dein Name steht, und auf
 Bildschirm auf **Beenden** oder schließt die App. Die App stammt aus denselben
 signierten Client-Releases wie bei
 [Computer hinzufügen](/docs/console/add-a-computer#what-the-person-sees).
+
+Nach der Sitzung kann die App unter Windows anbieten, als Empfänger-App auf
+dem Computer zu bleiben, die dann deinem Server beitritt. Siehe
+[Das Angebot nach der Schnellhilfe](/docs/console/receiver-app#the-offer-after-quick-support).

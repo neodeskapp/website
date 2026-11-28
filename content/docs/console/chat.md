@@ -96,6 +96,10 @@ The chat window of the NeoDesk app comes with a client release after 1.5.0-rc.7.
 With 1.5.0-rc.7 or older, and with a RustDesk client, the person can only read
 and answer inside a remote session.
 
+The [receiver app](/docs/console/receiver-app) keeps the chat open while it is
+installed: the person reads and answers under **Messages** and gets a
+notification for each new message.
+
 The NeoDesk app reaches the chat, and sends and fetches its files, on the
 server's API port (21121 by default), where it sends its other calls too, or at
 the console's address. No other port has to be open.
