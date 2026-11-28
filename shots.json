@@ -261,6 +261,98 @@
 					"wait": 800
 				}
 			]
+		},
+		{
+			"name": "receiver-app",
+			"path": "/devices/add",
+			"steps": [
+				{
+					"click": "role=tab[name=\"Receiver app\"]"
+				},
+				{
+					"waitFor": "role=button[name=\"Create rollout token\"]"
+				},
+				{
+					"click": "role=button[name=\"Create rollout token\"]"
+				},
+				{
+					"fill": [
+						"role=dialog >> role=textbox[name=\"Name\"]",
+						"Office PCs, December"
+					]
+				},
+				{
+					"select": [
+						"role=dialog >> role=combobox[name=\"Folder\"]",
+						"Office"
+					]
+				},
+				{
+					"click": "role=dialog >> role=button[name=\"Create token\"]"
+				},
+				{
+					"waitFor": "text=The new token is filled in."
+				},
+				{
+					"scroll": "role=tablist"
+				},
+				{
+					"wait": 800
+				}
+			]
+		},
+		{
+			"name": "receiver-rollout-token",
+			"path": "/devices/add",
+			"steps": [
+				{
+					"click": "role=tab[name=\"Receiver app\"]"
+				},
+				{
+					"waitFor": "role=button[name=\"Create rollout token\"]"
+				},
+				{
+					"click": "role=button[name=\"Create rollout token\"]"
+				},
+				{
+					"fill": [
+						"role=dialog >> role=textbox[name=\"Name\"]",
+						"Office PCs, December"
+					]
+				},
+				{
+					"wait": 800
+				}
+			]
+		},
+		{
+			"name": "tickets-from-computers",
+			"path": "/tickets",
+			"steps": [
+				{
+					"waitFor": "role=combobox[name=\"Source\"]"
+				},
+				{
+					"select": [
+						"role=combobox[name=\"Source\"]",
+						"From computers"
+					]
+				},
+				{
+					"waitFor": "text=Opened by Anna Weber"
+				},
+				{
+					"wait": 800
+				}
+			],
+			"annotations": [
+				{
+					"type": "box",
+					"target": "role=combobox[name=\"Source\"]",
+					"label": "From computers",
+					"side": "left"
+				}
+			]
 		}
 	]
 }

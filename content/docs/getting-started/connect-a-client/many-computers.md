@@ -11,6 +11,10 @@ approved. For the stock RustDesk client, the console gives you the four values
 as one config string, and a PowerShell script that applies it on Windows. This
 page covers both, and what happens when many new devices join at once.
 
+To put the receiver app, the app for the person at the computer, on many
+Windows computers with Intune, group policy or an RMM tool, use its MSI with
+one rollout token; see [The receiver app](/docs/console/receiver-app#install-it-silently).
+
 ## With one invite
 
 1. Open **Devices**, then **All devices**, and choose **Add a computer**.

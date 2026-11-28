@@ -101,6 +101,10 @@ Das Chatfenster der NeoDesk-App kommt mit einem Client-Release nach 1.5.0-rc.7.
 Mit 1.5.0-rc.7 oder älter und mit einem RustDesk-Client kann die Person nur in
 einer Fernsitzung lesen und antworten.
 
+Die [Empfänger-App](/docs/console/receiver-app) hält den Chat offen, solange
+sie installiert ist: Die Person liest und antwortet unter **Nachrichten** und
+bekommt für jede neue Nachricht eine Benachrichtigung.
+
 Die NeoDesk-App erreicht den Chat und sendet und holt seine Dateien über den
 API-Port des Servers (standardmäßig 21121), über den sie auch alles andere
 schickt, oder über die Adresse der Konsole. Ein weiterer Port muss nicht offen
